@@ -1,0 +1,56 @@
+/* =============================================================
+   KAIROS·1 — Constraint Observatory · interior overrides
+   =============================================================
+   The Observatory inherits the chamber shell from sequence.css.
+   This file adds only what the pressure topology needs.
+   ============================================================= */
+
+/* Pressure-field nodes */
+.pt-node .pt-node-circle {
+  fill: var(--gr-2);
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  transition: stroke var(--slow), stroke-width var(--slow), fill var(--slow), r var(--slow), filter var(--slow);
+}
+.pt-node.is-center .pt-node-circle {
+  fill: var(--heat-4);
+  stroke: var(--heat);
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 14px rgba(217,148,102,0.5));
+  animation: c-pulse-slow var(--rhythm-breath) ease-in-out infinite;
+}
+.pt-node.is-eliminated .pt-node-circle {
+  stroke: var(--ink-4);
+  stroke-dasharray: 2 3;
+  opacity: 0.55;
+}
+.pt-node-id {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--ink-3);
+}
+.pt-node.is-center .pt-node-id { fill: var(--heat); }
+.pt-node.is-eliminated .pt-node-id { fill: var(--ink-4); }
+
+.pt-node-label {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  text-anchor: middle;
+  fill: var(--ink-2);
+}
+.pt-node.is-center .pt-node-label { fill: var(--ink); font-style: italic; font-family: var(--serif); font-size: 13px; }
+.pt-node.is-eliminated .pt-node-label { fill: var(--ink-4); text-decoration: line-through; text-decoration-thickness: 0.5px; }
+
+.pt-node-cat {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--ink-4);
+}
+.pt-node.is-center .pt-node-cat { fill: var(--heat); }

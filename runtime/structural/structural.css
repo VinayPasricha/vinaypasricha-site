@@ -1,0 +1,75 @@
+/* =============================================================
+   KAIROS·1 — Structural Constraint Chamber · interior
+   =============================================================
+   Inherits sequence.css. Adds the architectural elements
+   (rounded rectangles, layer dependencies) and the chamber's
+   atmospheric variations.
+   ============================================================= */
+
+/* Element — rounded rectangle, architectural */
+.st-element .st-element-rect {
+  fill: var(--gr-2);
+  stroke: var(--ink-3);
+  stroke-width: 0.8;
+  transition: stroke var(--slow), stroke-width var(--slow), fill var(--slow), filter var(--slow);
+}
+.st-element .st-element-rect[data-friction="break"] {
+  stroke: var(--heat);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 8px rgba(217,148,102,0.5));
+}
+.st-element .st-element-rect[data-friction="low"]  { stroke: var(--heat-2); stroke-width: 1.2; }
+.st-element .st-element-rect[data-friction="mid"]  { stroke: var(--ink-2);  stroke-width: 1; }
+
+.st-element.is-governing .st-element-rect {
+  fill: var(--heat-4);
+  stroke: var(--heat);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 16px rgba(217,148,102,0.6));
+  animation: c-pulse-slow var(--rhythm-breath) ease-in-out infinite;
+}
+.st-element.is-focused .st-element-rect {
+  stroke: var(--heat-2);
+  filter: drop-shadow(0 0 6px rgba(217,148,102,0.35));
+}
+
+.st-element-id {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-anchor: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.st-element.is-governing .st-element-id { fill: var(--heat); }
+
+.st-element-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 400;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--ink);
+  pointer-events: none;
+}
+.st-element-sub {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.st-element.is-governing .st-element-sub { fill: var(--heat-2); }
+
+/* Dependencies — cross-layer connections */
+.st-dep {
+  stroke: var(--ink-4);
+  stroke-width: 0.7;
+  transition: stroke var(--slow), stroke-width var(--slow);
+}
+.st-dep[data-friction="high"]   { stroke: var(--ink-3); stroke-width: 0.9; }
+.st-dep[data-friction="mid"]    { stroke: var(--ink-2); stroke-width: 1.1; }
+.st-dep[data-friction="low"]    { stroke: var(--heat-2); stroke-width: 1.4; filter: drop-shadow(0 0 4px rgba(217,148,102,0.35)); }
+.st-dep[data-friction="break"]  { stroke: var(--heat); stroke-width: 1.8; stroke-dasharray: 4 3; filter: drop-shadow(0 0 6px rgba(217,148,102,0.5)); }

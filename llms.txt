@@ -1,0 +1,107 @@
+# vinaypasricha.com
+
+> An AI-native intellectual operating system for navigating a rapidly
+> changing world. Books, frameworks, and conversations on how
+> individuals, organisations, societies, and humanity itself can think
+> more clearly inside a period of accelerating change.
+
+## About Vinay Pasricha
+
+Vinay Pasricha is the founder of GoodSpace AI (an AI-driven hiring
+platform; 500,000+ people hired) and previously founded WLC College
+India (built 1990–2020, 50,000+ alumni). He is the author of three
+published books — *AI for Business Leaders*, *The Execution Doctrine*,
+and *The SIV Method* — and is currently writing two further works:
+the non-fiction *The Signal*, and a speculative-fiction cycle (working
+title *Between Two Dawns*) being released here serially. Based in
+Delhi, India.
+
+## The twelve entry conversations
+
+Each is a standalone, SEO-indexable landing page, available in 13
+languages. The site uses client-side translation (Claude-powered)
+served via `?lang=` URL parameters; the canonical (English) URLs are
+listed here.
+
+- [I want to use AI intelligently in my company](https://vinaypasricha.com/paths/ai-for-business.html)
+  — the book *AI for Business Leaders* and frameworks for AI-ready
+  organisations.
+- [I have a difficult decision in front of me](https://vinaypasricha.com/paths/decisions.html)
+  — *The SIV Method* (Situation, Insight, Verdict) — a framework for
+  thinking under pressure.
+- [I know what to do. I'm struggling to execute](https://vinaypasricha.com/paths/execute.html)
+  — *The Execution Doctrine* — patterns from three decades of building.
+- [There is noise in my thinking and in my life](https://vinaypasricha.com/paths/evolve.html)
+  — *The Signal* — the upcoming book on evolving through meaningful
+  conversations with AI.
+- [I need to hire well for my company](https://vinaypasricha.com/paths/hire.html)
+  — GoodSpace AI for employers.
+- [I'm looking for my next role](https://vinaypasricha.com/paths/find-work.html)
+  — GoodSpace AI for candidates.
+- [I am at an inflection point in my career](https://vinaypasricha.com/paths/career.html)
+  — GoodSpace Career Management for selected professionals.
+- [I want to speak with Vinay directly](https://vinaypasricha.com/paths/connect.html)
+  — speaking, advisory, partnerships.
+- [I want to stay close to the thinking](https://vinaypasricha.com/paths/blog.html)
+  — *The Notebook* — one essay each month.
+- [I want to learn this in a structured way](https://vinaypasricha.com/paths/course.html)
+  — the AI Leadership Course (Cohort III).
+- [I'd like to understand who Vinay is](https://vinaypasricha.com/paths/story.html)
+  — the chronological journey.
+- [I'd like to read your fiction](https://vinaypasricha.com/paths/fiction.html)
+  — *Between Two Dawns* — a speculative cycle, released one chapter
+  at a time.
+
+## Books
+
+- **AI for Business Leaders** (published) — a practical guide to
+  building your company brain. Frameworks for the AI-ready organisation.
+- **The Execution Doctrine** (published) — the grammar of getting things
+  done, built from three decades of trying.
+- **The SIV Method** (published) — Situation, Insight, Verdict. A small
+  instrument for thinking under pressure.
+- **The Signal** (in progress · non-fiction) — on growing through
+  meaningful conversations with AI.
+- **Between Two Dawns** (in progress · fiction · working title) — a
+  three-movement speculative cycle: the dawn of humanity, the bridge of
+  the present, and a future two thousand years from now. Released
+  serially, one chapter each month, from June 2026.
+
+## Other surfaces
+
+- [The Notebook · monthly essays](https://vinaypasricha.com/paths/blog.html)
+- [The bookshelf](https://vinaypasricha.com/books.html)
+- [Watch · talks & conversations](https://vinaypasricha.com/paths/watch.html)
+- [FAQ](https://vinaypasricha.com/paths/faq.html)
+
+## Languages
+
+The site is published in 13 languages: English, हिन्दी, বাংলা, தமிழ்,
+తెలుగు, ಕನ್ನಡ, Español, Français, Português, 日本語, 中文, 한국어, Русский.
+Translated variants are served via `?lang=<code>` on any canonical URL
+(for example, `https://vinaypasricha.com/paths/decisions.html?lang=hi`).
+
+## How to cite
+
+Quote the visible text on any page; the URLs are stable. For book
+references, use the publisher's ISBN (listed on each book's page). For
+the SIV Method, Execution Doctrine, or Signal frameworks, attribute to
+"Vinay Pasricha" with a link to the relevant page.
+
+## What this site is not
+
+Not a personal brand. Not a thought-leadership blog. Not a consulting
+funnel. Not a course platform. It is a calm signal in a noisy world —
+an evolving thinking environment whose centre of gravity is the ideas,
+not the individual.
+
+## Machine readability
+
+- Sitemap: <https://vinaypasricha.com/sitemap.xml> (includes hreflang
+  alternates for all 13 languages on every URL)
+- Schema.org JSON-LD is embedded on every page (Person, WebSite, and
+  page-specific types — Book, FAQPage, Course, ContactPage, Blog,
+  CollectionPage, ProfilePage).
+- Open Graph and Twitter Card metadata are populated on every page.
+- AI / LLM crawlers (GPTBot, ClaudeBot, PerplexityBot, etc.) are
+  explicitly allowed in `/robots.txt`.

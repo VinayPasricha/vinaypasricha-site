@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIROS·1 — Execution Runtime</title>
+  <meta name="description" content="KAIROS·1 is a persistent capacity expansion runtime. Adjacent to Vinay Pasricha's Execution Doctrine — an observatory for the pathways through which reality is built.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="runtime.css">
+</head>
+
+<body>
+
+<main class="kairos" data-screen-label="01 KAIROS·1 Threshold">
+
+  <!-- =====================================================
+       The reticle — slow-rotating observatory glyph
+       sitting behind the threshold text.
+       ===================================================== -->
+  <div class="k-reticle" aria-hidden="true">
+    <svg viewBox="-100 -100 200 200">
+      <defs>
+        <radialGradient id="hot" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="rgba(217,148,102,0.18)"></stop>
+          <stop offset="60%" stop-color="rgba(217,148,102,0.04)"></stop>
+          <stop offset="100%" stop-color="rgba(217,148,102,0)"></stop>
+        </radialGradient>
+      </defs>
+
+      <!-- soft hot center -->
+      <circle cx="0" cy="0" r="22" fill="url(#hot)"></circle>
+
+      <!-- outer ring with tick marks -->
+      <g class="ring">
+        <circle cx="0" cy="0" r="88" fill="none" stroke="rgba(180,180,200,0.10)" stroke-width="0.4"></circle>
+        <!-- 24 ticks -->
+        <g stroke="rgba(180,180,200,0.18)" stroke-width="0.4">
+          <line x1="0" y1="-88" x2="0" y2="-82"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(15)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(30)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(45)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(60)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(75)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(90)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(105)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(120)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(135)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(150)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(165)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(180)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(195)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(210)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(225)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(240)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(255)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(270)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(285)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(300)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(315)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(330)"></line>
+          <line x1="0" y1="-88" x2="0" y2="-82" transform="rotate(345)"></line>
+        </g>
+        <!-- one heavier mark — the kairos point -->
+        <line x1="0" y1="-92" x2="0" y2="-78" stroke="rgba(217,148,102,0.55)" stroke-width="0.6"></line>
+      </g>
+
+      <!-- middle ring -->
+      <g class="ring-inner">
+        <circle cx="0" cy="0" r="56" fill="none" stroke="rgba(180,180,200,0.12)" stroke-width="0.4" stroke-dasharray="0.6 3"></circle>
+        <circle cx="0" cy="0" r="56" fill="none" stroke="rgba(217,148,102,0.18)" stroke-width="0.3" stroke-dasharray="20 88"></circle>
+      </g>
+
+      <!-- crosshair, static -->
+      <g stroke="rgba(180,180,200,0.10)" stroke-width="0.3">
+        <line x1="-88" y1="0" x2="-30" y2="0"></line>
+        <line x1="30"  y1="0" x2="88"  y2="0"></line>
+        <line x1="0" y1="-88" x2="0" y2="-30"></line>
+        <line x1="0" y1="30"  x2="0" y2="88"></line>
+      </g>
+
+      <!-- the point -->
+      <circle cx="0" cy="0" r="1.2" fill="rgba(217,148,102,0.85)"></circle>
+    </svg>
+  </div>
+
+  <!-- =====================================================
+       Top — the codename + house + telemetry
+       ===================================================== -->
+  <header class="k-top">
+    <div class="k-mark">
+      <em>KAIROS·1</em>
+    </div>
+    <div class="k-house">
+      <a href="../index.html">Vinay Pasricha</a>
+      &nbsp;·&nbsp; an execution runtime, adjacent to <a href="../books.html">the books</a>
+    </div>
+    <div class="k-tele">
+      <span class="pulse"></span>v0.5 · 3 of 9 chambers open
+    </div>
+  </header>
+
+  <!-- =====================================================
+       Center — the threshold itself
+       ===================================================== -->
+  <section class="k-center">
+
+    <div class="k-eyebrow">An <em>observatory</em>, not a tool</div>
+
+    <p class="k-line l1">
+      Before reality is built,
+    </p>
+    <p class="k-line l2">
+      the <em>pathway</em> must be visible.
+    </p>
+    <p class="k-line l3">
+      KAIROS·1 is a runtime for revealing the structure
+      through which intention becomes output — and for
+      strengthening it across years.
+    </p>
+
+    <div class="k-rule" aria-hidden="true"></div>
+
+    <!-- The chamber grid — full doctrine topology, openness honest -->
+    <div class="k-chambers" role="list" aria-label="Execution chambers">
+
+      <a class="k-chamber is-open" href="sequence/index.html" role="listitem">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 01 · Open</div>
+        <div class="k-chamber-name">The <em>Sequence</em> Chamber</div>
+        <div class="k-chamber-purpose">Transform vague intention into observable execution topology.</div>
+      </a>
+
+      <div class="k-chamber is-open" role="listitem" tabindex="0" onclick="window.location.href='constraint/index.html'" onkeydown="if(event.key==='Enter')window.location.href='constraint/index.html'">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 02 · Open</div>
+        <div class="k-chamber-name">Constraint <em>Observatory</em></div>
+        <div class="k-chamber-purpose">Reveal what governs the pathway — accurate bottleneck diagnosis.</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 03</div>
+        <div class="k-chamber-name">Output <em>Reality</em></div>
+        <div class="k-chamber-purpose">Preserve contact between intended and actual output.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 04</div>
+        <div class="k-chamber-name">Failure &amp; <em>Recovery</em></div>
+        <div class="k-chamber-purpose">Map collapse patterns. Train anti-fragile recovery.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 05</div>
+        <div class="k-chamber-name">Human <em>Constraint</em></div>
+        <div class="k-chamber-purpose">Discipline, capability, role, incentive, accountability.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+      <div class="k-chamber is-open" role="listitem" tabindex="0" onclick="window.location.href='structural/index.html'" onkeydown="if(event.key==='Enter')window.location.href='structural/index.html'">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 06 · Open</div>
+        <div class="k-chamber-name">Structural <em>Constraint</em></div>
+        <div class="k-chamber-purpose">Systems, process, tooling, decision architecture.</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 07</div>
+        <div class="k-chamber-name">Capacity <em>Expansion</em></div>
+        <div class="k-chamber-purpose">Measure true expansion versus false strain.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 08</div>
+        <div class="k-chamber-name">Multi-Scale <em>Systems</em></div>
+        <div class="k-chamber-purpose">Individual, team, organization, mission coherence.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+      <div class="k-chamber is-pending" role="listitem">
+        <div class="k-chamber-num">Chamber 09</div>
+        <div class="k-chamber-name">Character of the <em>Executor</em></div>
+        <div class="k-chamber-purpose">Honesty, patience, focus, sequence discipline.</div>
+        <div class="k-pending-mark">pending</div>
+      </div>
+
+    </div>
+
+    <a class="k-enter" href="sequence/index.html">
+      <span>Enter Chamber 01</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <p class="k-instruction">
+      The first chamber takes roughly twenty minutes to traverse.
+      No account, no email. The runtime remembers what you build.
+    </p>
+
+  </section>
+
+  <!-- =====================================================
+       Foot — the colophon strip
+       ===================================================== -->
+  <footer class="k-foot">
+
+    <div class="k-coauthor">
+      An execution runtime built from
+      <em>Vinay's Execution Doctrine</em>.
+      The runtime is the doctrine becoming operational.
+    </div>
+
+    <div class="k-center-mark">
+      KAIROS·1 · v0.1 · sibling of AEON1
+    </div>
+
+    <nav class="k-nav">
+      <a href="sequence/index.html">Chamber 01</a>
+      <a href="constraint/index.html">Chamber 02</a>
+      <a href="structural/index.html">Chamber 06</a>
+      <a href="../books.html">The books</a>
+      <a href="../signal/index.html">The Signal</a>
+      <a href="../index.html">Index</a>
+    </nav>
+
+  </footer>
+
+</main>
+
+<script>
+  // Quiet continuity — if the reader has prior runtime state,
+  // surface a single restrained line.
+  (function () {
+    let state = null;
+    try { state = JSON.parse(localStorage.getItem('kairos.runtime.v1') || 'null'); } catch (e) {}
+    if (!state) return;
+
+    // Geological depth — atmospheric, no counts. Per Refinement 04:
+    // inhabitation is *sensed*, not quantified. Chambers carrying
+    // prior cycles receive a barely-visible breathing dust speck
+    // in their corner. The reader feels "this has history" without
+    // ever being told how many.
+    const hist = (state.history || []);
+    const seqInhabited = hist.some(h => h.kind === 'sequence' || (!h.kind && h.data && h.data.actions));
+    const cnInhabited  = hist.some(h => h.kind === 'constraint');
+    // Also count the current in-progress session as inhabitation,
+    // so a reader returning mid-cycle feels the chamber breathe.
+    const seqInProgress = !!(state.current_sequence && (state.current_sequence.outcome || (state.current_sequence.actions || []).length > 0));
+    const cnInProgress  = !!(state.current_constraint && ((state.current_constraint.observations || []).length > 0 || state.current_constraint.governing_id));
+
+    const chambers = document.querySelectorAll('.k-chamber');
+    chambers.forEach((el) => {
+      const text = (el.querySelector('.k-chamber-num') || {}).textContent || '';
+      if (text.indexOf('01') !== -1 && (seqInhabited || seqInProgress)) el.setAttribute('data-inhabited', 'true');
+      if (text.indexOf('02') !== -1 && (cnInhabited  || cnInProgress))  el.setAttribute('data-inhabited', 'true');
+    });
+
+    // The existing return-state line on the entry button
+    if (!state.current_sequence) return;
+    const seq = state.current_sequence;
+    if (!seq.outcome) return;
+
+    const enterBtn = document.querySelector('.k-enter span:first-child');
+    const instr    = document.querySelector('.k-instruction');
+    const tele     = document.querySelector('.k-tele');
+    if (enterBtn) enterBtn.textContent = 'Return to Chamber 01';
+    if (instr) {
+      const actions = (seq.actions || []).length;
+      instr.innerHTML =
+        'You have a sequence in progress &mdash; ' +
+        '<em>' + actions + ' action' + (actions === 1 ? '' : 's') +
+        ' mapped</em>. The chamber resumes where you left it.';
+    }
+    if (tele) {
+      tele.innerHTML = '<span class="pulse"></span>v0.4 · sequence in progress';
+    }
+  })();
+</script>
+
+</body>
+</html>

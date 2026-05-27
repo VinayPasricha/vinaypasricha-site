@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Story · Vinay Pasricha</title>
+  <meta name="description" content="The brief intellectual biography of Vinay Pasricha — founder, author, and explorer of emergence. Where the work comes from. Where it is going.">
+  <meta property="og:title" content="The Story — Vinay Pasricha">
+  <meta property="og:description" content="Where the work comes from. Where it is going.">
+  <meta property="og:type" content="profile">
+  <link rel="canonical" href="https://vinaypasricha.com/paths/story.html">
+  <meta name="concepts" content="biography, intellectual-journey, founder-story, explorer-of-emergence">
+  <meta name="continuations" content="decisions, connect, watch">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    .story-portrait { padding: 0 var(--gutter) 64px; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 64px; align-items: start; }
+    .story-portrait .sp-photo { width: 280px; aspect-ratio: 4/5; background: var(--paper-2); border: 1px solid var(--rule); overflow: hidden; }
+    .story-portrait .sp-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: grayscale(0.85) contrast(1.04) sepia(0.05); }
+    .story-portrait .sp-text { padding-top: 12px; }
+    .story-portrait .sp-text .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; }
+    .story-portrait .sp-text h2 { font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.1; color: var(--ink); margin-bottom: 18px; letter-spacing: -0.01em; }
+    .story-portrait .sp-text h2 em { font-style: italic; }
+    .story-portrait .sp-text p { font-family: var(--serif); font-size: 18px; line-height: 1.55; color: var(--ink-2); margin-bottom: 16px; }
+    .story-portrait .sp-text p em { font-style: italic; color: var(--ink); }
+
+    .chapters-section { padding: 64px var(--gutter) 96px; max-width: 1080px; margin: 0 auto; }
+    .chapters-head { padding-bottom: 24px; margin-bottom: 36px; border-bottom: 1px solid var(--rule); }
+    .chapters-head .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; }
+    .chapters-head h2 { font-family: var(--serif); font-weight: 400; font-size: 38px; letter-spacing: -0.015em; }
+    .chapters-head h2 em { font-style: italic; color: var(--accent); }
+    .chapter { display: grid; grid-template-columns: 120px 1fr; gap: 32px; padding: 24px 0; border-bottom: 1px solid var(--rule-soft); }
+    .chapter:last-child { border-bottom: 0; }
+    .chapter .c-years { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); padding-top: 8px; }
+    .chapter h3 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.2; letter-spacing: -0.012em; margin-bottom: 8px; }
+    .chapter h3 em { font-style: italic; }
+    .chapter p { font-family: var(--serif); font-size: 17px; line-height: 1.55; color: var(--ink-2); margin-bottom: 10px; }
+    .chapter p em { font-style: italic; color: var(--ink); }
+    .chapter p:last-child { margin-bottom: 0; }
+
+    .now-doing { padding: 96px var(--gutter); background: var(--paper-2); border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+    .now-doing-inner { max-width: 1080px; margin: 0 auto; }
+    .now-doing .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
+    .now-doing h2 { font-family: var(--serif); font-weight: 400; font-size: 42px; line-height: 1.05; margin-bottom: 36px; letter-spacing: -0.015em; }
+    .now-doing h2 em { font-style: italic; color: var(--accent); }
+    .now-list { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 56px; }
+    .now-item h4 { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink); margin-bottom: 8px; font-weight: 400; }
+    .now-item p { font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+
+    @media (max-width: 980px) {
+      .story-portrait { grid-template-columns: 1fr; gap: 28px; padding: 0 28px 48px; }
+      .story-portrait .sp-photo { width: 200px; }
+      .story-portrait .sp-text h2 { font-size: 26px; }
+      .chapters-section { padding: 48px 28px; }
+      .chapters-head h2 { font-size: 28px; }
+      .chapter { grid-template-columns: 1fr; gap: 6px; }
+      .chapter h3 { font-size: 21px; }
+      .now-doing { padding: 56px 28px; }
+      .now-doing h2 { font-size: 28px; }
+      .now-list { grid-template-columns: 1fr; gap: 20px; }
+    }
+  </style>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/story.html">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinay Pasricha — vinaypasricha.com">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vinaypasricha">
+  <meta name="twitter:creator" content="@vinaypasricha">
+  <meta name="twitter:title" content="The Story — Vinay Pasricha">
+  <meta name="twitter:description" content="Where the work comes from. Where it is going.">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/story.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/story.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/story.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/story.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/story.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/story.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/story.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/story.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/story.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/story.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/story.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/story.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/story.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/story.html?lang=ru">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vinaypasricha.com/#website","url":"https://vinaypasricha.com","name":"Vinay Pasricha","description":"An AI-native intellectual operating system — books, frameworks, and conversations for navigating a rapidly changing world.","publisher":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"potentialAction":{"@type":"SearchAction","target":"https://vinaypasricha.com/?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","@id":"https://vinaypasricha.com/#vinay","name":"Vinay Pasricha","url":"https://vinaypasricha.com","image":"https://vinaypasricha.com/assets/images/og-default.jpg","jobTitle":"Founder, author, explorer of emergence","description":"Founder of GoodSpace AI and WLC College India. Author of four books on AI, decision-making, execution, and signal.","alumniOf":"WLC College India","worksFor":{"@type":"Organization","name":"GoodSpace AI","url":"https://www.goodspace.ai"},"knowsAbout":["Artificial Intelligence","Decision Making","Leadership","Hiring","Execution","Strategy","Speculative Fiction"],"nationality":"Indian","sameAs":["https://www.linkedin.com/in/vinaypasricha","https://www.goodspace.ai"]},{"@type":"ProfilePage","@id":"https://vinaypasricha.com/paths/story.html#profile","url":"https://vinaypasricha.com/paths/story.html","name":"The Story — Vinay Pasricha","description":"Where the work comes from. Where it is going.","mainEntity":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"]}]}</script>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span class="num">Path 11</span>
+    <span class="sep">/</span>
+    <span>The Story</span>
+  </div>
+  <h1 class="brutal">
+    Most of this work has the same <em>root.</em><br>
+    <em class="accent-word">An old conviction, made younger by AI.</em>
+  </h1>
+  <p class="subtitle">
+    For two decades, the same question has been quietly running underneath every business, every team, every book — <em>how do we think more clearly about systems we cannot fully see?</em>
+  </p>
+  <p class="canonical">
+    What follows is a brief, deliberately compact biography. Not a CV. Not a list of titles. The arc that explains why the books exist, why <em>GoodSpace AI</em> exists, and why all of it points at the same horizon.
+  </p>
+</section>
+
+<section class="story-portrait">
+  <div class="sp-photo">
+    <img src="../assets/images/vinay-avatar.png" alt="Vinay Pasricha portrait, Delhi 2026">
+  </div>
+  <div class="sp-text">
+    <div class="label">— Vinay Pasricha</div>
+    <h2>Founder, author, <em>explorer of emergence.</em></h2>
+    <p>
+      Vinay is the founder of <em>GoodSpace AI</em>, an AI-native talent platform built around the doctrine of frequency and resonance. He is the author of five books on AI, decisions, execution, hiring, and hiring — with a fifth, <em>The Signal,</em> in progress.
+    </p>
+    <p>
+      He writes in English from Delhi, India. Builds across thirteen languages. Works most closely with founders, executives, and operators inside companies that are trying to navigate a faster, denser, less-mappable world without losing the plot.
+    </p>
+    <p>
+      <em>This site is his — but it is not really about him.</em> It is about the work. The hope is that you find something here you can use, and come back, and use it again.
+    </p>
+  </div>
+</section>
+
+<section class="chapters-section">
+  <div class="chapters-head">
+    <div class="label">— The arc</div>
+    <h2>Six brief <em>chapters.</em></h2>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">Early 2000s</div>
+    <div>
+      <h3>Beginnings — <em>questions about people.</em></h3>
+      <p>An early career inside hiring and talent — the deeply human problem of how organisations find, evaluate, and place people. What looked like a recruitment job was really a long apprenticeship in the structure of work itself.</p>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">2010s</div>
+    <div>
+      <h3>Operating — <em>founder, builder, manager.</em></h3>
+      <p>A decade of building and running companies. Hiring, scaling, restructuring, deciding under pressure. The lived experience that the later books emerge from — including the failures that make the doctrine credible.</p>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">2020 – 2022</div>
+    <div>
+      <h3>GoodSpace — <em>the AI-native platform.</em></h3>
+      <p>Founded <em>GoodSpace AI</em> with the conviction that the next generation of hiring would not be a faster version of the old one — it would be a structurally different practice, built on intelligent discovery rather than resume-based negotiation.</p>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">2024 – 2025</div>
+    <div>
+      <h3>Writing begins — <em>the first books.</em></h3>
+      <p><em>AI for Business Leaders</em> arrives first. Then <em>The SIV Method</em> — the structured way of examining reality that becomes the spine of everything that follows. Both written compact, both written to be re-read.</p>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">2026</div>
+    <div>
+      <h3>The library widens — <em>Execution, Frequency.</em></h3>
+      <p><em>The Execution Doctrine</em> and <em>Organizational Frequency</em> publish within months of each other — two more cognitive instruments for operators trying to act well in a rapidly changing world. The cohort programs begin in parallel.</p>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="c-years">Late 2026 →</div>
+    <div>
+      <h3>The Signal — and <em>the longer horizon.</em></h3>
+      <p>The fifth book — <em>The Signal</em> — is the most personal and the slowest. It opens the longer horizon of the project: an AI-native intellectual operating system for navigating the next two decades. The library will keep growing, deliberately, one volume at a time.</p>
+    </div>
+  </div>
+</section>
+
+<section class="now-doing">
+  <div class="now-doing-inner">
+    <div class="label">— What is current</div>
+    <h2>What I'm <em>currently doing.</em></h2>
+    <div class="now-list">
+      <div class="now-item">
+        <h4>Writing <em>The Signal.</em></h4>
+        <p>The fifth book — slowly, recursively. Due late 2026. Subscribe on the book's page to be notified when it lands.</p>
+      </div>
+      <div class="now-item">
+        <h4>Building <em>GoodSpace AI.</em></h4>
+        <p>Growing the team, deepening the product, taking the doctrine into real markets. Most of the practical work that follows from <em>Organizational Frequency</em> happens here.</p>
+      </div>
+      <div class="now-item">
+        <h4>Running <em>Cohort III.</em></h4>
+        <p>The third AI Leadership cohort is underway. A small group of senior operators thinking through AI strategy in their own businesses, week by week.</p>
+      </div>
+      <div class="now-item">
+        <h4>Recording <em>weekly.</em></h4>
+        <p>New videos most weeks — long-form, shorts, reflections — across YouTube, Instagram, LinkedIn. Different cadences for different audiences.</p>
+      </div>
+      <div class="now-item">
+        <h4>A monthly <em>essay.</em></h4>
+        <p>One essay on the first weekend of each month. Library, not feed. Subscribe on the Notebook page.</p>
+      </div>
+      <div class="now-item">
+        <h4>Conversations with <em>operators.</em></h4>
+        <p>A small advisory practice. Speaking engagements, two or three a quarter. Direct lines to write are on the Connect page.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="continuations">
+  <div class="continuations-inner">
+    <div class="label">— Continue with</div>
+    <div class="continuations-grid">
+      <a class="cont-card" href="connect.html">
+        <div class="cont-num">viii.</div>
+        <div class="cont-title">Write <em>directly</em></div>
+        <div class="cont-desc">If you've read this far, you probably have something to say or ask. The Connect page has all the direct lines.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+      <a class="cont-card" href="decisions.html">
+        <div class="cont-num">ii.</div>
+        <div class="cont-title">Try the <em>SIV Method</em></div>
+        <div class="cont-desc">If you'd rather try the work than read about it, the SIV page has an interactive Socratic session you can run on a real decision.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+</body>
+</html>

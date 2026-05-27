@@ -1,0 +1,60 @@
+name: Translate
+
+# Auto-translate every language pack against the current site.
+#
+# Runs:
+#   - on push to main, but only when content (HTML) changes
+#   - on a weekly schedule (catches any drift)
+#   - on manual dispatch
+#
+# Requires the secret ANTHROPIC_API_KEY to be set in
+# Repository → Settings → Secrets and variables → Actions.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'paths/**.html'
+      - 'signal/**.html'
+      - 'scripts/translate-pack.mjs'
+      - 'package.json'
+  schedule:
+    - cron: '0 4 * * 0'   # weekly, Sunday 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    # Skip if the head commit was made BY this workflow (avoids loops)
+    if: "!contains(github.event.head_commit.message, 'Auto-translate')"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run translation
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/translate-pack.mjs
+
+      - name: Commit updated packs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain assets/data/i18n/)" ]; then
+            git add assets/data/i18n/*.json
+            git commit -m "Auto-translate: refresh language packs"
+            git push
+          else
+            echo "No translation changes — packs already up to date."
+          fi

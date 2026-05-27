@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Monthly Notebook · Vinay Pasricha</title>
+  <meta name="description" content="The Notebook — one carefully-written essay each month, on AI, decision-making, hiring, execution, and the signal inside the noise. Built as a quiet library you can return to, not a feed to chase. Read all entries by Vinay Pasricha.">
+  <meta property="og:title" content="The Monthly Notebook — Vinay Pasricha">
+  <meta property="og:description" content="One quiet essay each month. A library, not a feed.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://vinaypasricha.com/paths/blog.html">
+  <meta name="concepts" content="essays, monthly-writing, notebook, slow-blog">
+  <meta name="continuations" content="decisions, evolve, watch">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    .essays-section { padding: 64px var(--gutter) 96px; max-width: 1080px; margin: 0 auto; }
+    .essays-head { padding-bottom: 24px; margin-bottom: 40px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; }
+    .essays-head .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
+    .essays-head h2 { font-family: var(--serif); font-weight: 400; font-size: 36px; letter-spacing: -0.012em; }
+    .essays-head h2 em { font-style: italic; color: var(--accent); }
+    .essay-list { display: flex; flex-direction: column; }
+    .essay-item { display: grid; grid-template-columns: 120px 1fr auto; gap: 28px; padding: 28px 8px; border-bottom: 1px solid var(--rule-soft); text-decoration: none; color: inherit; transition: padding-left .2s, background .15s; align-items: start; }
+    .essay-item:hover { padding-left: 28px; background: var(--paper-3); }
+    .essay-item:hover .ei-title em { color: var(--accent); }
+    .essay-item:hover .ei-arrow { transform: translateX(8px); color: var(--accent); }
+    .ei-date { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); padding-top: 6px; }
+    .ei-title { font-family: var(--serif); font-size: 24px; line-height: 1.25; letter-spacing: -0.012em; color: var(--ink); margin-bottom: 6px; }
+    .ei-title em { font-style: italic; transition: color .15s; }
+    .ei-dek { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.5; color: var(--ink-3); max-width: 600px; }
+    .ei-tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .ei-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); background: var(--paper-2); padding: 3px 8px; border-radius: 2px; }
+    .ei-arrow { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink-3); padding-top: 4px; transition: transform .2s, color .15s; }
+    .essay-pending { padding: 48px; text-align: center; background: var(--paper-3); border: 1px dashed var(--rule); border-radius: 4px; }
+    .essay-pending p { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink-3); margin-bottom: 6px; }
+    .essay-pending p em { font-style: italic; color: var(--accent); }
+    /* Subscribe */
+    .subscribe-box { padding: 96px var(--gutter); background: var(--ink); color: var(--paper); text-align: center; }
+    .subscribe-inner-box { max-width: 640px; margin: 0 auto; }
+    .subscribe-box .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 24px; }
+    .subscribe-box h2 { font-family: var(--serif); font-weight: 400; font-size: 42px; letter-spacing: -0.015em; line-height: 1.05; color: var(--paper); margin-bottom: 14px; }
+    .subscribe-box h2 em { font-style: italic; color: var(--accent-2); }
+    .subscribe-box p { font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1.55; color: #c8c1a8; margin-bottom: 32px; }
+    .sub-form { display: flex; gap: 0; max-width: 460px; margin: 0 auto; }
+    .sub-form input { flex: 1; padding: 16px 20px; font-family: var(--sans); font-size: 15px; background: rgba(246,241,228,0.06); border: 1px solid rgba(246,241,228,0.2); border-right: 0; color: var(--paper); outline: none; }
+    .sub-form input::placeholder { color: rgba(246,241,228,0.4); }
+    .sub-form input:focus { border-color: var(--accent-2); background: rgba(246,241,228,0.1); }
+    .sub-form button { padding: 16px 22px; background: var(--paper); color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; border: 1px solid var(--paper); cursor: pointer; transition: background .15s, color .15s; }
+    .sub-form button:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+    .sub-confirm { display: none; padding: 18px; border: 1px solid var(--accent-2); color: var(--accent-2); font-family: var(--serif); font-style: italic; font-size: 15px; max-width: 460px; margin: 14px auto 0; }
+    .sub-confirm.show { display: block; }
+    .sub-note { margin-top: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #9a9482; }
+    @media (max-width: 980px) {
+      .essays-section { padding: 40px 28px 64px; }
+      .essay-item { grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
+      .ei-arrow { display: none; }
+      .subscribe-box { padding: 56px 28px; }
+      .subscribe-box h2 { font-size: 30px; }
+    }
+  </style>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/blog.html">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinay Pasricha — vinaypasricha.com">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vinaypasricha">
+  <meta name="twitter:creator" content="@vinaypasricha">
+  <meta name="twitter:title" content="The Monthly Notebook — Vinay Pasricha">
+  <meta name="twitter:description" content="One quiet essay each month. A library, not a feed.">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/blog.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/blog.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/blog.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/blog.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/blog.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/blog.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/blog.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/blog.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/blog.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/blog.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/blog.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/blog.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/blog.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/blog.html?lang=ru">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vinaypasricha.com/#website","url":"https://vinaypasricha.com","name":"Vinay Pasricha","description":"An AI-native intellectual operating system — books, frameworks, and conversations for navigating a rapidly changing world.","publisher":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"potentialAction":{"@type":"SearchAction","target":"https://vinaypasricha.com/?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","@id":"https://vinaypasricha.com/#vinay","name":"Vinay Pasricha","url":"https://vinaypasricha.com","image":"https://vinaypasricha.com/assets/images/og-default.jpg","jobTitle":"Founder, author, explorer of emergence","description":"Founder of GoodSpace AI and WLC College India. Author of four books on AI, decision-making, execution, and signal.","alumniOf":"WLC College India","worksFor":{"@type":"Organization","name":"GoodSpace AI","url":"https://www.goodspace.ai"},"knowsAbout":["Artificial Intelligence","Decision Making","Leadership","Hiring","Execution","Strategy","Speculative Fiction"],"nationality":"Indian","sameAs":["https://www.linkedin.com/in/vinaypasricha","https://www.goodspace.ai"]},{"@type":"Blog","@id":"https://vinaypasricha.com/paths/blog.html#blog","url":"https://vinaypasricha.com/paths/blog.html","name":"The Monthly Notebook — Vinay Pasricha","description":"One quiet essay each month. A library, not a feed.","author":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"]}]}</script>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span class="num">Path 09</span>
+    <span class="sep">/</span>
+    <span>The Notebook</span>
+  </div>
+  <h1 class="brutal">
+    A library, <em class="accent-word">not a feed.</em>
+  </h1>
+  <p class="subtitle">
+    One essay a month. Sometimes shorter, occasionally longer. Written to be read more than once. Never written to be timely.
+  </p>
+  <p class="canonical">
+    <strong>The Monthly Notebook</strong> is the quiet companion to the books. Where the books take a year, an essay takes a week. The terrain is the same — AI, decisions, hiring, execution, the signal — but the cadence is faster and the register more provisional. <em>Subscribe to receive the next one when it lands.</em>
+  </p>
+</section>
+
+<section class="essays-section">
+  <div class="essays-head">
+    <div>
+      <div class="label">— Recent essays</div>
+      <h2>What's <em>on the page</em></h2>
+    </div>
+    <div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);">New essay on the first weekend of each month.</div>
+  </div>
+
+  <div class="essay-list" id="essay-list">
+    <div class="essay-pending">
+      <p>Loading the Notebook…</p>
+    </div>
+  </div>
+</section>
+
+<section class="subscribe-box">
+  <div class="subscribe-inner-box">
+    <div class="label">— Subscribe</div>
+    <h2>One quiet essay <em>each month.</em></h2>
+    <p>No daily emails. No funnels. No "you'll never guess what happens next." Just one essay, on the first weekend, when it's ready.</p>
+    <form class="sub-form" id="blog-subscribe" data-no-translate>
+      <input type="email" id="blog-email" placeholder="your@email.com" aria-label="Email" required>
+      <button type="submit">Subscribe <span style="font-family:var(--serif);font-style:italic;font-size:14px;margin-left:6px;letter-spacing:0;text-transform:none">→</span></button>
+    </form>
+    <div class="sub-confirm" id="blog-confirm">
+      <em>Saved on your device.</em> When the backend mailing list is live, your email will be added then. Nothing has been sent yet.
+    </div>
+    <div class="sub-note">One email a month · unsubscribe anytime</div>
+  </div>
+</section>
+
+<section class="continuations">
+  <div class="continuations-inner">
+    <div class="label">— Continue with</div>
+    <div class="continuations-grid">
+      <a class="cont-card" href="evolve.html">
+        <div class="cont-num">iv.</div>
+        <div class="cont-title">The <em>Signal</em> &middot; upcoming</div>
+        <div class="cont-desc">If you like the slow register, the book closest in spirit to it is The Signal — currently being drafted.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+      <a class="cont-card" href="watch.html">
+        <div class="cont-num">—</div>
+        <div class="cont-title">Watch <em>the work</em></div>
+        <div class="cont-desc">The video channels are a faster cadence than the essays. Short reflections, talks, conversations.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/notebook-md.js"></script>
+<script>
+  // Render essays from notebook.json (Studio drafts take precedence)
+  (async function() {
+    const host = document.getElementById('essay-list');
+    if (!host) return;
+
+    async function loadEssays() {
+      try {
+        const draft = localStorage.getItem('studio.notebook');
+        if (draft) {
+          const d = JSON.parse(draft);
+          if (Array.isArray(d.essays)) return d.essays;
+        }
+      } catch (e) {}
+      try {
+        const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+        if (res.ok) {
+          const d = await res.json();
+          return Array.isArray(d.essays) ? d.essays : [];
+        }
+      } catch (e) {}
+      return [];
+    }
+
+    function escapeHTML(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    const all = await loadEssays();
+    const published = all
+      .filter(e => e.status === 'published')
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+    if (published.length === 0) {
+      host.innerHTML = `
+        <div class="essay-pending">
+          <p>The first published essay <em>lands in June 2026.</em></p>
+          <p style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-3);margin-bottom:0">Subscribe below to be notified.</p>
+        </div>
+      `;
+      return;
+    }
+
+    host.innerHTML = published.map(e => {
+      const tags = (e.tags || []).map(t => `<span class="ei-tag">${escapeHTML(t)}</span>`).join('');
+      return `
+        <a class="essay-item" href="essay.html?slug=${encodeURIComponent(e.slug)}">
+          <span class="ei-date">${escapeHTML(e.monthLabel || e.date || '')}</span>
+          <div>
+            <div class="ei-title">${e.title || ''}</div>
+            ${e.dek ? `<div class="ei-dek">${e.dek}</div>` : ''}
+            ${tags ? `<div class="ei-tags">${tags}</div>` : ''}
+          </div>
+          <span class="ei-arrow">→</span>
+        </a>
+      `;
+    }).join('');
+  })();
+</script>
+<script>
+  (function() {
+    const form = document.getElementById('blog-subscribe');
+    const input = document.getElementById('blog-email');
+    const ok = document.getElementById('blog-confirm');
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!email) return;
+      try {
+        const key = 'notebookSubscribers';
+        // Richer shape: {email, capturedAt, source}. Backwards-compatible
+        // reader in Studio handles both legacy string entries and new objects.
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        const normalised = existing.map(e => typeof e === 'string' ? { email: e, capturedAt: null, source: 'blog.html' } : e);
+        if (!normalised.find(e => e.email === email)) {
+          normalised.push({ email, capturedAt: Date.now(), source: 'blog.html' });
+        }
+        localStorage.setItem(key, JSON.stringify(normalised));
+      } catch (e) {}
+      input.value = '';
+      ok.classList.add('show');
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1478 @@
+/* =============================================================
+   THE SIGNAL — visual register
+   =============================================================
+   This is a *room within the same house* as vinaypasricha.com.
+   Same Newsreader serif. Same Inter sans. Same JetBrains Mono.
+   But the room is dark: the warm ivory is inverted to a deep
+   void, and a single warm ember stands in for the cinnabar.
+
+   The atmospheric idea is signal-emerging-from-noise. So:
+   - generous whitespace
+   - very slow animation curves
+   - text that arrives, doesn't snap
+   - no hover-bounce; no chrome theatrics
+   - mono is rare; serif is the voice
+   ============================================================= */
+
+:root {
+  /* The void — deep, slightly cool, never pure black */
+  --void:     #0a0a0c;
+  --void-2:   #121218;   /* hairline lift for surfaces */
+  --void-3:   #1a1a22;   /* hover/active lift */
+  --void-4:   #22222c;
+
+  /* The signal — warm ivory firelight, the ink of this room */
+  --signal:   #f0ebe0;
+  --signal-2: #c8c3b8;
+  --signal-3: #807a70;
+  --signal-4: #4a463f;
+
+  /* The ember — a single warm point of light, used sparingly */
+  --ember:    #d4a574;
+  --ember-2:  #b88454;
+  --ember-3:  #5a3e26;
+
+  --rule:      #1f1f28;
+  --rule-soft: #15151c;
+
+  --serif: "Newsreader", "Noto Serif", Georgia, serif;
+  --sans:  "Inter", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono:  "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Slow easings — the room moves at the speed of breath. */
+  --breath:    4000ms cubic-bezier(.4,0,.2,1);
+  --slow:      1400ms cubic-bezier(.4,0,.2,1);
+  --medium:    700ms cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html, body {
+  background: var(--void);
+  color: var(--signal);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  /* Layered background:
+     1. very faint warm glow from above (firelight feel)
+     2. an extremely sparse, faint starfield (radial-gradient dots)
+     3. the void base
+     The starfield is positioned at the body level so it doesn't repeat
+     awkwardly across child elements. */
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, rgba(212,165,116,0.32) 0%, transparent 100%),
+    radial-gradient(1px 1px at 78% 22%, rgba(212,165,116,0.22) 0%, transparent 100%),
+    radial-gradient(1.4px 1.4px at 33% 72%, rgba(212,165,116,0.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 78%, rgba(212,165,116,0.16) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 58% 12%, rgba(212,165,116,0.20) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 48%, rgba(212,165,116,0.14) 0%, transparent 100%),
+    radial-gradient(1px 1px at 68% 88%, rgba(212,165,116,0.12) 0%, transparent 100%),
+    radial-gradient(ellipse at center top, rgba(212,165,116,0.05) 0%, transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+body { overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--ember-3); color: var(--signal); }
+
+/* ---------- Type primitives ---------- */
+.s-mono {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--signal-3);
+  font-weight: 400;
+}
+.s-italic { font-style: italic; }
+.s-ember  { color: var(--ember); }
+.s-quiet  { color: var(--signal-3); }
+.s-very-quiet { color: var(--signal-4); }
+
+/* =============================================================
+   The Threshold — the first page
+   ============================================================= */
+.threshold {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 32px 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* The single point of light, breathing slowly above the text. */
+.ember-point {
+  position: absolute;
+  left: 50%;
+  top: 16vh;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ember);
+  transform: translateX(-50%);
+  box-shadow:
+    0 0 8px rgba(212,165,116,0.9),
+    0 0 24px rgba(212,165,116,0.5),
+    0 0 64px rgba(212,165,116,0.22),
+    0 0 160px rgba(212,165,116,0.08);
+  animation: ember-breath 5500ms ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes ember-breath {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scale(1.18); }
+}
+
+/* Top bar — the very quiet identity strip */
+.t-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0;
+  animation: t-fade-in 2200ms 600ms ease-out forwards;
+}
+.t-top .t-mark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--signal-3);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.t-top .t-mark a:hover { color: var(--signal-2); }
+.t-top .t-meta {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+}
+.t-top .t-meta .live-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: var(--ember);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: 1px;
+  animation: ember-breath 5500ms ease-in-out infinite;
+}
+
+/* The center — where the threshold text lives */
+.t-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 64px;
+  position: relative;
+}
+
+.t-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 80px;
+  opacity: 0;
+  animation: t-fade-in 2400ms 1400ms ease-out forwards;
+}
+.t-eyebrow em {
+  color: var(--ember);
+  font-style: normal;
+  letter-spacing: 0.4em;
+}
+
+/* The Threshold lines have just slightly tighter leading than the
+   default body to feel cinematic. */
+.t-line {
+  font-family: var(--serif);
+  font-size: 44px;
+  line-height: 1.14;
+  color: var(--signal);
+  font-weight: 300;
+  letter-spacing: -0.008em;
+  max-width: 880px;
+  opacity: 0;
+}
+.t-line em {
+  font-style: italic;
+  color: var(--signal);
+}
+.t-line.l1 { animation: t-rise 2400ms 2200ms ease-out forwards; }
+.t-line.l2 { margin-top: 28px; animation: t-rise 2400ms 3400ms ease-out forwards; }
+.t-line.l3 {
+  margin-top: 36px;
+  font-style: italic;
+  font-size: 38px;
+  color: var(--signal-2);
+  animation: t-rise 2400ms 4800ms ease-out forwards;
+}
+
+.t-rule {
+  width: 64px;
+  height: 1px;
+  background: var(--signal-4);
+  margin: 72px 0 56px;
+  opacity: 0;
+  animation: t-fade-in 1800ms 6800ms ease-out forwards;
+}
+
+.t-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 36px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal);
+  background: transparent;
+  border: 1px solid var(--signal-4);
+  cursor: pointer;
+  transition: all var(--medium);
+  opacity: 0;
+  animation: t-rise 2000ms 7400ms ease-out forwards;
+  position: relative;
+  text-decoration: none;
+  outline: none;
+}
+.t-enter:hover,
+.t-enter:focus-visible {
+  border-color: var(--ember);
+  color: var(--ember);
+  background: rgba(212,165,116,0.04);
+  letter-spacing: 0.42em;
+  box-shadow: 0 0 0 1px rgba(212,165,116,0.18);
+}
+.t-enter .arrow {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 0;
+  transition: transform var(--medium);
+}
+.t-enter:hover .arrow { transform: translateX(6px); }
+
+/* The keyboard hint near the Cross-the-Threshold button. Quiet,
+   appears only after the button does. */
+.t-kbd-hint {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  opacity: 0;
+  animation: t-fade-in 1800ms 8000ms ease-out forwards;
+}
+.t-kbd-hint kbd {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--signal-3);
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  padding: 2px 8px;
+  margin: 0 4px;
+  border-radius: 2px;
+}
+
+.t-instruction {
+  margin-top: 36px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--signal-4);
+  opacity: 0;
+  animation: t-fade-in 2000ms 8400ms ease-out forwards;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+/* Bottom — the quiet colophon strip */
+.t-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 32px;
+  opacity: 0;
+  animation: t-fade-in 2400ms 9200ms ease-out forwards;
+}
+.t-foot .t-coauthor {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--signal-3);
+  line-height: 1.7;
+  max-width: 320px;
+}
+.t-foot .t-coauthor em {
+  color: var(--signal-2);
+  font-style: normal;
+}
+.t-foot .t-coauthor a {
+  color: var(--signal-3);
+  border-bottom: 1px dotted var(--signal-4);
+  padding-bottom: 1px;
+  transition: color var(--medium);
+}
+.t-foot .t-coauthor a:hover { color: var(--ember); border-bottom-color: var(--ember); }
+
+.t-foot .t-center-mark {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  color: var(--signal-4);
+  text-transform: uppercase;
+}
+.t-foot .t-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 28px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--signal-3);
+}
+.t-foot .t-nav a {
+  color: var(--signal-3);
+  transition: color var(--medium);
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+}
+.t-foot .t-nav a:hover { color: var(--ember); border-bottom-color: var(--ember-3); }
+
+
+@keyframes t-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes t-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Ember dot fades in on a slow curve, separate from the text */
+.ember-point { animation: ember-appear 3200ms 200ms ease-out forwards, ember-breath 5500ms 3200ms ease-in-out infinite; }
+@keyframes ember-appear {
+  from { opacity: 0; transform: translateX(-50%) scale(0.4); }
+  to   { opacity: 0.85; transform: translateX(-50%) scale(1); }
+}
+
+
+/* =============================================================
+   The Session room — conversation surface
+   ============================================================= */
+.session {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 24px 48px 0;
+}
+
+.s-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+.s-top .s-mark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--signal-4);
+}
+.s-top .s-mark a:hover { color: var(--signal-2); }
+.s-top .s-session-id {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+}
+.s-top .s-session-id em {
+  color: var(--ember);
+  font-style: normal;
+}
+
+.s-stage {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 80px 0 200px;
+  position: relative;
+}
+
+.s-stage .s-stage-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  text-align: center;
+  margin-bottom: 12px;
+}
+.s-stage .s-stage-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  text-align: center;
+  color: var(--signal-2);
+  margin-bottom: 80px;
+  letter-spacing: 0.005em;
+}
+
+/* The exchanges — one above the next */
+.s-exchange {
+  margin-bottom: 64px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: t-rise 1600ms ease-out forwards;
+}
+
+.s-prompt {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.35;
+  color: var(--signal);
+  font-weight: 300;
+  letter-spacing: -0.005em;
+}
+.s-prompt em { font-style: italic; }
+
+.s-prompt .s-prompt-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+
+.s-answer {
+  margin-top: 32px;
+  padding-left: 28px;
+  border-left: 1px solid var(--signal-4);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--signal-2);
+  white-space: pre-wrap;
+}
+.s-answer .s-answer-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  font-style: normal;
+  margin-bottom: 10px;
+}
+
+.s-reflection {
+  margin-top: 32px;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--signal-2);
+  font-style: italic;
+}
+.s-reflection .s-reflection-mark {
+  color: var(--ember);
+  font-style: normal;
+  margin-right: 10px;
+}
+
+/* The input zone — fixed at the bottom of the stage column */
+.s-input-zone {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, var(--void) 30%);
+  padding: 56px 48px 32px;
+  z-index: 10;
+}
+.s-input-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.s-input-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.s-input-hint .s-pacing {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--signal-4);
+  text-transform: none;
+}
+.s-input-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: end;
+}
+.s-textarea {
+  width: 100%;
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--signal);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.55;
+  padding: 16px 20px;
+  resize: none;
+  min-height: 64px;
+  max-height: 240px;
+  outline: none;
+  transition: border-color var(--medium);
+}
+.s-textarea:focus { border-color: var(--ember-3); }
+.s-textarea::placeholder { color: var(--signal-4); font-style: italic; }
+
+.s-submit {
+  background: transparent;
+  border: 1px solid var(--signal-4);
+  color: var(--signal-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 18px 28px;
+  cursor: pointer;
+  transition: all var(--medium);
+  white-space: nowrap;
+}
+.s-submit:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+.s-submit:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.s-submit .arrow {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0;
+  margin-left: 10px;
+}
+
+/* The "thinking" indicator — three slowly-pulsing dots, restrained */
+.s-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+}
+.s-thinking .dot {
+  width: 4px;
+  height: 4px;
+  background: var(--ember);
+  border-radius: 50%;
+  animation: s-pulse 1800ms ease-in-out infinite;
+}
+.s-thinking .dot:nth-child(2) { animation-delay: 250ms; }
+.s-thinking .dot:nth-child(3) { animation-delay: 500ms; }
+@keyframes s-pulse {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1; }
+}
+
+/* The session-end card — the Resonance Record */
+.s-record {
+  margin-top: 96px;
+  padding: 48px 56px;
+  border: 1px solid var(--rule);
+  background: var(--void-2);
+  position: relative;
+}
+.s-record::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 56px; height: 56px;
+  border-top: 1px solid var(--ember);
+  border-left: 1px solid var(--ember);
+}
+.s-record::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 56px; height: 56px;
+  border-bottom: 1px solid var(--ember);
+  border-right: 1px solid var(--ember);
+}
+.s-record .s-record-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 14px;
+}
+.s-record .s-record-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-style: italic;
+  color: var(--signal);
+  line-height: 1.35;
+  margin-bottom: 28px;
+}
+.s-record .s-record-body {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--signal-2);
+}
+.s-record .s-record-body p { margin-bottom: 16px; }
+.s-record .s-record-body p:last-child { margin-bottom: 0; }
+.s-record .s-record-actions {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.s-record-actions a { color: var(--signal-3); transition: color var(--medium); }
+.s-record-actions a:hover { color: var(--ember); }
+.s-record-actions .next {
+  color: var(--signal);
+  border-bottom: 1px solid var(--signal-4);
+  padding-bottom: 2px;
+}
+.s-record-actions .next:hover { color: var(--ember); border-bottom-color: var(--ember); }
+
+/* Structured Resonance Record (Session 1+) — labeled five-field format */
+.s-record .srf-block {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.s-record .srf-block:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.s-record .srf-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 8px;
+}
+.s-record .srf-value {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--signal);
+}
+.s-record .srf-block.srf-witness .srf-value {
+  font-style: italic;
+  color: var(--signal-2);
+  border-left: 2px solid var(--ember-3);
+  padding-left: 18px;
+}
+
+/* Sit-with hint — the pause line between sessions */
+.s-sit-with {
+  margin-top: 56px;
+  padding: 32px 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--signal-3);
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =============================================================
+   The Field — Evolution Map page (constellation)
+   ============================================================= */
+.field {
+  min-height: 100vh;
+  padding: 24px 48px 80px;
+}
+.field-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 80px;
+}
+.field-stage {
+  max-width: 1080px;
+  margin: 0 auto;
+  text-align: center;
+}
+.field-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 18px;
+}
+.field-title {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--signal);
+  margin-bottom: 22px;
+}
+.field-title em { font-style: italic; color: var(--ember); }
+.field-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--signal-2);
+  max-width: 600px;
+  margin: 0 auto 80px;
+}
+
+/* The constellation — SVG fills this box */
+.constellation-wrap {
+  margin: 0 auto;
+  max-width: 720px;
+  position: relative;
+}
+.constellation-wrap svg { width: 100%; height: auto; display: block; }
+
+.field-caps {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px 96px;
+  text-align: left;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.field-cap {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.field-cap .cap-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--signal-4);
+}
+.field-cap h4 {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--signal);
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+.field-cap p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--signal-3);
+}
+.field-cap .cap-state {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+}
+.field-cap .cap-state.lit { color: var(--ember); }
+
+.field-foot {
+  margin-top: 120px;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--signal-4);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.field-foot a {
+  color: var(--signal-3);
+  border-bottom: 1px dotted var(--signal-4);
+  padding-bottom: 1px;
+}
+.field-foot a:hover { color: var(--ember); border-bottom-color: var(--ember); }
+
+
+/* =============================================================
+   The Colophon — the honest human-AI method page
+   ============================================================= */
+.colophon {
+  min-height: 100vh;
+  padding: 24px 48px 80px;
+}
+.colophon-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 80px;
+}
+.colophon-stage {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.colophon h1 {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--signal);
+  margin-bottom: 36px;
+}
+.colophon h1 em { font-style: italic; color: var(--ember); }
+.colophon .col-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 16px;
+}
+.colophon .col-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 23px;
+  line-height: 1.55;
+  color: var(--signal-2);
+  margin-bottom: 64px;
+  max-width: 620px;
+}
+.colophon h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--signal);
+  margin-top: 64px;
+  margin-bottom: 22px;
+}
+.colophon h2 em { font-style: italic; }
+.colophon p {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--signal-2);
+  margin-bottom: 20px;
+}
+.colophon p em { font-style: italic; color: var(--signal); }
+.colophon .col-quote {
+  border-left: 2px solid var(--ember-3);
+  padding: 4px 0 4px 28px;
+  margin: 32px 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--signal-2);
+}
+.colophon .col-attrs {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+.colophon .col-attr {
+  font-family: var(--serif);
+}
+.colophon .col-attr .col-attr-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  margin-bottom: 10px;
+}
+.colophon .col-attr .col-attr-name {
+  font-size: 19px;
+  color: var(--signal);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.colophon .col-attr p {
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--signal-3);
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* =============================================================
+   Responsive — narrow viewports
+   ============================================================= */
+@media (max-width: 720px) {
+  .threshold      { padding: 24px 24px 28px; }
+  .session        { padding: 20px 24px 0; }
+  .field          { padding: 20px 24px 64px; }
+  .colophon       { padding: 20px 24px 64px; }
+  .s-input-zone   { padding: 40px 24px 24px; }
+
+  .t-line.l1     { font-size: 30px; }
+  .t-line.l2     { font-size: 30px; }
+  .t-line.l3     { font-size: 24px; }
+
+  .s-prompt      { font-size: 22px; }
+  .s-answer      { font-size: 17px; padding-left: 18px; }
+  .s-reflection  { font-size: 17px; }
+
+  .field-title   { font-size: 34px; }
+  .field-caps    { grid-template-columns: 1fr; gap: 36px; }
+  .colophon h1   { font-size: 36px; }
+  .colophon .col-lede { font-size: 19px; }
+  .colophon .col-attrs { grid-template-columns: 1fr; gap: 32px; }
+
+  .t-foot { grid-template-columns: 1fr; gap: 18px; text-align: center; }
+  .t-foot .t-coauthor { max-width: none; }
+  .t-foot .t-nav { justify-content: center; }
+  .s-input-wrap { grid-template-columns: 1fr; }
+  .s-submit { justify-self: end; }
+
+  .s-record { padding: 28px 24px; }
+}
+
+/* ============================================================
+   ACCESSIBILITY + PRINT for the Signal subsite
+   Print converts the dark void to a clean white document so a
+   reader can archive their Resonance Records on paper.
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ember-point { animation: none !important; opacity: 0.85 !important; }
+  .breath { animation: none !important; }
+}
+
+@media print {
+  @page { size: A4; margin: 18mm 16mm; }
+  html, body {
+    background: white !important;
+    color: #1a1814 !important;
+    background-image: none !important;
+    font-size: 11pt !important;
+  }
+  .ember-point, .const-svg, .t-rule, .t-kbd-hint,
+  .s-thinking, .s-input-zone, .t-enter, .s-submit,
+  .s-record-actions, .colophon-top, .field-top, .s-top,
+  .t-top, .t-foot { display: none !important; }
+  .threshold, .session, .field, .colophon {
+    background: white !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+  .s-stage, .field-stage, .colophon-stage {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  /* Restore readable colors */
+  .t-line, .t-eyebrow, .s-prompt, .s-answer, .s-reflection,
+  .field-title, .field-lede, .field-cap h4, .field-cap p,
+  .colophon h1, .colophon .col-lede, .colophon p, .colophon h2,
+  .s-record-title, .s-record-body { color: #1a1814 !important; }
+  .t-line em, .field-title em, .colophon h1 em { color: #8a2510 !important; }
+
+  /* The Resonance Record prints as a framed document */
+  .s-record {
+    border: 1pt solid #888 !important;
+    background: white !important;
+    padding: 20pt !important;
+    page-break-inside: avoid;
+  }
+  .s-record::before, .s-record::after { display: none !important; }
+  .s-record-label { color: #8a2510 !important; }
+
+  /* Print attribution */
+  body::after {
+    content: "vinaypasricha.com / signal — printed";
+    display: block;
+    margin-top: 32pt;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    color: #888;
+    text-align: right;
+    border-top: 1pt solid #ddd;
+    padding-top: 8pt;
+  }
+}
+
+/* =============================================================
+   ATMOSPHERIC FIELD STATES
+   =============================================================
+   Subtle environmental shifts driven by data-attributes on <body>:
+
+     [data-arc="Correction"]      Sessions 0–5  · excavation atmosphere
+     [data-arc="Amplification"]   Sessions 6–8  · reading atmosphere
+     [data-beat-stage="early"]    Beats I–II    · denser, more interior
+     [data-beat-stage="mid"]      Beats III–IV  · stable
+     [data-beat-stage="late"]     Beats V+      · clearer, more open
+
+   The shifts are nearly subconscious by design. The reader should
+   FEEL the field changing without being told. Anything too obvious
+   would tip into atmosphere-as-gimmick, which violates the alignment.
+   ============================================================= */
+
+/* Correction Arc — closed, excavatory, denser interior */
+body[data-arc="Correction"] {
+  background-color: var(--void);
+}
+body[data-arc="Correction"] .s-stage-title {
+  color: var(--signal-2);
+}
+
+/* Amplification Arc — opener, lifted, the channel reads outward */
+body[data-arc="Amplification"] {
+  background-color: #0b0b10;
+}
+body[data-arc="Amplification"] .s-stage-eyebrow {
+  color: var(--ember);
+}
+body[data-arc="Amplification"] .s-stage-title {
+  color: var(--signal);
+  letter-spacing: -0.003em;
+}
+body[data-arc="Amplification"] .s-prompt {
+  border-left-color: var(--ember-3);
+}
+
+/* Beat depth — within a session, late beats sharpen the room a notch.
+   The change is in the ink, not the lamp: subtle contrast on prompts. */
+body[data-beat-stage="late"] .s-prompt {
+  border-left-color: var(--ember-3);
+}
+body[data-beat-stage="late"] .s-reflection {
+  color: var(--signal);
+}
+body[data-beat-stage="early"] .s-reflection {
+  color: var(--signal-3);
+}
+
+/* Per-session atmospheric tuning for moments the arc alone is too coarse.
+   Session 1 — The Trade — is the first economic exposure: it should feel
+   sharper, more exposed, more psychologically dangerous than Session 0,
+   while staying inside the Correction Arc's closed atmosphere. */
+body[data-session-id="1"] {
+  background-color: #07070a;
+}
+body[data-session-id="1"] .s-stage-title {
+  color: var(--signal);
+  letter-spacing: -0.005em;
+}
+body[data-session-id="1"] .s-stage-title em {
+  color: var(--ember);
+}
+body[data-session-id="1"] .s-prompt {
+  border-left-color: var(--ember-3);
+}
+body[data-session-id="1"] .s-prompt-label {
+  color: var(--ember);
+}
+body[data-session-id="1"] .s-reflection {
+  color: var(--signal);
+}
+/* Slow the response pacing one notch — the room must hold the reader
+   while a hidden economy becomes visible. */
+body[data-session-id="1"] .s-textarea {
+  transition: border-color 1400ms cubic-bezier(.4,0,.2,1);
+}
+
+/* Session 2 — The Protector — must feel deeper and more intimate than
+   Session 1. The field becomes quieter; spacing widens. The shift is
+   from "exposure" to "observation". The room holds the reader while
+   a recurring identity formation becomes visible. */
+body[data-session-id="2"] {
+  background-color: #06060a;
+}
+body[data-session-id="2"] .s-stage-title {
+  font-weight: 300;
+  letter-spacing: -0.003em;
+}
+body[data-session-id="2"] .s-prompt {
+  padding-left: 36px;
+  border-left-color: var(--signal-3);
+}
+body[data-session-id="2"] .s-prompt-label {
+  letter-spacing: 0.42em;
+  color: var(--signal-3);
+}
+body[data-session-id="2"] .s-reflection {
+  color: var(--signal-2);
+}
+
+/* Session 3 — The Interrupt — sharpens the room. Cleaner, more
+   sequence-oriented, more operationally precise. The text crispens;
+   transitions become exact. The shift is from "observation" to
+   "interruption training". */
+body[data-session-id="3"] {
+  background-color: #08080c;
+}
+body[data-session-id="3"] .s-stage-eyebrow {
+  color: var(--ember);
+  letter-spacing: 0.42em;
+}
+body[data-session-id="3"] .s-stage-title {
+  color: var(--signal);
+  letter-spacing: -0.006em;
+}
+body[data-session-id="3"] .s-prompt-label {
+  color: var(--ember);
+  letter-spacing: 0.36em;
+}
+body[data-session-id="3"] .s-prompt {
+  border-left-color: var(--ember-2);
+}
+body[data-session-id="3"] .s-reflection {
+  color: var(--signal);
+  font-style: italic;
+}
+
+/* Session 4 — The Field — must feel wider and quieter than any prior
+   session. Signal stabilization atmosphere: the room breathes more,
+   typography breathes more, the reflection text loses its italic
+   pressure. The shift is from "training" to "remaining". */
+body[data-session-id="4"] {
+  background-color: #08080d;
+}
+body[data-session-id="4"] .s-stage {
+  padding-top: 88px;
+  padding-bottom: 96px;
+}
+body[data-session-id="4"] .s-stage-eyebrow {
+  letter-spacing: 0.48em;
+  color: var(--signal-3);
+}
+body[data-session-id="4"] .s-stage-title {
+  font-weight: 300;
+  line-height: 1.42;
+  letter-spacing: -0.001em;
+  color: var(--signal-2);
+}
+body[data-session-id="4"] .s-stage-title em {
+  color: var(--signal);
+  font-style: italic;
+}
+body[data-session-id="4"] .s-prompt {
+  padding-left: 40px;
+  border-left-color: var(--signal-3);
+  line-height: 1.65;
+}
+body[data-session-id="4"] .s-prompt-label {
+  letter-spacing: 0.48em;
+  color: var(--signal-3);
+}
+body[data-session-id="4"] .s-reflection {
+  font-style: normal;
+  color: var(--signal-2);
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+}
+body[data-session-id="4"] .s-exchange {
+  margin-bottom: 88px;
+}
+
+/* Session 5 — Integrity — closes the Correction Arc. The atmosphere
+   sharpens after Session 4's wide breathing: cleaner, more exact,
+   structurally mature. The reflection becomes precise rather than
+   atmospheric. Coherence is the work here, not stabilization. */
+body[data-session-id="5"] {
+  background-color: #08080c;
+}
+body[data-session-id="5"] .s-stage-eyebrow {
+  color: var(--ember);
+  letter-spacing: 0.42em;
+}
+body[data-session-id="5"] .s-stage-title {
+  font-weight: 300;
+  color: var(--signal);
+  letter-spacing: -0.005em;
+  line-height: 1.32;
+}
+body[data-session-id="5"] .s-prompt {
+  border-left-color: var(--ember-3);
+  padding-left: 32px;
+}
+body[data-session-id="5"] .s-prompt-label {
+  color: var(--ember);
+  letter-spacing: 0.38em;
+}
+body[data-session-id="5"] .s-reflection {
+  color: var(--signal-2);
+  font-style: italic;
+  letter-spacing: 0.002em;
+}
+
+/* Session 6 — Place — opens the Amplification Arc. The field widens
+   atmospherically — interface breathes more, spatial transitions
+   widen, motion slows. Compared to Session 4 (also widened) Session 6
+   is slightly cooler, the eyebrow signal-3 not ember — environmental
+   reading is observational, not climactic. */
+body[data-session-id="6"] {
+  background-color: #0a0a10;
+}
+body[data-session-id="6"] .s-stage {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+body[data-session-id="6"] .s-stage-eyebrow {
+  letter-spacing: 0.5em;
+  color: var(--signal-3);
+}
+body[data-session-id="6"] .s-stage-title {
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--signal);
+  letter-spacing: -0.001em;
+}
+body[data-session-id="6"] .s-prompt {
+  padding-left: 36px;
+  border-left-color: var(--signal-3);
+  line-height: 1.65;
+}
+body[data-session-id="6"] .s-prompt-label {
+  letter-spacing: 0.46em;
+  color: var(--signal-3);
+}
+body[data-session-id="6"] .s-reflection {
+  font-style: normal;
+  color: var(--signal-2);
+  line-height: 1.7;
+}
+body[data-session-id="6"] .s-exchange {
+  margin-bottom: 80px;
+}
+
+/* Session 7 — Time — opens temporal perception. Compared to Session 6's
+   spatial widening, Session 7 is rhythm-aware: transitions feel more
+   fluid, the prompt label loosens its letter-spacing, the reflection
+   text carries a subtle pacing. */
+body[data-session-id="7"] {
+  background-color: #0a0a14;
+}
+body[data-session-id="7"] .s-stage {
+  padding-top: 92px;
+  padding-bottom: 96px;
+}
+body[data-session-id="7"] .s-stage-eyebrow {
+  letter-spacing: 0.48em;
+  color: var(--signal-3);
+}
+body[data-session-id="7"] .s-stage-title {
+  font-weight: 300;
+  line-height: 1.36;
+  color: var(--signal);
+  letter-spacing: -0.002em;
+}
+body[data-session-id="7"] .s-prompt {
+  padding-left: 36px;
+  border-left-color: var(--signal-3);
+  line-height: 1.7;
+}
+body[data-session-id="7"] .s-prompt-label {
+  letter-spacing: 0.44em;
+  color: var(--signal-3);
+}
+body[data-session-id="7"] .s-reflection {
+  font-style: italic;
+  color: var(--signal-2);
+  line-height: 1.72;
+}
+body[data-session-id="7"] .s-exchange {
+  margin-bottom: 84px;
+}
+
+/* Session 8 — Hierarchy — closes the Amplification Arc. The atmosphere
+   is the quietest yet: epistemically precise, structurally mature. The
+   loudest signal is rarely the deepest. Color, contrast, and spacing
+   all settle. The room becomes a low-noise instrument for discernment. */
+body[data-session-id="8"] {
+  background-color: #08080d;
+}
+body[data-session-id="8"] .s-stage {
+  padding-top: 96px;
+  padding-bottom: 104px;
+}
+body[data-session-id="8"] .s-stage-eyebrow {
+  letter-spacing: 0.52em;
+  color: var(--signal-3);
+}
+body[data-session-id="8"] .s-stage-title {
+  font-weight: 300;
+  line-height: 1.34;
+  color: var(--signal);
+  letter-spacing: -0.003em;
+}
+body[data-session-id="8"] .s-prompt {
+  padding-left: 40px;
+  border-left-color: var(--ember-3);
+  line-height: 1.7;
+}
+body[data-session-id="8"] .s-prompt-label {
+  letter-spacing: 0.48em;
+  color: var(--ember);
+}
+body[data-session-id="8"] .s-reflection {
+  font-style: normal;
+  color: var(--signal);
+  line-height: 1.72;
+  letter-spacing: 0.003em;
+}
+body[data-session-id="8"] .s-exchange {
+  margin-bottom: 92px;
+}
+
+/* =============================================================
+   MEMORY THREAD
+   =============================================================
+   Surfaced at the top of the stage when the reader has prior
+   records. A quiet line — never a recap. The point is continuity,
+   not summary.
+
+   "This system is gradually detecting your patterns." Never
+   "this AI knows you." The thread states what was surfaced before,
+   in the reader's own words where possible. It does not
+   interpret. It does not advise.
+   ============================================================= */
+.s-memory-thread {
+  max-width: 640px;
+  margin: -16px 0 64px;
+  padding: 18px 0 18px 24px;
+  border-left: 1px solid var(--ember-3);
+  opacity: 0;
+  animation: t-fade-in 1800ms 400ms ease-out forwards;
+}
+.s-memory-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 10px;
+}
+.s-memory-body {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--signal-3);
+}
+.s-memory-body em {
+  color: var(--signal-2);
+  font-style: normal;
+}
+.s-memory-body .s-memory-ref {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  display: block;
+  margin-top: 8px;
+}
+
+/* =============================================================
+   RETURN CONTINUITY — Threshold prior-artifact surface
+   =============================================================
+   When a returning reader lands on signal/index.html and has
+   completed at least one session, the Threshold gently lifts the
+   closing line of their last Resonance Record into view.
+
+   Same restraint as the memory thread — quote, do not interpret.
+   ============================================================= */
+.t-return-record {
+  max-width: 460px;
+  margin: 28px auto 0;
+  padding: 18px 28px;
+  border: 1px solid var(--rule);
+  background: var(--void-2);
+  opacity: 0;
+  animation: t-fade-in 2200ms 7600ms ease-out forwards;
+}
+.t-return-record .t-return-label {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 10px;
+  text-align: center;
+}
+.t-return-record .t-return-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--signal-2);
+  text-align: center;
+}
+.t-return-record .t-return-ref {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--signal-4);
+  text-align: center;
+  margin-top: 12px;
+}

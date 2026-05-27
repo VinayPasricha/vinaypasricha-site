@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiction · A speculative cycle · Vinay Pasricha</title>
+  <meta name="description" content="A speculative-fiction cycle by Vinay Pasricha. Three hundred years into the past, two thousand years into the future, and the long bridge between — written during the long quiet of 2020, released here serially, one chapter at a time.">
+  <meta property="og:title" content="Between Two Dawns — a speculative cycle by Vinay Pasricha">
+  <meta property="og:description" content="The dawn of humanity. The dawn of what comes after. A work of fiction, released one chapter at a time.">
+  <meta property="og:type" content="book">
+  <link rel="canonical" href="https://vinaypasricha.com/paths/fiction.html">
+  <meta name="concepts" content="speculative-fiction, deep-time, futurism, serial-novel, dawn-of-humanity, long-now">
+  <meta name="continuations" content="story, blog, connect">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* ============================================================
+       FICTION — a darker, more atmospheric register.
+       Same vocabulary, opposite ground. Ivory becomes ink; cinnabar
+       deepens into a kind of ember.
+       ============================================================ */
+
+    :root{
+      --night: #0d0c10;
+      --night-2: #15131a;
+      --night-3: #1d1a23;
+      --night-rule: rgba(220, 210, 188, 0.12);
+      --night-rule-soft: rgba(220, 210, 188, 0.06);
+      --night-ink: #ece4d0;
+      --night-ink-2: #b9b1a0;
+      --night-ink-3: #7c7669;
+      --ember: #d8854a;
+      --ember-2: #c46a35;
+    }
+
+    body { background: var(--night); }
+
+    /* TOPBAR override for dark page */
+    body .topbar{
+      background: rgba(13, 12, 16, 0.92);
+      border-bottom: 1px solid var(--night-rule);
+      backdrop-filter: blur(20px) saturate(1.1);
+      -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    }
+    body .topbar .brand .name { color: var(--night-ink); }
+    body .topbar .brand .name em { color: var(--ember); }
+    body .topbar .brand .subtitle { color: var(--night-ink-3); }
+    body .topbar .now-line .key { color: var(--night-ink-3); }
+    body .topbar .now-line .now-rotator .item { color: var(--night-ink-2); }
+    body .topbar .now-line .now-rotator .item em { color: var(--night-ink); }
+    body .topbar .now-line::before{ background: var(--ember); }
+    body .topbar .index-btn{ color: var(--night-ink-2); border-color: var(--night-rule); }
+    body .topbar .index-btn:hover{ color: var(--ember); border-color: var(--ember); }
+    body .topbar .index-btn .lines span{ background: var(--night-ink-2); }
+    body .topbar .index-btn:hover .lines span{ background: var(--ember); }
+    body .topbar .lang-btn{ color: var(--night-ink-2); border-color: var(--night-rule); }
+    body .topbar .lang-btn:hover{ color: var(--ember); border-color: var(--ember); }
+
+    /* ============================================================
+       HERO — opening into another world.
+       A near-black sky with a quiet starfield, the title centered,
+       restrained as scripture.
+       ============================================================ */
+    .fic-hero{
+      position: relative;
+      min-height: 92vh;
+      padding: 120px var(--gutter) 96px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .fic-hero::before{
+      /* a deep radial — a sun rising or setting behind the title */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(216, 133, 74, 0.16) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 70% at 50% 0%, rgba(20, 30, 50, 0.4) 0%, transparent 70%);
+      z-index: -2;
+    }
+    .fic-hero::after{
+      /* the starfield — tiny dots scattered across the upper sky */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(236, 228, 208, 0.9), transparent),
+        radial-gradient(1px 1px at 84% 26%, rgba(236, 228, 208, 0.7), transparent),
+        radial-gradient(1px 1px at 28% 38%, rgba(236, 228, 208, 0.5), transparent),
+        radial-gradient(1px 1px at 56% 14%, rgba(236, 228, 208, 0.8), transparent),
+        radial-gradient(1px 1px at 72% 44%, rgba(236, 228, 208, 0.6), transparent),
+        radial-gradient(1px 1px at 18% 60%, rgba(236, 228, 208, 0.45), transparent),
+        radial-gradient(1px 1px at 92% 56%, rgba(236, 228, 208, 0.5), transparent),
+        radial-gradient(1px 1px at 38% 22%, rgba(236, 228, 208, 0.55), transparent),
+        radial-gradient(1.2px 1.2px at 64% 32%, rgba(236, 228, 208, 0.85), transparent),
+        radial-gradient(1px 1px at 44% 52%, rgba(236, 228, 208, 0.45), transparent),
+        radial-gradient(1.2px 1.2px at 8% 34%, rgba(236, 228, 208, 0.75), transparent),
+        radial-gradient(1px 1px at 78% 12%, rgba(236, 228, 208, 0.6), transparent);
+      z-index: -1;
+      opacity: 0.85;
+    }
+
+    .fic-breadcrumb{
+      position: absolute;
+      top: 96px;
+      left: var(--gutter);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--night-ink-3);
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+    }
+    .fic-breadcrumb a{ color: var(--night-ink-2); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid var(--night-rule); }
+    .fic-breadcrumb a:hover{ color: var(--ember); border-color: var(--ember); }
+    .fic-breadcrumb .sep{ color: var(--night-rule); }
+    .fic-breadcrumb .num{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--night-ink-3);
+    }
+
+    .fic-hero-inner{
+      text-align: center;
+      max-width: 880px;
+    }
+    .fic-eyebrow{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 56px;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .fic-eyebrow .bar{ width: 28px; height: 1px; background: var(--ember); opacity: 0.6; }
+    .fic-eyebrow .working{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: var(--night-ink-3);
+    }
+
+    .fic-title{
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(56px, 9vw, 124px);
+      line-height: 0.96;
+      letter-spacing: -0.025em;
+      color: var(--night-ink);
+      margin-bottom: 44px;
+    }
+    .fic-title em{
+      font-style: italic;
+      font-weight: 300;
+      color: var(--ember);
+    }
+    .fic-title .sm{
+      display: block;
+      font-size: 0.5em;
+      letter-spacing: -0.015em;
+      margin-top: 8px;
+      color: var(--night-ink-2);
+    }
+    .fic-title .sm em{ color: var(--night-ink); }
+
+    .fic-subtitle{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--night-ink-2);
+      max-width: 620px;
+      margin: 0 auto 56px;
+      font-weight: 300;
+    }
+    .fic-subtitle em{ font-style: italic; color: var(--night-ink); }
+
+    .fic-byline{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--night-ink-3);
+    }
+    .fic-byline em{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ember);
+    }
+
+    .fic-scroll-cue{
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--night-ink-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .fic-scroll-cue::after{
+      content: "";
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--night-rule), transparent);
+    }
+
+    /* ============================================================
+       ORIGIN — how this book came to be.
+       Quiet, single-column, intimate. Still on dark.
+       ============================================================ */
+    .fic-origin{
+      padding: 140px var(--gutter) 140px;
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .fic-origin .label{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .fic-origin .label::before{
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: var(--ember);
+      opacity: 0.5;
+    }
+    .fic-origin h3{
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 44px;
+      line-height: 1.1;
+      color: var(--night-ink);
+      letter-spacing: -0.015em;
+      margin-bottom: 44px;
+    }
+    .fic-origin h3 em{ font-style: italic; color: var(--ember); font-weight: 300; }
+    .fic-origin p{
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.65;
+      color: var(--night-ink-2);
+      margin-bottom: 22px;
+      font-weight: 300;
+    }
+    .fic-origin p em{ font-style: italic; color: var(--night-ink); }
+    .fic-origin .signature{
+      margin-top: 48px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      color: var(--night-ink-3);
+    }
+    .fic-origin .signature .name{ color: var(--night-ink); }
+
+    /* ============================================================
+       THE ARCHITECTURE — three movements, paper card on dark.
+       The chapter list itself sits on ivory paper, as if a printed
+       table of contents has been laid on the dark desk.
+       ============================================================ */
+    .fic-arch{
+      padding: 24px var(--gutter) 140px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .arch-head{
+      max-width: 760px;
+      margin: 0 auto 72px;
+      text-align: center;
+    }
+    .arch-head .label{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 24px;
+    }
+    .arch-head h3{
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 46px;
+      line-height: 1.05;
+      color: var(--night-ink);
+      letter-spacing: -0.015em;
+      margin-bottom: 22px;
+    }
+    .arch-head h3 em{ font-style: italic; color: var(--ember); font-weight: 300; }
+    .arch-head p{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--night-ink-2);
+      line-height: 1.55;
+      font-weight: 300;
+    }
+
+    .arch-paper{
+      background: var(--paper);
+      color: var(--ink);
+      padding: 88px 80px;
+      box-shadow:
+        0 60px 100px -30px rgba(0,0,0,0.6),
+        0 30px 60px -20px rgba(0,0,0,0.5),
+        inset 0 0 0 1px rgba(20,17,10,0.04);
+      position: relative;
+    }
+    .arch-paper::before{
+      /* small printed mark — like a publisher's emblem */
+      content: "·";
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--serif);
+      font-size: 24px;
+      color: var(--ink-3);
+    }
+
+    .movement{
+      padding: 48px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .movement:first-of-type{ border-top: 0; padding-top: 16px; }
+    .movement:last-of-type{ padding-bottom: 0; }
+
+    .movement-head{
+      display: grid;
+      grid-template-columns: 96px 1fr auto;
+      gap: 36px;
+      align-items: baseline;
+      margin-bottom: 32px;
+      padding-bottom: 22px;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .movement-num{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 56px;
+      line-height: 0.9;
+      color: var(--accent);
+      font-weight: 300;
+    }
+    .movement-title h4{
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: -0.012em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .movement-title h4 em{ font-style: italic; }
+    .movement-title .desc{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-3);
+      max-width: 520px;
+      line-height: 1.5;
+    }
+    .movement-meta{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .movement-meta .count{
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ink-2);
+      margin-top: 4px;
+    }
+
+    .chapter-row{
+      display: grid;
+      grid-template-columns: 60px 100px 1fr 140px 24px;
+      gap: 28px;
+      align-items: baseline;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--rule-soft);
+      text-decoration: none;
+      color: inherit;
+      transition: padding-left .2s, background .2s;
+    }
+    .chapter-row:last-child{ border-bottom: 0; }
+    .chapter-row.is-available{ cursor: pointer; }
+    .chapter-row.is-available:hover{
+      padding-left: 8px;
+      background: var(--paper-3);
+    }
+    .chapter-row.is-available:hover .ch-title em{ color: var(--accent); }
+    .chapter-row.is-available:hover .ch-arrow{ transform: translateX(6px); color: var(--accent); }
+    .chapter-row.is-forthcoming{ cursor: default; opacity: 0.82; }
+    .ch-num{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-3);
+      letter-spacing: 0.02em;
+    }
+    .ch-date{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .chapter-row.is-available .ch-date{ color: var(--accent); }
+    .ch-title{
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 19px;
+      line-height: 1.3;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+    .ch-title em{ font-style: italic; transition: color .15s; }
+    .ch-status{
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      text-align: right;
+    }
+    .chapter-row.is-available .ch-status{ color: var(--accent); }
+    .ch-arrow{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-3);
+      transition: transform .2s, color .15s;
+      text-align: right;
+    }
+    .chapter-row.is-forthcoming .ch-arrow{ color: var(--rule); }
+
+    /* ============================================================
+       NOTIFY — back on dark, asking to be told when the next
+       chapter arrives.
+       ============================================================ */
+    .fic-notify{
+      padding: 140px var(--gutter) 160px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .fic-notify .label{
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 28px;
+    }
+    .fic-notify h3{
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 44px;
+      line-height: 1.1;
+      color: var(--night-ink);
+      letter-spacing: -0.015em;
+      margin-bottom: 22px;
+    }
+    .fic-notify h3 em{ font-style: italic; color: var(--ember); font-weight: 300; }
+    .fic-notify .lede{
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 19px;
+      color: var(--night-ink-2);
+      line-height: 1.55;
+      margin-bottom: 44px;
+      font-weight: 300;
+    }
+    .notify-form{
+      display: flex;
+      max-width: 480px;
+      margin: 0 auto;
+      gap: 0;
+    }
+    .notify-form input{
+      flex: 1;
+      padding: 18px 22px;
+      font-family: var(--sans);
+      font-size: 15px;
+      background: rgba(236, 228, 208, 0.04);
+      border: 1px solid var(--night-rule);
+      border-right: 0;
+      color: var(--night-ink);
+      outline: none;
+      transition: border-color .15s, background .15s;
+    }
+    .notify-form input::placeholder{ color: var(--night-ink-3); }
+    .notify-form input:focus{
+      border-color: var(--ember);
+      background: rgba(236, 228, 208, 0.08);
+    }
+    .notify-form button{
+      padding: 18px 26px;
+      background: var(--night-ink);
+      color: var(--night);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      border: 1px solid var(--night-ink);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .notify-form button:hover{
+      background: var(--ember);
+      border-color: var(--ember);
+      color: var(--night);
+    }
+    .fic-notify .footnote{
+      margin-top: 28px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--night-ink-3);
+    }
+
+    /* ============================================================
+       FOOTER override for dark
+       ============================================================ */
+    body .site-foot{
+      background: var(--night-2);
+      color: var(--night-ink-2);
+      border-top: 1px solid var(--night-rule);
+    }
+    body .site-foot .foot-mark .name{ color: var(--night-ink); }
+    body .site-foot .foot-mark .name em{ color: var(--ember); }
+    body .site-foot .foot-mark .sub{ color: var(--night-ink-3); }
+    body .site-foot .foot-right a{ color: var(--night-ink-2); }
+    body .site-foot .foot-right a:hover{ color: var(--ember); }
+    body .site-foot p,
+    body .site-foot small{ color: var(--night-ink-3); }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px){
+      .fic-hero{ min-height: 80vh; padding: 100px 28px 64px; }
+      .fic-breadcrumb{ top: 88px; left: 28px; flex-wrap: wrap; }
+      .fic-eyebrow{ margin-bottom: 36px; }
+      .fic-title{ font-size: clamp(40px, 12vw, 64px); margin-bottom: 28px; }
+      .fic-subtitle{ font-size: 17px; margin-bottom: 36px; }
+      .fic-scroll-cue{ display: none; }
+
+      .fic-origin{ padding: 80px 28px 80px; }
+      .fic-origin h3{ font-size: 28px; margin-bottom: 28px; }
+      .fic-origin p{ font-size: 16px; }
+
+      .fic-arch{ padding: 0 16px 80px; }
+      .arch-head{ margin: 0 12px 48px; }
+      .arch-head h3{ font-size: 28px; }
+      .arch-paper{ padding: 44px 24px; }
+
+      .movement-head{ grid-template-columns: 56px 1fr; gap: 16px; }
+      .movement-num{ font-size: 36px; }
+      .movement-title h4{ font-size: 20px; }
+      .movement-title .desc{ font-size: 14px; }
+      .movement-meta{
+        grid-column: 1 / -1;
+        text-align: left;
+        margin-top: 8px;
+      }
+
+      .chapter-row{
+        grid-template-columns: 40px 1fr 16px;
+        gap: 14px;
+        padding: 16px 0;
+      }
+      .ch-date{ display: none; }
+      .ch-status{ display: none; }
+      .ch-title{ font-size: 16px; }
+
+      .fic-notify{ padding: 80px 28px 96px; }
+      .fic-notify h3{ font-size: 28px; }
+      .fic-notify .lede{ font-size: 16px; margin-bottom: 32px; }
+      .notify-form{ flex-direction: column; gap: 8px; }
+      .notify-form input{ border-right: 1px solid var(--night-rule); }
+    }
+  </style>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/fiction.html">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinay Pasricha — vinaypasricha.com">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vinaypasricha">
+  <meta name="twitter:creator" content="@vinaypasricha">
+  <meta name="twitter:title" content="Between Two Dawns — a speculative cycle by Vinay Pasricha">
+  <meta name="twitter:description" content="The dawn of humanity. The dawn of what comes after. A work of fiction, released one chapter at a time.">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/fiction.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/fiction.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/fiction.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/fiction.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/fiction.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/fiction.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/fiction.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/fiction.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/fiction.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/fiction.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/fiction.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/fiction.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/fiction.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/fiction.html?lang=ru">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vinaypasricha.com/#website","url":"https://vinaypasricha.com","name":"Vinay Pasricha","description":"An AI-native intellectual operating system — books, frameworks, and conversations for navigating a rapidly changing world.","publisher":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"potentialAction":{"@type":"SearchAction","target":"https://vinaypasricha.com/?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","@id":"https://vinaypasricha.com/#vinay","name":"Vinay Pasricha","url":"https://vinaypasricha.com","image":"https://vinaypasricha.com/assets/images/og-default.jpg","jobTitle":"Founder, author, explorer of emergence","description":"Founder of GoodSpace AI and WLC College India. Author of four books on AI, decision-making, execution, and signal.","alumniOf":"WLC College India","worksFor":{"@type":"Organization","name":"GoodSpace AI","url":"https://www.goodspace.ai"},"knowsAbout":["Artificial Intelligence","Decision Making","Leadership","Hiring","Execution","Strategy","Speculative Fiction"],"nationality":"Indian","sameAs":["https://www.linkedin.com/in/vinaypasricha","https://www.goodspace.ai"]},{"@type":"Book","@id":"https://vinaypasricha.com/paths/fiction.html#fiction","url":"https://vinaypasricha.com/paths/fiction.html","name":"Between Two Dawns","alternateName":"An untitled speculative cycle","author":{"@id":"https://vinaypasricha.com/#vinay"},"description":"The dawn of humanity. The dawn of what comes after. A work of fiction, released one chapter at a time.","bookFormat":"https://schema.org/EBook","inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"workExample":{"@type":"Book","datePublished":"2026-06","bookFormat":"https://schema.org/EBook"}}]}</script>
+</head>
+<body data-screen-label="Fiction">
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Fiction</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Releasing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Chapter I</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- =================== HERO — opening into another world ================== -->
+<section class="fic-hero" data-screen-label="01 Fiction · Hero">
+  <div class="fic-breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span class="num">Path 12</span>
+    <span class="sep">/</span>
+    <span>Fiction</span>
+  </div>
+
+  <div class="fic-hero-inner">
+    <div class="fic-eyebrow">
+      <span class="bar"></span>
+      <span>A speculative cycle</span>
+      <span class="bar"></span>
+    </div>
+
+    <h1 class="fic-title">
+      Between Two <em>Dawns</em>
+      <span class="sm">— a work in fiction, <em>in progress</em></span>
+    </h1>
+
+    <p class="fic-subtitle">
+      Three hundred years into the past. Two thousand years into the future. The long bridge between — written in the long quiet of <em>2020</em>, released here one chapter at a time.
+    </p>
+
+    <p class="fic-byline">
+      By <em>Vinay Pasricha</em>
+    </p>
+  </div>
+
+  <div class="fic-scroll-cue">
+    <span>Read on</span>
+  </div>
+</section>
+
+<!-- =================== ORIGIN — how this book came to be ================== -->
+<section class="fic-origin">
+  <div class="label">An origin note</div>
+
+  <h3>
+    This is not a book I <em>set out</em> to write. It is the book that arrived when there was very little else to do.
+  </h3>
+
+  <p>
+    During the long quiet of 2020, when the usual scaffolding of work and travel and meetings fell away, something else began to come through. I would sit down each morning and the chapters would <em>simply arrive,</em> almost faster than I could write them down.
+  </p>
+
+  <p>
+    I cannot honestly say I wrote this book. I can say I was the instrument it passed through.
+  </p>
+
+  <p>
+    The shape of it surprised me. It runs three hundred years backward — to the dawn of humanity, told as it might actually have happened. And it runs two thousand years forward — into the long after, where many of the problems we are tangled in today have <em>quietly been solved.</em> The middle is a bridge: short pieces about the present, read from a future vantage point, as if our own century is being remembered.
+  </p>
+
+  <p>
+    Some of it reads as memory. Some of it reads as prophecy. I no longer know which is which. I am putting it down here one chapter at a time — partly to share it, partly because a book that wants to exist <em>should be allowed to.</em>
+  </p>
+
+  <div class="signature">
+    — <span class="name">Vinay</span>, Delhi, May 2026
+  </div>
+</section>
+
+<!-- =================== THE ARCHITECTURE — three movements ================== -->
+<section class="fic-arch">
+
+  <div class="arch-head">
+    <div class="label">The Architecture</div>
+    <h3>Sixteen chapters, in <em>three movements.</em></h3>
+    <p>One chapter is released each month. The first lands in June 2026. The rest will arrive in order.</p>
+  </div>
+
+  <div class="arch-paper">
+
+    <!-- Movement I — The Long Before -->
+    <div class="movement">
+      <div class="movement-head">
+        <div class="movement-num">I</div>
+        <div class="movement-title">
+          <h4>The <em>Long Before</em></h4>
+          <div class="desc">Reaching back into the deep past — the dawn of humanity, told as it might have actually happened.</div>
+        </div>
+        <div class="movement-meta">
+          Movement I
+          <span class="count">six chapters</span>
+        </div>
+      </div>
+
+      <a class="chapter-row is-available" href="#">
+        <span class="ch-num">i.</span>
+        <span class="ch-date">June 2026</span>
+        <span class="ch-title">The Night Before the <em>First Word</em></span>
+        <span class="ch-status">Available</span>
+        <span class="ch-arrow">→</span>
+      </a>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">ii.</span>
+        <span class="ch-date">July 2026</span>
+        <span class="ch-title">What the <em>Fire</em> Was For</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">iii.</span>
+        <span class="ch-date">August 2026</span>
+        <span class="ch-title">The <em>Animal</em> That Began to Wonder</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">iv.</span>
+        <span class="ch-date">September 2026</span>
+        <span class="ch-title">The <em>First Grief</em>, and What It Made</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">v.</span>
+        <span class="ch-date">October 2026</span>
+        <span class="ch-title">The Invention of <em>Tomorrow</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">vi.</span>
+        <span class="ch-date">November 2026</span>
+        <span class="ch-title">The Day Someone <em>Drew a God</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Movement II — The Bridge -->
+    <div class="movement">
+      <div class="movement-head">
+        <div class="movement-num">II</div>
+        <div class="movement-title">
+          <h4>The <em>Bridge</em></h4>
+          <div class="desc">Short dispatches about the present — read backward, from a future that has already lived through it.</div>
+        </div>
+        <div class="movement-meta">
+          Movement II
+          <span class="count">four chapters</span>
+        </div>
+      </div>
+
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">vii.</span>
+        <span class="ch-date">December 2026</span>
+        <span class="ch-title">A Letter About <em>the Twenty-First Century,</em> Written in the Forty-First</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">viii.</span>
+        <span class="ch-date">January 2027</span>
+        <span class="ch-title">How <em>Work</em> Stopped Being a Place</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">ix.</span>
+        <span class="ch-date">February 2027</span>
+        <span class="ch-title">The Year We Realised the <em>Climate</em> Was Listening</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">x.</span>
+        <span class="ch-date">March 2027</span>
+        <span class="ch-title">The Quiet End of the <em>Nation-State</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Movement III — The Long After -->
+    <div class="movement">
+      <div class="movement-head">
+        <div class="movement-num">III</div>
+        <div class="movement-title">
+          <h4>The <em>Long After</em></h4>
+          <div class="desc">Two thousand years on. A world where many of our present knots are no longer puzzles — they are history.</div>
+        </div>
+        <div class="movement-meta">
+          Movement III
+          <span class="count">six chapters</span>
+        </div>
+      </div>
+
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xi.</span>
+        <span class="ch-date">April 2027</span>
+        <span class="ch-title">The Council of <em>Things That Think</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xii.</span>
+        <span class="ch-date">May 2027</span>
+        <span class="ch-title">What <em>Money</em> Became</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xiii.</span>
+        <span class="ch-date">June 2027</span>
+        <span class="ch-title">The First Child Born <em>Off-World</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xiv.</span>
+        <span class="ch-date">July 2027</span>
+        <span class="ch-title">How <em>Grief</em> Was Re-learned</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xv.</span>
+        <span class="ch-date">August 2027</span>
+        <span class="ch-title">The Day the <em>Last Loneliness</em> Ended</span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+      <div class="chapter-row is-forthcoming">
+        <span class="ch-num">xvi.</span>
+        <span class="ch-date">September 2027</span>
+        <span class="ch-title">A Second <em>Dawn</em></span>
+        <span class="ch-status">Forthcoming</span>
+        <span class="ch-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== NOTIFY — be told when the next chapter lands ================== -->
+<section class="fic-notify">
+  <div class="label">The next chapter</div>
+  <h3>I'll write to you when the <em>next chapter</em> lands.</h3>
+  <p class="lede">No newsletter. No marketing. One quiet email — the day a chapter is ready to read.</p>
+
+  <form class="notify-form" onsubmit="event.preventDefault(); this.style.display='none'; document.getElementById('notify-confirm').style.display='block';">
+    <input type="email" placeholder="your email" required>
+    <button type="submit">Notify me</button>
+  </form>
+  <div id="notify-confirm" class="footnote" style="display:none; color: var(--ember);">
+    Thank you. The next chapter will find you.
+  </div>
+  <p class="footnote">You can unsubscribe in one click. No other lists.</p>
+</section>
+
+<script src="../js/site.js"></script>
+</body>
+</html>

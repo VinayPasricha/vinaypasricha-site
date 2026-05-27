@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Archive — The Signal</title>
+  <meta name="description" content="The longitudinal home of every Resonance Record, Interruption Trace, Field Contact Record, Decision Trace, Place Signal Map, Timing Signal Map, and Signal Authority Map a reader has produced inside The Signal.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* The Archive has its own quiet shape: chronological, longitudinal,
+       architectural. It is not a feed and it is not a dashboard. It is
+       a perceptual ledger that accumulates across months.
+
+       Aesthetic discipline:
+       - no badges, no counters of "progress" — only what is real
+       - no timeline visuals — the records ARE the timeline
+       - no aggregation — each record stands alone
+       - empty state is honest, not encouraging */
+
+    .a-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 32px 56px 0;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    .a-top .s-mark {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--signal-4);
+    }
+    .a-top .s-mark a:hover { color: var(--signal-2); }
+    .a-top .s-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+    }
+    .a-top .s-meta em {
+      color: var(--ember);
+      font-style: normal;
+    }
+
+    .a-stage {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 88px 56px 120px;
+    }
+
+    .a-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .a-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 44px;
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--signal);
+      letter-spacing: -0.005em;
+      text-align: center;
+      margin-bottom: 26px;
+    }
+    .a-title em {
+      color: var(--ember);
+      font-style: italic;
+    }
+    .a-lede {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--signal-3);
+      max-width: 560px;
+      margin: 0 auto 96px;
+      text-align: center;
+    }
+
+    /* Empty state — honest, not encouraging. No CTA pressure. */
+    .a-empty {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 64px 32px;
+      text-align: center;
+      border: 1px solid var(--rule);
+      background: var(--void-2);
+    }
+    .a-empty .a-empty-label {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      margin-bottom: 18px;
+    }
+    .a-empty .a-empty-body {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--signal-3);
+      margin-bottom: 24px;
+    }
+    .a-empty a {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-2);
+      border-bottom: 1px solid var(--signal-4);
+      padding-bottom: 2px;
+      transition: color var(--medium), border-color var(--medium);
+    }
+    .a-empty a:hover { color: var(--ember); border-bottom-color: var(--ember); }
+
+    /* The archive list — a vertical stack of records, separated by
+       generous space and a single hairline. Each record renders with
+       the same shape it had at completion. */
+    .a-records {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .a-record {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .a-record:first-of-type { padding-top: 0; }
+    .a-record:last-of-type { border-bottom: none; }
+
+    .a-record-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .a-record-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--ember);
+    }
+    .a-record-date {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      white-space: nowrap;
+    }
+    .a-record-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--signal);
+      letter-spacing: -0.004em;
+      line-height: 1.3;
+      margin-bottom: 28px;
+    }
+
+    /* Paragraphs body (Session 0 format) */
+    .a-record-body p {
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--signal-2);
+      margin-bottom: 14px;
+    }
+    .a-record-body p:last-of-type {
+      font-style: italic;
+      color: var(--signal-3);
+      border-left: 1px solid var(--ember-3);
+      padding-left: 18px;
+      margin-left: 0;
+    }
+    .a-record-body p em { color: var(--signal); font-style: italic; }
+
+    /* Structured body (Sessions 1–8 labeled formats) */
+    .a-record-body .srf-block {
+      margin-bottom: 22px;
+    }
+    .a-record-body .srf-label {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 8px;
+    }
+    .a-record-body .srf-value {
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--signal);
+    }
+    .a-record-body .srf-block.srf-witness .srf-value {
+      font-style: italic;
+      color: var(--signal-2);
+      border-left: 2px solid var(--ember-3);
+      padding-left: 18px;
+    }
+
+    .a-record-actions {
+      margin-top: 32px;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+    }
+    .a-record-actions a {
+      color: var(--signal-3);
+      transition: color var(--medium);
+    }
+    .a-record-actions a:hover { color: var(--ember); }
+
+    /* Foot — quiet nav back to the rest of The Signal */
+    .a-foot {
+      max-width: 760px;
+      margin: 96px auto 0;
+      padding-top: 40px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--signal-3);
+      line-height: 1.7;
+    }
+    .a-foot .nav {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+    }
+    .a-foot .nav a {
+      color: var(--signal-3);
+      transition: color var(--medium);
+    }
+    .a-foot .nav a:hover { color: var(--ember); }
+  </style>
+</head>
+
+<body>
+
+<main data-screen-label="07 The Archive">
+
+  <header class="a-top">
+    <div class="s-mark"><a href="index.html"><em>The Signal</em></a></div>
+    <div class="s-meta">The Archive · <em id="archive-count">0 records</em></div>
+  </header>
+
+  <section class="a-stage">
+
+    <div class="a-eyebrow">A longitudinal ledger</div>
+    <h1 class="a-title">
+      The <em>Archive</em>
+    </h1>
+    <p class="a-lede">
+      Every record this runtime has produced. Resonance Records, Interruption
+      Traces, Field Contact Records, Decision Traces, Place Signal Maps,
+      Timing Signal Maps, Signal Authority Maps — held here, in the order
+      they were made. Not a feed. Not a dashboard. A ledger.
+    </p>
+
+    <!-- Records render here. Empty state if none yet. -->
+    <div id="archive-body"></div>
+
+    <div class="a-foot">
+      The Archive is honest. It shows only what has been done.
+      <div class="nav">
+        <a href="index.html">Threshold</a>
+        <a href="begin.html">Where to Begin</a>
+        <a href="sessions.html">Architecture</a>
+        <a href="field.html">The Field</a>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  // Read every Resonance Record / Trace / Map the reader has produced.
+  // Each is rendered in its native shape — paragraphs for Session 0,
+  // labeled structured for the rest.
+
+  // Canonical session metadata — must stay in sync with signal/session.js.
+  const SESSION_META = {
+    0: { title: 'Split',     recordTitle: 'Resonance Record',   kind: 'paragraphs' },
+    1: { title: 'Trade',     recordTitle: 'Resonance Record 1', kind: 'structured',
+         labels: ['Detected Trade', 'Avoided Cost', 'Protective Narrative', 'Actual Price Being Paid', 'Witnessing Instruction'] },
+    2: { title: 'Protector', recordTitle: 'Resonance Record 2', kind: 'structured',
+         labels: ['Primary Protector', 'Preserved Function', 'Prevented Reality', 'Activation Trigger', 'Earliest Activation Signal', '72-Hour Observation Instruction'] },
+    3: { title: 'Interrupt', recordTitle: 'Interruption Trace', kind: 'structured',
+         labels: ['Detected Pattern', 'Trigger', 'Earliest Charge', 'Interpretation', 'Activated Protector', 'Continuity Lock Point', 'Possible Interruption Window', 'Lower-Leakage Alternative', '72-Hour Observation Instruction'] },
+    4: { title: 'Field',     recordTitle: 'Field Contact Record', kind: 'structured',
+         labels: ['Primary Noise Pattern', 'Signal State Detected', 'Narrative Re-entry Pattern', 'Widening Mechanism', 'Stable Signal Observation', 'Environmental Sensitivity Observation', '72-Hour Observation Instruction'] },
+    5: { title: 'Integrity', recordTitle: 'Decision Trace', kind: 'structured',
+         labels: ['Decision Pressure', 'Continuity Influence', 'Highest Leakage Option', 'Lowest Leakage Option', 'Identity Resistance', 'Stabilized Signal Observation', '72-Hour Observation Instruction'] },
+    6: { title: 'Place',     recordTitle: 'Place Signal Map', kind: 'structured',
+         labels: ['High-Noise Environments', 'Continuity-Amplifying Environments', 'Transitional Environments', 'Signal-Friendly Environments', 'Strongest Environmental Shift', 'Environmental Observation Pattern', '7-Day Observation Instruction'] },
+    7: { title: 'Time',      recordTitle: 'Timing Signal Map', kind: 'structured',
+         labels: ['High-Noise Temporal States', 'Continuity-Amplifying Phases', 'Transitional States', 'Signal-Friendly Phases', 'Strongest Temporal Shift', 'Temporal Observation Pattern', '7-Day Observation Instruction'] },
+    8: { title: 'Hierarchy', recordTitle: 'Signal Authority Map', kind: 'structured',
+         labels: ['Reactive Momentum Signals', 'Narrative Intelligence Signals', 'Coherence-Based Signals', 'Deep Structural Signals', 'Most Common False Authority Pattern', 'Strongest Stability Marker', '7-Day Observation Instruction'] },
+  };
+
+  function escapeHTML(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function paragraphsRender(text) {
+    const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+    return blocks.map(b => `<p>${escapeHTML(b)}</p>`).join('');
+  }
+
+  function structuredRender(text, labels) {
+    const found = {};
+    for (let i = 0; i < labels.length; i++) {
+      const here = labels[i];
+      const re = new RegExp(
+        '(?:^|\\n)\\s*' + here.replace(/ /g, '\\s+') + '\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:' +
+        labels.filter((_, j) => j !== i).map(l => l.replace(/ /g, '\\s+')).join('|') +
+        ')\\s*:|$)', 'i');
+      const m = text.match(re);
+      if (m && m[1]) found[here] = m[1].trim();
+    }
+    if (Object.keys(found).length === 0) return paragraphsRender(text);
+    const present = labels.filter(l => found[l]);
+    const last = present[present.length - 1];
+    return present.map(l => {
+      const isLast = l === last;
+      const cls = isLast ? 'srf-witness' : '';
+      return `
+        <div class="srf-block ${cls}">
+          <div class="srf-label">${escapeHTML(l)}</div>
+          <div class="srf-value">${isLast ? '<em>' + escapeHTML(found[l]) + '</em>' : escapeHTML(found[l])}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function formatDate(ms) {
+    if (!ms) return '';
+    try {
+      const d = new Date(ms);
+      const mo = d.toLocaleString('en-US', { month: 'short' });
+      const day = d.getDate();
+      const yr = d.getFullYear();
+      return mo + ' ' + day + ' · ' + yr;
+    } catch (e) { return ''; }
+  }
+
+  let state = null;
+  try { state = JSON.parse(localStorage.getItem('signal.state') || 'null'); } catch (e) {}
+  state = state || { records: [] };
+  const records = (state.records || []).slice();
+  // Oldest first — the archive is chronological forward, the way the
+  // reader walked the arc. Later records sit nearer the bottom.
+  records.sort((a, b) => (a.when || 0) - (b.when || 0));
+
+  const host = document.getElementById('archive-body');
+  const countEl = document.getElementById('archive-count');
+
+  if (records.length === 0) {
+    host.innerHTML = `
+      <div class="a-empty">
+        <div class="a-empty-label">No records yet</div>
+        <div class="a-empty-body">
+          The Archive is empty. The first record materializes once Session 0 —
+          the Split — has been completed and the Resonance Record generated.
+        </div>
+        <a href="session.html?session=0">Enter Session 0 →</a>
+      </div>
+    `;
+    if (countEl) countEl.textContent = 'no records yet';
+  } else {
+    const html = ['<div class="a-records">'];
+    for (const r of records) {
+      const meta = SESSION_META[r.sessionId] || {};
+      const labelHead = (meta.recordTitle || 'Record') + ' · Session ' + String(r.sessionId).padStart(2, '0');
+      const titleLine = r.sessionTitle || meta.title || '';
+      const dateLine = formatDate(r.when);
+      const body = (meta.kind === 'structured' && meta.labels)
+        ? structuredRender(String(r.record || ''), meta.labels)
+        : paragraphsRender(String(r.record || ''));
+      html.push(`
+        <div class="a-record">
+          <div class="a-record-head">
+            <div class="a-record-meta">${escapeHTML(labelHead)}</div>
+            <div class="a-record-date">${escapeHTML(dateLine)}</div>
+          </div>
+          <div class="a-record-title"><em>${escapeHTML(titleLine)}</em></div>
+          <div class="a-record-body">${body}</div>
+          <div class="a-record-actions">
+            <a href="session.html?session=${r.sessionId}">Return to the session →</a>
+          </div>
+        </div>
+      `);
+    }
+    html.push('</div>');
+    host.innerHTML = html.join('');
+    if (countEl) countEl.textContent = records.length + (records.length === 1 ? ' record' : ' records');
+  }
+</script>
+
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

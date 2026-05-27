@@ -1,0 +1,40 @@
+{
+  "_comment": "Single source of truth for the videos. Edited by the studio at /studio/videos.html. The watch page fetches this file on load.",
+  "updated_at": "2026-05-23",
+  "videos": [
+    {
+      "id": "yt-I0FDttzhxWI",
+      "title": "New long-form talk",
+      "blurb": "A new long-form video on AI, decisions, and execution.",
+      "platform": "youtube",
+      "platform_id": "I0FDttzhxWI",
+      "duration": "—",
+      "date": "2026-05-22",
+      "topic": "general",
+      "featured": true,
+      "hashtags": []
+    },
+    {
+      "id": "yt-FWknG4jZDUE",
+      "title": "The Learning Trap",
+      "blurb": "You don't have a learning problem. You have a thinking problem. Most ambitious people believe the next book, the next course, the next framework will finally unlock things. It won't.",
+      "platform": "youtube-shorts",
+      "platform_id": "FWknG4jZDUE",
+      "duration": "0:26",
+      "date": "2026-05-22",
+      "topic": "siv",
+      "hashtags": ["leadership", "decisionmaking", "thinking", "criticalthinking", "selfimprovement"]
+    },
+    {
+      "id": "yt-9p9KzBxCKD4",
+      "title": "Your Dashboard is Lying to You",
+      "blurb": "The number on your dashboard is real. The story it tells you isn't. Most leaders optimise what they can see while the actual constraint hides in a handoff, an approval queue, or one overloaded person.",
+      "platform": "youtube-shorts",
+      "platform_id": "9p9KzBxCKD4",
+      "duration": "0:26",
+      "date": "2026-05-22",
+      "topic": "execution",
+      "hashtags": ["leadership", "execution", "thinking", "criticalthinking", "decisionmaking"]
+    }
+  ]
+}

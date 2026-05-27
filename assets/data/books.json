@@ -1,0 +1,131 @@
+{
+  "_comment": "The books — published canon for vinaypasricha.com/books.html. Edited through Studio → Books.",
+  "updated_at": "2026-05-27",
+  "books": [
+    {
+      "slug": "ai-for-business-leaders",
+      "volume": "I",
+      "title": "AI for Business Leaders",
+      "subtitle": "A clear-headed guide to leading with AI without losing the plot.",
+      "cover": "assets/images/ai-for-business-leaders-cover-front.jpg",
+      "year": "2025",
+      "pages": 184,
+      "isbn": "978-0-9978459-1-4",
+      "status": "published",
+      "pitch": "Most leadership advice on AI is either a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now but want to move clearly.",
+      "topics": [
+        "When to deploy AI — and when not to",
+        "The leader's real responsibility in an AI-native company",
+        "What changes inside teams once AI joins them",
+        "Strategy without hype: questions before answers"
+      ],
+      "amazon": "https://www.amazon.in/dp/B0GFXXPGP7",
+      "excerpt_path": "paths/ai-for-business.html"
+    },
+    {
+      "slug": "siv-method",
+      "volume": "II",
+      "title": "The SIV Method",
+      "subtitle": "A Brutal Framework for Understanding Reality Before Execution.",
+      "cover": "assets/images/siv-method-cover-front.jpg",
+      "year": "2026",
+      "pages": 96,
+      "isbn": "978-0-9978459-2-1",
+      "status": "published",
+      "pitch": "Most failure begins not in action but in misunderstanding. SIV is a structured method for examining reality through multiple lenses, applying Socratic pressure to every claim, and converging toward an integrated understanding strong enough to support action.",
+      "topics": [
+        "Why most decisions fail before they begin",
+        "Eight steps from premature conviction to earned understanding",
+        "How to generate lenses fresh from the issue, not from a checklist",
+        "The discipline of separating confidence from certainty"
+      ],
+      "amazon": "https://www.amazon.in/dp/B0GX27LGJX",
+      "amazon_by_lang": {
+        "en": "https://www.amazon.in/dp/B0GX27LGJX",
+        "pt": "https://www.amazon.com.br/dp/B0H2YW65Q5",
+        "de": "https://www.amazon.nl/dp/B0H2Z5KCD9",
+        "fr": "https://www.amazon.fr/dp/B0GZJ3TC55",
+        "nl": "https://www.amazon.nl/dp/B0H2Z27YNL",
+        "ja": "https://www.amazon.co.jp/dp/B0H2Z2VX5K",
+        "mr": "https://www.amazon.in/dp/B0H2Z9MM8Q",
+        "ta": "https://www.amazon.in/dp/B0H2Z9CZHX"
+      },
+      "excerpt_path": "paths/decisions.html",
+      "try_it": { "label": "Try the method", "url": "paths/decisions.html#begin" }
+    },
+    {
+      "slug": "execution-doctrine",
+      "volume": "III",
+      "title": "The Execution Doctrine",
+      "subtitle": "From understanding to applied force in the world.",
+      "cover": "assets/images/execution-doctrine-cover-front.jpg",
+      "year": "2026",
+      "pages": 128,
+      "isbn": "978-0-9978459-3-8",
+      "status": "published",
+      "pitch": "SIV produces understanding. The Execution Doctrine applies it. Most execution failures are not failures of will — they are failures of design. A field manual for operators who want to be apt rather than merely fast.",
+      "topics": [
+        "How to detect the real constraint, not the loudest one",
+        "Why momentum is more valuable than motivation",
+        "Sequencing actions when everything feels urgent",
+        "The handoff from thinking to doing — and back"
+      ],
+      "amazon": "https://www.amazon.in/dp/B0GXVLX2G9",
+      "amazon_by_lang": {
+        "en": "https://www.amazon.in/dp/B0GXVLX2G9",
+        "es": "https://www.amazon.es/dp/B0GX2XVYP6",
+        "pt": "https://www.amazon.com.br/dp/B0H2XZBSFF",
+        "de": "https://www.amazon.nl/dp/B0H2Z2TN9K",
+        "fr": "https://www.amazon.fr/dp/B0H2XFJW4M",
+        "hi": "https://www.amazon.in/dp/B0GX8F2CPX",
+        "ta": "https://www.amazon.in/dp/B0H26GYQD2"
+      },
+      "excerpt_path": "paths/execute.html"
+    },
+    {
+      "slug": "organizational-frequency",
+      "volume": "IV",
+      "title": "Organizational Frequency",
+      "subtitle": "A new doctrine for hiring in the age of intelligent discovery.",
+      "cover": "assets/images/organizational-frequency-cover-front.jpg",
+      "year": "2026",
+      "pages": null,
+      "isbn": "978-1-7385942-0-3",
+      "status": "published",
+      "pitch": "Hiring is not convincing people to fit somewhere. It is discovering where they already belong. Every company carries a frequency. Every person carries their own. Great performance happens when the two resonate — most bad hires are not bad people; they are mismatched frequencies, miscast in the wrong environment.",
+      "topics": [
+        "Why the resume-and-interview model is structurally broken",
+        "Understand — discover — validate — grow: the four-stage doctrine",
+        "How intelligent discovery replaces gut-feel hiring",
+        "Building a frequency-aware talent operating system"
+      ],
+      "amazon": "https://www.amazon.in/dp/B0H2NTL3XS",
+      "amazon_by_lang": {
+        "en": "https://www.amazon.in/dp/B0H2NTL3XS"
+      },
+      "excerpt_path": "paths/hire.html",
+      "series": "A Doctrine for the Future of Work · 01"
+    },
+    {
+      "slug": "the-signal",
+      "volume": "V",
+      "title": "The Signal",
+      "subtitle": "A Practice for Clearer Reception.",
+      "cover": "assets/images/the-signal-cover-front.jpg",
+      "year": "Late 2026",
+      "pages": null,
+      "isbn": null,
+      "status": "upcoming",
+      "pitch": "We live inside an information density no prior generation has had to navigate. The Signal is a cognitive instrument for sustained attention in noisy environments — recursive, longitudinal, the most personal of the books. A practice for clearer reception of what is actually being signalled, beneath the noise.",
+      "topics": [
+        "How signal degrades and where to find it again",
+        "Building a personal information diet that compounds",
+        "Long-form attention in short-form attention environments",
+        "The reader's discipline in an age of the feed"
+      ],
+      "amazon": null,
+      "excerpt_path": "signal/index.html",
+      "notify": true
+    }
+  ]
+}

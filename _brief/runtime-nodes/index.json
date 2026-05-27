@@ -1,0 +1,113 @@
+{
+  "_comment": "VED Runtime — chamber/node specifications. One file per node. Order is significant: nodes are numbered to reflect the entry sequence defined by the blueprint. The Sequence Chamber is always Node 01 because no diagnosis begins before sequence clarity. Nodes 02–05 are specified; 06–09 are pending. The Runtime Meta-Layer (spatial, navigation, temporal, cartographic, atmospheric, memory) lives separately at _brief/runtime-meta-layer.md.",
+  "doctrine": "execution-doctrine",
+  "blueprint_path": "_brief/ved-runtime-blueprint.md",
+  "meta_layer_path": "_brief/runtime-meta-layer.md",
+  "updated_at": "2026-05-27",
+  "nodes": [
+    {
+      "id": "01",
+      "name": "The Sequence Chamber",
+      "alt_name": "Action 1 → Action N Observatory",
+      "slug": "sequence-chamber",
+      "path": "_brief/runtime-nodes/01-sequence-chamber.md",
+      "purpose": "Transform vague intention into observable execution topology.",
+      "book_anchor": "Chapter 6 — From Action 1 to Action N",
+      "routes_to": [
+        "constraint-observatory",
+        "output-reality-chamber",
+        "human-constraint-chamber",
+        "structural-constraint-chamber"
+      ],
+      "status": "spec-complete · prototype-built"
+    },
+    {
+      "id": "02",
+      "name": "Constraint Observatory",
+      "alt_name": "Governing Limit Chamber",
+      "slug": "constraint-observatory",
+      "path": "_brief/runtime-nodes/02-constraint-observatory.md",
+      "purpose": "Identify the true governing limit suppressing output.",
+      "book_anchor": "Chapter 7 — Reading the Constraint (with Chapter 3)",
+      "routes_to": [
+        "human-constraint-chamber",
+        "structural-constraint-chamber",
+        "output-reality-chamber",
+        "sequence-chamber",
+        "failure-and-recovery-chamber",
+        "multi-scale-systems-chamber"
+      ],
+      "status": "spec-complete"
+    },
+    {
+      "id": "03",
+      "name": "Output Reality Chamber",
+      "alt_name": "Reality Calibration Chamber",
+      "slug": "output-reality-chamber",
+      "path": "_brief/runtime-nodes/03-output-reality-chamber.md",
+      "purpose": "Determine whether execution is actually occurring; preserve reality contact.",
+      "book_anchor": "Chapter 12 — Output as the Measure of Truth",
+      "routes_to": [
+        "constraint-observatory",
+        "sequence-chamber",
+        "failure-and-recovery-chamber",
+        "human-constraint-chamber",
+        "structural-constraint-chamber",
+        "multi-scale-systems-chamber"
+      ],
+      "status": "spec-complete"
+    },
+    {
+      "id": "04",
+      "name": "Failure & Recovery Chamber",
+      "alt_name": "Recovery Observatory",
+      "slug": "failure-and-recovery-chamber",
+      "path": "_brief/runtime-nodes/04-failure-and-recovery-chamber.md",
+      "purpose": "Transform execution failure into diagnostic intelligence; preserve continuity under collapse.",
+      "book_anchor": "Chapters 14–15 — How Execution Fails / Correction and Recovery",
+      "routes_to": [
+        "constraint-observatory",
+        "sequence-chamber",
+        "output-reality-chamber",
+        "human-constraint-chamber",
+        "structural-constraint-chamber",
+        "multi-scale-systems-chamber",
+        "capacity-expansion-chamber"
+      ],
+      "status": "spec-complete"
+    },
+    {
+      "id": "05",
+      "name": "Human Constraint Chamber",
+      "alt_name": "Executor Dynamics Chamber",
+      "slug": "human-constraint-chamber",
+      "path": "_brief/runtime-nodes/05-human-constraint-chamber.md",
+      "purpose": "Identify where human execution capacity suppresses system output. Execution anthropology.",
+      "book_anchor": "Chapters 10 & 17 — When the Bottleneck Is Human / The Character of the Executor",
+      "routes_to": [
+        "structural-constraint-chamber",
+        "constraint-observatory",
+        "sequence-chamber",
+        "output-reality-chamber",
+        "failure-and-recovery-chamber",
+        "multi-scale-systems-chamber"
+      ],
+      "status": "spec-complete"
+    }
+  ],
+  "pending_nodes": [
+    {
+      "id": "06",
+      "name": "Structural Constraint Chamber",
+      "slug": "structural-constraint",
+      "spec_path": "_brief/runtime-nodes/06-structural-constraint-chamber.md",
+      "prep_path": "_brief/runtime-node-06-prep.md",
+      "purpose": "The engineering layer of VED — process topology, tooling, information systems, decision architecture, organizational design, resource flow, scaling structures.",
+      "book_anchor": "Chapter 11 — When the Bottleneck Is Structural",
+      "status": "spec-complete · prototype-built"
+    },
+    { "id": "07", "name": "Capacity Expansion Chamber",     "slug": "capacity-expansion",      "status": "pending" },
+    { "id": "08", "name": "Multi-Scale Systems Chamber",    "slug": "multi-scale-systems",     "status": "pending" },
+    { "id": "09", "name": "Character of the Executor Chamber", "slug": "character-of-the-executor-chamber", "status": "pending" }
+  ]
+}

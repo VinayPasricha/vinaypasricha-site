@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translations — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@400;500&family=Noto+Sans+Bengali:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .lang-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .lang-tab {
+      padding: 10px 18px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .lang-tab:hover { border-color: var(--ink); color: var(--ink); }
+    .lang-tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .lang-tab .native { font-family: var(--serif); font-style: italic; letter-spacing: 0; text-transform: none; margin-left: 8px; font-size: 13px; }
+    .lang-tab.active .native { color: var(--paper-2); }
+    .lang-tab .count { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; margin-left: 8px; color: inherit; opacity: 0.6; }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      flex-wrap: wrap;
+    }
+    .filter-search {
+      flex: 1;
+      min-width: 200px;
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 9px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      border-radius: 2px;
+      outline: none;
+    }
+    .filter-search:focus { border-color: var(--ink); }
+    .filter-pill {
+      padding: 7px 12px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-3);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .filter-pill:hover { border-color: var(--ink); color: var(--ink); }
+    .filter-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    .strings-list { display: flex; flex-direction: column; gap: 8px; }
+    .str-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 16px;
+      padding: 12px 16px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      align-items: start;
+      transition: background .15s;
+    }
+    .str-row:hover { background: var(--paper-2); }
+    .str-row.untranslated { border-left: 3px solid var(--accent); }
+    .str-row.translated { border-left: 3px solid #2e7d5b; }
+    .str-source {
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink);
+      padding: 8px 10px;
+      background: var(--paper);
+      border-radius: 2px;
+      border: 1px solid var(--rule-soft);
+      word-wrap: break-word;
+    }
+    .str-translation-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .str-translation {
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink);
+      padding: 8px 10px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      outline: none;
+      width: 100%;
+      resize: vertical;
+      min-height: 36px;
+      transition: border-color .15s;
+    }
+    .str-translation:focus { border-color: var(--ink); }
+    .str-translation[lang="hi"] { font-family: "Noto Sans Devanagari", var(--serif); }
+    .str-translation[lang="bn"] { font-family: "Noto Sans Bengali", var(--serif); }
+    .str-meta {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      padding: 0 2px;
+    }
+    .str-actions { display: flex; gap: 4px; align-items: start; }
+    .str-action {
+      padding: 6px 10px;
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-3);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .str-action:hover { border-color: var(--ink); color: var(--ink); }
+    .str-action.danger:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+    .progress-bar {
+      margin: 16px 0;
+      height: 6px;
+      background: var(--paper-2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width .25s;
+    }
+    .progress-text {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 12px;
+    }
+
+    .show-more {
+      margin: 24px auto;
+      display: block;
+      padding: 12px 32px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .show-more:hover { border-color: var(--ink); color: var(--ink); }
+
+    @media (max-width: 800px) {
+      .str-row { grid-template-columns: 1fr; }
+      .str-actions { grid-column: 1 / -1; flex-direction: row; }
+    }
+  </style>
+</head>
+<body class="studio-body" data-no-translate>
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— editing Translations</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../index.html?lang=hi" target="_blank" rel="noopener">View site (hi) ↗</a>
+    <a class="st-link" href="../index.html?lang=bn" target="_blank" rel="noopener">View site (bn) ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room edits the language packs that translate the site for non-English readers.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Translations</div>
+        <h1><em>Translations</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status"><span class="saved">All changes saved on this device</span></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— How this works</div>
+      <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-2); margin-top: 8px;">
+        Each language pack is a JSON file at <code>assets/data/i18n/&lt;lang&gt;.json</code>. When a visitor sets <code>?lang=hi</code>, the pack loads instantly — no per-visitor AI calls. Strings missing from the pack fall back to live Claude translation (slower, per-browser cache).
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 12px;">
+        <strong>Two-step workflow:</strong> <em>Discover</em> crawls every public page and extracts translatable strings. <em>Translate via AI</em> sends untranslated ones to Claude in batches. Then review, edit any line, publish.
+      </p>
+    </div>
+
+    <!-- Language tabs -->
+    <div class="lang-tabs" id="lang-tabs"></div>
+
+    <!-- Toolbar -->
+    <div class="editor-toolbar">
+      <div class="left">
+        <span class="tb-count" id="tb-count">0 strings</span>
+      </div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-discover">Discover strings ↻</button>
+        <button class="tb-btn ghost" type="button" id="btn-translate">Translate untranslated via AI</button>
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all</button>
+        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <!-- Progress (during discover/translate) -->
+    <div id="progress-host" style="display:none">
+      <div class="progress-text" id="progress-text"></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <input class="filter-search" type="text" id="filter-search" placeholder="Search strings…">
+      <button class="filter-pill active" data-filter="all" type="button">All</button>
+      <button class="filter-pill" data-filter="translated" type="button">Translated</button>
+      <button class="filter-pill" data-filter="untranslated" type="button">Untranslated</button>
+    </div>
+
+    <div class="strings-list" id="strings-list"></div>
+
+    <button class="show-more" id="btn-show-more" style="display:none">Show more</button>
+
+  </div>
+</main>
+
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Your changes are saved locally. To make them live, replace <code>assets/data/i18n/&lt;lang&gt;.json</code> with the file we just generated.</p>
+    <p class="steps"><strong>Three steps:</strong><br>1. <em>&lt;lang&gt;.json</em> just downloaded.<br>2. Replace it in the repo.<br>3. Commit. Visitors with that language preference see the new translations on next load.</p>
+    <div class="publish-actions"><button class="tb-btn" type="button" id="publish-close">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="i18n-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .prog-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .prog-summary-card {
+      padding: 20px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+    }
+    .prog-summary-card .label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .prog-summary-card .value {
+      font-family: var(--serif);
+      font-size: 32px;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .prog-summary-card .delta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      margin-top: 6px;
+    }
+    .prog-summary-card .delta.up { color: #2e7d5b; }
+    .prog-summary-card .delta.down { color: var(--accent); }
+
+    .prog-group { margin-bottom: 48px; }
+    .prog-group-head {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .prog-group-head em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 12px;
+      color: var(--ink-4);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .prog-group-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .metric-card {
+      padding: 18px 20px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 18px;
+      align-items: center;
+    }
+    .mc-info { min-width: 0; }
+    .mc-label {
+      font-family: var(--serif);
+      font-size: 17px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+      margin-bottom: 4px;
+    }
+    .mc-source {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+    .mc-value {
+      font-family: var(--serif);
+      font-size: 26px;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      font-style: italic;
+    }
+    .mc-value .unit {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--ink-3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-left: 6px;
+      font-style: normal;
+    }
+    .mc-value .empty {
+      color: var(--ink-4);
+      font-style: italic;
+      font-size: 16px;
+    }
+    .mc-delta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+      color: var(--ink-3);
+    }
+    .mc-delta.up { color: #2e7d5b; }
+    .mc-delta.down { color: var(--accent); }
+    .mc-spark {
+      width: 140px;
+      height: 48px;
+      background: var(--paper);
+      border: 1px solid var(--rule-soft);
+      border-radius: 2px;
+      padding: 6px;
+    }
+    .mc-spark svg { width: 100%; height: 100%; display: block; }
+    .mc-spark .line { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+    .mc-spark .area { fill: rgba(138, 37, 16, 0.08); }
+    .mc-spark .empty {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-4);
+      text-align: center;
+      padding-top: 14px;
+    }
+
+    /* Snapshot form */
+    .snapshot-form {
+      margin-bottom: 32px;
+      padding: 28px;
+      background: var(--paper-2);
+      border-left: 3px solid var(--accent-2);
+      border-radius: 0 2px 2px 0;
+    }
+    .snapshot-form h3 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .snapshot-form h3 em { font-style: italic; color: var(--accent); }
+    .snapshot-form p.note {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-3);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .snapshot-form .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px 16px;
+    }
+    .snapshot-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .snapshot-form input {
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 9px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      border-radius: 2px;
+      outline: none;
+    }
+    .snapshot-form input:focus { border-color: var(--ink); }
+    .snapshot-form input[type="date"] { font-family: var(--mono); font-size: 13px; }
+    .snapshot-form .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--rule-soft);
+    }
+    .snapshot-toggle {
+      margin: 32px 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .snapshots-list {
+      margin-top: 32px;
+      padding: 24px 28px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+    }
+    .snapshots-list h3 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 14px;
+    }
+    .snap-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule-soft);
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      color: var(--ink-2);
+    }
+    .snap-row:last-child { border-bottom: 0; }
+    .snap-row .snap-date { color: var(--ink-3); letter-spacing: 0.12em; }
+    .snap-row .snap-summary { color: var(--ink-2); }
+    .snap-row button { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; background: transparent; border: 1px solid var(--rule); color: var(--ink-3); cursor: pointer; padding: 6px 10px; border-radius: 2px; transition: all .15s; }
+    .snap-row button:hover { border-color: var(--accent); color: var(--accent); }
+
+    @media (max-width: 800px) {
+      .prog-summary { grid-template-columns: repeat(2, 1fr); }
+      .prog-group-grid { grid-template-columns: 1fr; }
+      .metric-card { grid-template-columns: 1fr; }
+      .mc-spark { width: 100%; }
+      .snapshot-form .form-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— Progress</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="index.html">← Studio</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">Where progress is measured. Manually, on purpose.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Progress</div>
+        <h1><em>Progress</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status"><span class="saved">All changes saved on this device</span></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— What this is</div>
+      <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-2); margin-top: 8px;">
+        A weekly or monthly check-in where you log the numbers that matter — visitors, subscribers, book sales, social follower counts, sessions completed. Each entry is a snapshot in time. The trend over time is what the dashboard shows.
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 12px;">
+        Values are entered manually for now. When a backend is added, individual metrics can be wired to live sources (YouTube Data API, Plausible, Amazon KDP) one at a time — the schema doesn't change. See the colophon at the bottom for what each source requires.
+      </p>
+    </div>
+
+    <div class="editor-toolbar">
+      <div class="left"><span class="tb-count" id="tb-count">0 snapshots</span></div>
+      <div class="right">
+        <button class="tb-btn primary" type="button" id="btn-new-snapshot">Log a snapshot →</button>
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all</button>
+        <button class="tb-btn ghost" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <div id="snapshot-form-host"></div>
+
+    <!-- Headline summary -->
+    <div class="prog-summary" id="prog-summary"></div>
+
+    <!-- Grouped metrics with sparklines -->
+    <div id="prog-groups"></div>
+
+    <!-- Snapshot history -->
+    <div class="snapshots-list" id="snapshots-list" style="display:none">
+      <h3>— Snapshot history</h3>
+      <div id="snapshots-list-body"></div>
+    </div>
+
+    <div style="margin-top: 64px; padding: 32px; background: var(--paper-2); border-radius: 2px; border-left: 3px solid var(--accent-2);">
+      <h2 style="font-family: var(--serif); font-weight: 400; font-size: 24px; margin-bottom: 12px;">— What each <em>source</em> requires</h2>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 8px;"><em>Plausible / GA</em> — script tag on every page + their dashboard. Read API exists for Plausible. ~$6-9/month for a small site.</p>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 8px;"><em>YouTube Data API v3</em> — free, channel-level stats are public. Per-video analytics need OAuth as channel owner.</p>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 8px;"><em>Instagram Graph API</em> — requires Business/Creator account + linked Facebook Page + OAuth. Free.</p>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 8px;"><em>Amazon KDP</em> — no public sales API. Reports must be exported manually from KDP dashboard.</p>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 8px;"><em>LinkedIn / X</em> — restricted or paid. Manual entry is the realistic path.</p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 18px;">All automated fetches require server-side credentials (CORS + key safety). Pure client-side from the Studio is not possible — a small backend is required to bridge.</p>
+    </div>
+  </div>
+</main>
+
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Replace <code>assets/data/stats.json</code> with the file we just generated.</p>
+    <p class="steps"><strong>Three steps:</strong><br>1. <em>stats.json</em> just downloaded.<br>2. Replace it in the repo.<br>3. Commit. The Studio dashboard now reflects live values for anyone who opens the file directly.</p>
+    <div class="publish-actions"><button class="tb-btn" type="button" id="publish-close">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="progress-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Videos — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— editing videos</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../paths/watch.html" target="_blank" rel="noopener">View watch page ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<!-- ========== AUTH GATE (shared) ========== -->
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room edits the videos that appear on the public watch page.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<!-- ========== EDITOR ========== -->
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Videos</div>
+        <h1><em>Videos</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status">
+        <span class="saved" id="status-saved">All changes saved on this device</span>
+      </div>
+    </div>
+
+    <!-- Quick add by URL -->
+    <div class="quick-add">
+      <div class="label">— Add a video</div>
+      <div class="qa-row">
+        <input type="url" id="qa-url" placeholder="Paste a YouTube URL — e.g. https://youtu.be/abc123 or https://youtube.com/shorts/abc123">
+        <button type="button" id="qa-btn">Fetch &amp; add <span style="font-family:var(--serif);font-style:italic;font-size:14px;margin-left:6px;letter-spacing:0;text-transform:none">→</span></button>
+      </div>
+      <p class="qa-hint" id="qa-hint">YouTube title and thumbnail will auto-import. You can edit everything below before publishing.</p>
+      <p class="qa-error" id="qa-error" style="display:none"></p>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="editor-toolbar">
+      <div class="left">
+        <span class="tb-count" id="tb-count">0 videos</span>
+      </div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all changes</button>
+        <button class="tb-btn ghost" type="button" id="btn-import">Import JSON</button>
+        <input type="file" id="import-file" accept="application/json" style="display:none">
+        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <!-- Video list -->
+    <div class="video-list" id="video-list">
+      <!-- Rendered by videos-admin.js -->
+    </div>
+
+  </div>
+</main>
+
+<!-- Publish modal -->
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Your changes are saved locally. To make them live for visitors, replace the deployed <code>assets/data/videos.json</code> with the file we just generated.</p>
+    <p class="steps">
+      <strong>Three small steps:</strong><br>
+      1. The file <em>videos.json</em> has just downloaded to your computer.<br>
+      2. Open the GitHub repo (or wherever the site lives) and replace <em>assets/data/videos.json</em> with it.<br>
+      3. Commit the change. The site rebuilds and the new videos are live.
+    </p>
+    <p>If you have a backend admin connected, this step will be one-click later. For now, this is the publish flow.</p>
+    <div class="publish-actions">
+      <button class="tb-btn" type="button" id="publish-close">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="videos-admin.js"></script>
+
+</body>
+</html>

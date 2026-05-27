@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— private editing room</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../index.html">View site ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<!-- ========== AUTH GATE ========== -->
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>A private editing room.</h1>
+    <p class="lede">
+      This is where prompts, videos, and other living source on the site are edited. Enter the passphrase to continue.
+    </p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · this page is not in the sitemap · not linked from anywhere public</em></p>
+  </div>
+</section>
+
+<!-- ========== STUDIO BODY (hidden until auth) ========== -->
+<main class="studio-main" id="studio-main" style="display:none">
+  <section class="studio-hero">
+    <div class="sh-eyebrow">— Studio</div>
+    <h1>What would you like <em>to edit?</em></h1>
+    <p class="lede">Each room edits a different layer of the site. Changes persist on this device until you publish (download the file and replace it in the repo).</p>
+  </section>
+
+  <section class="studio-rooms">
+    <a class="room-card" href="videos.html">
+      <div class="rc-num">i.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Videos</em></div>
+        <div class="rc-desc">Add, edit, and reorder videos that appear on <em>vinaypasricha.com/paths/watch.html</em>. Paste a YouTube URL — title, thumbnail and duration auto-fetch.</div>
+        <div class="rc-meta" id="meta-videos">— videos · last edited —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="notebook.html">
+      <div class="rc-num">ii.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Notebook</em></div>
+        <div class="rc-desc">Write, edit, and publish the monthly essays that appear on <em>vinaypasricha.com/paths/blog.html</em>. Markdown body, live preview, drafts saved on this device.</div>
+        <div class="rc-meta" id="meta-notebook">— essays · last edited —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="books.html">
+      <div class="rc-num">iii.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Books</em></div>
+        <div class="rc-desc">Add new books, update Amazon links, mark upcoming books, edit pitches and topics. Connects to <em>books.html</em>.</div>
+        <div class="rc-meta" id="meta-books">— books · last edited —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="prompts.html">
+      <div class="rc-num">iv.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Prompts</em></div>
+        <div class="rc-desc">The system prompts that power every AI conversation on the site — SIV, AION1, The Signal. Edit, version, publish.</div>
+        <div class="rc-meta" id="meta-prompts">— prompts · last edited —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="now.html">
+      <div class="rc-num">v.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Now</em></div>
+        <div class="rc-desc">The rotating "Now" line in the topbar. What you are currently writing, building, running.</div>
+        <div class="rc-meta" id="meta-now">— items · last edited —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="progress.html">
+      <div class="rc-num">vi.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Progress</em></div>
+        <div class="rc-desc">Where progress is measured. Manually-logged snapshots — visitors, book sales, subscribers, follower counts — with trend over time.</div>
+        <div class="rc-meta" id="meta-progress">— snapshots · last logged —</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="i18n.html">
+      <div class="rc-num">vii.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Translations</em></div>
+        <div class="rc-desc">Edit the language packs that translate the site for non-English readers. Discover, batch-translate via AI, edit any line, publish.</div>
+        <div class="rc-meta" id="meta-i18n">— languages · — strings</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a class="room-card" href="subscribers.html">
+      <div class="rc-num">viii.</div>
+      <div class="rc-body">
+        <div class="rc-title"><em>Subscribers</em></div>
+        <div class="rc-desc">Every email the site has captured — Notebook subscribes, book-notify forms, AION1 intake completions. Browse, export CSV, or clear. Closes the loop on the "Subscribe" buttons that currently live in localStorage.</div>
+        <div class="rc-meta" id="meta-subscribers">— captures across — lists</div>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+  </section>
+
+  <section class="studio-note">
+    <p>
+      <em>Note.</em> This is the local-first v1 of the studio. Changes save to this browser, and the "Publish" action downloads a JSON file you replace in the repo. A real auth + database backend is planned for v1.1.
+    </p>
+  </section>
+</main>
+
+<script src="studio.js"></script>
+<script>
+  // After auth success, populate the room cards' meta lines from current state.
+  document.addEventListener('studio:authed', async () => {
+    // Videos meta
+    try {
+      let videos = [];
+      let updatedAt = '—';
+      const draft = localStorage.getItem('studio.videos');
+      if (draft) {
+        const d = JSON.parse(draft);
+        videos = d.videos || [];
+        updatedAt = d.updated_at || '—';
+      } else {
+        const res = await fetch('../assets/data/videos.json');
+        const d = await res.json();
+        videos = d.videos || [];
+        updatedAt = d.updated_at || '—';
+      }
+      document.getElementById('meta-videos').textContent =
+        `${videos.length} video${videos.length === 1 ? '' : 's'} · last edited ${updatedAt}`;
+    } catch (e) {
+      document.getElementById('meta-videos').textContent = 'unable to read videos.json';
+    }
+
+    // Notebook meta
+    try {
+      let essays = [];
+      let updatedAt = '—';
+      const draft = localStorage.getItem('studio.notebook');
+      if (draft) {
+        const d = JSON.parse(draft);
+        essays = d.essays || [];
+        updatedAt = d.updated_at || '—';
+      } else {
+        const res = await fetch('../assets/data/notebook.json');
+        const d = await res.json();
+        essays = d.essays || [];
+        updatedAt = d.updated_at || '—';
+      }
+      const published = essays.filter(e => e.status === 'published').length;
+      const drafts = essays.length - published;
+      document.getElementById('meta-notebook').textContent =
+        `${essays.length} essay${essays.length === 1 ? '' : 's'} · ${published} published, ${drafts} draft · last edited ${updatedAt}`;
+    } catch (e) {
+      document.getElementById('meta-notebook').textContent = 'unable to read notebook.json';
+    }
+
+    // Books meta
+    try {
+      let books = [], updatedAt = '—';
+      const draft = localStorage.getItem('studio.books');
+      if (draft) { const d = JSON.parse(draft); books = d.books || []; updatedAt = d.updated_at || '—'; }
+      else { const r = await fetch('../assets/data/books.json'); const d = await r.json(); books = d.books || []; updatedAt = d.updated_at || '—'; }
+      const pub = books.filter(b => b.status === 'published').length;
+      const up = books.length - pub;
+      document.getElementById('meta-books').textContent =
+        `${books.length} books · ${pub} published, ${up} upcoming · last edited ${updatedAt}`;
+    } catch (e) { document.getElementById('meta-books').textContent = 'unable to read books.json'; }
+
+    // Prompts meta
+    try {
+      let prompts = {}, updatedAt = '—';
+      const draft = localStorage.getItem('studio.prompts');
+      if (draft) { const d = JSON.parse(draft); prompts = d.prompts || {}; updatedAt = d.updated_at || '—'; }
+      else { const r = await fetch('../assets/data/prompts.json'); const d = await r.json(); prompts = d.prompts || {}; updatedAt = d.updated_at || '—'; }
+      const total = Object.keys(prompts).length;
+      const overridden = Object.values(prompts).filter(p => (p.system || '').trim()).length;
+      document.getElementById('meta-prompts').textContent =
+        `${total} prompts · ${overridden} overriding default · last edited ${updatedAt}`;
+    } catch (e) { document.getElementById('meta-prompts').textContent = 'unable to read prompts.json'; }
+
+    // Now meta
+    try {
+      let items = [], updatedAt = '—';
+      const draft = localStorage.getItem('studio.now');
+      if (draft) { const d = JSON.parse(draft); items = d.items || []; updatedAt = d.updated_at || '—'; }
+      else { const r = await fetch('../assets/data/now.json'); const d = await r.json(); items = d.items || []; updatedAt = d.updated_at || '—'; }
+      document.getElementById('meta-now').textContent =
+        `${items.length} item${items.length === 1 ? '' : 's'} · last edited ${updatedAt}`;
+    } catch (e) { document.getElementById('meta-now').textContent = 'unable to read now.json'; }
+
+    // Progress meta
+    try {
+      let metrics = [], snapshots = [], updatedAt = '—';
+      const draft = localStorage.getItem('studio.stats');
+      if (draft) { const d = JSON.parse(draft); metrics = d.metrics || []; snapshots = d.snapshots || []; updatedAt = d.updated_at || '—'; }
+      else { const r = await fetch('../assets/data/stats.json'); const d = await r.json(); metrics = d.metrics || []; snapshots = d.snapshots || []; updatedAt = d.updated_at || '—'; }
+      const lastDate = snapshots.length ? snapshots.map(s => s.date).sort().pop() : null;
+      document.getElementById('meta-progress').textContent =
+        snapshots.length
+          ? `${snapshots.length} snapshot${snapshots.length === 1 ? '' : 's'} across ${metrics.length} metrics · last logged ${lastDate}`
+          : `${metrics.length} metrics · no snapshots yet`;
+    } catch (e) { document.getElementById('meta-progress').textContent = 'unable to read stats.json'; }
+
+    // Translations meta
+    try {
+      const langs = ['hi', 'bn', 'ta', 'te', 'kn', 'es', 'fr', 'pt', 'ja', 'zh', 'ko', 'ru'];
+      let total = 0, withAny = 0;
+      for (const lang of langs) {
+        let pack = null;
+        const draft = localStorage.getItem('studio.i18n.' + lang);
+        if (draft) { try { pack = JSON.parse(draft); } catch (e) {} }
+        if (!pack) {
+          try { const r = await fetch('../assets/data/i18n/' + lang + '.json'); if (r.ok) pack = await r.json(); } catch (e) {}
+        }
+        const strings = (pack && pack.strings) || {};
+        const filled = Object.values(strings).filter(v => (v || '').trim()).length;
+        if (filled > 0) withAny += 1;
+        total = Math.max(total, Object.keys(strings).length);
+      }
+      document.getElementById('meta-i18n').textContent =
+        `${langs.length} languages · ${withAny} with translations · ${total} strings discovered`;
+    } catch (e) { document.getElementById('meta-i18n').textContent = 'unable to read translation packs'; }
+    // Subscribers meta
+    try {
+      let total = 0, nonEmpty = 0;
+      function safe(s, f) { try { return JSON.parse(s); } catch (e) { return f; } }
+      const notebook = safe(localStorage.getItem('notebookSubscribers'), []);
+      if (Array.isArray(notebook) && notebook.length) { total += notebook.length; nonEmpty++; }
+      const notify = safe(localStorage.getItem('notifyEmails'), {});
+      for (const k in notify) {
+        const arr = notify[k];
+        if (Array.isArray(arr) && arr.length) { total += arr.length; nonEmpty++; }
+      }
+      const aion = safe(localStorage.getItem('aion1.intake.log'), []);
+      if (Array.isArray(aion) && aion.length) { total += aion.length; nonEmpty++; }
+      document.getElementById('meta-subscribers').textContent =
+        `${total} capture${total === 1 ? '' : 's'} · ${nonEmpty} list${nonEmpty === 1 ? '' : 's'} · device-local`;
+    } catch (e) { document.getElementById('meta-subscribers').textContent = 'unable to read local captures'; }
+  });
+</script>
+
+</body>
+</html>

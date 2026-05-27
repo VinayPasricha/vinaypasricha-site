@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Now — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .now-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .nli { display: grid; grid-template-columns: 32px 140px 1fr auto; gap: 16px; align-items: center; padding: 14px 18px; background: var(--paper-3); border: 1px solid var(--rule); border-radius: 2px; }
+    .nli-handle { font-family: var(--mono); font-size: 18px; color: var(--ink-4); text-align: center; cursor: grab; }
+    .nli input { font-family: var(--sans); font-size: 14px; padding: 9px 12px; border: 1px solid var(--rule); background: var(--paper); border-radius: 2px; outline: none; transition: border-color .15s; }
+    .nli input:focus { border-color: var(--ink); }
+    .nli input.verb { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .nli input.subject { font-family: var(--serif); font-style: italic; font-size: 16px; }
+    .nli-actions { display: flex; gap: 6px; }
+    .nli-action { padding: 7px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; background: transparent; border: 1px solid var(--rule); color: var(--ink-2); cursor: pointer; border-radius: 2px; transition: all .15s; }
+    .nli-action:hover { border-color: var(--ink); color: var(--ink); }
+    .nli-action.danger:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+    .now-preview { margin-top: 40px; padding: 32px; background: var(--ink); color: var(--paper); border-radius: 2px; }
+    .now-preview .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 16px; }
+    .now-preview .preview-bar { display: flex; align-items: center; gap: 14px; padding: 14px 22px; background: rgba(246,241,228,0.06); border: 1px solid rgba(246,241,228,0.18); border-radius: 2px; }
+    .now-preview .key { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-2); padding-right: 14px; border-right: 1px solid rgba(246,241,228,0.18); }
+    .now-preview .rot { position: relative; height: 1.6em; flex: 1; overflow: hidden; }
+    .now-preview .rot .item { position: absolute; left: 0; right: 0; opacity: 0; transition: opacity 500ms ease; font-family: var(--mono); font-size: 12px; letter-spacing: 0.05em; color: var(--paper); }
+    .now-preview .rot .item.active { opacity: 1; }
+    .now-preview .rot em { font-family: var(--serif); font-style: italic; font-size: 14px; margin-left: 6px; letter-spacing: 0; text-transform: none; color: var(--accent-2); }
+    .now-preview .pv-note { font-family: var(--serif); font-style: italic; font-size: 13px; color: rgba(246,241,228,0.55); margin-top: 16px; }
+
+    @media (max-width: 720px) {
+      .nli { grid-template-columns: 24px 1fr; }
+      .nli-actions { grid-column: 1 / -1; flex-wrap: wrap; }
+      .nli input { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— editing the Now line</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../index.html" target="_blank" rel="noopener">View site ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room edits the rotating "Now" line in the topbar.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Now</div>
+        <h1>The <em>Now</em> line</h1>
+      </div>
+      <div class="editor-status" id="editor-status"><span class="saved">All changes saved on this device</span></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— What this is</div>
+      <p style="font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--ink-2); margin-top: 8px;">
+        The topbar of every page on the site shows a small rotating line — <em>Now: Writing The Signal · Building GoodSpace AI · Running Cohort III</em>. Each item is a <em>verb + subject</em> pair. They cycle on a slow loop. Add, remove, or reorder them here.
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 12px;">
+        2 to 5 items reads best. Single-word verb + short subject. Keep it current — what is actually happening this week, not what you wish was happening.
+      </p>
+    </div>
+
+    <div class="editor-toolbar">
+      <div class="left"><span class="tb-count" id="tb-count">0 items</span></div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-add">Add an item</button>
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all changes</button>
+        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <div class="now-list" id="now-list"></div>
+
+    <!-- =============================================================
+         The /now page sections
+         The lede + section-list shape the public /now page at paths/now.html.
+         ============================================================= -->
+    <div style="margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--rule);">
+      <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px;">— The /now page</div>
+      <h2 style="font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.2; letter-spacing: -0.012em; color: var(--ink); margin-bottom: 18px;">A longer <em style="font-style: italic; color: var(--accent);">/now</em> page — same source.</h2>
+      <p style="font-family: var(--serif); font-size: 15px; line-height: 1.6; color: var(--ink-2); margin-bottom: 24px;">The rotator above is the <em>topbar surface</em>. Below is the deeper <em>/now</em> page — a quiet, library-style page at <code>/paths/now.html</code> that shows what you are currently working on, reading, thinking about, refusing. Markdown body. Updates when something actually changes.</p>
+
+      <label style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 8px;">“As of” label <span style="font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-4); letter-spacing: 0; text-transform: none;">— e.g. “May 25, 2026”</span></label>
+      <input type="text" id="now-as-of" placeholder="May 25, 2026" style="width: 100%; font-family: var(--sans); font-size: 14px; padding: 10px 12px; border: 1px solid var(--rule); background: var(--paper); border-radius: 2px; outline: none; margin-bottom: 20px;">
+
+      <label style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 8px;">Lede <span style="font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-4); letter-spacing: 0; text-transform: none;">— the intro under the headline. Markdown supported.</span></label>
+      <textarea id="now-lede" rows="3" placeholder="What I am currently doing, thinking, reading. Updated when something actually changes — not on a schedule." style="width: 100%; font-family: var(--serif); font-size: 15px; line-height: 1.6; padding: 12px 14px; border: 1px solid var(--rule); background: var(--paper); border-radius: 2px; outline: none; resize: vertical; margin-bottom: 28px;"></textarea>
+
+      <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px;">Sections <span style="font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-4); letter-spacing: 0; text-transform: none; margin-left: 6px;">— a section is a label (Writing, Reading, Thinking about…) plus a markdown body</span></div>
+      <div class="sections-list" id="sections-list"></div>
+      <button class="tb-btn ghost" type="button" id="btn-add-section" style="margin-top: 16px;">Add a section</button>
+    </div>
+
+    <div class="now-preview">
+      <div class="label">— Topbar preview</div>
+      <div class="preview-bar">
+        <span class="key">Now</span>
+        <span class="rot" id="rot-preview"></span>
+      </div>
+      <p class="pv-note">This is what your visitors will see — the items cycle every ~4 seconds.</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Your changes are saved locally. To make them live, replace <code>assets/data/now.json</code> with the file we just generated.</p>
+    <p class="steps"><strong>Three steps:</strong><br>1. <em>now.json</em> just downloaded.<br>2. Replace it in the repo.<br>3. Commit. Live across every page.</p>
+    <div class="publish-actions"><button class="tb-btn" type="button" id="publish-close">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="now-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 0 · The Split — The Signal</title>
+  <meta name="description" content="The first session of The Signal. A developmental interaction designed by Vinay Pasricha, mediated by AI, that surfaces the split underneath your current friction.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+</head>
+
+<body>
+
+<main class="session" data-screen-label="02 Session 0 — The Split">
+
+  <!-- ============================================================
+       TOP — quiet identity strip
+       ============================================================ -->
+  <header class="s-top">
+    <div class="s-mark">
+      <a href="index.html"><em>The Signal</em></a>
+    </div>
+    <div class="s-session-id" id="session-id">
+      Session <em>00</em> · The Split
+    </div>
+  </header>
+
+  <!-- ============================================================
+       STAGE — exchanges accumulate here, one above the next
+       ============================================================ -->
+  <section class="s-stage" id="stage">
+    <div class="s-stage-eyebrow">A developmental interaction</div>
+    <h1 class="s-stage-title">
+      The first session is not about what you want.<br>
+      It is about <em>what is interfering with reception.</em>
+    </h1>
+    <!-- Exchanges injected by session.js -->
+  </section>
+
+  <!-- ============================================================
+       INPUT — fixed at the bottom; textarea + submit
+       ============================================================ -->
+  <div class="s-input-zone" id="input-zone">
+    <div class="s-input-inner">
+      <div class="s-input-hint">
+        <span>You — when you are ready</span>
+        <span class="s-pacing">No rush. <em>Be specific.</em></span>
+      </div>
+      <div class="s-input-wrap">
+        <textarea
+          id="input-text"
+          class="s-textarea"
+          rows="1"
+          placeholder="Give it to me as it is. Not as you would summarize it."
+        ></textarea>
+        <button id="input-submit" class="s-submit">
+          <span class="s-submit-label">Continue</span><span class="arrow">→</span>
+        </button>
+      </div>
+      <div style="margin-top: 14px; display:flex; justify-content: space-between; align-items: center;">
+        <div class="s-thinking" id="input-thinking" style="display:none">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span style="margin-left:6px">The field is reading</span>
+        </div>
+        <div class="s-mono" style="margin-left:auto">⌘ + Enter to continue</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="session.js"></script>
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

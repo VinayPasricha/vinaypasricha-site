@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Essay — The Monthly Notebook · Vinay Pasricha</title>
+  <meta name="description" content="An essay from The Monthly Notebook by Vinay Pasricha.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+
+  <link rel="canonical" id="link-canonical" href="https://vinaypasricha.com/paths/essay.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* ============================================================
+       The essay reader — long-form, library-style, single column
+       ============================================================ */
+    .essay-page { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+    .essay-crumbs {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 40px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .essay-crumbs a { color: var(--ink-3); transition: color .15s; }
+    .essay-crumbs a:hover { color: var(--accent); }
+    .essay-crumbs .sep { color: var(--rule); }
+    .essay-crumbs .num { color: var(--accent); }
+
+    .essay-meta-top {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .essay-meta-top .dot { color: var(--rule); }
+    .essay-title {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 48px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .essay-title em { font-style: italic; color: var(--accent); }
+    .essay-dek {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.45;
+      color: var(--ink-2);
+      margin-bottom: 56px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .essay-body {
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    .essay-body p { margin: 0 0 22px; }
+    .essay-body em { font-style: italic; }
+    .essay-body strong { font-weight: 500; }
+    .essay-body h1 { font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.15; letter-spacing: -0.015em; margin: 56px 0 16px; }
+    .essay-body h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.2; letter-spacing: -0.012em; margin: 48px 0 14px; }
+    .essay-body h2 em { font-style: italic; color: var(--accent); }
+    .essay-body h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; line-height: 1.3; margin: 36px 0 10px; }
+    .essay-body a { color: var(--accent); border-bottom: 1px solid var(--rule); transition: border-color .15s; }
+    .essay-body a:hover { border-bottom-color: var(--accent); }
+    .essay-body blockquote {
+      margin: 28px 0;
+      padding: 4px 0 4px 28px;
+      border-left: 3px solid var(--accent-2);
+      font-style: italic;
+      color: var(--ink-2);
+      font-size: 22px;
+      line-height: 1.55;
+    }
+    .essay-body hr {
+      border: 0;
+      border-top: 1px solid var(--rule);
+      margin: 48px auto;
+      max-width: 80px;
+    }
+    .essay-tags-bottom {
+      margin-top: 64px;
+      padding-top: 36px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .essay-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      background: var(--paper-2);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .essay-nav {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      border-top: 1px solid var(--rule);
+    }
+    .essay-nav a {
+      display: block;
+      padding: 24px 28px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      transition: background .15s, border-color .15s;
+    }
+    .essay-nav a:hover { background: var(--paper-2); border-color: var(--ink-3); }
+    .essay-nav .label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .essay-nav .title {
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.3;
+      letter-spacing: -0.008em;
+      color: var(--ink);
+    }
+    .essay-nav .title em { font-style: italic; }
+    .essay-nav .next-card { text-align: right; }
+    .essay-nav .placeholder {
+      opacity: 0.5;
+      pointer-events: none;
+      border-style: dashed;
+    }
+    .essay-nav .placeholder .title { font-style: italic; color: var(--ink-3); }
+
+    .essay-loading, .essay-missing {
+      max-width: 720px; margin: 0 auto;
+      padding: 80px 24px;
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-3);
+    }
+    .essay-missing h2 { font-family: var(--serif); font-size: 32px; color: var(--ink); margin-bottom: 12px; }
+
+    @media (max-width: 720px) {
+      .essay-page { padding: 40px 20px 64px; }
+      .essay-title { font-size: 34px; }
+      .essay-dek { font-size: 18px; padding-bottom: 28px; margin-bottom: 40px; }
+      .essay-body { font-size: 17px; }
+      .essay-nav { grid-template-columns: 1fr; padding: 24px 20px 48px; }
+      .essay-nav .next-card { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="essay-host">
+    <div class="essay-loading">Loading the essay…</div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="blog.html">Notebook</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/notebook-md.js"></script>
+<script>
+(async function () {
+  const host = document.getElementById('essay-host');
+  const params = new URLSearchParams(window.location.search);
+  const slug = (params.get('slug') || '').toLowerCase().trim();
+
+  // Load essays — drafts take precedence in the same way watch.html handles videos
+  async function loadEssays() {
+    try {
+      const draft = localStorage.getItem('studio.notebook');
+      if (draft) {
+        const d = JSON.parse(draft);
+        if (Array.isArray(d.essays)) return d.essays;
+      }
+    } catch (e) {}
+    try {
+      const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+      if (res.ok) {
+        const d = await res.json();
+        return Array.isArray(d.essays) ? d.essays : [];
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  const all = await loadEssays();
+  const published = all.filter(e => e.status === 'published').sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  if (!slug) {
+    host.innerHTML = `<div class="essay-missing">
+      <h2>No essay selected.</h2>
+      <p>Return to the <a href="blog.html" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+    </div>`;
+    return;
+  }
+
+  const essay = published.find(e => e.slug === slug);
+  if (!essay) {
+    host.innerHTML = `<div class="essay-missing">
+      <h2>That essay isn't here.</h2>
+      <p>It may not have published yet. Return to the <a href="blog.html" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+    </div>`;
+    return;
+  }
+
+  // Update canonical + SEO from the essay
+  document.title = stripHTML(essay.title) + ' · The Monthly Notebook';
+  const canonical = document.getElementById('link-canonical');
+  if (canonical) canonical.href = `https://vinaypasricha.com/paths/essay.html?slug=${encodeURIComponent(essay.slug)}`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.content = stripHTML(essay.dek || essay.title);
+
+  // Find adjacent essays (prev = older, next = newer)
+  const idx = published.findIndex(e => e.slug === slug);
+  const older = published[idx + 1];
+  const newer = published[idx - 1];
+
+  const tagsHTML = (essay.tags || []).map(t => `<span class="essay-tag">${escapeHTML(t)}</span>`).join('');
+
+  host.innerHTML = `
+    <article class="essay-page" data-screen-label="Essay">
+      <div class="essay-crumbs">
+        <a href="../index.html">Index</a>
+        <span class="sep">/</span>
+        <a href="blog.html">Notebook</a>
+        <span class="sep">/</span>
+        <span class="num">${escapeHTML(essay.monthLabel || essay.date || '')}</span>
+      </div>
+
+      <div class="essay-meta-top">
+        <span>${escapeHTML(essay.monthLabel || essay.date || '')}</span>
+        <span class="dot">·</span>
+        <span>${escapeHTML(String(essay.readingMin || 1))} min read</span>
+      </div>
+
+      <h1 class="essay-title">${essay.title || ''}</h1>
+      ${essay.dek ? `<p class="essay-dek">${essay.dek}</p>` : ''}
+
+      <div class="essay-body">${window.notebookMarkdown(essay.body)}</div>
+
+      ${tagsHTML ? `<div class="essay-tags-bottom">${tagsHTML}</div>` : ''}
+    </article>
+
+    <nav class="essay-nav">
+      ${older ? `
+        <a href="essay.html?slug=${encodeURIComponent(older.slug)}">
+          <div class="label">← Older</div>
+          <div class="title">${older.title}</div>
+        </a>
+      ` : `
+        <div class="placeholder" style="padding:24px 28px;border:1px dashed var(--rule);border-radius:2px;">
+          <div class="label">← Older</div>
+          <div class="title">— The Notebook begins here.</div>
+        </div>
+      `}
+      ${newer ? `
+        <a href="essay.html?slug=${encodeURIComponent(newer.slug)}" class="next-card">
+          <div class="label">Newer →</div>
+          <div class="title">${newer.title}</div>
+        </a>
+      ` : `
+        <div class="placeholder next-card" style="padding:24px 28px;border:1px dashed var(--rule);border-radius:2px;">
+          <div class="label">Newer →</div>
+          <div class="title">— Next essay, first weekend of next month.</div>
+        </div>
+      `}
+    </nav>
+  `;
+
+  function escapeHTML(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function stripHTML(s) { return String(s || '').replace(/<[^>]+>/g, ''); }
+})();
+</script>
+
+</body>
+</html>

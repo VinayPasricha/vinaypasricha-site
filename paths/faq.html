@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ · Vinay Pasricha</title>
+  <meta name="description" content="Frequently asked questions about Vinay Pasricha's work — the five books (AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal), GoodSpace AI, the AI Leadership Course, speaking engagements, and how this site is structured.">
+  <meta property="og:title" content="FAQ — Vinay Pasricha">
+  <meta property="og:description" content="Frequently asked questions about the books, the method, the course, and the site itself.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://vinaypasricha.com/paths/faq.html">
+  <meta name="concepts" content="faq, common-questions, support">
+  <meta name="continuations" content="story, connect, decisions">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    .faq-shell { max-width: 880px; margin: 0 auto; padding: 48px var(--gutter) 96px; }
+    .faq-group { margin-bottom: 56px; }
+    .faq-group:last-child { margin-bottom: 0; }
+    .faq-group .group-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    .faq-group h2 { font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: -0.012em; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+    .faq-group h2 em { font-style: italic; color: var(--accent); }
+    .faq-item { border-bottom: 1px solid var(--rule-soft); }
+    .faq-item summary { padding: 22px 36px 22px 0; cursor: pointer; list-style: none; position: relative; font-family: var(--serif); font-size: 21px; line-height: 1.3; letter-spacing: -0.008em; color: var(--ink); transition: color .15s; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-item summary em { font-style: italic; }
+    .faq-item summary::after { content: '+'; position: absolute; right: 0; top: 22px; font-family: var(--serif); font-style: italic; font-size: 28px; color: var(--ink-3); line-height: 0.9; transition: transform .25s, color .15s; }
+    .faq-item[open] summary::after { transform: rotate(45deg); color: var(--accent); }
+    .faq-item .answer { padding: 0 0 22px; max-width: 720px; }
+    .faq-item .answer p { font-family: var(--serif); font-size: 17px; line-height: 1.6; color: var(--ink-2); margin-bottom: 14px; }
+    .faq-item .answer p:last-child { margin-bottom: 0; }
+    .faq-item .answer p em { font-style: italic; color: var(--ink); }
+    .faq-item .answer a { color: var(--accent); border-bottom: 1px solid var(--rule); padding-bottom: 1px; transition: border-color .15s; }
+    .faq-item .answer a:hover { border-bottom-color: var(--accent); }
+    .faq-tail { margin-top: 56px; padding: 36px 32px; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 3px; text-align: center; }
+    .faq-tail p { font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.55; color: var(--ink-2); margin-bottom: 18px; }
+    .faq-tail p em { color: var(--ink); }
+    .faq-tail a { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; transition: background .15s; }
+    .faq-tail a:hover { background: var(--accent); }
+    .faq-tail a .arrow { font-family: var(--serif); font-style: italic; font-size: 14px; letter-spacing: 0; text-transform: none; }
+    @media (max-width: 980px) {
+      .faq-shell { padding: 36px 28px 72px; }
+      .faq-group h2 { font-size: 24px; }
+      .faq-item summary { font-size: 18px; }
+      .faq-item .answer p { font-size: 16px; }
+    }
+  </style>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/faq.html">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinay Pasricha — vinaypasricha.com">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vinaypasricha">
+  <meta name="twitter:creator" content="@vinaypasricha">
+  <meta name="twitter:title" content="FAQ — Vinay Pasricha">
+  <meta name="twitter:description" content="Frequently asked questions about the books, the method, the course, and the site itself.">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/faq.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/faq.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/faq.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/faq.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/faq.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/faq.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/faq.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/faq.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/faq.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/faq.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/faq.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/faq.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/faq.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/faq.html?lang=ru">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vinaypasricha.com/#website","url":"https://vinaypasricha.com","name":"Vinay Pasricha","description":"An AI-native intellectual operating system — books, frameworks, and conversations for navigating a rapidly changing world.","publisher":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"potentialAction":{"@type":"SearchAction","target":"https://vinaypasricha.com/?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","@id":"https://vinaypasricha.com/#vinay","name":"Vinay Pasricha","url":"https://vinaypasricha.com","image":"https://vinaypasricha.com/assets/images/og-default.jpg","jobTitle":"Founder, author, explorer of emergence","description":"Founder of GoodSpace AI and WLC College India. Author of four books on AI, decision-making, execution, and signal.","alumniOf":"WLC College India","worksFor":{"@type":"Organization","name":"GoodSpace AI","url":"https://www.goodspace.ai"},"knowsAbout":["Artificial Intelligence","Decision Making","Leadership","Hiring","Execution","Strategy","Speculative Fiction"],"nationality":"Indian","sameAs":["https://www.linkedin.com/in/vinaypasricha","https://www.goodspace.ai"]},{"@type":"FAQPage","@id":"https://vinaypasricha.com/paths/faq.html#faq","url":"https://vinaypasricha.com/paths/faq.html","name":"FAQ — Vinay Pasricha","description":"Frequently asked questions about the books, the method, the course, and the site itself.","inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"]}]}</script>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span>FAQ</span>
+  </div>
+  <h1 class="brutal">
+    Questions, <em class="accent-word">answered briefly.</em>
+  </h1>
+  <p class="subtitle">
+    The ones that get asked most often, grouped by section. If yours isn't here, write directly — every real question gets a reply.
+  </p>
+</section>
+
+<section class="faq-shell">
+
+  <div class="faq-group">
+    <div class="group-label">— About this site</div>
+    <h2>The <em>site</em> itself.</h2>
+
+    <details class="faq-item">
+      <summary>What is this site, exactly?</summary>
+      <div class="answer">
+        <p>It is the home of the work — books, AI conversations, videos, the AI Leadership Course, <em>GoodSpace AI</em>, and the longer project of building an AI-native intellectual operating system for navigating a rapidly changing world.</p>
+        <p>The structure is deliberately quiet — a library, not a feed. If you are looking for hot takes, you are in the wrong place. If you are looking for material to think alongside, this site is built for you.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why is it in <em>13 languages?</em></summary>
+      <div class="answer">
+        <p>Because the ideas matter to readers across India and the world, and the language switcher should not be tokenistic. English is the source. The other twelve are produced through high-quality automatic translation, then reviewed over time. Quality varies; the team is improving it.</p>
+        <p>To switch languages, use the dropdown in the top right of any page. Your choice is remembered between visits.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Who built it?</summary>
+      <div class="answer">
+        <p>Vinay, with help. The writing, the structure, and the visual register are Vinay's. The technical build is small and intentional — calm, library-style, no analytics theatre.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I share or quote material from the site?</summary>
+      <div class="answer">
+        <p>Yes, with attribution. A short quote with a link back is welcome anywhere. For longer extracts, write to <a href="mailto:vinay@vinaypasricha.com">vinay@vinaypasricha.com</a> and we will almost always say yes.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— The books</div>
+    <h2>The <em>books.</em></h2>
+
+    <details class="faq-item">
+      <summary>How many books are there?</summary>
+      <div class="answer">
+        <p>Five planned in this arc. Four are published or being published in 2026: <em>AI for Business Leaders, The SIV Method, The Execution Doctrine,</em> and <em>Organizational Frequency.</em> The fifth — <em>The Signal</em> — is being written and is due late 2026.</p>
+        <p>See them all on the <a href="../books.html">books page</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>In what order should I read them?</summary>
+      <div class="answer">
+        <p>There is no required order. That said: if you are an operator inside a company being changed by AI, start with <em>AI for Business Leaders.</em> If you have a hard decision in front of you, start with <em>The SIV Method.</em> If you are stuck on execution, start with <em>The Execution Doctrine.</em> If you are hiring or thinking about your own role, start with <em>Organizational Frequency.</em></p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Are they on Amazon? Anywhere else?</summary>
+      <div class="answer">
+        <p>Yes — Amazon is the primary channel for now. Each book page has a direct buy link. Other retailers and language editions will be added over time.</p>
+        <p>For bulk orders (cohorts, leadership teams, corporate libraries), write to <a href="mailto:vinay@vinaypasricha.com">vinay@vinaypasricha.com</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Are there audiobook editions?</summary>
+      <div class="answer">
+        <p>Not yet. The first audiobook is planned for the latter half of 2026, starting with <em>The SIV Method.</em></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— The SIV conversation</div>
+    <h2>The <em>SIV Method</em> conversation.</h2>
+
+    <details class="faq-item">
+      <summary>What actually happens when I try it?</summary>
+      <div class="answer">
+        <p>You describe a decision in your own words. The AI facilitator walks you through the SIV method — multiple lenses, Socratic pressure, an integrated understanding — and produces a one-page thinking artefact you can keep. The whole thing takes four to six minutes.</p>
+        <p><a href="decisions.html#begin">Try it here.</a></p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is the AI Vinay?</summary>
+      <div class="answer">
+        <p>No. The AI is a facilitator trained on Vinay's method. Vinay's writing is in the books and the essays — not in the conversation. The facilitator is deliberately neutral and structured.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is my conversation private?</summary>
+      <div class="answer">
+        <p>Yes. Your responses are stored only on your device. Nothing is sent to a server unless you explicitly choose to share the artefact. You can close the tab at any time and your data is gone.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I use SIV without the AI?</summary>
+      <div class="answer">
+        <p>Yes — that is what the book is for. The book contains the full method in writing. The conversation is one way to use it; the worksheet at the back of the book is another. Many readers do both.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— GoodSpace AI</div>
+    <h2>Hiring &amp; <em>GoodSpace AI.</em></h2>
+
+    <details class="faq-item">
+      <summary>What is GoodSpace AI?</summary>
+      <div class="answer">
+        <p>An AI-native talent platform built around the doctrine of frequency and resonance laid out in <em>Organizational Frequency.</em> Instead of resume-matching, the platform helps companies discover candidates whose natural frequencies resonate with the actual environment they would be joining.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>I'm hiring. Where do I start?</summary>
+      <div class="answer">
+        <p>The <a href="hire.html">Organizational Frequency page</a> is the doctrine. The practical platform is at <a href="https://goodspace.ai" target="_blank" rel="noopener">goodspace.ai</a>. Or write to us for a direct introduction.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>I'm looking for work. Where do I start?</summary>
+      <div class="answer">
+        <p>The <a href="find-work.html">Find Work page</a> walks you through the candidate side of the doctrine. The platform itself is free for candidates.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— The course</div>
+    <h2>The <em>AI Leadership Course.</em></h2>
+
+    <details class="faq-item">
+      <summary>How is the course different from the book?</summary>
+      <div class="answer">
+        <p>The book is the framework. The course is the framework <em>applied to your business</em> over six weeks, with seventeen other senior operators thinking alongside you. The cohort is the point — much of the value comes from the other people in the room.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>When does the next cohort start?</summary>
+      <div class="answer">
+        <p>Cohort IV begins in Q3 2026. Full details and the application are on the <a href="course.html">course page</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is it selective?</summary>
+      <div class="answer">
+        <p>Yes — capped at 18 operators per cohort and selected by referral or letter. The selection is not about prestige; it is about cohort balance and the seriousness of the question you are bringing.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— Speaking, advisory, partnerships</div>
+    <h2>Working <em>directly</em> with Vinay.</h2>
+
+    <details class="faq-item">
+      <summary>Is Vinay available for speaking?</summary>
+      <div class="answer">
+        <p>Yes — two or three engagements per quarter, selective by topic and audience. Keynotes, panels, leadership offsites, AI strategy sessions. Write to <a href="mailto:speaking@vinaypasricha.com">speaking@vinaypasricha.com</a> with the context.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Does Vinay take on advisory engagements?</summary>
+      <div class="answer">
+        <p>A small number, long-term, focused on founders and executives working on consequential AI, hiring, or organisational questions. Write to <a href="mailto:advisory@vinaypasricha.com">advisory@vinaypasricha.com</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How quickly do you reply?</summary>
+      <div class="answer">
+        <p>Within a few days, usually. Sometimes faster. Notes that are well-written and specific get the most thoughtful responses.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <div class="group-label">— Newsletter and updates</div>
+    <h2>Staying in <em>the loop.</em></h2>
+
+    <details class="faq-item">
+      <summary>Is there a newsletter?</summary>
+      <div class="answer">
+        <p>One essay a month — on the first weekend, when it's ready. No daily emails, no funnels. Subscribe on the <a href="blog.html">Notebook page</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Where do new videos go up?</summary>
+      <div class="answer">
+        <p>YouTube, Instagram, LinkedIn. New material most weeks. The full archive is on the <a href="watch.html">Watch page</a>, organised by topic.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Will I get spam if I sign up?</summary>
+      <div class="answer">
+        <p>No. One email a month. Unsubscribe in one click. The list is small and treated with care.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-tail">
+    <p>Question not <em>answered here?</em></p>
+    <a href="connect.html">Write directly <span class="arrow">→</span></a>
+  </div>
+
+</section>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+</body>
+</html>

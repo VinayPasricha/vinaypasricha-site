@@ -1,0 +1,132 @@
+/* =============================================================
+   studio.js — passphrase gate + shared helpers
+   =============================================================
+   v1: client-side only. The passphrase compares against a hash so
+   the source doesn't reveal it. For real security, this should
+   move to server-side auth. This is "keep casual visitors out",
+   not "stop a determined attacker" — that's what real backend
+   auth is for (planned v1.1, see prompt-studio-requirement.md).
+
+   To change the passphrase: open studio/index.html in a fresh
+   browser, open devtools console, run:
+     await sha256('your-new-passphrase')
+   then paste the resulting hex into PASSPHRASE_HASH below.
+   ============================================================= */
+
+// SHA-256 of 'vinay123' — easy temporary passphrase. Strengthen before public.
+const PASSPHRASE_HASH = '6cf62c18e5a01c4eec83e97509bd7f4c12ee9143ece9a831d2777e7184de65b2';
+// Allow simple bypass during dev via the URL: ?key=vinay123
+const DEV_KEY = 'vinay123';
+
+async function sha256(str) {
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function checkPassphrase(input) {
+  if (input === DEV_KEY) return true;
+  const hash = await sha256(input);
+  return hash === PASSPHRASE_HASH;
+}
+
+const AUTH_KEY = 'studio.authed';
+const AUTH_TTL = 12 * 60 * 60 * 1000; // 12 hours
+
+function isAuthed() {
+  try {
+    const v = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+    return v && (Date.now() - v.at) < AUTH_TTL;
+  } catch (e) { return false; }
+}
+function setAuthed() {
+  localStorage.setItem(AUTH_KEY, JSON.stringify({ at: Date.now() }));
+}
+function clearAuthed() {
+  localStorage.removeItem(AUTH_KEY);
+}
+
+function showStudio() {
+  const auth = document.getElementById('studio-auth');
+  const main = document.getElementById('studio-main');
+  const signout = document.getElementById('studio-signout');
+  if (auth) auth.style.display = 'none';
+  if (main) main.style.display = '';
+  if (signout) signout.style.display = '';
+  document.dispatchEvent(new CustomEvent('studio:authed'));
+}
+
+function showAuth() {
+  const auth = document.getElementById('studio-auth');
+  const main = document.getElementById('studio-main');
+  const signout = document.getElementById('studio-signout');
+  if (auth) auth.style.display = '';
+  if (main) main.style.display = 'none';
+  if (signout) signout.style.display = 'none';
+}
+
+(function initAuth() {
+  // URL ?key= bypass
+  try {
+    const url = new URL(window.location);
+    const key = url.searchParams.get('key');
+    if (key === DEV_KEY) {
+      setAuthed();
+      url.searchParams.delete('key');
+      window.history.replaceState({}, '', url);
+    }
+  } catch (e) {}
+
+  if (isAuthed()) {
+    // Defer to allow DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showStudio);
+    } else {
+      showStudio();
+    }
+  }
+
+  const wire = () => {
+    const form = document.getElementById('auth-form');
+    const input = document.getElementById('auth-input');
+    const err = document.getElementById('auth-error');
+    const signout = document.getElementById('studio-signout');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        err.style.display = 'none';
+        const ok = await checkPassphrase(input.value);
+        if (ok) {
+          setAuthed();
+          showStudio();
+        } else {
+          err.style.display = '';
+          input.value = '';
+          input.focus();
+        }
+      });
+    }
+    if (signout) {
+      signout.addEventListener('click', () => {
+        clearAuthed();
+        // If on a sub-page, route back to index
+        if (!window.location.pathname.endsWith('/studio/') && !window.location.pathname.endsWith('/studio/index.html')) {
+          window.location.href = 'index.html';
+        } else {
+          showAuth();
+        }
+      });
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+})();
+
+// Expose for sub-pages
+window.studioAuth = { isAuthed, setAuthed, clearAuthed, showStudio, showAuth };

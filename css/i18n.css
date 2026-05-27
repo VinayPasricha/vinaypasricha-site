@@ -1,0 +1,54 @@
+/* =============================================================
+   i18n.css — minimal styles for the translation indicator
+   ============================================================= */
+
+#i18n-indicator {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(20, 17, 10, 0.92);
+  color: var(--paper, #f6f1e4);
+  font-family: var(--mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+#i18n-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.i18n-spinner {
+  width: 10px; height: 10px;
+  border: 1.5px solid currentColor;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation: i18n-spin 0.9s linear infinite;
+  display: inline-block;
+}
+@keyframes i18n-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Subtle fade-in for retranslated text */
+.i18n-fading {
+  animation: i18n-fade .35s ease-out;
+}
+@keyframes i18n-fade {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+/* Language-script tuning — the body font is set in site.css.
+   This file just keeps the indicator readable across scripts. */

@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Signal — A Practice for Clearer Reception · Vinay Pasricha</title>
+  <meta name="description" content="We live inside an information density no prior generation has had to navigate. The Signal is a cognitive instrument — a practice for clearer reception of what is actually being signalled, beneath the noise. Upcoming book by Vinay Pasricha.">
+
+  <meta property="og:title" content="The Signal — A Practice for Clearer Reception">
+  <meta property="og:description" content="A developmental field you can enter today — the first AI-mediated book experience. Companion volume arrives late 2026.">
+  <meta property="og:type" content="book">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/the-signal-cover-front.jpg">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/evolve.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="canonical" href="https://vinaypasricha.com/paths/evolve.html">
+
+  <meta name="concepts" content="signal-detection, noise, attention, information-discipline, cognitive-compounding">
+  <meta name="continuations" content="decisions, execute, ai-for-business">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,500;1,400&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500&family=Noto+Sans+Bengali:wght@400;500&family=Noto+Sans+Tamil:wght@400;500&family=Noto+Sans+Telugu:wght@400;500&family=Noto+Sans+Kannada:wght@400;500&family=Noto+Sans+SC:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* Upcoming badge — used in hero */
+    .upcoming-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .upcoming-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(138, 37, 16, 0.6);
+      animation: pulse 2.4s ease-out infinite;
+    }
+
+    /* Notify form */
+    .notify-form {
+      display: flex;
+      gap: 0;
+      max-width: 460px;
+      margin: 0 auto;
+      box-shadow: 0 8px 28px -16px rgba(20, 17, 10, 0.18);
+    }
+    .notify-form input {
+      flex: 1;
+      padding: 18px 22px;
+      font-family: var(--sans);
+      font-size: 15px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-right: 0;
+      color: var(--ink);
+      outline: none;
+    }
+    .notify-form input:focus { border-color: var(--ink); }
+    .notify-form button {
+      padding: 18px 24px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border: 1px solid var(--ink);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .notify-form button:hover { background: var(--accent); border-color: var(--accent); }
+    .notify-confirm {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 20px 24px;
+      background: var(--paper);
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      text-align: center;
+      display: none;
+    }
+    .notify-confirm.show { display: block; }
+
+    /* The Signal cover placeholder */
+    .signal-placeholder-cover {
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 30% 30%, rgba(199,165,90,0.22) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 70%, rgba(138,37,16,0.18) 0%, transparent 55%),
+        linear-gradient(180deg, #2c2820 0%, #1a1814 100%);
+      color: var(--paper);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 30px;
+    }
+    .signal-placeholder-cover .sp-vol {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+    .signal-placeholder-cover .sp-status {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #9a9482;
+      align-self: flex-end;
+    }
+    .signal-placeholder-cover .sp-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 36px;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      color: var(--paper);
+    }
+    .signal-placeholder-cover .sp-by {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #c8c1a8;
+      text-align: center;
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Book",
+        "name": "The Signal",
+        "alternateName": "A Practice for Clearer Reception",
+        "author": { "@type": "Person", "name": "Vinay Pasricha" },
+        "datePublished": "2026",
+        "inLanguage": "en",
+        "bookFormat": "https://schema.org/EBook",
+        "description": "A developmental field for human evolution through AI. The first AI-mediated book experience. Companion volume by Vinay Pasricha arrives late 2026.",
+        "url": "https://vinaypasricha.com/paths/evolve.html"
+      }
+    ]
+  }
+  </script>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/evolve.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/evolve.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/evolve.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/evolve.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/evolve.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/evolve.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/evolve.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/evolve.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/evolve.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/evolve.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/evolve.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/evolve.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/evolve.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/evolve.html?lang=ru">
+</head>
+<body>
+
+<!-- =================== TOPBAR =================== -->
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn" aria-label="Open index">
+      <span class="lines"><span></span><span></span></span>
+      <span>Index</span>
+    </button>
+    <div class="lang-switch">
+      <button class="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span class="label">EN</span>
+        <span class="caret">▾</span>
+      </button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- =================== PAGE HERO =================== -->
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span class="num">Path 04</span>
+    <span class="sep">/</span>
+    <span>The Signal</span>
+  </div>
+
+  <div class="upcoming-badge"><span class="dot"></span><span>The Field is live now · The book arrives late 2026</span></div>
+
+  <h1 class="brutal">
+    We live inside a noise no prior generation<br>
+    has had to <em class="accent-word">navigate.</em>
+  </h1>
+
+  <p class="subtitle">
+    Most people are not behind in their thinking. They are simply paying attention to too many things to think well about any of them. The cost is rarely visible — until the wrong decision is made on the wrong frame, and the source of the error cannot be traced.
+  </p>
+
+  <p class="canonical">
+    <strong>The Signal</strong> is being released differently than any book before it. Not as pages, then a website. As a <em>developmental field</em> you can enter today — an interactive sequence of sessions, mediated by AI, that surface the splits in your own thinking — with the printed book following at the end of 2026 as the canonical companion.
+  </p>
+
+  <div style="margin-top: 40px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center;">
+    <a href="../signal/index.html" class="primary" style="display: inline-flex; align-items: center; gap: 14px; padding: 20px 32px; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; text-decoration: none; transition: background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">
+      <span>Cross the Threshold</span>
+      <span style="font-family:var(--serif);font-style:italic;font-size:16px;letter-spacing:0;text-transform:none">→</span>
+    </a>
+    <span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-3);">
+      The first session takes about twelve minutes. No signup. No email.
+    </span>
+  </div>
+</section>
+
+<!-- =================== THREE PILLARS =================== -->
+<section class="pillars">
+  <div class="pillars-intro">— The three pillars</div>
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="letter">N</div>
+      <div class="name">Noise</div>
+      <div class="desc">A clear account of the <em>new informational condition</em> we live in — denser, faster, more pervasive than any human attention system was built for.</div>
+    </div>
+    <div class="pillar">
+      <div class="letter">F</div>
+      <div class="name">Filter</div>
+      <div class="desc">A discipline of <em>refusal.</em> What to read, what to delete unread, what to walk past, what to return to. Filtering is the new literacy.</div>
+    </div>
+    <div class="pillar">
+      <div class="letter">C</div>
+      <div class="name">Compounding</div>
+      <div class="desc">Attention is <em>capital.</em> When sustained on the right material over time, it compounds. When fragmented, it depreciates. The book is a manual for the former.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== DOORWAY — Enter the Field =================== -->
+<section class="doorway" id="begin">
+  <div class="doorway-inner">
+    <div class="label">— The first attempt</div>
+    <h2>An <em>AI-mediated</em> developmental book.</h2>
+    <p class="invitation-text">
+      The Signal is the first book where the reader is developmentally trained
+      through interaction with the book itself — not by reading it, but by
+      <em>entering it.</em> The Field is open now. There are no levels, no badges,
+      no streaks. There is only a calm sequence of structured sessions.
+    </p>
+
+    <a href="../signal/index.html" class="doorway-btn" style="margin-top: 12px;">
+      <span>Enter The Field</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <p class="meta-line" style="margin-top: 28px">
+      Or <a href="../signal/colophon.html" style="border-bottom: 1px dotted var(--rule); padding-bottom: 1px; color: var(--ink-3);">read the colophon first</a> — an honest account of
+      what the AI is and is not doing inside the field.
+    </p>
+  </div>
+</section>
+
+<!-- =================== THE METHOD — eight themes =================== -->
+<section class="method">
+  <div class="method-head">
+    <div>
+      <div class="label">— A preview</div>
+    </div>
+    <div>
+      <h2>Eight chapters the book is being <em>built around.</em></h2>
+      <p class="intro">The structure is provisional and may evolve as the draft matures. These are the questions the manuscript is currently being shaped to answer. If you are someone these questions are alive for, the book is being written with you in mind.</p>
+    </div>
+  </div>
+
+  <div class="method-steps">
+
+    <div class="method-step">
+      <div class="num">i.</div>
+      <div class="body">
+        <h3>What is <em>noise,</em> precisely?</h3>
+        <p>A working definition that distinguishes noise from information, from data, from content. Noise is not the absence of signal — it is the structural condition of <em>more signal than attention.</em> Naming this precisely is the foundation everything else stands on.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">ii.</div>
+      <div class="body">
+        <h3>How does <em>signal degrade</em> over the lifecycle of an idea?</h3>
+        <p>Why the strongest ideas become weaker as they spread — and what to do as a reader who wants to encounter signal at its original strength, not its diluted final form.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">iii.</div>
+      <div class="body">
+        <h3>The <em>discipline of refusal.</em></h3>
+        <p>A practical chapter on how to construct an information diet that protects your attention — not by abstinence, but by curation. Most reading lists are too long; the right one is shorter, deeper, and re-read.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">iv.</div>
+      <div class="body">
+        <h3>The <em>cost of fragmentation.</em></h3>
+        <p>What actually happens to a mind that has trained itself on 30-second formats. The chapter is unromantic and based on observation, not on platform-shaming.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">v.</div>
+      <div class="body">
+        <h3><em>Sustained attention</em> as a craft.</h3>
+        <p>A practical manual for the unfashionable skill of reading something difficult, slowly, more than once. With concrete techniques and a defence against the productivity culture that disparages all of it.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">vi.</div>
+      <div class="body">
+        <h3>Recursion: <em>returning to ideas.</em></h3>
+        <p>Why returning to the same text, the same problem, the same person months and years later is the most underused intellectual tool. Linear progress is a myth; recursive depth is the actual mechanism.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">vii.</div>
+      <div class="body">
+        <h3>Reading as <em>cognitive compounding.</em></h3>
+        <p>The investment metaphor, taken seriously. What happens to a mind that compounds its reading over decades — and the specific habits that make it compound rather than disperse.</p>
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="num">viii.</div>
+      <div class="body">
+        <h3>The <em>long quiet life</em> of an idea.</h3>
+        <p>A closing chapter on the kinds of work that take a lifetime to make sense of — and the kind of attention required to keep faith with them.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== A SHORT DEFENSE =================== -->
+<section class="defense">
+  <div class="label">— A short defense</div>
+
+  <p class="opener">The world has never been louder. The discipline of finding the signal has never been more important.</p>
+
+  <p>
+    The previous books — <em>AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency</em> — are about how to act well inside a changing world. <em>The Signal</em> is about <em>what to pay attention to in the first place.</em> Without the underlying clarity it tries to support, the other disciplines float free of any ground.
+  </p>
+
+  <p>
+    The book is being written slowly. It is the most personal of the four — closer to a notebook than a manual — and that is deliberate. A book about signal cannot itself be noisy. It will arrive when it is ready, which is currently estimated for late 2026.
+  </p>
+
+  <p>
+    If you want to be told the moment it ships, leave your email above. If you would rather not, that itself is a small expression of the discipline the book is about. <em>Either is fine.</em>
+  </p>
+
+  <p class="attribution">— <em>Adapted from the working preface, draft of May 2026</em></p>
+</section>
+
+<!-- =================== THE BOOK =================== -->
+<section class="book-card" id="the-book">
+  <div class="book-card-inner">
+    <div class="book-card-cover">
+      <img src="../assets/images/the-signal-cover-front.jpg" alt="The Signal — A Practice for Clearer Reception by Vinay Pasricha" style="display:block;width:100%;height:100%;object-fit:cover;box-shadow:none">
+    </div>
+    <div class="book-card-info">
+      <div class="label">— The book · Volume V · in progress</div>
+      <h3>The <em>Signal.</em></h3>
+      <p class="book-sub">A Practice for Clearer Reception.</p>
+      <div class="book-meta">
+        <span>Vinay Pasricha</span>
+        <span class="dot">·</span>
+        <span>Late 2026</span>
+        <span class="dot">·</span>
+        <span>Manuscript in progress</span>
+      </div>
+      <div class="book-actions">
+        <a class="primary" href="../signal/index.html">Enter The Field <span class="arrow">→</span></a>
+        <a class="ghost" href="../books.html">See all books <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CONTINUATIONS =================== -->
+<section class="continuations">
+  <div class="continuations-inner">
+    <div class="label">— While you wait</div>
+    <div class="continuations-grid">
+      <a class="cont-card" href="decisions.html">
+        <div class="cont-num">ii.</div>
+        <div class="cont-title">The <em>SIV Method</em></div>
+        <div class="cont-desc">The available book closest in spirit to The Signal. A structured method for examining reality before acting on it.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+      <a class="cont-card" href="watch.html">
+        <div class="cont-num">—</div>
+        <div class="cont-title">Watch <em>the work in progress</em></div>
+        <div class="cont-desc">Short videos and reflections, including draft material from The Signal. Updated most weeks.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

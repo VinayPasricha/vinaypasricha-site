@@ -1,0 +1,672 @@
+/* =============================================================
+   intake.css — AION1 conversation surface
+   A dark sci-fi panel embedded in the ivory page.
+   Minimal copy. Quiet UI. Cinnabar accents.
+   ============================================================= */
+
+/* Container — restrained header on the ivory page */
+.intake {
+  padding: 64px var(--gutter) 96px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.intake-head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.intake-head .eyebrow {
+  display: none; /* removed — the panel itself identifies AION1 */
+}
+.intake-head h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.intake-head h2 em { font-style: italic; color: var(--accent); }
+.intake-head p.lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-3);
+  max-width: 560px;
+  line-height: 1.55;
+  margin: 0 auto;
+}
+
+/* ---------- THE PANEL — dark sci-fi surface --------------- */
+.intake-invite,
+.intake-paper,
+.intake-sent {
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(216,133,74,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(40,55,80,0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #0d1117 0%, #0a0d12 100%);
+  color: #ece4d0;
+  border: 1px solid rgba(216, 133, 74, 0.18);
+  box-shadow:
+    0 32px 80px -30px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(180, 200, 230, 0.03);
+  overflow: hidden;
+}
+
+/* HUD corner brackets — present on every panel state */
+.intake-invite::before, .intake-invite::after,
+.intake-paper::before, .intake-paper::after,
+.intake-sent::before,  .intake-sent::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(216,133,74,0.75);
+  pointer-events: none;
+}
+.intake-invite::before, .intake-paper::before, .intake-sent::before {
+  top: 14px; left: 14px;
+  border-right: 0; border-bottom: 0;
+}
+.intake-invite::after, .intake-paper::after, .intake-sent::after {
+  bottom: 14px; right: 14px;
+  border-left: 0; border-top: 0;
+}
+
+/* Subtle grid texture on every panel */
+.intake-invite, .intake-paper, .intake-sent {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(216,133,74,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(40,55,80,0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #0d1117 0%, #0a0d12 100%);
+}
+.intake-paper-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 39px, rgba(180,200,230,0.025) 39px, rgba(180,200,230,0.025) 40px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(180,200,230,0.025) 39px, rgba(180,200,230,0.025) 40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- INVITATION STATE — AION1 portrait + Begin button ---- */
+.intake-invite {
+  padding: 56px 48px 48px;
+  text-align: center;
+}
+.intake-invite .aion1-frame {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  margin: 0 auto 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0a0d12;
+  box-shadow:
+    0 0 0 1px rgba(216, 133, 74, 0.4),
+    0 0 40px rgba(216, 133, 74, 0.18),
+    inset 0 0 40px rgba(216, 133, 74, 0.08);
+}
+.intake-invite .aion1-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+  display: block;
+}
+.intake-invite .aion1-frame::after {
+  /* faint rotating glint */
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: rgba(216, 133, 74, 0.5);
+  animation: spin 8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+
+.intake-invite .aion1-name {
+  font-family: var(--mono);
+  font-size: 22px;
+  letter-spacing: 0.32em;
+  color: #ece4d0;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.intake-invite .aion1-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: rgba(216, 133, 74, 0.85);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.intake-invite .aion1-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(216, 133, 74, 1);
+  box-shadow: 0 0 8px rgba(216, 133, 74, 0.8);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+.intake-invite .opening-line {
+  display: none; /* removed — minimal copy */
+}
+
+.intake-begin {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(216, 133, 74, 0.95);
+  color: #0a0d12;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  padding: 16px 28px;
+  border: 0;
+  cursor: pointer;
+  transition: background .2s, transform .2s, box-shadow .2s;
+  position: relative;
+  z-index: 1;
+}
+.intake-begin:hover {
+  background: #ece4d0;
+  box-shadow: 0 0 24px rgba(216, 133, 74, 0.4);
+  transform: translateY(-1px);
+}
+.intake-begin .arrow {
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.intake-invite .reassure {
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(180, 200, 230, 0.45);
+}
+
+/* ---------- ACTIVE CONVERSATION ----------- */
+.intake-conversation { display: none; }
+.intake-conversation.is-active { display: block; }
+
+.intake-paper {
+  padding: 0;
+  position: relative;
+}
+
+/* Panel header — small AION1 strip across the top */
+.intake-header-strip {
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid rgba(180, 200, 230, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+.intake-header-strip .strip-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #06080c;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(216, 133, 74, 0.4);
+}
+.intake-header-strip .strip-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+}
+.intake-header-strip .strip-name {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  color: #ece4d0;
+  font-weight: 500;
+  flex: 1;
+}
+.intake-header-strip .strip-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: rgba(216, 133, 74, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.intake-header-strip .strip-status::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(216, 133, 74, 1);
+  box-shadow: 0 0 6px rgba(216, 133, 74, 0.7);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.intake-meta { display: none; } /* old meta line — gone */
+
+.intake-thread {
+  padding: 24px 28px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.exchange {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: start;
+  animation: ex-in 0.3s ease-out both;
+}
+@keyframes ex-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.exchange .speaker {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding-top: 11px;
+  text-align: right;
+  color: rgba(180, 200, 230, 0.5);
+}
+.exchange.from-assistant .speaker {
+  color: rgba(216, 133, 74, 0.95);
+}
+
+/* The actual message bubble */
+.exchange .said {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #ece4d0;
+  letter-spacing: 0;
+  padding: 10px 16px;
+  border-radius: 2px;
+  background: rgba(180, 200, 230, 0.04);
+  border: 1px solid rgba(180, 200, 230, 0.06);
+  white-space: pre-wrap;
+}
+.exchange.from-assistant .said {
+  background: rgba(216, 133, 74, 0.08);
+  border-color: rgba(216, 133, 74, 0.18);
+  color: #f4e7d2;
+}
+.exchange.from-you .said {
+  background: rgba(180, 200, 230, 0.04);
+  border-color: rgba(180, 200, 230, 0.08);
+  color: rgba(236, 228, 208, 0.9);
+}
+.exchange .said em { font-style: italic; }
+
+/* Thinking dots */
+.exchange.is-thinking .said {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.exchange.is-thinking .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(216, 133, 74, 0.85);
+  animation: think 1.4s ease-in-out infinite;
+}
+.exchange.is-thinking .dot:nth-child(2) { animation-delay: 0.15s; }
+.exchange.is-thinking .dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes think {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* ---------- INPUT ROW ----------- */
+.intake-input-row {
+  margin: 0;
+  padding: 18px 24px 22px;
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  border-top: 1px solid rgba(180, 200, 230, 0.06);
+  background: rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 1;
+}
+.intake-input {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  background: rgba(180, 200, 230, 0.05);
+  border: 1px solid rgba(180, 200, 230, 0.1);
+  outline: none;
+  color: #ece4d0;
+  resize: none;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 2px;
+  transition: border-color .15s, background .15s;
+}
+.intake-input::placeholder {
+  color: rgba(180, 200, 230, 0.3);
+}
+.intake-input:focus {
+  border-color: rgba(216, 133, 74, 0.6);
+  background: rgba(216, 133, 74, 0.05);
+}
+
+.intake-send {
+  align-self: stretch;
+  background: rgba(216, 133, 74, 0.95);
+  color: #0a0d12;
+  border: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 2px;
+}
+.intake-send:hover {
+  background: #ece4d0;
+  box-shadow: 0 0 18px rgba(216, 133, 74, 0.35);
+}
+.intake-send:disabled {
+  background: rgba(180, 200, 230, 0.15);
+  color: rgba(180, 200, 230, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.intake-send .arr {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.intake-controls {
+  padding: 10px 24px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(180, 200, 230, 0.4);
+  position: relative;
+  z-index: 1;
+}
+.intake-controls .reset {
+  background: none;
+  border: 0;
+  color: rgba(180, 200, 230, 0.4);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 0;
+  transition: color .15s;
+}
+.intake-controls .reset:hover { color: rgba(216, 133, 74, 1); }
+.intake-controls .hint { color: rgba(180, 200, 230, 0.3); }
+
+/* ---------- DRAFT PREVIEW — inline within the panel ---------- */
+.intake-draft {
+  display: none;
+  margin: 24px 24px 28px;
+  background: rgba(180, 200, 230, 0.04);
+  border: 1px solid rgba(216, 133, 74, 0.35);
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
+}
+.intake-draft.is-visible { display: block; }
+.intake-draft::before {
+  content: "MESSAGE TO VINAY";
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: #0d1117;
+  padding: 0 10px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: rgba(216, 133, 74, 0.95);
+}
+
+.draft-header {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(180, 200, 230, 0.06);
+}
+.draft-header .label { display: none; }
+.draft-header h3 {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ece4d0;
+}
+.draft-header h3 em { font-style: normal; color: rgba(216, 133, 74, 0.95); text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 13px; }
+.draft-header .meta {
+  display: none;
+}
+
+.draft-fields {
+  padding: 18px 22px 4px;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 10px 16px;
+  align-items: baseline;
+}
+.draft-fields label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(180, 200, 230, 0.5);
+  padding-top: 10px;
+}
+.draft-fields input,
+.draft-fields textarea {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: #ece4d0;
+  background: rgba(180, 200, 230, 0.05);
+  border: 1px solid rgba(180, 200, 230, 0.1);
+  padding: 9px 12px;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  border-radius: 2px;
+  transition: border-color .15s, background .15s;
+}
+.draft-fields input:focus,
+.draft-fields textarea:focus {
+  border-color: rgba(216, 133, 74, 0.6);
+  background: rgba(216, 133, 74, 0.05);
+}
+.draft-fields textarea {
+  min-height: 140px;
+  line-height: 1.6;
+}
+
+.draft-actions {
+  padding: 14px 22px 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.draft-action-primary {
+  background: rgba(216, 133, 74, 0.95);
+  color: #0a0d12;
+  border: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 13px 20px;
+  cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 2px;
+}
+.draft-action-primary:hover {
+  background: #ece4d0;
+  box-shadow: 0 0 18px rgba(216, 133, 74, 0.35);
+}
+.draft-action-primary .arr {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.draft-action-secondary {
+  background: transparent;
+  color: rgba(180, 200, 230, 0.5);
+  border: 1px solid rgba(180, 200, 230, 0.15);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  border-radius: 2px;
+}
+.draft-action-secondary:hover {
+  color: rgba(216, 133, 74, 1);
+  border-color: rgba(216, 133, 74, 0.4);
+}
+
+/* ---------- SENT CONFIRMATION ----------- */
+.intake-sent {
+  display: none;
+  text-align: center;
+  padding: 64px 48px;
+}
+.intake-sent.is-visible { display: block; }
+.intake-sent .mark {
+  font-family: var(--mono);
+  font-size: 36px;
+  color: rgba(216, 133, 74, 1);
+  margin-bottom: 18px;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(216, 133, 74, 0.5);
+}
+.intake-sent h3 {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #ece4d0;
+  margin-bottom: 14px;
+}
+.intake-sent h3 em {
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(216, 133, 74, 0.95);
+}
+.intake-sent p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: rgba(180, 200, 230, 0.65);
+  max-width: 440px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.intake-sent p em {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 12px;
+  color: #ece4d0;
+}
+.intake-sent .restart {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(180, 200, 230, 0.5);
+  background: transparent;
+  border: 1px solid rgba(180, 200, 230, 0.15);
+  cursor: pointer;
+  padding: 10px 16px;
+  transition: color .15s, border-color .15s;
+  border-radius: 2px;
+}
+.intake-sent .restart:hover {
+  color: rgba(216, 133, 74, 1);
+  border-color: rgba(216, 133, 74, 0.4);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 760px) {
+  .intake { padding: 40px 16px 56px; }
+  .intake-head h2 { font-size: 26px; }
+  .intake-invite { padding: 40px 24px 32px; }
+  .intake-invite .aion1-frame { width: 128px; height: 128px; margin-bottom: 22px; }
+  .intake-invite .aion1-name { font-size: 18px; letter-spacing: 0.28em; }
+  .intake-invite .aion1-status { margin-bottom: 28px; }
+  .intake-header-strip { padding: 14px 18px; }
+  .intake-thread { padding: 20px 16px 8px; gap: 14px; }
+  .exchange { grid-template-columns: 32px 1fr; gap: 8px; }
+  .exchange .speaker { font-size: 8px; letter-spacing: 0.2em; }
+  .exchange .said { font-size: 14px; padding: 9px 12px; }
+  .intake-input-row { flex-direction: column; padding: 14px 16px 16px; gap: 10px; }
+  .intake-input { font-size: 14px; }
+  .intake-send { padding: 12px 14px; }
+  .intake-controls { padding: 8px 16px 14px; }
+  .intake-draft { margin: 18px 16px 20px; }
+  .draft-fields { grid-template-columns: 1fr; gap: 6px; padding: 16px 16px 4px; }
+  .draft-fields label { padding-top: 0; }
+  .draft-actions { padding: 12px 16px 16px; }
+  .intake-sent { padding: 48px 24px; }
+  .intake-sent h3 { font-size: 12px; }
+}

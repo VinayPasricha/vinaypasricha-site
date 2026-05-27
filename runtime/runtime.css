@@ -1,0 +1,1288 @@
+/* =============================================================
+   KAIROS·1 — runtime visual constitution
+   =============================================================
+   Adjacent to /signal — same family of fonts, same restraint —
+   but a deeper, cooler, more architectural register. /signal is
+   a threshold; KAIROS·1 is an observatory.
+
+   PHENOMENOLOGY
+
+   • The ground is graphite, not void — slightly cooler than
+     /signal's --void. A faint grid lattice sits at the base of
+     every page, the way graph paper sits beneath a draftsman.
+   • There is no starfield. The room is precise, not poetic.
+   • Heat encodes friction. Stable transitions are ivory and
+     thin. As friction accumulates, lines warm toward amber and
+     thicken. The bottleneck (the governing limit) pulses on a
+     slow ~5500ms cycle, the same breath as /signal's ember.
+   • Time moves slowly. Easings are long. No bounce, no snap.
+   • Type is the same family as the rest of the house.
+
+   Why KAIROS·1: kairos is the greek for the supreme moment for
+   decisive action, distinct from chronos (clock time). The
+   runtime exists to identify when reality is ready for force.
+   It is the sibling of AEON1.
+   ============================================================= */
+
+:root {
+  /* The graphite — cooler & darker than /signal's --void */
+  --gr-0:    #050608;          /* deepest, the bottom of the room */
+  --gr-1:    #07080c;          /* page base */
+  --gr-2:    #0c0d12;          /* lifted surface */
+  --gr-3:    #11131a;          /* hairline lift on hover/active */
+  --gr-4:    #181b25;          /* the next plane up */
+
+  /* The ink — slightly cooler ivory than /signal's --signal */
+  --ink:     #ebe9e2;
+  --ink-2:   #b8b5ad;
+  --ink-3:   #6e6c66;
+  --ink-4:   #44433f;
+
+  /* Heat — encodes friction, instability, governing limits.
+     A touch warmer & redder than /signal's --ember so the
+     room is unmistakably a different chamber. */
+  --heat:    #d99466;
+  --heat-2:  #b87246;
+  --heat-3:  #6a3c1e;
+  --heat-4:  #2a1808;
+
+  /* Telemetry — rare cool accent for measurement labels.
+     Never used for emotional emphasis. */
+  --tele:    #7a8b9c;
+  --tele-2:  #3d4452;
+
+  /* Rules & seams */
+  --rule:      #14161e;
+  --rule-soft: #0e1016;
+  --rule-edge: #1c2030;
+
+  /* Fonts — same family as the rest of the house */
+  --serif: "Newsreader", "Noto Serif", Georgia, serif;
+  --sans:  "Inter", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono:  "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Slow easings — observatory time */
+  --breath:  5500ms cubic-bezier(.4,0,.2,1);   /* the ambient pulse */
+  --slow:    1600ms cubic-bezier(.4,0,.2,1);   /* transitions emerging */
+  --medium:   800ms cubic-bezier(.4,0,.2,1);   /* hover, focus */
+  --quick:    320ms cubic-bezier(.4,0,.2,1);   /* input affordances */
+
+  /* =============================================================
+     CHAMBER-NATIVE PHYSICS (Refinement 06)
+     =============================================================
+     Per-chamber duration variables that animations reference so
+     each chamber breathes, emerges, and holds silence at its own
+     rhythm. Bare durations (not full animation shorthand) so the
+     timing function can be set explicitly in the @keyframes rule.
+     Default values here — chamber-specific overrides on
+     body[data-chamber="X"] below in this file. */
+  --rhythm-breath:    5500ms;  /* ambient pulse */
+  --rhythm-emerge:    2400ms;  /* chamber materialization */
+  --rhythm-haunt:     7800ms;  /* unresolved landmarks */
+  --rhythm-lineage:   5500ms;  /* attention-revealed thread pulse */
+  --rhythm-hold:      1400ms;  /* composer hold after runtime turn */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--gr-1);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  min-height: 100vh;
+}
+
+/* The lattice — a faint draftsman's grid that anchors topology.
+   Two layered grids: a major rhythm every 80px, a minor every 16px.
+   Almost subliminal. Fixed so it doesn't scroll out. */
+body {
+  background-image:
+    /* major vertical */
+    linear-gradient(to right,  rgba(120,130,150,0.028) 1px, transparent 1px),
+    /* major horizontal */
+    linear-gradient(to bottom, rgba(120,130,150,0.028) 1px, transparent 1px),
+    /* minor vertical */
+    linear-gradient(to right,  rgba(120,130,150,0.012) 1px, transparent 1px),
+    /* minor horizontal */
+    linear-gradient(to bottom, rgba(120,130,150,0.012) 1px, transparent 1px),
+    /* faint warmth in the upper-center, like a directional light */
+    radial-gradient(ellipse 1200px 600px at 50% -20%, rgba(217,148,102,0.025) 0%, transparent 70%);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px, 100% 100%;
+  background-attachment: fixed;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--heat-3); color: var(--ink); }
+
+:focus-visible {
+  outline: 1px solid var(--heat);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* =============================================================
+   TYPE PRIMITIVES
+   ============================================================= */
+.k-mono {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 400;
+}
+.k-mono em { font-style: normal; color: var(--heat); }
+.k-italic { font-style: italic; }
+.k-heat   { color: var(--heat); }
+.k-quiet  { color: var(--ink-3); }
+.k-faint  { color: var(--ink-4); }
+.k-tele   { color: var(--tele); }
+
+/* =============================================================
+   THE THRESHOLD — runtime/index.html
+   =============================================================
+   The reader enters KAIROS·1 here. Slower than /signal's
+   threshold by design — the reader is entering a longer-horizon
+   environment than the developmental field. The atmosphere
+   should be architectural: laboratory, observatory, map room.
+   ============================================================= */
+.kairos {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 36px 56px 44px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top strip — the codename + telemetry */
+.k-top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  opacity: 0;
+  animation: k-fade 2400ms 400ms ease-out forwards;
+}
+.k-top .k-mark {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.k-top .k-mark em {
+  color: var(--heat);
+  font-style: normal;
+  letter-spacing: 0.36em;
+}
+.k-top .k-mark a:hover em { color: var(--ink); }
+.k-top .k-house {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-4);
+  text-align: center;
+  white-space: nowrap;
+}
+.k-top .k-house a { border-bottom: 1px dotted var(--ink-4); padding-bottom: 1px; }
+.k-top .k-house a:hover { color: var(--ink-2); border-bottom-color: var(--ink-2); }
+.k-top .k-tele {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.k-top .k-tele .pulse {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--heat);
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: 1px;
+  animation: k-breath var(--breath) ease-in-out infinite;
+}
+
+/* Center — the threshold body */
+.k-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 24px 48px;
+  position: relative;
+}
+
+.k-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.48em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 64px;
+  opacity: 0;
+  animation: k-fade 2400ms 1400ms ease-out forwards;
+}
+.k-eyebrow em { color: var(--heat); font-style: normal; letter-spacing: 0.48em; }
+
+.k-line {
+  font-family: var(--serif);
+  font-weight: 300;
+  letter-spacing: -0.008em;
+  max-width: 920px;
+  opacity: 0;
+}
+.k-line em { font-style: italic; }
+.k-line.l1 {
+  font-size: 46px;
+  line-height: 1.14;
+  color: var(--ink);
+  animation: k-rise 2400ms 2200ms ease-out forwards;
+}
+.k-line.l2 {
+  font-size: 46px;
+  line-height: 1.14;
+  color: var(--ink);
+  margin-top: 28px;
+  animation: k-rise 2400ms 3400ms ease-out forwards;
+}
+.k-line.l3 {
+  margin-top: 40px;
+  font-style: italic;
+  font-size: 26px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  letter-spacing: 0.003em;
+  max-width: 660px;
+  animation: k-rise 2400ms 5000ms ease-out forwards;
+}
+
+.k-rule {
+  width: 56px;
+  height: 1px;
+  background: var(--ink-4);
+  margin: 72px 0 52px;
+  opacity: 0;
+  animation: k-fade 1800ms 6800ms ease-out forwards;
+}
+
+/* The chamber-pass — list of available chambers as restrained map */
+.k-chambers {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  opacity: 0;
+  animation: k-fade 2200ms 7400ms ease-out forwards;
+}
+.k-chamber {
+  padding: 28px 24px 30px;
+  border-right: 1px solid var(--rule);
+  text-align: left;
+  position: relative;
+  transition: background var(--medium);
+}
+.k-chamber:last-child { border-right: 0; }
+.k-chamber.is-open {
+  cursor: pointer;
+}
+.k-chamber.is-open:hover { background: var(--gr-2); }
+.k-chamber-num {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.k-chamber.is-open .k-chamber-num { color: var(--heat); }
+.k-chamber-num .open-dot {
+  width: 4px; height: 4px;
+  background: var(--heat);
+  border-radius: 50%;
+  display: inline-block;
+  animation: k-breath var(--breath) ease-in-out infinite;
+}
+.k-chamber-name {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.32;
+  color: var(--ink);
+  font-weight: 400;
+  letter-spacing: -0.003em;
+  margin-bottom: 6px;
+}
+.k-chamber-name em { font-style: italic; }
+.k-chamber-purpose {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+.k-chamber.is-pending .k-chamber-name { color: var(--ink-3); }
+.k-chamber.is-pending .k-chamber-purpose { color: var(--ink-4); }
+
+.k-pending-mark {
+  position: absolute;
+  top: 28px; right: 24px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.k-enter {
+  margin-top: 56px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 36px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink-4);
+  cursor: pointer;
+  transition: all var(--medium);
+  opacity: 0;
+  animation: k-rise 2000ms 8200ms ease-out forwards;
+  text-decoration: none;
+}
+.k-enter:hover, .k-enter:focus-visible {
+  border-color: var(--heat);
+  color: var(--heat);
+  background: rgba(217,148,102,0.04);
+  letter-spacing: 0.42em;
+  box-shadow: 0 0 0 1px rgba(217,148,102,0.14);
+}
+.k-enter .arrow {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+  transition: transform var(--medium);
+}
+.k-enter:hover .arrow { transform: translateX(6px); }
+
+.k-instruction {
+  margin-top: 32px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-4);
+  max-width: 520px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: k-fade 2000ms 9000ms ease-out forwards;
+}
+
+/* Bottom — the colophon strip */
+.k-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 32px;
+  opacity: 0;
+  animation: k-fade 2400ms 9800ms ease-out forwards;
+}
+.k-foot .k-coauthor {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.7;
+  max-width: 360px;
+}
+.k-foot .k-coauthor em {
+  color: var(--ink-2);
+  font-style: normal;
+}
+.k-foot .k-center-mark {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+}
+.k-foot .k-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 28px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.k-foot .k-nav a {
+  color: var(--ink-3);
+  transition: color var(--medium);
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+}
+.k-foot .k-nav a:hover { color: var(--heat); border-bottom-color: var(--heat-3); }
+
+/* The reticle — a slow rotating crosshair-ish glyph behind the
+   threshold text, the visual heartbeat of the observatory. */
+.k-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 720px;
+  height: 720px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  animation: k-fade 4000ms 600ms ease-out forwards;
+}
+.k-reticle svg {
+  width: 100%; height: 100%;
+  filter: drop-shadow(0 0 18px rgba(217,148,102,0.06));
+}
+.k-reticle .ring { animation: k-spin 180000ms linear infinite; transform-origin: center; }
+.k-reticle .ring-inner { animation: k-spin-reverse 240000ms linear infinite; transform-origin: center; }
+
+/* =============================================================
+   KEYFRAMES
+   ============================================================= */
+@keyframes k-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes k-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes k-breath {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.4); }
+}
+@keyframes k-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes k-spin-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+/* =============================================================
+   RESPONSIVE
+   ============================================================= */
+@media (max-width: 880px) {
+  .kairos { padding: 24px 24px 32px; }
+  .k-top { grid-template-columns: 1fr 1fr; }
+  .k-top .k-house { display: none; }
+  .k-line.l1, .k-line.l2 { font-size: 30px; }
+  .k-line.l3 { font-size: 19px; }
+  .k-chambers { grid-template-columns: 1fr; }
+  .k-chamber { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .k-chamber:last-child { border-bottom: 0; }
+  .k-reticle { width: 380px; height: 380px; }
+  .k-foot { grid-template-columns: 1fr; gap: 18px; text-align: center; }
+  .k-foot .k-coauthor { max-width: none; }
+  .k-foot .k-nav { justify-content: center; flex-wrap: wrap; gap: 16px; }
+}
+
+/* =============================================================
+   CHAMBER WEIGHT DIFFERENCES
+   =============================================================
+   Per Refinement 04: chambers should not feel uniform. Each
+   should have its own atmospheric gravity, so the reader
+   senses they are *descending into different execution
+   realities*. The body's data-chamber attribute, set by each
+   orchestrator on mount, drives the shifts.
+
+   Sequence  — clearer, more architectural (default tones).
+   Constraint — denser, more gravitational, slightly darker ground.
+   ============================================================= */
+
+/* SEQUENCE CHAMBER — the room is the baseline. Slightly
+   stronger directional light to communicate architectural
+   clarity. Lattice grid retains crispness. */
+body[data-chamber="sequence"] {
+  background-image:
+    linear-gradient(to right,  rgba(120,130,150,0.034) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.034) 1px, transparent 1px),
+    linear-gradient(to right,  rgba(120,130,150,0.014) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.014) 1px, transparent 1px),
+    radial-gradient(ellipse 1200px 600px at 50% -20%, rgba(217,148,102,0.032) 0%, transparent 70%);
+}
+
+/* CONSTRAINT OBSERVATORY — the room is denser. Darker ground,
+   lattice slightly muted (less architectural rhythm, more
+   gravitational stillness), warm light pulled toward center to
+   suggest pressure gathering at the diagnostic heart. */
+body[data-chamber="constraint"] {
+  background-color: #050609;
+  background-image:
+    linear-gradient(to right,  rgba(120,130,150,0.018) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.018) 1px, transparent 1px),
+    linear-gradient(to right,  rgba(120,130,150,0.008) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.008) 1px, transparent 1px),
+    /* the gravitational well — a wider, deeper amber gather */
+    radial-gradient(ellipse 1800px 1100px at 50% 50%, rgba(217,148,102,0.04) 0%, transparent 65%);
+}
+body[data-chamber="constraint"] .chamber {
+  background: transparent;
+}
+body[data-chamber="constraint"] .c-top {
+  background: rgba(7,8,12,0.6);
+  border-bottom-color: var(--rule-soft);
+}
+body[data-chamber="constraint"] .c-inquiry {
+  background: transparent;
+  border-right-color: var(--rule-soft);
+}
+body[data-chamber="constraint"] .c-composer {
+  background: rgba(7,8,12,0.6);
+  border-top-color: var(--rule-soft);
+}
+body[data-chamber="constraint"] .c-topology {
+  background:
+    radial-gradient(ellipse 1000px 800px at 50% 45%, rgba(217,148,102,0.032) 0%, transparent 70%),
+    transparent;
+}
+body[data-chamber="constraint"] .c-actions {
+  border-top-color: var(--rule-soft);
+}
+
+/* STRUCTURAL CONSTRAINT CHAMBER — the engineering room. Densest
+   of the three open chambers. Tighter lattice (64×64, evoking
+   drafting paper rather than open architecture), cool tone
+   pulled deeper. The directional warm gradient sits at the
+   upper-right — the draftsman's lamp implied by the Node 06
+   spec. Container borders soften so the lattice can carry the
+   architectural rhythm. */
+body[data-chamber="structural"] {
+  background-color: #050709;
+  background-image:
+    linear-gradient(to right,  rgba(130,140,160,0.048) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(130,140,160,0.048) 1px, transparent 1px),
+    linear-gradient(to right,  rgba(130,140,160,0.020) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(130,140,160,0.020) 1px, transparent 1px),
+    /* draftsman's lamp — upper right */
+    radial-gradient(ellipse 1200px 800px at 88% -10%, rgba(217,148,102,0.036) 0%, transparent 60%);
+  background-size: 64px 64px, 64px 64px, 16px 16px, 16px 16px, 100% 100%;
+}
+body[data-chamber="structural"] .chamber {
+  background: transparent;
+}
+body[data-chamber="structural"] .c-top {
+  background: rgba(6,7,10,0.7);
+  border-bottom-color: var(--rule-soft);
+}
+body[data-chamber="structural"] .c-inquiry {
+  background: transparent;
+  border-right-color: var(--rule-soft);
+}
+body[data-chamber="structural"] .c-composer {
+  background: rgba(6,7,10,0.7);
+  border-top-color: var(--rule-soft);
+}
+body[data-chamber="structural"] .c-topology {
+  background:
+    /* schematic light from upper-right within the topology too */
+    radial-gradient(ellipse 900px 700px at 78% 18%, rgba(217,148,102,0.028) 0%, transparent 65%),
+    transparent;
+}
+body[data-chamber="structural"] .c-actions {
+  border-top-color: var(--rule-soft);
+}
+
+/* =============================================================
+   UNIFIED UNDERGROUND PULSE (Refinement 07)
+   =============================================================
+   The runtime itself breathes — one master pulse beneath every
+   chamber, very slow, almost subliminal. Each chamber's specific
+   rhythm becomes a harmonic of this deeper underground breath.
+
+   The organism is alive as one body, not as a collection of
+   atmospheric chambers.
+   ============================================================= */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 2400px 1600px at 50% 110%, rgba(217,148,102,0.018) 0%, transparent 65%);
+  opacity: 0.6;
+  animation: kairos-master-breath 14000ms ease-in-out infinite;
+}
+@keyframes kairos-master-breath {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
+}
+/* Make sure the page content sits above the master pulse layer */
+body > * { position: relative; z-index: 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  html::before { animation: none !important; }
+}
+   =============================================================
+   Sequence  — default rhythm. Linear continuity.
+   Constraint — slightly slower breath; gravitational pull is
+                heavier than chain continuity.
+   Structural — deepest, slowest. Infrastructural load-bearing
+                feel. Architectural change is patient.
+   ============================================================= */
+body[data-chamber="sequence"] {
+  --rhythm-breath:    5500ms;
+  --rhythm-emerge:    2400ms;
+  --rhythm-haunt:     7800ms;
+  --rhythm-lineage:   5500ms;
+  --rhythm-hold:      1400ms;
+}
+body[data-chamber="constraint"] {
+  --rhythm-breath:    6400ms;
+  --rhythm-emerge:    2800ms;
+  --rhythm-haunt:     8400ms;
+  --rhythm-lineage:   6400ms;
+  --rhythm-hold:      1600ms;
+}
+body[data-chamber="structural"] {
+  --rhythm-breath:    7800ms;
+  --rhythm-emerge:    3400ms;
+  --rhythm-haunt:     9600ms;
+  --rhythm-lineage:   7800ms;
+  --rhythm-hold:      2000ms;
+}
+
+/* The structural chamber's load-bearing ambient field — a very
+   slow radial pulse beneath everything, suggesting deep system
+   mass below the visible architecture. Almost subliminal. */
+body[data-chamber="structural"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 2000px 1400px at 50% 60%, rgba(217,148,102,0.018) 0%, transparent 70%);
+  opacity: 0.6;
+  animation: structural-load 22000ms ease-in-out infinite;
+}
+@keyframes structural-load {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
+}
+body[data-chamber="structural"] > * { position: relative; z-index: 1; }
+
+/* =============================================================
+   INHABITED CHAMBERS — atmospheric geological depth
+   =============================================================
+   Per Refinement 04: the threshold communicates inhabitation
+   ATMOSPHERICALLY, never with counts. A chamber that has been
+   used carries a barely-visible amber dust speck in its corner,
+   pulsing on the breath. The reader feels "this has history"
+   without ever being told.
+   ============================================================= */
+.k-chamber[data-inhabited="true"] {
+  position: relative;
+}
+.k-chamber[data-inhabited="true"]::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--heat);
+  box-shadow:
+    0 0 4px rgba(217,148,102,0.5),
+    0 0 10px rgba(217,148,102,0.18);
+  opacity: 0.55;
+  animation: k-inhabited-breath 5500ms ease-in-out infinite;
+}
+.k-chamber[data-inhabited="true"].is-open::after {
+  /* When open AND inhabited, the speck rides closer to the open-dot's
+     rhythm — the chamber breathes louder. */
+  animation-delay: 1200ms;
+}
+@keyframes k-inhabited-breath {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%      { opacity: 0.75; transform: scale(1.6); }
+}
+
+/* Subtle weathering — inhabited chambers carry a faint inset
+   shadow that suggests age. Nearly imperceptible. */
+.k-chamber[data-inhabited="true"] {
+  box-shadow: inset 0 0 60px rgba(217,148,102,0.022);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-chamber[data-inhabited="true"]::after { animation: none !important; }
+}
+
+/* =============================================================
+   THE SPINE OVERLAY — summoned from inside any chamber
+   ============================================================= */
+.spine-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--slow), visibility var(--slow);
+  pointer-events: none;
+}
+.spine-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.spine-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    /* faint deep grid — subterranean infrastructure */
+    linear-gradient(to right,  rgba(120,130,150,0.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.022) 1px, transparent 1px),
+    radial-gradient(ellipse 1400px 900px at 50% 50%, rgba(217,148,102,0.045) 0%, transparent 65%),
+    rgba(4,5,7,0.94);
+  background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.spine-stage {
+  position: relative;
+  width: min(960px, 92vw);
+  max-height: 92vh;
+  padding: 40px 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: opacity var(--slow), transform var(--slow);
+}
+.spine-overlay.is-open .spine-stage {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+.spine-head { text-align: center; }
+.spine-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 12px;
+}
+.spine-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--ink);
+  font-weight: 300;
+  letter-spacing: -0.003em;
+  margin-bottom: 10px;
+}
+.spine-title em { color: var(--heat); font-style: italic; }
+.spine-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  max-width: 540px;
+  margin-bottom: 8px;
+}
+.spine-svg {
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+}
+.spine-foot {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-top: 8px;
+}
+
+/* Spine constellation nodes */
+.sp-node .sp-node-circle {
+  fill: var(--gr-2);
+  stroke: var(--ink-4);
+  stroke-width: 1;
+  transition: all var(--medium);
+}
+.sp-node.is-current .sp-node-circle {
+  fill: var(--heat-4);
+  stroke: var(--heat);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 16px rgba(217,148,102,0.4));
+}
+.sp-node.is-open:not(.is-current) .sp-node-circle {
+  stroke: var(--ink-2);
+}
+.sp-node.is-open:not(.is-current):hover .sp-node-circle {
+  stroke: var(--heat);
+  fill: var(--gr-3);
+}
+.sp-node.is-pending .sp-node-circle {
+  stroke: var(--ink-4);
+  stroke-dasharray: 2 3;
+  fill: var(--gr-1);
+}
+.sp-node-id {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--ink-3);
+  pointer-events: none;
+}
+.sp-node.is-current .sp-node-id { fill: var(--heat); }
+.sp-node.is-pending .sp-node-id { fill: var(--ink-4); }
+.sp-node-name {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  text-anchor: middle;
+  fill: var(--ink-2);
+  pointer-events: none;
+}
+.sp-node.is-pending .sp-node-name { fill: var(--ink-3); }
+.sp-node-pending {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.sp-node-current {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--heat);
+  pointer-events: none;
+}
+.sp-node-coord {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-anchor: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.sp-node.is-current .sp-node-coord { fill: var(--heat-2); }
+
+.spine-foot {
+  width: 100%;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding-top: 18px;
+  margin-top: 8px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.spine-foot em { color: var(--ink-2); font-style: normal; }
+.spine-foot .spine-stats { text-align: left; }
+.spine-foot .spine-current { text-align: center; color: var(--ink-3); }
+.spine-foot .spine-current em { color: var(--heat); }
+.spine-foot .spine-dismiss { text-align: right; }
+
+/* =============================================================
+   THE TRANSITION — chamber-to-chamber departure / arrival
+   =============================================================
+   When the reader leaves a chamber, the current page recedes
+   toward the spine. When the destination loads, it emerges.
+   Driven by [data-kairos-departing] / [data-kairos-arriving]
+   attributes on <html>, set by runtime/shared/transition.js.
+
+   Direction encodes doctrine: deeper-numbered chambers sit
+   structurally below shallower ones. Descent feels like sinking;
+   ascent feels like surfacing.
+   ============================================================= */
+
+/* Default (lateral / no direction known) — simple fade + scale */
+html[data-kairos-departing] body {
+  animation: kairos-depart 1400ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-depart {
+  0%   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+  60%  { opacity: 0.3; transform: scale(0.97) translateY(-4px); filter: blur(2px); }
+  100% { opacity: 0; transform: scale(0.94) translateY(-8px); filter: blur(3px); }
+}
+html[data-kairos-arriving] body {
+  animation: kairos-arrive 1800ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-arrive {
+  0%   { opacity: 0;   transform: scale(1.04) translateY(8px); filter: blur(2px); }
+  40%  { opacity: 0.6; transform: scale(1.02) translateY(2px); filter: blur(0.6px); }
+  100% { opacity: 1;   transform: scale(1)    translateY(0);   filter: blur(0); }
+}
+
+/* DESCENT — the reader is moving deeper into the doctrine.
+   The departing chamber sinks down; the arriving chamber comes
+   from above (the reader has dropped into it). Slight darkening
+   on arrival to signal greater depth. */
+html[data-kairos-departing][data-kairos-direction="descent"] body {
+  animation: kairos-depart-descent 1400ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-depart-descent {
+  0%   { opacity: 1;   transform: scale(1)    translateY(0);   filter: blur(0) brightness(1); }
+  50%  { opacity: 0.4; transform: scale(0.98) translateY(28px); filter: blur(1.6px) brightness(0.8); }
+  100% { opacity: 0;   transform: scale(0.94) translateY(72px); filter: blur(4px)  brightness(0.55); }
+}
+html[data-kairos-arriving][data-kairos-direction="descent"] body {
+  animation: kairos-arrive-descent 2000ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-arrive-descent {
+  0%   { opacity: 0;   transform: scale(1.05) translateY(-72px); filter: blur(3px) brightness(0.6); }
+  35%  { opacity: 0.4; transform: scale(1.03) translateY(-24px); filter: blur(1.5px) brightness(0.85); }
+  100% { opacity: 1;   transform: scale(1)    translateY(0);    filter: blur(0)   brightness(1); }
+}
+
+/* ASCENT — the reader is moving back toward the surface. The
+   departing chamber lifts up; the arriving chamber comes from
+   below. Slight brightening on arrival. */
+html[data-kairos-departing][data-kairos-direction="ascent"] body {
+  animation: kairos-depart-ascent 1400ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-depart-ascent {
+  0%   { opacity: 1;   transform: scale(1)    translateY(0);    filter: blur(0)    brightness(1); }
+  50%  { opacity: 0.4; transform: scale(1.01) translateY(-28px); filter: blur(1.6px) brightness(1.05); }
+  100% { opacity: 0;   transform: scale(1.04) translateY(-72px); filter: blur(4px)  brightness(1.1); }
+}
+html[data-kairos-arriving][data-kairos-direction="ascent"] body {
+  animation: kairos-arrive-ascent 2000ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-arrive-ascent {
+  0%   { opacity: 0;   transform: scale(0.95) translateY(72px); filter: blur(3px) brightness(1.15); }
+  35%  { opacity: 0.4; transform: scale(0.97) translateY(24px); filter: blur(1.5px) brightness(1.05); }
+  100% { opacity: 1;   transform: scale(1)    translateY(0);    filter: blur(0)   brightness(1); }
+}
+
+/* THE DEPTH PULSE — a tiny vertical line that briefly flashes
+   between recede and arrive. The visual analog of the reader
+   passing through the spine. */
+html[data-kairos-departing]::after {
+  content: "";
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 0;
+  background: var(--heat);
+  box-shadow: 0 0 8px rgba(217,148,102,0.6);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1000;
+  animation: kairos-pulse 1400ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-pulse {
+  0%   { height: 0;    opacity: 0; }
+  50%  { height: 120px; opacity: 0.9; }
+  100% { height: 220px; opacity: 0;  }
+}
+html[data-kairos-departing][data-kairos-direction="ascent"]::after {
+  animation: kairos-pulse-ascent 1400ms cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes kairos-pulse-ascent {
+  0%   { height: 0;    opacity: 0; transform: translate(-50%, -50%); }
+  50%  { height: 120px; opacity: 0.9; transform: translate(-50%, -60%); }
+  100% { height: 220px; opacity: 0;  transform: translate(-50%, -70%); }
+}
+
+/* Depth telemetry mid-transit — a tiny mono label naming the
+   direction. Inevitable, not flashy. */
+html[data-kairos-departing]::before {
+  content: "DESCENDING";
+  position: fixed;
+  left: 50%;
+  top: calc(50% + 80px);
+  transform: translateX(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.5em;
+  color: var(--heat);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: kairos-label 1400ms cubic-bezier(.4,0,.2,1) forwards;
+  white-space: nowrap;
+}
+html[data-kairos-departing][data-kairos-direction="ascent"]::before {
+  content: "ASCENDING";
+  top: calc(50% - 100px);
+}
+html[data-kairos-departing][data-kairos-direction="lateral"]::before {
+  content: "TRAVERSING";
+}
+@keyframes kairos-label {
+  0%   { opacity: 0; }
+  40%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-kairos-departing] body, html[data-kairos-arriving] body {
+    animation: none !important;
+  }
+  html[data-kairos-departing]::before,
+  html[data-kairos-departing]::after { display: none !important; }
+}
+
+/* The chamber chrome can show a tiny spine-glyph in the top-right */
+.c-spine-glyph {
+  background: transparent;
+  border: 1px solid var(--ink-4);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  padding: 0;
+  transition: all var(--medium);
+}
+.c-spine-glyph:hover {
+  border-color: var(--heat);
+  color: var(--heat);
+}
+.c-spine-glyph::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, currentColor 0%, currentColor 20%, transparent 22%);
+}
+
+/* =============================================================
+   THE STRATA OVERLAY — geological memory, summoned via H
+   ============================================================= */
+.strata-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--slow), visibility var(--slow);
+  pointer-events: none;
+}
+.strata-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.strata-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Layered horizontal striations — geological strata */
+    linear-gradient(to bottom,
+      rgba(180,180,200,0) 0%,
+      rgba(180,180,200,0.012) 24.5%, rgba(180,180,200,0.012) 25%,
+      rgba(180,180,200,0) 25.5%,
+      rgba(180,180,200,0) 49%, rgba(180,180,200,0.018) 49.5%, rgba(180,180,200,0.018) 50%,
+      rgba(180,180,200,0) 50.5%,
+      rgba(180,180,200,0) 74%, rgba(180,180,200,0.024) 74.5%, rgba(180,180,200,0.024) 75%,
+      rgba(180,180,200,0) 75.5%,
+      rgba(180,180,200,0) 100%),
+    radial-gradient(ellipse 1400px 900px at 50% 50%, rgba(217,148,102,0.035) 0%, transparent 70%),
+    rgba(4,5,7,0.94);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.strata-stage {
+  position: relative;
+  width: min(880px, 92vw);
+  max-height: 92vh;
+  padding: 40px 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: opacity var(--slow), transform var(--slow);
+  overflow: hidden;
+}
+.strata-overlay.is-open .strata-stage {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+.strata-head { text-align: center; padding-bottom: 8px; }
+.strata-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 10px;
+}
+.strata-eyebrow em { color: var(--heat); font-style: normal; }
+.strata-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--ink);
+  font-weight: 300;
+  letter-spacing: -0.003em;
+  margin-bottom: 10px;
+}
+.strata-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.strata-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 8px 4px 24px;
+  max-height: 56vh;
+}
+.strata-stack::-webkit-scrollbar { width: 3px; }
+.strata-stack::-webkit-scrollbar-thumb { background: var(--rule); }
+
+.strata-cycle {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 24px;
+  padding: 18px 22px;
+  border: 1px solid var(--rule);
+  background: var(--gr-2);
+  transition: opacity var(--medium), border-color var(--medium);
+}
+/* Geological tiers — newer near surface, older sunk into strata */
+.strata-cycle[data-tier="1"] { opacity: 1.0;  background: var(--gr-2); }
+.strata-cycle[data-tier="2"] { opacity: 0.82; background: var(--gr-1); }
+.strata-cycle[data-tier="3"] { opacity: 0.62; background: var(--gr-1); border-color: var(--rule-soft); }
+.strata-cycle[data-tier="4"] { opacity: 0.42; background: var(--gr-0); border-color: var(--rule-soft); }
+.strata-cycle:hover { opacity: 1; border-color: var(--heat-3); }
+
+.strata-cycle-marker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-right: 1px solid var(--rule);
+  padding-right: 16px;
+}
+.strata-marker-id {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--heat);
+}
+.strata-marker-tier {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.strata-cycle-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.strata-cycle-label {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 300;
+  letter-spacing: -0.003em;
+}
+.strata-cycle-label em { font-style: italic; color: var(--ink-2); }
+.strata-cycle-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.strata-cycle-meta em { color: var(--ink-2); font-style: normal; }
+.strata-cycle-governing {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  border-left: 1px solid var(--heat-3);
+  padding: 4px 0 4px 14px;
+}
+.strata-cycle-governing em { color: var(--heat); font-style: normal; font-weight: 500; }
+
+.strata-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.strata-foot em { color: var(--ink-2); font-style: normal; }

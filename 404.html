@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not found · Vinay Pasricha</title>
+  <meta name="description" content="The page you asked for isn't here. The rest of the site is.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/site.css">
+
+  <style>
+    .nf-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 28px;
+      text-align: center;
+    }
+    .nf-num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 12vmin;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .nf-h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.1;
+      letter-spacing: -0.018em;
+      color: var(--ink);
+      margin-bottom: 20px;
+      max-width: 640px;
+    }
+    .nf-h1 em { font-style: italic; }
+    .nf-lede {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      margin-bottom: 56px;
+      max-width: 540px;
+    }
+    .nf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      max-width: 920px;
+      width: 100%;
+      margin-bottom: 64px;
+    }
+    .nf-card {
+      padding: 24px 22px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      text-align: left;
+      transition: background .15s, border-color .15s;
+      text-decoration: none;
+    }
+    .nf-card:hover { background: var(--paper-2); border-color: var(--ink-3); }
+    .nf-card:hover .nf-arrow { transform: translateX(6px); color: var(--accent); }
+    .nf-card .nf-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .nf-card h3 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .nf-card h3 em { font-style: italic; }
+    .nf-card p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-3);
+      line-height: 1.5;
+    }
+    .nf-card .nf-arrow {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-3);
+      margin-top: 10px;
+      display: inline-block;
+      transition: transform .2s, color .15s;
+    }
+    .nf-back {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      padding: 14px 28px;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .nf-back:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    @media (max-width: 720px) {
+      .nf-h1 { font-size: 32px; }
+      .nf-lede { font-size: 17px; }
+      .nf-num { font-size: 18vmin; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="nf-wrap" data-screen-label="404">
+  <div class="nf-num" data-no-translate>404</div>
+  <h1 class="nf-h1">The page you asked for <em>isn't here.</em></h1>
+  <p class="nf-lede">
+    Either it was never written, or it has moved. The rest of the site is below. <em>Begin somewhere.</em>
+  </p>
+
+  <div class="nf-grid">
+    <a class="nf-card" href="/">
+      <div class="nf-eyebrow">— Home</div>
+      <h3>The <em>Index</em></h3>
+      <p>Start at the top — the ten paths and what they each open into.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+    <a class="nf-card" href="/books.html">
+      <div class="nf-eyebrow">— Books</div>
+      <h3>The <em>five books</em></h3>
+      <p>AI for Business Leaders, SIV, Execution, Frequency, and the upcoming Signal.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+    <a class="nf-card" href="/paths/decisions.html">
+      <div class="nf-eyebrow">— Try one</div>
+      <h3>The <em>SIV Method</em></h3>
+      <p>Walk through a real decision using the structured method.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+    <a class="nf-card" href="/signal/index.html">
+      <div class="nf-eyebrow">— Live</div>
+      <h3>The <em>Signal field</em></h3>
+      <p>Cross the threshold into a developmental conversation.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+    <a class="nf-card" href="/paths/blog.html">
+      <div class="nf-eyebrow">— Read</div>
+      <h3>The <em>Notebook</em></h3>
+      <p>One quiet essay each month. A library, not a feed.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+    <a class="nf-card" href="/paths/now.html">
+      <div class="nf-eyebrow">— What's current</div>
+      <h3>The <em>Now</em> page</h3>
+      <p>What I am actually doing this month.</p>
+      <span class="nf-arrow">→</span>
+    </a>
+  </div>
+
+  <a href="/" class="nf-back">Back to the index →</a>
+</main>
+
+<script src="js/site.js"></script>
+<script src="js/i18n.js"></script>
+</body>
+</html>

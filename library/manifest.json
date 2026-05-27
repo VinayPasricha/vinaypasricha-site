@@ -1,0 +1,64 @@
+{
+  "_comment": "Full-text manuscripts for in-page AI reader assistance. Updated whenever a new edition is uploaded. The reader page loads the relevant entry via library.js -> window.library.getBook(slug).",
+  "updated_at": "2026-05-27",
+  "books": {
+    "execution-doctrine": {
+      "slug": "execution-doctrine",
+      "title": "Vinay's Execution Doctrine",
+      "subtitle": "The Capacity Expansion Engine",
+      "author": "Vinay Pasricha",
+      "edition": "First Edition (2026, Print)",
+      "source_file": "uploads/Vinays-Execution-Doctrine-Print.pdf",
+      "text_path": "library/execution-doctrine/full-text.txt",
+      "runtime_blueprint_path": "_brief/ved-runtime-blueprint.md",
+      "runtime_meta_layer_path": "_brief/runtime-meta-layer.md",
+      "runtime_nodes_index_path": "_brief/runtime-nodes/index.json",
+      "runtime_nodes": [
+        { "id": "01", "name": "The Sequence Chamber",        "slug": "sequence-chamber",         "path": "_brief/runtime-nodes/01-sequence-chamber.md",            "book_anchor": "Chapter 6",     "status": "spec-complete · prototype-built" },
+        { "id": "02", "name": "Constraint Observatory",       "slug": "constraint-observatory",   "path": "_brief/runtime-nodes/02-constraint-observatory.md",       "book_anchor": "Chapter 7",     "status": "spec-complete" },
+        { "id": "03", "name": "Output Reality Chamber",       "slug": "output-reality-chamber",   "path": "_brief/runtime-nodes/03-output-reality-chamber.md",       "book_anchor": "Chapter 12",    "status": "spec-complete" },
+        { "id": "04", "name": "Failure & Recovery Chamber",   "slug": "failure-and-recovery-chamber", "path": "_brief/runtime-nodes/04-failure-and-recovery-chamber.md", "book_anchor": "Chapters 14–15", "status": "spec-complete" },
+        { "id": "05", "name": "Human Constraint Chamber",     "slug": "human-constraint-chamber", "path": "_brief/runtime-nodes/05-human-constraint-chamber.md",     "book_anchor": "Chapters 10 & 17", "status": "spec-complete" }
+      ],
+      "chars": 93810,
+      "pages": 120,
+      "chapters": 18,
+      "status": "full"
+    },
+    "siv-method": {
+      "slug": "siv-method",
+      "title": "The SIV Method",
+      "subtitle": "A Brutal Framework for Understanding Reality Before Execution",
+      "author": "Vinay Pasricha",
+      "text_path": null,
+      "status": "pending-upload",
+      "note": "Upload the print PDF or manuscript text and I'll add it here."
+    },
+    "organizational-frequency": {
+      "slug": "organizational-frequency",
+      "title": "Organizational Frequency",
+      "subtitle": "A new doctrine for hiring in the age of intelligent discovery",
+      "author": "Vinay Pasricha",
+      "text_path": null,
+      "status": "pending-upload",
+      "note": "Upload the print PDF or manuscript text and I'll add it here."
+    },
+    "ai-for-business-leaders": {
+      "slug": "ai-for-business-leaders",
+      "title": "AI for Business Leaders",
+      "author": "Vinay Pasricha",
+      "text_path": null,
+      "status": "pending-upload",
+      "note": "Upload the print PDF or manuscript text and I'll add it here."
+    },
+    "the-signal": {
+      "slug": "the-signal",
+      "title": "The Signal",
+      "subtitle": "A Practice for Clearer Reception",
+      "author": "Vinay Pasricha",
+      "text_path": null,
+      "status": "in-progress",
+      "note": "Manuscript still being written. The Signal experience is an interactive field — see signal/ — and does not need a static manuscript yet."
+    }
+  }
+}

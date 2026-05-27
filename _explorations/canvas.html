@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vinay Pasricha — Website Redesign Directions</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Crimson+Pro:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+  iframe { border: 0; display: block; background: #f3ede0; }
+  /* Brief on the canvas */
+  .brief {
+    font-family: "Crimson Pro", serif;
+    color: #2a251f;
+    padding: 28px 32px;
+    max-width: 760px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px -8px rgba(0,0,0,0.12);
+  }
+  .brief .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #9a2a18;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .brief h1 {
+    font-family: "Instrument Serif", serif;
+    font-size: 42px;
+    line-height: 1;
+    margin: 0 0 16px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  .brief h1 em { font-style: italic; }
+  .brief p {
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0 0 10px;
+    color: #3a342c;
+  }
+  .brief p em { font-family: "Instrument Serif", serif; font-style: italic; color: #1c1916; }
+  .brief .target {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #6b6354;
+    letter-spacing: 0.05em;
+  }
+  .brief .target b { color: #1c1916; font-weight: 500; }
+  .v-desc {
+    font-family: "Crimson Pro", serif;
+    color: #2a251f;
+    padding: 18px 22px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    width: 380px;
+  }
+  .v-desc .vlabel {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a2a18;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .v-desc h2 {
+    font-family: "Instrument Serif", serif;
+    font-size: 28px;
+    line-height: 1;
+    margin: 0 0 10px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .v-desc h2 em { font-style: italic; }
+  .v-desc p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 8px;
+    color: #3a342c;
+  }
+  .v-desc .swatches {
+    display: flex; gap: 6px; margin-top: 12px;
+  }
+  .v-desc .sw {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .v-desc .meta {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    display: flex; gap: 16px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: #6b6354;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard, DCPostIt } = window;
+
+// Each homepage variation is a tall standalone page rendered inside an iframe.
+// Set artboard dimensions to match the iframe so it fills the artboard.
+const HOME_WIDTH = 1440;
+const HOME_HEIGHT = 4800;
+
+const Variation = ({ src }) => (
+  <iframe
+    src={src}
+    width={HOME_WIDTH}
+    height={HOME_HEIGHT}
+    style={{ display: 'block', border: 0, background: '#fff' }}
+    loading="lazy"
+  />
+);
+
+const Brief = () => (
+  <div className="brief">
+    <div className="label">Brief · 16 May 2026</div>
+    <h1>Three directions for <em>vinaypasricha.com</em></h1>
+    <p>
+      The current site is a 3D forest experience — beautiful, but heavy and hard to position.
+      Below are three full-page mockups, each a coherent answer to the question:
+      <em>who is Vinay, and what does this site do?</em>
+    </p>
+    <p>
+      Click any artboard's expand icon (↗) to view it full-screen. Scroll inside each iframe to see the full design. Pick a direction and I'll build out the full site (path pages, book page, signal, course, connect) into the empty <code style={{fontFamily:'IBM Plex Mono,monospace',fontSize:14,background:'#ebe3d2',padding:'1px 5px',borderRadius:3}}>VinayPasricha/website</code> repo.
+    </p>
+    <div className="target">
+      <b>TARGET:</b> github.com/VinayPasricha/website &nbsp;·&nbsp; <b>FORMAT:</b> Static HTML/CSS/JS &nbsp;·&nbsp; <b>SOURCE CONTENT:</b> ported from vinay-sir-web
+    </div>
+  </div>
+);
+
+const VDesc = ({ label, title, blurb, swatches, type, vibe }) => (
+  <div className="v-desc">
+    <div className="vlabel">{label}</div>
+    <h2>{title}</h2>
+    <p>{blurb}</p>
+    <div className="swatches">
+      {swatches.map((c,i) => <div key={i} className="sw" style={{background:c}} />)}
+    </div>
+    <div className="meta">
+      <span>Type · {type}</span>
+      <span>Vibe · {vibe}</span>
+    </div>
+  </div>
+);
+
+const App = () => (
+  <DesignCanvas
+    title="Vinay Pasricha · Website Redesign"
+    subtitle="Three directions for the new vinaypasricha.com — pick one to ship"
+    initialZoom={0.32}
+  >
+    <DCSection id="brief" title="The Brief" subtitle="Read me first">
+      <DCArtboard id="brief-card" label="Brief" width={820} height={340}>
+        <Brief />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="directions" title="Three Directions" subtitle="Each is a full homepage — same content, different soul">
+      <DCArtboard id="v1-desc" label="V1 · Editorial" width={420} height={300}>
+        <VDesc
+          label="Direction 01 · Editorial"
+          title="The Essay Journal"
+          blurb="Cream paper, deep ink, Instrument Serif. The feeling of opening a long-form essay journal — Aeon, The Paris Review, Stripe Press. Vinay positioned as a thinker and writer first."
+          swatches={['#f3ede0','#1c1916','#9a2a18','#b08a3e']}
+          type="Instrument Serif + Crimson Pro"
+          vibe="Literary · Calm"
+        />
+      </DCArtboard>
+      <DCArtboard id="v1-home" label="V1 · Homepage" width={HOME_WIDTH} height={HOME_HEIGHT}>
+        <Variation src="variations/home-editorial.html" />
+      </DCArtboard>
+
+      <DCArtboard id="v2-desc" label="V2 · Monograph" width={420} height={300}>
+        <VDesc
+          label="Direction 02 · Monograph"
+          title="The Author's Library"
+          blurb="Deep navy with warm gold ornaments. A frontispiece, a table of contents, a colophon. The feeling of opening a beautifully-bound first edition. Vinay positioned as an author of consequence."
+          swatches={['#0a1729','#f0e6d0','#c9a86b','#9eb0c8']}
+          type="Newsreader (display + body)"
+          vibe="Authored · Ornate"
+        />
+      </DCArtboard>
+      <DCArtboard id="v2-home" label="V2 · Homepage" width={HOME_WIDTH} height={HOME_HEIGHT}>
+        <Variation src="variations/home-monograph.html" />
+      </DCArtboard>
+
+      <DCArtboard id="v3-desc" label="V3 · Operator" width={420} height={300}>
+        <VDesc
+          label="Direction 03 · Operator"
+          title="The Working Journal"
+          blurb="Off-white, sharp black, electric red. A live ticker, terminal-style code blocks, dense info-rich layouts. Vinay positioned as a working operator — builder and writer in motion."
+          swatches={['#f4f3ee','#0a0a0a','#ee3a23','#0044ff']}
+          type="Space Grotesk + JetBrains Mono"
+          vibe="Modern · Confident"
+        />
+      </DCArtboard>
+      <DCArtboard id="v3-home" label="V3 · Homepage" width={HOME_WIDTH} height={HOME_HEIGHT}>
+        <Variation src="variations/home-operator.html" />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="next" title="Next" subtitle="Once you pick a direction">
+      <DCArtboard id="next-card" label="Next steps" width={820} height={260}>
+        <div className="brief">
+          <div className="label">When you pick</div>
+          <h1>I'll build the <em>full site</em>.</h1>
+          <p>
+            Once you tell me which direction (V1 / V2 / V3) — and any notes on color, type, or copy —
+            I'll port the rest of the site to match: a redesigned path page (the long-form essay reading experience),
+            a redesigned book landing, signal/newsletter, AI course, connect, and an updated blog index.
+          </p>
+          <p>
+            All output will be plain HTML + CSS + a tiny bit of vanilla JS — fast, no framework, easy to deploy on Vercel.
+            I'll structure it for direct push to <em>VinayPasricha/website</em>.
+          </p>
+        </div>
+      </DCArtboard>
+    </DCSection>
+  </DesignCanvas>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

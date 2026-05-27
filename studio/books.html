@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .bli { display: grid; grid-template-columns: 32px 72px 1fr auto; gap: 18px; padding: 14px; background: var(--paper-3); border: 1px solid var(--rule); border-radius: 2px; align-items: center; transition: background .15s; }
+    .bli:hover { background: var(--paper-2); }
+    .bli.upcoming { border-style: dashed; }
+    .bli-num { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink-3); text-align: center; }
+    .bli-cover { width: 72px; aspect-ratio: 2/3; background: var(--ink); overflow: hidden; }
+    .bli-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .bli-cover .placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9px; color: var(--ink-4); }
+    .bli-body { min-width: 0; }
+    .bli-title { font-family: var(--serif); font-size: 20px; line-height: 1.2; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.01em; }
+    .bli-title em { font-style: italic; }
+    .bli-meta { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); display: flex; gap: 12px; flex-wrap: wrap; }
+    .bli-meta .dot { color: var(--rule); }
+    .bli-meta .status-upcoming { color: var(--accent); }
+    .bli-meta .status-published { color: #2e7d5b; }
+    .bli-actions { display: flex; gap: 6px; }
+    .bli-action { padding: 7px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; background: transparent; border: 1px solid var(--rule); color: var(--ink-2); cursor: pointer; border-radius: 2px; transition: all .15s; }
+    .bli-action:hover { border-color: var(--ink); color: var(--ink); }
+    .bli-action.danger:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+    .bli.expanded { display: block; }
+    .bli-edit { padding-top: 18px; margin-top: 14px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+    .bli-edit label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); display: flex; flex-direction: column; gap: 6px; }
+    .bli-edit label.full { grid-column: 1 / -1; }
+    .bli-edit input, .bli-edit textarea, .bli-edit select { font-family: var(--sans); font-size: 14px; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); padding: 10px 12px; border-radius: 2px; outline: none; transition: border-color .15s; }
+    .bli-edit textarea { font-family: var(--serif); font-size: 15px; line-height: 1.45; resize: vertical; min-height: 80px; }
+    .bli-edit input:focus, .bli-edit textarea:focus, .bli-edit select:focus { border-color: var(--ink); }
+    .bli-edit .help { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+    .bli-edit-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; border-top: 1px solid var(--rule-soft); }
+    .bl-empty { padding: 64px 24px; text-align: center; border: 1px dashed var(--rule); background: var(--paper-3); }
+    .bl-empty p { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink-3); }
+    @media (max-width: 800px) {
+      .bli { grid-template-columns: 24px 56px 1fr; }
+      .bli-actions { grid-column: 1 / -1; flex-wrap: wrap; }
+      .bli-edit { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— editing the Books</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../books.html" target="_blank" rel="noopener">View Books ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room edits the books that appear on the books page.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Books</div>
+        <h1>The <em>Books</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status"><span class="saved">All changes saved on this device</span></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— Add a book</div>
+      <div class="qa-row">
+        <input type="text" id="qa-title" placeholder="Working title — e.g. The Long Quiet">
+        <button type="button" id="qa-btn">Add book <span style="font-family:var(--serif);font-style:italic;font-size:14px;margin-left:6px;letter-spacing:0;text-transform:none">→</span></button>
+      </div>
+      <p class="qa-hint">Adds a new book in Upcoming status. Edit volume number, cover, pitch and Amazon link inline.</p>
+      <p class="qa-error" id="qa-error" style="display:none"></p>
+    </div>
+
+    <div class="editor-toolbar">
+      <div class="left"><span class="tb-count" id="tb-count">0 books</span></div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all changes</button>
+        <button class="tb-btn ghost" type="button" id="btn-import">Import JSON</button>
+        <input type="file" id="import-file" accept="application/json" style="display:none">
+        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <div id="book-list"></div>
+  </div>
+</main>
+
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Your changes are saved locally. To make them live, replace <code>assets/data/books.json</code> with the file we just generated.</p>
+    <p class="steps"><strong>Three steps:</strong><br>1. <em>books.json</em> just downloaded.<br>2. Replace it in the repo.<br>3. Commit. Live.</p>
+    <div class="publish-actions"><button class="tb-btn" type="button" id="publish-close">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="books-admin.js"></script>
+</body>
+</html>

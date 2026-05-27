@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Field — The Signal</title>
+  <meta name="description" content="A constellation map of the seven capacities trained in The Signal. Not levels, not points, not badges. A developmental architecture.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* Constellation-specific tuning */
+    .const-svg              { overflow: visible; }
+    .const-svg .ring        { fill: none; stroke: var(--signal-4); stroke-width: 0.35; opacity: 0.45; }
+    .const-svg .spoke       { stroke: var(--signal-4); stroke-width: 0.4; opacity: 0.4; }
+    .const-svg .spoke.lit   { stroke: var(--ember-2); opacity: 0.65; }
+    .const-svg .node        { fill: var(--signal-4); }
+    .const-svg .node-halo   { fill: none; stroke: var(--signal-4); stroke-width: 0.4; opacity: 0.5; }
+    .const-svg .node.lit    { fill: var(--ember); filter: drop-shadow(0 0 6px rgba(212,165,116,0.7)); }
+    .const-svg .node-halo.lit { stroke: var(--ember-2); opacity: 0.6; }
+    .const-svg .center-dot  { fill: var(--signal-2); }
+    .const-svg .center-halo { fill: none; stroke: var(--signal-3); stroke-width: 0.3; opacity: 0.55; }
+    .const-svg .label-mono  { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase; fill: var(--signal-3); }
+    .const-svg .label-mono.lit { fill: var(--ember); }
+    .const-svg .label-serif { font-family: var(--serif); font-style: italic; font-size: 12px; fill: var(--signal-4); }
+    .const-svg .center-label { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.36em; text-transform: uppercase; fill: var(--signal-4); }
+
+    .const-svg .breath { animation: ember-breath 5500ms ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  </style>
+</head>
+
+<body>
+
+<main class="field" data-screen-label="03 The Field">
+
+  <!-- ============================================================
+       TOP — quiet identity strip
+       ============================================================ -->
+  <header class="field-top">
+    <div class="s-mark" style="font-family:var(--serif);font-style:italic;font-size:13px;color:var(--signal-4);">
+      <a href="index.html"><em>The Signal</em></a>
+    </div>
+    <div class="s-session-id" style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.36em;text-transform:uppercase;color:var(--signal-4);">
+      The Field · <em style="color:var(--ember);font-style:normal" id="cap-state">0 of 7 lit</em>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       STAGE
+       ============================================================ -->
+  <section class="field-stage">
+
+    <div class="field-eyebrow">The Architecture · not a dashboard</div>
+    <h1 class="field-title">
+      Seven <em>capacities,</em><br>
+      arranged as a constellation.
+    </h1>
+    <p class="field-lede">
+      Not levels. Not points. Not streaks. The Field is what the system is
+      training in you. Capacities light as you develop them. Most of the
+      constellation is unlit. That is the honest state.
+    </p>
+
+    <!-- =============================================================
+         THE CONSTELLATION
+         A 720×720 SVG. Seven capacities arranged around a center point
+         (the reader). Distances reflect proximity to current work, not
+         hierarchy. Connections are real adjacencies in the developmental
+         architecture, not decorative.
+         ============================================================= -->
+    <div class="constellation-wrap">
+      <svg class="const-svg" viewBox="-80 -40 880 800" aria-label="Constellation of capacities">
+
+        <!-- Outer ring — the field boundary -->
+        <circle class="ring" cx="360" cy="360" r="280"></circle>
+        <!-- Inner ring — closer capacities -->
+        <circle class="ring" cx="360" cy="360" r="160"></circle>
+
+        <!-- Spokes — from center to each capacity -->
+        <g id="spokes">
+          <line class="spoke" data-cap="signal-stability"          x1="360" y1="360" x2="360" y2="80"></line>
+          <line class="spoke" data-cap="capture-latency"           x1="360" y1="360" x2="598" y2="190"></line>
+          <line class="spoke" data-cap="interruption-capacity"     x1="360" y1="360" x2="640" y2="430"></line>
+          <line class="spoke" data-cap="energy-integrity"          x1="360" y1="360" x2="490" y2="620"></line>
+          <line class="spoke" data-cap="environmental-sensitivity" x1="360" y1="360" x2="230" y2="620"></line>
+          <line class="spoke" data-cap="temporal-sensitivity"      x1="360" y1="360" x2="80"  y2="430"></line>
+          <line class="spoke" data-cap="signal-hierarchy"          x1="360" y1="360" x2="122" y2="190"></line>
+        </g>
+
+        <!-- Inter-capacity connections — real adjacencies -->
+        <g id="adjacencies" stroke="var(--signal-4)" stroke-width="0.3" opacity="0.3" fill="none">
+          <line x1="360" y1="80"  x2="598" y2="190"></line>
+          <line x1="598" y1="190" x2="640" y2="430"></line>
+          <line x1="640" y1="430" x2="490" y2="620"></line>
+          <line x1="490" y1="620" x2="230" y2="620"></line>
+          <line x1="230" y1="620" x2="80"  y2="430"></line>
+          <line x1="80"  y1="430" x2="122" y2="190"></line>
+          <line x1="122" y1="190" x2="360" y2="80"></line>
+        </g>
+
+        <!-- Center node — the reader -->
+        <g class="breath">
+          <circle class="center-halo" cx="360" cy="360" r="22"></circle>
+          <circle class="center-halo" cx="360" cy="360" r="12"></circle>
+          <circle class="center-dot"  cx="360" cy="360" r="3.5"></circle>
+        </g>
+        <text class="center-label" x="360" y="408" text-anchor="middle">You</text>
+
+        <!-- Capacity nodes — drawn with halo, dot, and label.
+             Each <g> can be toggled .lit via JS when the reader develops it. -->
+
+        <!-- Signal Stability — top -->
+        <g class="cap" data-cap="signal-stability">
+          <circle class="node-halo" cx="360" cy="80" r="12"></circle>
+          <circle class="node" cx="360" cy="80" r="4"></circle>
+          <text class="label-mono" x="360" y="46" text-anchor="middle">Signal Stability</text>
+          <text class="label-serif" x="360" y="62" text-anchor="middle">— remaining oneself in noise</text>
+        </g>
+
+        <!-- Capture Latency — top right -->
+        <g class="cap" data-cap="capture-latency">
+          <circle class="node-halo" cx="598" cy="190" r="12"></circle>
+          <circle class="node" cx="598" cy="190" r="4"></circle>
+          <text class="label-mono" x="622" y="178" text-anchor="start">Capture Latency</text>
+          <text class="label-serif" x="622" y="194" text-anchor="start">— time-to-notice</text>
+        </g>
+
+        <!-- Interruption Capacity — right -->
+        <g class="cap" data-cap="interruption-capacity">
+          <circle class="node-halo" cx="640" cy="430" r="12"></circle>
+          <circle class="node" cx="640" cy="430" r="4"></circle>
+          <text class="label-mono" x="664" y="424" text-anchor="start">Interruption</text>
+          <text class="label-serif" x="664" y="442" text-anchor="start">— stopping a pattern in motion</text>
+        </g>
+
+        <!-- Energy Integrity — bottom right -->
+        <g class="cap" data-cap="energy-integrity">
+          <circle class="node-halo" cx="490" cy="620" r="12"></circle>
+          <circle class="node" cx="490" cy="620" r="4"></circle>
+          <text class="label-mono" x="490" y="654" text-anchor="middle">Energy Integrity</text>
+          <text class="label-serif" x="490" y="672" text-anchor="middle">— what holds, what leaks</text>
+        </g>
+
+        <!-- Environmental Sensitivity — bottom left -->
+        <g class="cap" data-cap="environmental-sensitivity">
+          <circle class="node-halo" cx="230" cy="620" r="12"></circle>
+          <circle class="node" cx="230" cy="620" r="4"></circle>
+          <text class="label-mono" x="230" y="654" text-anchor="middle">Environment</text>
+          <text class="label-serif" x="230" y="672" text-anchor="middle">— rooms, people, fields</text>
+        </g>
+
+        <!-- Temporal Sensitivity — left -->
+        <g class="cap" data-cap="temporal-sensitivity">
+          <circle class="node-halo" cx="80" cy="430" r="12"></circle>
+          <circle class="node" cx="80" cy="430" r="4"></circle>
+          <text class="label-mono" x="56" y="424" text-anchor="end">Timing</text>
+          <text class="label-serif" x="56" y="442" text-anchor="end">— right thing, wrong moment</text>
+        </g>
+
+        <!-- Signal Hierarchy Detection — top left -->
+        <g class="cap" data-cap="signal-hierarchy">
+          <circle class="node-halo" cx="122" cy="190" r="12"></circle>
+          <circle class="node" cx="122" cy="190" r="4"></circle>
+          <text class="label-mono" x="98" y="178" text-anchor="end">Hierarchy</text>
+          <text class="label-serif" x="98" y="194" text-anchor="end">— which signal is the actual signal</text>
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- ============================================================
+         CAPACITIES LIST — paired with the constellation
+         ============================================================ -->
+    <div class="field-caps">
+
+      <div class="field-cap">
+        <div class="cap-num">i</div>
+        <div>
+          <h4>Signal Stability</h4>
+          <p>The capacity to remain yourself in a high-noise environment, when forces from outside are pulling you into patterns that are not actually yours.</p>
+          <div class="cap-state" data-cap-state="signal-stability">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">ii</div>
+        <div>
+          <h4>Capture Latency</h4>
+          <p>The time between something happening inside you and you noticing it. The lower the latency, the earlier you can intervene. Most readers begin with a latency of hours or days. The work shortens it.</p>
+          <div class="cap-state" data-cap-state="capture-latency">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">iii</div>
+        <div>
+          <h4>Interruption Capacity</h4>
+          <p>The ability to stop a pattern <em>while it is running</em> — not before, not after. This is harder than insight. Most people see the pattern only in retrospect. Interruption is mid-motion.</p>
+          <div class="cap-state" data-cap-state="interruption-capacity">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">iv</div>
+        <div>
+          <h4>Energy Integrity</h4>
+          <p>An honest accounting of where your attention, time, and life-force actually go. Where do you leak? Where do you hold? What is being given away to keep a story intact?</p>
+          <div class="cap-state" data-cap-state="energy-integrity">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">v</div>
+        <div>
+          <h4>Environmental Sensitivity</h4>
+          <p>The capacity to read the room — the building, the city, the relationship — as part of the signal. Most decisions are made as if the environment were neutral. It is not.</p>
+          <div class="cap-state" data-cap-state="environmental-sensitivity">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">vi</div>
+        <div>
+          <h4>Temporal Sensitivity</h4>
+          <p>Knowing the difference between the right thing now and the right thing later. Most failures are not failures of action. They are failures of timing.</p>
+          <div class="cap-state" data-cap-state="temporal-sensitivity">Unlit</div>
+        </div>
+      </div>
+
+      <div class="field-cap">
+        <div class="cap-num">vii</div>
+        <div>
+          <h4>Signal Hierarchy Detection</h4>
+          <p>The skill of distinguishing the surface signal from the underneath signal — what is being said, from what is actually being communicated; what is being noticed, from what is being missed.</p>
+          <div class="cap-state" data-cap-state="signal-hierarchy">Unlit</div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="field-foot">
+      The Field is a developmental architecture, not a score. The lit capacities
+      reflect what your work in The Signal has already begun to surface — not what
+      you are good at, not where you rank. <br><br>
+      <a href="sessions.html">View the Architecture →</a> &middot;
+      <a href="session.html">Return to the active session →</a>
+    </p>
+
+  </section>
+
+</main>
+
+<script>
+  // Read the reader's session state and light the appropriate capacities.
+  // The mapping reflects what each session's developmental work most
+  // directly trains. A capacity is "lit" only after a session ends,
+  // never partway through. By the end of Session 8 the constellation
+  // should be fully lit — that is the architecture.
+  const SESSION_LIGHTS = {
+    0: ['capture-latency', 'signal-hierarchy'],                      // The Split
+    1: ['energy-integrity', 'signal-hierarchy'],                     // The Trade
+    2: ['capture-latency', 'signal-stability'],                      // The Protected Self
+    3: ['interruption-capacity'],                                    // The Interrupt
+    4: ['signal-stability', 'environmental-sensitivity'],          // The Field
+    5: ['signal-stability', 'energy-integrity'],                     // Integrity
+    6: ['environmental-sensitivity'],                                // Place
+    7: ['temporal-sensitivity'],                                     // Time
+    8: ['signal-hierarchy', 'signal-stability'],                     // Hierarchy
+  };
+
+  let state = null;
+  try { state = JSON.parse(localStorage.getItem('signal.state') || 'null'); } catch (e) {}
+
+  const lit = new Set();
+  if (state && Array.isArray(state.records)) {
+    for (const r of state.records) {
+      const caps = SESSION_LIGHTS[r.sessionId] || [];
+      for (const c of caps) lit.add(c);
+    }
+  }
+
+  // Apply .lit to constellation nodes + spokes
+  for (const cap of lit) {
+    document.querySelectorAll(`[data-cap="${cap}"]`).forEach(el => {
+      el.classList.add('lit');
+      el.querySelectorAll('.node, .node-halo, .label-mono').forEach(child => child.classList.add('lit'));
+    });
+    document.querySelectorAll(`[data-cap-state="${cap}"]`).forEach(el => {
+      el.classList.add('lit');
+      el.textContent = 'Surfaced';
+    });
+  }
+
+  // Update header count
+  document.getElementById('cap-state').textContent = `${lit.size} of 7 lit`;
+</script>
+
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

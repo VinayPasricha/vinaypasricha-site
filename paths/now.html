@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Now · Vinay Pasricha</title>
+  <meta name="description" content="What Vinay Pasricha is currently working on, thinking about, reading, and refusing. Updated when something actually changes — not on a schedule.">
+
+  <meta property="og:title" content="Now — Vinay Pasricha">
+  <meta property="og:description" content="What I am currently working on, thinking about, reading, and refusing.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/now.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="canonical" href="https://vinaypasricha.com/paths/now.html">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* ============================================================
+       The /now page — a heartbeat
+       Library-style. Single column. Markdown sections.
+       ============================================================ */
+    .now-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 64px 28px 96px;
+    }
+    .now-as-of {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 18px;
+    }
+    .now-as-of em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      color: var(--accent);
+      margin-left: 8px;
+    }
+    .now-h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 68px;
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .now-h1 em { font-style: italic; color: var(--accent); }
+    .now-lede {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      margin-bottom: 64px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .now-lede em { font-style: italic; color: var(--ink); }
+    .now-lede a {
+      color: var(--ink-2);
+      border-bottom: 1px dotted var(--rule);
+      padding-bottom: 1px;
+      transition: color .15s, border-color .15s;
+    }
+    .now-lede a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .now-section { margin-bottom: 56px; }
+    .now-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .now-body {
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .now-body p { margin: 0 0 18px; }
+    .now-body p:last-child { margin-bottom: 0; }
+    .now-body em { font-style: italic; }
+    .now-body strong { font-weight: 500; }
+    .now-body a {
+      color: var(--accent);
+      border-bottom: 1px solid var(--rule);
+      transition: border-color .15s;
+    }
+    .now-body a:hover { border-bottom-color: var(--accent); }
+    .now-body ul, .now-body ol {
+      margin: 0 0 18px 24px;
+      padding: 0;
+    }
+    .now-body li { margin-bottom: 8px; line-height: 1.55; }
+    .now-body blockquote {
+      margin: 18px 0;
+      padding-left: 24px;
+      border-left: 3px solid var(--accent-2);
+      font-style: italic;
+      color: var(--ink-2);
+    }
+    .now-body h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 22px;
+      letter-spacing: -0.008em;
+      margin: 28px 0 12px;
+    }
+    .now-body h3 {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 18px;
+      margin: 22px 0 8px;
+    }
+
+    .now-foot {
+      margin-top: 96px;
+      padding-top: 40px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+    }
+    .now-foot p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink-3);
+      line-height: 1.6;
+    }
+    .now-foot p em { color: var(--ink-2); }
+    .now-foot a {
+      color: var(--ink-3);
+      border-bottom: 1px dotted var(--rule);
+      padding-bottom: 1px;
+    }
+    .now-foot a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .now-loading, .now-error {
+      text-align: center;
+      padding: 80px 24px;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-3);
+      font-size: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .now-page { padding: 40px 20px 64px; }
+      .now-h1 { font-size: 48px; }
+      .now-lede { font-size: 19px; }
+      .now-body { font-size: 17px; }
+      .now-section { margin-bottom: 44px; }
+    }
+  </style>
+
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/now.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/now.html">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <article class="now-page" data-screen-label="Now">
+    <div id="now-host">
+      <div class="now-loading">Loading…</div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="blog.html">Notebook</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/notebook-md.js"></script>
+<script>
+(async function() {
+  const host = document.getElementById('now-host');
+
+  async function loadNow() {
+    try {
+      const draft = localStorage.getItem('studio.now');
+      if (draft) {
+        const d = JSON.parse(draft);
+        if (d && d.page) return d;
+      }
+    } catch (e) {}
+    try {
+      const res = await fetch('../assets/data/now.json', { cache: 'no-cache' });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return null;
+  }
+
+  function escapeHTML(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  const data = await loadNow();
+  if (!data || !data.page) {
+    host.innerHTML = `<div class="now-error">No /now content yet. Set sections in Studio → Now.</div>`;
+    return;
+  }
+
+  const page = data.page;
+  const asOf = data.as_of || data.updated_at || '';
+  const md = window.notebookMarkdown;
+
+  host.innerHTML = `
+    <div class="now-as-of">As of <em>${escapeHTML(asOf)}</em></div>
+    <h1 class="now-h1"><em>Now.</em></h1>
+    ${page.lede ? `<div class="now-lede">${md(page.lede)}</div>` : ''}
+    ${(page.sections || []).map(sec => `
+      <section class="now-section">
+        <div class="now-label">— ${escapeHTML(sec.label || '')}</div>
+        <div class="now-body">${md(sec.body || '')}</div>
+      </section>
+    `).join('')}
+    <footer class="now-foot">
+      <p>
+        This page changes when something actually changes. <em>It is not a feed.</em><br>
+        See also: the <a href="story.html">long story</a>, the <a href="../books.html">bookshelf</a>, or the <a href="../signal/index.html">Signal field</a>.
+      </p>
+    </footer>
+  `;
+})();
+</script>
+
+</body>
+</html>

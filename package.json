@@ -1,0 +1,15 @@
+{
+  "name": "vinaypasricha-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "vinaypasricha.com — automation scripts (build, translation pack refresh, etc).",
+  "scripts": {
+    "translate": "node scripts/translate-pack.mjs",
+    "translate:dry": "node scripts/translate-pack.mjs --dry-run"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "jsdom": "^25.0.1"
+  }
+}

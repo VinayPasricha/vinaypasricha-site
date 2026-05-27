@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Leadership Course · Vinay Pasricha</title>
+  <meta name="description" content="A small, intense cohort for senior operators thinking through AI strategy and deployment. Built around the framework from AI for Business Leaders, applied to your specific business.">
+  <meta property="og:title" content="AI Leadership Course — Vinay Pasricha">
+  <meta property="og:description" content="A small, intense cohort for senior operators thinking through AI strategy and deployment.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://vinaypasricha.com/paths/course.html">
+  <meta name="concepts" content="ai-leadership, course, cohort, executive-education, ai-strategy">
+  <meta name="continuations" content="ai-for-business, decisions, connect">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    .modules-section { padding: 96px var(--gutter); max-width: 1180px; margin: 0 auto; }
+    .modules-head { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; padding-bottom: 32px; margin-bottom: 48px; border-bottom: 1px solid var(--rule); align-items: end; }
+    .modules-head .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
+    .modules-head h2 { font-family: var(--serif); font-weight: 400; font-size: 44px; line-height: 1.05; letter-spacing: -0.015em; }
+    .modules-head h2 em { font-style: italic; color: var(--accent); }
+    .modules-head .intro { font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1.5; color: var(--ink-2); margin-top: 18px; }
+    .modules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .module { padding: 32px 28px; background: var(--paper-3); border: 1px solid var(--rule); border-radius: 3px; }
+    .module .m-num { font-family: var(--serif); font-style: italic; font-size: 24px; color: var(--accent); margin-bottom: 8px; }
+    .module h3 { font-family: var(--serif); font-size: 24px; line-height: 1.15; letter-spacing: -0.012em; margin-bottom: 10px; }
+    .module h3 em { font-style: italic; }
+    .module p { font-family: var(--serif); font-size: 16px; line-height: 1.5; color: var(--ink-2); margin-bottom: 12px; }
+    .module .m-deliverable { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); padding-top: 12px; border-top: 1px solid var(--rule-soft); }
+    .module .m-deliverable em { font-family: var(--serif); font-style: italic; text-transform: none; letter-spacing: 0; color: var(--ink-2); font-size: 14px; }
+
+    .who-its-for { padding: 96px var(--gutter); background: var(--paper-2); border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+    .wif-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .wif-inner .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 18px; }
+    .wif-inner h2 { font-family: var(--serif); font-weight: 400; font-size: 38px; line-height: 1.05; letter-spacing: -0.015em; }
+    .wif-inner h2 em { font-style: italic; color: var(--accent); }
+    .wif-list h4 { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink); margin-bottom: 8px; margin-top: 18px; font-weight: 400; }
+    .wif-list h4:first-child { margin-top: 0; }
+    .wif-list p { font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+
+    .cohort-info { padding: 96px var(--gutter); max-width: 920px; margin: 0 auto; }
+    .cohort-card { padding: 48px; background: var(--ink); color: var(--paper); border-radius: 4px; }
+    .cohort-card .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 24px; }
+    .cohort-card h2 { font-family: var(--serif); font-weight: 400; font-size: 36px; letter-spacing: -0.012em; margin-bottom: 24px; }
+    .cohort-card h2 em { font-style: italic; color: var(--accent-2); }
+    .cohort-facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 48px; margin-bottom: 36px; padding: 24px 0; border-top: 1px solid rgba(246,241,228,0.18); border-bottom: 1px solid rgba(246,241,228,0.18); }
+    .cohort-fact { display: flex; flex-direction: column; gap: 4px; }
+    .cohort-fact .cf-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #c8c1a8; }
+    .cohort-fact .cf-value { font-family: var(--serif); font-size: 22px; color: var(--paper); }
+    .cohort-fact .cf-value em { font-style: italic; }
+    .cohort-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .cohort-actions a { display: inline-flex; align-items: center; gap: 10px; padding: 16px 24px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500; transition: background .15s, color .15s; }
+    .cohort-actions .primary { background: var(--paper); color: var(--ink); }
+    .cohort-actions .primary:hover { background: var(--accent); color: var(--paper); }
+    .cohort-actions .ghost { background: transparent; color: var(--paper); border: 1px solid rgba(246,241,228,0.4); }
+    .cohort-actions .ghost:hover { border-color: var(--accent-2); color: var(--accent-2); }
+    .cohort-actions .arrow { font-family: var(--serif); font-style: italic; font-size: 14px; letter-spacing: 0; text-transform: none; }
+    @media (max-width: 980px) {
+      .modules-section { padding: 56px 28px; }
+      .modules-head { grid-template-columns: 1fr; gap: 18px; }
+      .modules-head h2 { font-size: 30px; }
+      .modules-grid { grid-template-columns: 1fr; gap: 18px; }
+      .module { padding: 24px 22px; }
+      .who-its-for { padding: 56px 28px; }
+      .wif-inner { grid-template-columns: 1fr; gap: 24px; }
+      .wif-inner h2 { font-size: 28px; }
+      .cohort-info { padding: 48px 28px; }
+      .cohort-card { padding: 32px 24px; }
+      .cohort-card h2 { font-size: 26px; }
+      .cohort-facts { grid-template-columns: 1fr; gap: 14px; }
+    }
+  </style>
+  <!-- =================== SEO ENHANCEMENTS · audit pass =================== -->
+  <meta name="author" content="Vinay Pasricha">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="publisher" content="Vinay Pasricha">
+  <meta property="og:url" content="https://vinaypasricha.com/paths/course.html">
+  <meta property="og:site_name" content="vinaypasricha.com">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinay Pasricha — vinaypasricha.com">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vinaypasricha">
+  <meta name="twitter:creator" content="@vinaypasricha">
+  <meta name="twitter:title" content="AI Leadership Course — Vinay Pasricha">
+  <meta name="twitter:description" content="A small, intense cohort for senior operators thinking through AI strategy and deployment.">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/og-default.jpg">
+  <link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/course.html">
+  <link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/course.html">
+  <link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/course.html?lang=hi">
+  <link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/course.html?lang=bn">
+  <link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/course.html?lang=ta">
+  <link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/course.html?lang=te">
+  <link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/course.html?lang=kn">
+  <link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/course.html?lang=es">
+  <link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/course.html?lang=fr">
+  <link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/course.html?lang=pt">
+  <link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/course.html?lang=ja">
+  <link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/course.html?lang=zh">
+  <link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/course.html?lang=ko">
+  <link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/course.html?lang=ru">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vinaypasricha.com/#website","url":"https://vinaypasricha.com","name":"Vinay Pasricha","description":"An AI-native intellectual operating system — books, frameworks, and conversations for navigating a rapidly changing world.","publisher":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"],"potentialAction":{"@type":"SearchAction","target":"https://vinaypasricha.com/?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"Person","@id":"https://vinaypasricha.com/#vinay","name":"Vinay Pasricha","url":"https://vinaypasricha.com","image":"https://vinaypasricha.com/assets/images/og-default.jpg","jobTitle":"Founder, author, explorer of emergence","description":"Founder of GoodSpace AI and WLC College India. Author of four books on AI, decision-making, execution, and signal.","alumniOf":"WLC College India","worksFor":{"@type":"Organization","name":"GoodSpace AI","url":"https://www.goodspace.ai"},"knowsAbout":["Artificial Intelligence","Decision Making","Leadership","Hiring","Execution","Strategy","Speculative Fiction"],"nationality":"Indian","sameAs":["https://www.linkedin.com/in/vinaypasricha","https://www.goodspace.ai"]},{"@type":"Course","@id":"https://vinaypasricha.com/paths/course.html#course","url":"https://vinaypasricha.com/paths/course.html","name":"AI Leadership Course","description":"A small, intense cohort for senior operators thinking through AI strategy and deployment.","provider":{"@id":"https://vinaypasricha.com/#vinay"},"inLanguage":["en","hi","bn","ta","te","kn","es","fr","pt","ja","zh","ko","ru"]}]}</script>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div class="now-line">
+    <span class="key">Now</span>
+    <span class="now-rotator">
+      <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
+      <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+    </span>
+  </div>
+  <div class="right">
+    <button class="index-btn"><span class="lines"><span></span><span></span></span><span>Index</span></button>
+    <div class="lang-switch">
+      <button class="lang-btn"><span class="label">EN</span><span class="caret">▾</span></button>
+      <div class="lang-menu" role="listbox">
+        <div class="heading">Choose a language</div>
+        <a href="#" class="current"><span class="code">EN</span><span class="native">English</span></a>
+        <a href="#"><span class="code">HI</span><span class="native">हिंदी</span></a>
+        <a href="#"><span class="code">BN</span><span class="native">বাংলা</span></a>
+        <a href="#"><span class="code">TA</span><span class="native">தமிழ்</span></a>
+        <a href="#"><span class="code">TE</span><span class="native">తెలుగు</span></a>
+        <a href="#"><span class="code">KN</span><span class="native">ಕನ್ನಡ</span></a>
+        <a href="#"><span class="code">ES</span><span class="native">Español</span></a>
+        <a href="#"><span class="code">FR</span><span class="native">Français</span></a>
+        <a href="#"><span class="code">PT</span><span class="native">Português</span></a>
+        <a href="#"><span class="code">JA</span><span class="native">日本語</span></a>
+        <a href="#"><span class="code">ZH</span><span class="native">中文</span></a>
+        <a href="#"><span class="code">KO</span><span class="native">한국어</span></a>
+        <a href="#"><span class="code">RU</span><span class="native">Русский</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Index</a>
+    <span class="sep">/</span>
+    <span class="num">Path 10</span>
+    <span class="sep">/</span>
+    <span>The Course</span>
+  </div>
+  <h1 class="brutal">
+    A small, intense cohort for senior operators thinking through AI <em class="accent-word">in their own business.</em>
+  </h1>
+  <p class="subtitle">
+    Not a webinar. Not a content library. A six-week working group built around the framework from <em>AI for Business Leaders</em> — applied to your company, your team, your constraints.
+  </p>
+  <p class="canonical">
+    <strong>The AI Leadership Course</strong> runs three or four times a year, capped at 18 operators per cohort. <em>Cohort III is currently underway.</em> The next cohort begins in the second half of 2026; details below.
+  </p>
+</section>
+
+<section class="modules-section">
+  <div class="modules-head">
+    <div><div class="label">— What you do over six weeks</div></div>
+    <div>
+      <h2>Six modules. Six concrete deliverables. <em>One AI strategy you actually own.</em></h2>
+      <p class="intro">Each module is one week — a 90-minute live session with the cohort, a working assignment between sessions, and a final deliverable you can take into your next leadership meeting. The cohort is the point. You will learn at least as much from the other 17 operators as from the material.</p>
+    </div>
+  </div>
+
+  <div class="modules-grid">
+    <div class="module">
+      <div class="m-num">i.</div>
+      <h3>The <em>AI honest snapshot</em></h3>
+      <p>An unromantic map of what AI actually is in 2026 — what works reliably, what doesn't, and where the genuine leverage lives. We separate the marketing from the substrate.</p>
+      <div class="m-deliverable">Deliverable · <em>your company's AI honest snapshot</em></div>
+    </div>
+    <div class="module">
+      <div class="m-num">ii.</div>
+      <h3>Where the <em>leverage</em> is in your business</h3>
+      <p>The structural exercise of identifying — concretely, not in slides — the two or three places where AI deployment could shift a real metric in your specific business.</p>
+      <div class="m-deliverable">Deliverable · <em>your leverage map, prioritised</em></div>
+    </div>
+    <div class="module">
+      <div class="m-num">iii.</div>
+      <h3>What you will <em>not</em> use AI for</h3>
+      <p>The defensive doctrine. What kinds of decisions, customer interactions, and internal processes must stay human — and what your written commitment to that looks like.</p>
+      <div class="m-deliverable">Deliverable · <em>your AI red lines, signed</em></div>
+    </div>
+    <div class="module">
+      <div class="m-num">iv.</div>
+      <h3>The <em>human-AI handoff protocol</em></h3>
+      <p>How tasks move between AI and your team. The boundary cases. Who decides when AI escalates back to a human. How quality is measured. The protocol turns AI from a vibe into a system.</p>
+      <div class="m-deliverable">Deliverable · <em>your team's handoff protocol</em></div>
+    </div>
+    <div class="module">
+      <div class="m-num">v.</div>
+      <h3>Re-architecting <em>teams and metrics</em></h3>
+      <p>What changes inside your team when AI is a colleague. New roles, retired ones, the metrics that no longer measure anything useful, the ones that suddenly do.</p>
+      <div class="m-deliverable">Deliverable · <em>your team redesign, draft v1</em></div>
+    </div>
+    <div class="module">
+      <div class="m-num">vi.</div>
+      <h3>Your <em>leadership posture</em></h3>
+      <p>The last week is personal. What kind of leader do you want to be through this transition? What posture do you want your team to mirror? You leave with a written posture, defended.</p>
+      <div class="m-deliverable">Deliverable · <em>your written AI leadership posture</em></div>
+    </div>
+  </div>
+</section>
+
+<section class="who-its-for">
+  <div class="wif-inner">
+    <div>
+      <div class="label">— Who this is for</div>
+      <h2>A small cohort of <em>serious operators.</em></h2>
+    </div>
+    <div class="wif-list">
+      <h4>Founders &amp; CEOs of mid-stage companies.</h4>
+      <p>Particularly those whose business is being asked to absorb AI in operations, product, or hiring — and who want to do it without losing the plot.</p>
+      <h4>Senior executives inside larger institutions.</h4>
+      <p>CXOs, VPs, GMs who are being asked to set AI direction for thousands of employees and want a private, candid working group.</p>
+      <h4>Operators leading transformation programs.</h4>
+      <p>Chief Transformation Officers, heads of strategy, internal AI leads who need a clearer doctrine than what their consultants are offering.</p>
+      <h4>Founders building AI-native companies.</h4>
+      <p>For whom the question is not <em>"should we use AI"</em> but <em>"how do we build an organisation that uses it well"</em> from day one.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cohort-info">
+  <div class="cohort-card">
+    <div class="label">— Next cohort</div>
+    <h2>Cohort IV begins <em>Q3 2026.</em></h2>
+    <div class="cohort-facts">
+      <div class="cohort-fact">
+        <span class="cf-label">Cadence</span>
+        <span class="cf-value">6 weeks · once a week</span>
+      </div>
+      <div class="cohort-fact">
+        <span class="cf-label">Time commitment</span>
+        <span class="cf-value">~4 hours / week</span>
+      </div>
+      <div class="cohort-fact">
+        <span class="cf-label">Cohort size</span>
+        <span class="cf-value">18 operators, max</span>
+      </div>
+      <div class="cohort-fact">
+        <span class="cf-label">Format</span>
+        <span class="cf-value">Live · online</span>
+      </div>
+      <div class="cohort-fact">
+        <span class="cf-label">Includes</span>
+        <span class="cf-value">All five books</span>
+      </div>
+      <div class="cohort-fact">
+        <span class="cf-label">Application</span>
+        <span class="cf-value">Selective · by referral or letter</span>
+      </div>
+    </div>
+    <div class="cohort-actions">
+      <a class="primary" href="mailto:cohort@vinaypasricha.com?subject=Cohort%20IV%20application">Apply <span class="arrow">→</span></a>
+      <a class="ghost" href="ai-for-business.html">Read the framework first <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="continuations">
+  <div class="continuations-inner">
+    <div class="label">— Continue with</div>
+    <div class="continuations-grid">
+      <a class="cont-card" href="ai-for-business.html">
+        <div class="cont-num">i.</div>
+        <div class="cont-title">AI for <em>Business Leaders</em></div>
+        <div class="cont-desc">The book the course is built on. Reading it first will make the cohort experience materially deeper.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+      <a class="cont-card" href="connect.html">
+        <div class="cont-num">viii.</div>
+        <div class="cont-title">Reach out <em>directly</em></div>
+        <div class="cont-desc">Questions about fit, applications, customised cohorts for your leadership team — write directly.</div>
+        <div class="cont-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="foot-left">
+    <div class="foot-brand">Vinay <em>Pasricha</em></div>
+    <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
+  </div>
+  <div class="foot-right">
+    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="connect.html">Connect</a>
+  </div>
+</footer>
+
+<script src="../js/site.js"></script>
+<script src="../js/i18n.js"></script>
+</body>
+</html>

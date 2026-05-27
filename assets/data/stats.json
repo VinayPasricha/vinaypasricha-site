@@ -1,0 +1,30 @@
+{
+  "_comment": "Progress — manually-logged snapshots of platform stats. Edited via Studio → Progress. Add a snapshot weekly or monthly; the dashboard shows trend over time.",
+  "updated_at": "2026-05-25",
+  "metrics": [
+    { "key": "visitors_monthly",   "label": "Website visitors",        "unit": "/month",   "category": "Audience", "source": "Plausible / GA" },
+    { "key": "unique_monthly",     "label": "Unique visitors",         "unit": "/month",   "category": "Audience", "source": "Plausible / GA" },
+    { "key": "siv_sessions",       "label": "SIV sessions completed",  "unit": "total",    "category": "Engagement", "source": "Backend (future)" },
+    { "key": "signal_thresholds",  "label": "Signal thresholds crossed", "unit": "total",  "category": "Engagement", "source": "Backend (future)" },
+    { "key": "aion1_messages",     "label": "AION1 messages",          "unit": "total",    "category": "Engagement", "source": "Backend (future)" },
+    { "key": "newsletter_subs",    "label": "Notebook subscribers",    "unit": "total",    "category": "Audience", "source": "Backend (future)" },
+
+    { "key": "youtube_subs",       "label": "YouTube subscribers",     "unit": "total",    "category": "Social", "source": "YouTube Studio" },
+    { "key": "youtube_views",      "label": "YouTube views",           "unit": "total",    "category": "Social", "source": "YouTube Studio" },
+    { "key": "instagram_followers","label": "Instagram followers",     "unit": "total",    "category": "Social", "source": "Instagram Insights" },
+    { "key": "linkedin_followers", "label": "LinkedIn followers",      "unit": "total",    "category": "Social", "source": "LinkedIn Analytics" },
+    { "key": "x_followers",        "label": "X followers",             "unit": "total",    "category": "Social", "source": "X Analytics" },
+
+    { "key": "book1_sales",        "label": "AI for Business Leaders", "unit": "sold",     "category": "Books", "source": "Amazon KDP" },
+    { "key": "book2_sales",        "label": "The SIV Method",          "unit": "sold",     "category": "Books", "source": "Amazon KDP" },
+    { "key": "book3_sales",        "label": "The Execution Doctrine",  "unit": "sold",     "category": "Books", "source": "Amazon KDP" },
+    { "key": "book4_sales",        "label": "Organizational Frequency","unit": "sold",     "category": "Books", "source": "Amazon KDP" },
+
+    { "key": "notebook_essays",    "label": "Notebook essays published","unit": "total",   "category": "Output", "source": "Studio → Notebook" },
+    { "key": "videos_published",   "label": "Videos published",        "unit": "total",    "category": "Output", "source": "Studio → Videos" },
+
+    { "key": "cohort_applications","label": "Cohort applications",     "unit": "total",    "category": "Course", "source": "Email inbox" },
+    { "key": "cohort_enrolled",    "label": "Cohort current size",     "unit": "people",   "category": "Course", "source": "Email / Calendly" }
+  ],
+  "snapshots": []
+}

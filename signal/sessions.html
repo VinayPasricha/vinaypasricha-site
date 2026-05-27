@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Architecture — The Signal</title>
+  <meta name="description" content="The Signal's developmental architecture. Nine sessions across two arcs — Correction, then Amplification.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* The map is its own layout — long, vertical, contemplative.
+       The rest of the design vocabulary (typography, colors, easings)
+       comes from signal.css unchanged. */
+
+    .map-stage {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 88px 56px 120px;
+    }
+
+    .map-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 32px 56px 0;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .map-top .s-mark {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--signal-4);
+    }
+    .map-top .s-mark a:hover { color: var(--signal-2); }
+    .map-top .s-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+    }
+    .map-top .s-meta em {
+      color: var(--ember);
+      font-style: normal;
+    }
+
+    .map-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .map-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 44px;
+      font-weight: 300;
+      line-height: 1.18;
+      color: var(--signal);
+      text-align: center;
+      letter-spacing: -0.006em;
+      margin-bottom: 26px;
+    }
+    .map-title em {
+      color: var(--ember);
+      font-style: italic;
+    }
+    .map-lede {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 19px;
+      line-height: 1.65;
+      color: var(--signal-2);
+      max-width: 580px;
+      margin: 0 auto 96px;
+      text-align: center;
+    }
+
+    /* The arc divider — a phase header */
+    .arc-divider {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 64px 0 40px;
+    }
+    .arc-divider:first-of-type { margin-top: 0; }
+    .arc-divider .arc-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--ember);
+      white-space: nowrap;
+    }
+    .arc-divider .arc-line {
+      flex: 1;
+      height: 1px;
+      background: var(--signal-4);
+      opacity: 0.4;
+    }
+    .arc-divider .arc-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+    }
+
+    .arc-intro {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--signal-3);
+      max-width: 580px;
+      margin: 0 0 56px 56px;
+      border-left: 1px solid var(--signal-4);
+      padding-left: 28px;
+      opacity: 0.85;
+    }
+
+    /* The vertical chain of sessions — each row a session */
+    .map-chain {
+      position: relative;
+      padding-left: 56px;
+    }
+    /* The thread line behind the numbers */
+    .map-chain::before {
+      content: '';
+      position: absolute;
+      left: 16px;
+      top: 28px;
+      bottom: 28px;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        var(--signal-4) 0%,
+        var(--signal-4) calc(var(--lit-progress, 0%) - 8%),
+        var(--ember-3) calc(var(--lit-progress, 0%) - 4%),
+        var(--ember-3) var(--lit-progress, 0%),
+        var(--signal-4) calc(var(--lit-progress, 0%) + 4%),
+        var(--signal-4) 100%
+      );
+      opacity: 0.55;
+    }
+
+    .map-session {
+      position: relative;
+      padding: 28px 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      column-gap: 32px;
+      align-items: baseline;
+    }
+    /* Each session has a number-dot on the chain */
+    .map-session::before {
+      content: '';
+      position: absolute;
+      left: -48px;
+      top: 38px;
+      width: 11px;
+      height: 11px;
+      border: 1px solid var(--signal-4);
+      border-radius: 50%;
+      background: var(--void);
+      box-sizing: border-box;
+    }
+    .map-session[data-state="complete"]::before {
+      border-color: var(--ember);
+      background: var(--ember);
+      box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.12);
+    }
+    .map-session[data-state="current"]::before {
+      border-color: var(--ember);
+      background: var(--void);
+      box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.08);
+      animation: ember-breath 4000ms ease-in-out infinite;
+    }
+    .map-session[data-state="locked"]::before {
+      border-color: var(--signal-4);
+      opacity: 0.4;
+    }
+
+    .map-session .s-body {}
+    .map-session .s-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .map-session[data-state="complete"] .s-num,
+    .map-session[data-state="current"] .s-num { color: var(--ember); }
+
+    .map-session h3 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--signal);
+      letter-spacing: -0.004em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .map-session[data-state="locked"] h3 {
+      color: var(--signal-3);
+    }
+    .map-session .s-dek {
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--signal-3);
+      max-width: 480px;
+    }
+    .map-session[data-state="locked"] .s-dek { color: var(--signal-4); }
+
+    .map-session .s-state {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      text-align: right;
+      white-space: nowrap;
+      align-self: center;
+    }
+    .map-session[data-state="complete"] .s-state { color: var(--ember); }
+    .map-session[data-state="current"] .s-state { color: var(--ember); }
+    .map-session a.s-enter {
+      display: block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-2);
+      transition: color var(--medium);
+      text-align: right;
+    }
+    .map-session a.s-enter:hover { color: var(--ember); }
+    .map-session[data-state="locked"] a.s-enter { color: var(--signal-4); }
+
+    .map-foot {
+      margin-top: 96px;
+      padding-top: 40px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--signal-3);
+    }
+    .map-foot a {
+      color: var(--signal-2);
+      border-bottom: 1px dotted var(--signal-4);
+      padding-bottom: 1px;
+      transition: color var(--medium);
+    }
+    .map-foot a:hover { color: var(--ember); border-bottom-color: var(--ember); }
+    .map-foot .nav {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+    }
+    .map-foot .nav a { border-bottom: none; padding: 0; }
+  </style>
+</head>
+
+<body>
+
+<main data-screen-label="05 The Architecture">
+
+  <!-- Top strip -->
+  <header class="map-top">
+    <div class="s-mark"><a href="index.html"><em>The Signal</em></a></div>
+    <div class="s-meta">
+      The Architecture · <em id="arch-progress">0 of 9 sessions</em>
+    </div>
+  </header>
+
+  <section class="map-stage">
+
+    <div class="map-eyebrow">The Developmental Architecture</div>
+    <h1 class="map-title">
+      Nine sessions,<br>
+      arranged as <em>two arcs.</em>
+    </h1>
+    <p class="map-lede">
+      The Signal is a developmental runtime, not a course. The arc closes itself.
+      Each session leaves a Resonance Record, and the field that opens after is
+      what the next session reads. There is no skipping — but there is no rushing.
+    </p>
+
+    <!-- ============================================================
+         PHASE I — CORRECTION ARC
+         The work of cleaning the channel. The first six sessions
+         surface and stabilize the structures that distort reception.
+         ============================================================ -->
+    <div class="arc-divider">
+      <span class="arc-label">Phase I · Correction Arc</span>
+      <span class="arc-line" aria-hidden="true"></span>
+      <span class="arc-meta">Sessions 0–5</span>
+    </div>
+
+    <p class="arc-intro">
+      Reception is improved first by removing distortion, not by adding signal.
+      The Correction Arc surfaces the split underneath your friction, names the
+      trade keeping it intact, makes the protector visible, builds an interrupt,
+      maps the field that fires the pattern, and closes with one clean choice.
+    </p>
+
+    <div class="map-chain" id="phase-correction">
+
+      <article class="map-session" data-session="0">
+        <div class="s-body">
+          <span class="s-num">Session 00</span>
+          <h3>The Split</h3>
+          <p class="s-dek">Surface the divided desire generating the current friction. The first session is not about what you want — it is about what is interfering with reception.</p>
+        </div>
+        <div>
+          <div class="s-state">Unbegun</div>
+          <a href="session.html?session=0" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="1">
+        <div class="s-body">
+          <span class="s-num">Session 01</span>
+          <h3>The Trade</h3>
+          <p class="s-dek">Name the hidden economy the distortion is purchasing. The split costs something. What is it buying that the reader is not yet willing to lose?</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=1" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="2">
+        <div class="s-body">
+          <span class="s-num">Session 02</span>
+          <h3>The Protector</h3>
+          <p class="s-dek">Reveal the defensive identity structure that activates to preserve continuity. Map its function, its triggers, its earliest activation signal. Observation without self-war.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=2" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="3">
+        <div class="s-body">
+          <span class="s-num">Session 03</span>
+          <h3>The Interrupt</h3>
+          <p class="s-dek">Reconstruct a capture sequence. Find the Window of Freedom between interpretation and continuity lock. Design one operational interrupt. Track for 72 hours.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=3" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="4">
+        <div class="s-body">
+          <span class="s-num">Session 04</span>
+          <h3>The Field</h3>
+          <p class="s-dek">Remain with perception before narrative refills the space. Distinguish signal from noise. Widen attention. Detect coherence directly, before interpretation collapses it.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=4" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="5">
+        <div class="s-body">
+          <span class="s-num">Session 05</span>
+          <h3>Integrity</h3>
+          <p class="s-dek">The Correction Arc closes. Distinguish coherence from comfort. Detect leakage in each option of a live decision. Choose the path that reduces internal fragmentation.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=5" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ============================================================
+         PHASE II — AMPLIFICATION ARC
+         The channel is cleaner. Now the work is to read what is
+         actually signalling. Place, time, hierarchy.
+         ============================================================ -->
+    <div class="arc-divider">
+      <span class="arc-label">Phase II · Amplification Arc</span>
+      <span class="arc-line" aria-hidden="true"></span>
+      <span class="arc-meta">Sessions 6–8</span>
+    </div>
+
+    <p class="arc-intro">
+      Once the channel is clean, the architecture of perception itself becomes
+      readable. The Amplification Arc treats place, time, and signal hierarchy
+      as the data they have always been — and the reader as the antenna they
+      have always been.
+    </p>
+
+    <div class="map-chain" id="phase-amplification">
+
+      <article class="map-session" data-session="6">
+        <div class="s-body">
+          <span class="s-num">Session 06</span>
+          <h3>Place</h3>
+          <p class="s-dek">Map how different environments alter perception, continuity, and coherence. High-noise places, continuity-amplifying places, signal-friendly places. Environment is part of the data.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=6" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="7">
+        <div class="s-body">
+          <span class="s-num">Session 07</span>
+          <h3>Time</h3>
+          <p class="s-dek">Map how different temporal states alter continuity, protector intensity, and coherence. Different times produce different versions of you. Rhythm is data, not destiny.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=7" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+      <article class="map-session" data-session="8">
+        <div class="s-body">
+          <span class="s-num">Session 08</span>
+          <h3>Hierarchy</h3>
+          <p class="s-dek">The closing session. Distinguish intensity from depth. Rank signals across four levels — Reactive Momentum, Narrative Intelligence, Coherence-Based, Deep Structural. Expose continuity disguised as clarity.</p>
+        </div>
+        <div>
+          <div class="s-state">Locked</div>
+          <a href="session.html?session=8" class="s-enter">Enter →</a>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="map-foot">
+      The architecture is conservative on purpose. There are no levels,
+      no badges, no streaks — only sessions, records, and the field they
+      open. <br><br>
+      <a href="field.html">View the Field of capacities →</a>
+      <div class="nav">
+        <a href="index.html">Threshold</a>
+        <a href="begin.html">Where to Begin</a>
+        <a href="archive.html">The Archive</a>
+        <a href="colophon.html">Colophon</a>
+        <a href="../index.html">Index</a>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  // Read state and reflect it on the map:
+  //   • completed sessions → "Complete" + ember dot
+  //   • current draft       → "In progress" + breathing dot, "Resume" CTA
+  //   • the next unstarted  → "Available" + "Enter" CTA
+  //   • everything after    → "Locked" (visually muted; link still works,
+  //                                     because we respect autonomy)
+  //
+  // Updates the top-right session counter and the embered progress line.
+
+  let state = null;
+  try { state = JSON.parse(localStorage.getItem('signal.state') || 'null'); } catch (e) {}
+  state = state || { records: [], currentSession: null };
+
+  const completed = new Set((state.records || []).map(r => r.sessionId));
+  const draftId = state.currentSession ? state.currentSession.id : null;
+  // The next-available session is the lowest id not yet completed.
+  // (If a draft exists, that's already "current" — the next session is its successor.)
+  let nextAvailableId = 0;
+  for (let i = 0; i <= 8; i++) {
+    if (!completed.has(i)) { nextAvailableId = i; break; }
+    nextAvailableId = i + 1;
+  }
+  // If the draft is the current next-available, surface "Resume" not "Enter"
+  // for that one row.
+
+  document.querySelectorAll('.map-session').forEach(el => {
+    const id = parseInt(el.dataset.session, 10);
+    const stateEl = el.querySelector('.s-state');
+    const cta = el.querySelector('.s-enter');
+    if (completed.has(id)) {
+      el.dataset.state = 'complete';
+      stateEl.textContent = 'Complete';
+      cta.textContent = 'Revisit record →';
+    } else if (id === draftId) {
+      el.dataset.state = 'current';
+      stateEl.textContent = 'In progress';
+      cta.textContent = 'Resume →';
+    } else if (id === nextAvailableId) {
+      el.dataset.state = 'available';
+      stateEl.textContent = 'Available';
+      cta.textContent = 'Enter →';
+    } else {
+      el.dataset.state = 'locked';
+      stateEl.textContent = 'Locked';
+      cta.textContent = 'Enter →';
+    }
+  });
+
+  // Top-right progress
+  const progEl = document.getElementById('arch-progress');
+  if (progEl) progEl.textContent = `${completed.size} of 9 sessions`;
+
+  // Tint the chain thread to reflect completion progress
+  // (each session = ~11%; full ember if all 9 done)
+  function setChainProgress(chainEl, completedInChain, totalInChain) {
+    if (!totalInChain) return;
+    const pct = Math.round((completedInChain / totalInChain) * 100);
+    chainEl.style.setProperty('--lit-progress', pct + '%');
+  }
+  const phase1 = document.getElementById('phase-correction');
+  const phase2 = document.getElementById('phase-amplification');
+  setChainProgress(phase1, [0,1,2,3,4,5].filter(i => completed.has(i)).length, 6);
+  setChainProgress(phase2, [6,7,8].filter(i => completed.has(i)).length, 3);
+</script>
+
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

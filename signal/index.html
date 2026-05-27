@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Signal — A Developmental Field by Vinay Pasricha</title>
+  <meta name="description" content="The Signal is not a book you read. It is a developmental field you enter — the first AI-mediated book in which the reader is gradually trained, through structured interaction, to detect signal in noise.">
+
+  <meta property="og:title" content="The Signal — A Developmental Field">
+  <meta property="og:description" content="An interactive book experience. The first attempt at AI-mediated human developmental evolution through structured conversation.">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/the-signal-cover-front.jpg">
+  <meta property="og:type" content="book">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+</head>
+
+<body>
+
+<main class="threshold" data-screen-label="01 Threshold">
+
+  <!-- The single point of light, breathing above the text. -->
+  <div class="ember-point" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       TOP STRIP — quiet identity, the return-home thread
+       ============================================================ -->
+  <header class="t-top">
+    <div class="t-mark">
+      <a href="../index.html"><em>Vinay Pasricha</em></a>
+    </div>
+    <div class="t-meta">
+      <span class="live-dot" aria-hidden="true"></span>
+      The Signal · Book V · in progress
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CENTER — the threshold itself
+       ============================================================ -->
+  <section class="t-center">
+
+    <div class="t-eyebrow">A <em>Field,</em> not a book</div>
+
+    <p class="t-line l1">
+      The Signal does not begin by asking
+    </p>
+    <p class="t-line l2">
+      <em>what you want.</em>
+    </p>
+    <p class="t-line l3">
+      It begins by asking what is interfering with perception.
+    </p>
+
+    <div class="t-rule" aria-hidden="true"></div>
+
+    <a href="session.html" class="t-enter">
+      <span>Cross the Threshold</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <div class="t-kbd-hint">
+      Press <kbd>Enter</kbd> &nbsp;or click
+    </div>
+
+    <p class="t-instruction">
+      The first session takes roughly twelve minutes. There is no signup, no
+      account, no email. Only the interaction.
+    </p>
+
+  </section>
+
+  <!-- ============================================================
+       FOOT — the honest colophon strip
+       ============================================================ -->
+  <footer class="t-foot">
+
+    <div class="t-coauthor">
+      An experiment in human–AI co-authorship. Written by
+      <em>Vinay Pasricha</em>, in resonance with GPT and Claude as
+      developmental partners. <a href="colophon.html">Read the method.</a>
+    </div>
+
+    <div class="t-center-mark">
+      The Signal · v0.1
+    </div>
+
+    <nav class="t-nav">
+      <a href="begin.html">Where to Begin</a>
+      <a href="sessions.html">The Architecture</a>
+      <a href="field.html">The Field</a>
+      <a href="archive.html">The Archive</a>
+      <a href="colophon.html">Colophon</a>
+      <a href="../index.html">Index</a>
+    </nav>
+
+  </footer>
+
+</main>
+
+<script>
+  // The threshold is mostly CSS-driven. Two small JS touches:
+  //
+  // 1) If a returning reader already has session state, soften the copy
+  //    so they don't feel re-thresholded each time.
+  // 2) Allow Enter key to cross the threshold (after the doorway has
+  //    finished its slow arrival animation).
+
+  (function () {
+    let state = null;
+    try { state = JSON.parse(localStorage.getItem('signal.state') || 'null'); } catch (e) {}
+
+    if (state && state.lastSession && state.lastSession.idx >= 0) {
+      // Returning reader — keep the threshold cinematic, but make the
+      // affordance honor that they're not new to the field. After at
+      // least one Resonance Record, "Return to the Field" routes to
+      // the adaptive entry router (begin.html), which asks what feels
+      // most active right now and routes intelligently from there.
+      const enterLink = document.querySelector('.t-enter');
+      const enter = document.querySelector('.t-enter span:first-child');
+      const instr = document.querySelector('.t-instruction');
+      const eyebrow = document.querySelector('.t-eyebrow');
+      const hasRecords = (state.records || []).length > 0;
+      if (enter) enter.textContent = 'Return to the Field';
+      if (eyebrow) eyebrow.innerHTML = 'Continue · <em>Session ' + (state.lastSession.idx) + '</em>';
+      if (instr) {
+        instr.innerHTML = 'You are mid-arc. The field remembers where you left off.';
+      }
+      // Route returning readers with records into the adaptive router
+      if (hasRecords && enterLink) {
+        enterLink.setAttribute('href', 'begin.html');
+      }
+
+      // Return continuity — surface the closing line of the most recent
+      // Resonance Record so the reader re-enters with the thread of their
+      // last work, not a blank page. The card fades in late in the
+      // threshold animation so it arrives at the moment of decision.
+      try {
+        const records = (state.records || []);
+        const last = records[records.length - 1];
+        if (last && last.record) {
+          let closing = '';
+          const txt = String(last.record).trim();
+          const witnessMatch = txt.match(/Witnessing Instruction\s*:\s*([\s\S]+?)$/i);
+          if (witnessMatch) {
+            closing = witnessMatch[1].trim();
+          } else {
+            const paras = txt.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+            closing = paras[paras.length - 1] || '';
+          }
+          if (closing.length > 200) closing = closing.slice(0, 200).replace(/\s+\S*$/, '') + '…';
+          if (closing) {
+            const center = document.querySelector('.t-center');
+            if (center) {
+              const card = document.createElement('div');
+              card.className = 't-return-record';
+              const ref = 'Session ' + String(last.sessionId).padStart(2, '0') + ' · ' + (last.sessionTitle || '');
+              card.innerHTML =
+                '<div class="t-return-label">The thread you left</div>' +
+                '<div class="t-return-quote">' + closing.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</div>' +
+                '<div class="t-return-ref">— ' + ref.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</div>';
+              center.appendChild(card);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Enter key after the doorway has settled
+    let armed = false;
+    setTimeout(() => { armed = true; }, 7400);
+    document.addEventListener('keydown', (e) => {
+      if (!armed) return;
+      if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+        const link = document.querySelector('.t-enter');
+        if (link && document.activeElement === document.body) {
+          link.click();
+        }
+      }
+    });
+  })();
+</script>
+
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

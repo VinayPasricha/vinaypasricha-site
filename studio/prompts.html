@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompts — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .prompt-list { display: flex; flex-direction: column; gap: 14px; }
+    .pli {
+      padding: 24px 28px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      transition: background .15s;
+    }
+    .pli:hover { background: var(--paper-2); }
+    .pli.expanded { background: var(--paper); border-color: var(--ink-3); }
+    .pli-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .pli-key {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .pli-key .using {
+      color: #2e7d5b;
+      margin-left: 12px;
+    }
+    .pli-key .using.inline {
+      color: var(--ink-3);
+    }
+    .pli-name {
+      font-family: var(--serif);
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .pli-name em { font-style: italic; }
+    .pli-desc {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink-3);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .pli-uses {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-4);
+    }
+    .pli-actions { display: flex; gap: 6px; align-items: start; }
+    .pli-action {
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .pli-action:hover { border-color: var(--ink); color: var(--ink); }
+    .pli-action.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .pli-action.primary:hover { background: var(--accent); border-color: var(--accent); }
+
+    .pli-body {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+    }
+    .pli-body label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .pli-body .help {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink-3);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .pli-body textarea {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--ink);
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      padding: 18px 22px;
+      border-radius: 2px;
+      outline: none;
+      resize: vertical;
+      min-height: 360px;
+      transition: border-color .15s;
+    }
+    .pli-body textarea:focus { border-color: var(--ink); background: var(--paper); }
+    .pli-body .meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .pli-body .meta-row label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 0;
+    }
+    .pli-body .meta-row input {
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      border-radius: 2px;
+      outline: none;
+    }
+    .pli-body .meta-row input:focus { border-color: var(--ink); }
+    .pli-actions-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--rule-soft);
+    }
+    .pli-actions-bottom .actions-left { display: flex; gap: 8px; }
+    .pli-actions-bottom .actions-right { display: flex; gap: 8px; }
+
+    .word-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-top: 8px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— editing the Prompts</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../index.html" target="_blank" rel="noopener">View site ↗</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room edits the system prompts that power every AI conversation on the site.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Prompts</div>
+        <h1>The <em>Prompts</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status"><span class="saved">All changes saved on this device</span></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— How this works</div>
+      <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-2); margin-top: 8px;">
+        Each conversation on the site has a system prompt that shapes how the AI behaves. Edit them here. Saved drafts apply to <em>your</em> browser immediately so you can test. <strong>Publish &amp; download</strong> writes a fresh <code>prompts.json</code> that you drop into the repo to deploy to all visitors.
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 12px;">
+        Leaving a system field empty makes the conversation fall back to the inline default baked into the JS files. That is the safe state.
+      </p>
+    </div>
+
+    <div class="editor-toolbar">
+      <div class="left"><span class="tb-count" id="tb-count">4 prompts</span></div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all changes</button>
+        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
+      </div>
+    </div>
+
+    <div class="prompt-list" id="prompt-list"></div>
+  </div>
+</main>
+
+<div class="publish-overlay" id="publish-overlay" style="display:none">
+  <div class="publish-modal">
+    <h2>Publish to <em>vinaypasricha.com</em></h2>
+    <p>Your changes are saved locally. To make them live, replace <code>assets/data/prompts.json</code> with the file we just generated.</p>
+    <p class="steps"><strong>Three steps:</strong><br>1. <em>prompts.json</em> just downloaded.<br>2. Replace it in the repo.<br>3. Commit. The next conversation a visitor starts will use the new prompts.</p>
+    <div class="publish-actions"><button class="tb-btn" type="button" id="publish-close">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="prompts-admin.js"></script>
+</body>
+</html>

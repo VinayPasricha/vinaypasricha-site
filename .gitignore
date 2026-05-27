@@ -1,0 +1,43 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build / temp
+.cache/
+dist/
+build/
+.tmp/
+*.log
+
+# Local environment + secrets
+.env
+.env.local
+.env.*.local
+
+# Auto-generated screenshots / audit folders (kept out of repo)
+_audit/
+
+# Cloud configs
+.cloudflare/
+.wrangler/
+
+# Mac / Windows
+Icon?
+ehthumbs.db
+desktop.ini

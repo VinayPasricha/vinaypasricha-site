@@ -1,0 +1,43 @@
+{
+  "_comment": "The 'Now' line in the topbar AND the /now page. Both edited via Studio → Now.",
+  "updated_at": "2026-05-25",
+  "as_of": "May 25, 2026",
+  "items": [
+    { "verb": "Writing",  "subject": "The Signal" },
+    { "verb": "Building", "subject": "GoodSpace AI" },
+    { "verb": "Running",  "subject": "Cohort III" }
+  ],
+  "page": {
+    "lede": "What I am *currently* doing, thinking, reading. Updated when something actually changes — not on a schedule. Inspired by [Derek Sivers' /now page](https://nownownow.com/about).",
+    "sections": [
+      {
+        "label": "Writing",
+        "body": "*The Signal* is the slow piece. Late 2026 target. It is the most personal of the books and is being written recursively — each pass produces a deeper version of the same chapters. The companion field — the AI-mediated developmental experience — is now live at [/signal](../signal/index.html) and is being used to pressure-test the architecture as the manuscript matures.\n\n*Organizational Frequency* is in final edits. Print edition arrives in Q3 2026."
+      },
+      {
+        "label": "Building",
+        "body": "*GoodSpace AI* — the platform that lives at the heart of the *Organizational Frequency* doctrine. Currently scaling the product around intelligent discovery rather than resume-matching. Half a million matches and counting.\n\nQuietly: the backend that will eventually power the Studio. A small one. The plan is in [/_brief/backend-plan.md](../_brief/backend-plan.md)."
+      },
+      {
+        "label": "Running",
+        "body": "*Cohort III* of the AI Leadership Course is underway — a small group of senior operators working through AI strategy in their own businesses, week by week. Cohort IV begins Q3."
+      },
+      {
+        "label": "Reading",
+        "body": "Currently:\n\n- *The Master and His Emissary*, Iain McGilchrist — re-reading\n- *Working in Public*, Nadia Eghbal\n- *The Beginning of Infinity*, David Deutsch\n- Notes from the last decade of *Edge.org* Annual Questions\n\nThe shelf rotates slowly. Most of what compounds is what gets re-read."
+      },
+      {
+        "label": "Thinking about",
+        "body": "Three open questions at the moment:\n\n1. **What changes about a book when the reader is structurally interacted with by the book?** This is what The Signal is. We do not yet know what to call this category.\n\n2. **What is the right shape of an AI-mediated cognitive instrument?** Different from a chatbot. Different from a coach. Closer to a *fixed instrument with adaptive depth.*\n\n3. **What does 'compounding' actually require?** I have written about this. I am still learning what I wrote."
+      },
+      {
+        "label": "Recent",
+        "body": "*The Signal* field shipped this month. The Studio editing room is now operational across six surfaces — videos, notebook, books, prompts, the rotating *Now* line, and a progress dashboard. The site is now an instrument I can update myself, weekly, without rebuilding from scratch.\n\nThe Notebook stays empty until June 7. The first essay is being written this weekend."
+      },
+      {
+        "label": "Not doing",
+        "body": "*Not* on the social media optimisation treadmill. *Not* on the conference circuit. *Not* taking sales calls. *Not* writing another business book about AI. The discipline of refusal is the practice this site is built around."
+      }
+    ]
+  }
+}

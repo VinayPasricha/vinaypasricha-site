@@ -1,0 +1,574 @@
+/* =============================================================
+   SIV CONVERSATION — the interactive layer on paths/decisions.html
+   "Calm clinical." A finite, Socratic thinking session that ends
+   with a printable thinking artefact.
+   ============================================================= */
+
+.siv-conversation{
+  padding: 96px var(--gutter);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+.siv-inner{
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ---------- Phase indicator ---------- */
+.siv-phases{
+  display: flex;
+  gap: 8px;
+  margin-bottom: 56px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.siv-phase{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color .25s;
+}
+.siv-phase .bar{
+  width: 24px;
+  height: 1px;
+  background: var(--rule);
+  display: inline-block;
+  transition: background .25s;
+}
+.siv-phase.passed{ color: var(--ink-3); }
+.siv-phase.passed .bar{ background: var(--ink-3); }
+.siv-phase.active{ color: var(--accent); }
+.siv-phase.active .bar{ background: var(--accent); }
+.siv-phase .sep{ color: var(--rule); font-size: 14px; }
+
+/* ---------- Intro (the threshold) ---------- */
+.siv-intro{
+  text-align: center;
+}
+.siv-intro h2{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.siv-intro h2 em{ font-style: italic; color: var(--accent); }
+.siv-intro .lede{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin-bottom: 48px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+/* ---------- Threshold input — large free-text ---------- */
+.siv-threshold-form{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+.siv-threshold-form textarea{
+  width: 100%;
+  min-height: 180px;
+  padding: 22px 0 18px;
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  outline: none;
+  resize: vertical;
+  letter-spacing: -0.005em;
+}
+.siv-threshold-form textarea::placeholder{
+  color: var(--ink-4);
+  font-style: italic;
+}
+.siv-helper{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-top: -8px;
+}
+.siv-threshold-form .row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+.siv-threshold-form .privacy{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.siv-submit{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--ink);
+  border: 0;
+  padding: 16px 28px;
+  cursor: pointer;
+  transition: background .15s;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.siv-submit:hover:not(:disabled){ background: var(--accent); }
+.siv-submit:disabled{ background: var(--ink-4); cursor: not-allowed; }
+.siv-submit .arrow{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---------- Conversation thread ---------- */
+.siv-thread{
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  margin-bottom: 40px;
+}
+.siv-turn{
+  animation: fadeIn .35s ease-out both;
+}
+@keyframes fadeIn{
+  from{ opacity: 0; transform: translateY(4px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+.siv-ai{
+  display: grid;
+  grid-template-columns: 1px 1fr;
+  gap: 24px;
+}
+.siv-ai .rule{
+  background: var(--accent);
+  width: 1px;
+  align-self: stretch;
+}
+.siv-ai .body{
+  padding-left: 8px;
+}
+.siv-ai .meta{
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 10px;
+}
+.siv-ai .text{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  font-weight: 400;
+}
+.siv-ai .text strong{ font-weight: 500; font-style: normal; }
+.siv-ai .text p{ margin-bottom: 14px; }
+.siv-ai .text p:last-child{ margin-bottom: 0; }
+.siv-ai .text ol{
+  font-style: normal;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  padding-left: 24px;
+  margin: 14px 0;
+}
+.siv-ai .text ol li{ padding: 6px 0; }
+
+.siv-user{
+  padding-left: 0;
+  margin-left: 0;
+}
+.siv-user .meta{
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 8px;
+  text-align: right;
+}
+.siv-user .text{
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  text-align: right;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  white-space: pre-wrap;
+}
+
+/* ---------- Thinking dots while AI generates ---------- */
+.siv-thinking{
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.siv-thinking span{
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  animation: dots 1.2s infinite;
+}
+.siv-thinking span:nth-child(2){ animation-delay: 0.15s; }
+.siv-thinking span:nth-child(3){ animation-delay: 0.3s; }
+@keyframes dots {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* ---------- Continue input — appears at the end of each AI turn ---------- */
+.siv-continue{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  animation: fadeIn .35s ease-out both;
+}
+.siv-continue textarea{
+  width: 100%;
+  min-height: 100px;
+  padding: 18px 0;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  outline: none;
+  resize: vertical;
+}
+.siv-continue textarea::placeholder{
+  color: var(--ink-4);
+  font-style: italic;
+  font-family: var(--serif);
+}
+.siv-continue .row{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+}
+.siv-continue .hint{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-right: auto;
+}
+.siv-continue .hint kbd{
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  letter-spacing: 0;
+}
+.siv-continue .ghost-link{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  cursor: pointer;
+  background: transparent;
+  border-top: 0; border-left: 0; border-right: 0;
+}
+.siv-continue .ghost-link:hover{ color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- Foot note ---------- */
+.siv-foot{
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule-soft);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-3);
+  text-align: center;
+  line-height: 1.5;
+}
+.siv-foot em{ color: var(--ink-2); font-style: italic; }
+.siv-foot a, .siv-foot button.linkish{
+  color: var(--ink-2);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  margin: 0 6px;
+}
+.siv-foot a:hover, .siv-foot button.linkish:hover{ color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- Error banner ---------- */
+.siv-error{
+  background: var(--paper-2);
+  border: 1px solid var(--accent);
+  padding: 18px 22px;
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.siv-error strong{ font-style: normal; font-weight: 500; color: var(--accent); }
+
+/* ============================================================
+   THE ARTEFACT
+   What the visitor takes away. Printable, saveable, ceremonial.
+   ============================================================ */
+.siv-artefact{
+  background: var(--paper-3);
+  border: 1px solid var(--rule);
+  padding: 72px 64px;
+  position: relative;
+  box-shadow: 0 24px 60px -30px rgba(20,17,10,0.18), 0 4px 12px rgba(20,17,10,0.04);
+  animation: fadeIn .55s ease-out both;
+}
+.siv-artefact .top-rule{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+.siv-artefact .top-rule .line{
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  max-width: 80px;
+}
+.siv-artefact .top-rule .label{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.siv-artefact h2.art-title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.siv-artefact h2.art-title em{ font-style: italic; }
+.siv-artefact .art-subtitle{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-3);
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.art-row{
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.art-row:last-of-type{ border-bottom: 0; }
+.art-label{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-top: 4px;
+}
+.art-content{
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  font-weight: 400;
+}
+.art-content p{ margin-bottom: 10px; }
+.art-content p:last-child{ margin-bottom: 0; }
+.art-content ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.art-content ul li{
+  padding: 6px 0 6px 22px;
+  position: relative;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.art-content ul li::before{
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-style: italic;
+  font-family: var(--serif);
+}
+
+.art-divider{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0 32px;
+  color: var(--accent);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+}
+.art-divider::before, .art-divider::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  max-width: 100px;
+  margin: 0 16px;
+}
+
+.art-unresolved{
+  background: var(--ink);
+  color: var(--paper);
+  padding: 36px 40px;
+  margin: 0 -16px;
+}
+.art-unresolved .art-label{
+  color: var(--accent-2);
+  margin-bottom: 14px;
+  padding-top: 0;
+}
+.art-unresolved .question{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--paper);
+  letter-spacing: -0.005em;
+}
+
+.art-foot{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+.art-foot .stamp{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.art-foot .stamp em{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-2);
+}
+
+.art-actions{
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.art-action{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  background: transparent;
+  color: var(--ink);
+  transition: background .15s, color .15s;
+}
+.art-action:hover{ background: var(--ink); color: var(--paper); }
+.art-action.primary{ background: var(--ink); color: var(--paper); }
+.art-action.primary:hover{ background: var(--accent); border-color: var(--accent); }
+
+/* ---------- Print rules — artefact-only when printing ---------- */
+@media print {
+  body * { visibility: hidden !important; }
+  .siv-artefact, .siv-artefact * { visibility: visible !important; }
+  .siv-artefact{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+    border: 0;
+    padding: 32px 24px;
+    background: white;
+  }
+  .art-actions{ display: none !important; }
+}
+
+@media (max-width: 720px){
+  .siv-conversation{ padding: 56px 28px; }
+  .siv-intro h2{ font-size: 32px; }
+  .siv-intro .lede{ font-size: 16px; }
+  .siv-threshold-form textarea{ font-size: 17px; }
+  .siv-ai .text{ font-size: 18px; }
+  .siv-phases{ font-size: 9px; }
+  .siv-phase .bar{ width: 16px; }
+  .siv-artefact{ padding: 40px 24px; }
+  .siv-artefact h2.art-title{ font-size: 28px; }
+  .art-row{ grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+  .art-content{ font-size: 16px; }
+  .art-unresolved{ padding: 28px 24px; margin: 0 -8px; }
+  .art-unresolved .question{ font-size: 18px; }
+  .art-foot{ grid-template-columns: 1fr; }
+  .art-actions{ justify-content: flex-start; }
+}

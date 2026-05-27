@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Sequence Chamber — KAIROS·1</title>
+  <meta name="description" content="The first chamber of KAIROS·1. Transform vague intention into observable execution topology. Built from Vinay's Execution Doctrine.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="../../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../runtime.css">
+  <link rel="stylesheet" href="sequence.css">
+</head>
+
+<body>
+
+<div id="chamber-root"></div>
+
+<!-- ===== Plain JS: state + library helper + transition + landmarks ===== -->
+<script src="state.js"></script>
+<script src="../../js/library.js"></script>
+<script src="../shared/transition.js"></script>
+<script src="../shared/landmarks.js"></script>
+
+<!-- ===== React 18.3.1 + Babel 7.29.0 (pinned + SRI) ===== -->
+<script
+  src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+  integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+  crossorigin="anonymous"></script>
+<script
+  src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+  integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+  crossorigin="anonymous"></script>
+<script
+  src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+  integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+  crossorigin="anonymous"></script>
+
+<!-- ===== Babel/JSX: components first, then orchestrator ===== -->
+<script type="text/babel" src="../shared/spine.jsx"></script>
+<script type="text/babel" src="../shared/strata.jsx"></script>
+<script type="text/babel" src="inquiry.jsx"></script>
+<script type="text/babel" src="topology.jsx"></script>
+<script type="text/babel" src="chamber.jsx"></script>
+
+</body>
+</html>

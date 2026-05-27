@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where to Begin — The Signal</title>
+  <meta name="description" content="The adaptive entry to The Signal. The system asks what feels most active right now, and routes toward the developmental layer most likely to be useful next.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signal.css">
+  <link rel="stylesheet" href="../css/i18n.css">
+
+  <style>
+    /* The Entry Router has its own page rhythm — quieter than the
+       session page, more interpretive than the architecture page. It
+       sits between threshold and runtime: a moment for the system to
+       ask, not to instruct. */
+
+    .b-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 32px 56px 0;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    .b-top .s-mark {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--signal-4);
+    }
+    .b-top .s-mark a:hover { color: var(--signal-2); }
+    .b-top .s-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+    }
+    .b-top .s-meta em {
+      color: var(--ember);
+      font-style: normal;
+    }
+
+    .b-stage {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 88px 56px 96px;
+    }
+
+    .b-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .b-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.22;
+      color: var(--signal);
+      letter-spacing: -0.005em;
+      text-align: center;
+      margin-bottom: 26px;
+    }
+    .b-title em {
+      color: var(--ember);
+      font-style: italic;
+    }
+    .b-lede {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--signal-3);
+      max-width: 540px;
+      margin: 0 auto 80px;
+      text-align: center;
+    }
+
+    /* The prompt list — vertical, generous spacing. Each row IS the
+       routing decision. No "Select" button: clicking the row enters
+       the session. Hover states are minimal; click states are clear. */
+    .b-prompts {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 72px;
+    }
+    .b-prompt {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      column-gap: 28px;
+      align-items: baseline;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--rule);
+      cursor: pointer;
+      transition: background var(--medium), padding var(--medium);
+      text-decoration: none;
+      color: inherit;
+    }
+    .b-prompt:first-of-type {
+      border-top: 1px solid var(--rule);
+    }
+    .b-prompt:hover {
+      background: rgba(212, 165, 116, 0.025);
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .b-prompt[data-locked="true"] {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+    .b-prompt[data-locked="true"]:hover {
+      background: transparent;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .b-prompt-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--signal-4);
+      min-width: 24px;
+    }
+    .b-prompt-text {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 20px;
+      line-height: 1.55;
+      color: var(--signal);
+      letter-spacing: -0.001em;
+    }
+    .b-prompt-route {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--signal-3);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .b-prompt-route em {
+      color: var(--ember);
+      font-style: normal;
+    }
+    .b-prompt[data-locked="true"] .b-prompt-route {
+      color: var(--signal-4);
+    }
+    .b-prompt[data-locked="true"] .b-prompt-route em {
+      color: var(--signal-4);
+    }
+
+    /* Quiet foot — the architecture link, in case the reader wants
+       to see the whole shape rather than answer the prompt. */
+    .b-foot {
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--signal-3);
+      line-height: 1.7;
+    }
+    .b-foot a {
+      color: var(--signal-2);
+      border-bottom: 1px dotted var(--signal-4);
+      padding-bottom: 1px;
+      transition: color var(--medium);
+    }
+    .b-foot a:hover { color: var(--ember); border-bottom-color: var(--ember); }
+    .b-foot .nav {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 9.5px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+    }
+    .b-foot .nav a { border-bottom: none; padding: 0; }
+
+    /* First-paint quiet — the page rises in, doesn't slam in */
+    .b-stage { animation: t-fade-in 1400ms ease-out forwards; }
+  </style>
+</head>
+
+<body>
+
+<main data-screen-label="06 Entry Router">
+
+  <header class="b-top">
+    <div class="s-mark"><a href="index.html"><em>The Signal</em></a></div>
+    <div class="s-meta">Entry · <em id="entry-state">where to begin</em></div>
+  </header>
+
+  <section class="b-stage">
+
+    <div class="b-eyebrow">Adaptive Entry</div>
+    <h1 class="b-title">
+      Before we continue,<br>
+      <em>what feels most active in you right now?</em>
+    </h1>
+    <p class="b-lede">
+      The runtime determines the next useful movement. You do not have
+      to pick a layer that sounds important. Pick the one that is true.
+      If nothing fits, the field default is the closest one.
+    </p>
+
+    <!-- ============================================================
+         THE NINE — each phrasing routes to a developmental layer.
+         The list is *not* a menu. It is the system asking what is
+         most live. Each prompt is the reader's voice, not the
+         system's. Clicking is the answer; the entry IS the session.
+         ============================================================ -->
+    <nav class="b-prompts" id="prompts">
+
+      <a class="b-prompt" data-session="0" data-required="0" href="session.html?session=0">
+        <span class="b-prompt-num">01</span>
+        <span class="b-prompt-text">"Something feels emotionally turbulent. I cannot yet see what is generating the noise."</span>
+        <span class="b-prompt-route">→ <em>Split</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="1" data-required="1" href="session.html?session=1">
+        <span class="b-prompt-num">02</span>
+        <span class="b-prompt-text">"A pattern keeps repeating. I suspect part of me is participating in it."</span>
+        <span class="b-prompt-route">→ <em>Trade</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="2" data-required="2" href="session.html?session=2">
+        <span class="b-prompt-num">03</span>
+        <span class="b-prompt-text">"A certain version of me keeps taking over. I can almost see who it is."</span>
+        <span class="b-prompt-route">→ <em>Protector</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="3" data-required="2" href="session.html?session=3">
+        <span class="b-prompt-num">04</span>
+        <span class="b-prompt-text">"I reacted automatically. I want to catch the sequence earlier next time."</span>
+        <span class="b-prompt-route">→ <em>Interrupt</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="4" data-required="3" href="session.html?session=4">
+        <span class="b-prompt-num">05</span>
+        <span class="b-prompt-text">"Everything is loud. I need to stabilize and hear signal more clearly."</span>
+        <span class="b-prompt-route">→ <em>Field</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="5" data-required="4" href="session.html?session=5">
+        <span class="b-prompt-num">06</span>
+        <span class="b-prompt-text">"I am facing a difficult decision and the protector wants the easier option."</span>
+        <span class="b-prompt-route">→ <em>Integrity</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="6" data-required="4" href="session.html?session=6">
+        <span class="b-prompt-num">07</span>
+        <span class="b-prompt-text">"My environment is affecting me. Different places produce different versions of me."</span>
+        <span class="b-prompt-route">→ <em>Place</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="7" data-required="6" href="session.html?session=7">
+        <span class="b-prompt-num">08</span>
+        <span class="b-prompt-text">"Certain time periods change me significantly. I want to read the rhythm."</span>
+        <span class="b-prompt-route">→ <em>Time</em></span>
+      </a>
+
+      <a class="b-prompt" data-session="8" data-required="5" href="session.html?session=8">
+        <span class="b-prompt-num">09</span>
+        <span class="b-prompt-text">"I cannot tell which signals to trust. Some feel urgent; some feel deeper."</span>
+        <span class="b-prompt-route">→ <em>Hierarchy</em></span>
+      </a>
+
+    </nav>
+
+    <p class="b-foot">
+      Not sure? <a href="sessions.html">View the Architecture</a> to see the shape of the
+      full arc, or <a href="session.html?session=0">begin with the Split</a> — the field
+      default that every reader starts from.
+      <div class="nav">
+        <a href="index.html">Threshold</a>
+        <a href="sessions.html">Architecture</a>
+        <a href="field.html">The Field</a>
+        <a href="archive.html">The Archive</a>
+        <a href="colophon.html">Colophon</a>
+      </div>
+    </p>
+
+  </section>
+
+</main>
+
+<script>
+  // Adaptive routing logic.
+  //
+  // The 9 prompts are not a menu — they are the system's interpretive
+  // entry surface. Each prompt is gated by a soft developmental
+  // readiness condition (data-required = minimum sessions completed
+  // before the entry is honest to surface).
+  //
+  // A first-time visitor (no records) sees Split fully active and
+  // every other entry rendered as locked. Each completed Resonance
+  // Record / Trace / Map releases the next entries in order. A reader
+  // can still click a locked entry — the URL routes anyway — but the
+  // visual restraint says "not yet earned" without preaching.
+
+  let state = null;
+  try { state = JSON.parse(localStorage.getItem('signal.state') || 'null'); } catch (e) {}
+  state = state || { records: [], currentSession: null };
+
+  // How many sessions have been completed?
+  const completedCount = (state.records || []).length;
+  const draftId = state.currentSession ? state.currentSession.id : null;
+
+  document.querySelectorAll('.b-prompt').forEach(el => {
+    const required = parseInt(el.dataset.required || '0', 10);
+    const sessionId = parseInt(el.dataset.session || '0', 10);
+    const routeEl = el.querySelector('.b-prompt-route');
+    if (completedCount < required) {
+      el.dataset.locked = 'true';
+      // Replace route hint with availability hint, kept restrained.
+      if (routeEl) routeEl.innerHTML = 'after Session ' + String(required - 1).padStart(2, '0');
+    } else if (sessionId === draftId) {
+      // A draft is mid-arc — surface that gently on its row.
+      if (routeEl) routeEl.innerHTML = 'in progress · → <em>' + routeEl.querySelector('em')?.textContent + '</em>';
+    }
+  });
+
+  // Top-right state hint
+  const entryStateEl = document.getElementById('entry-state');
+  if (entryStateEl) {
+    if (completedCount === 0) entryStateEl.textContent = 'where to begin';
+    else if (draftId !== null) entryStateEl.textContent = 'mid-arc · session ' + String(draftId).padStart(2, '0');
+    else entryStateEl.textContent = completedCount + (completedCount === 1 ? ' record' : ' records') + ' · choose next';
+  }
+</script>
+
+<script src="../js/i18n.js"></script>
+
+</body>
+</html>

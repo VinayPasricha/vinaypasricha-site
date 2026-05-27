@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribers — Studio · Vinay Pasricha</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .lists-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .list-card {
+      padding: 22px 24px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .list-card:hover { background: var(--paper-2); border-color: var(--ink-3); }
+    .list-card.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .list-card.active .lc-label { color: var(--accent-2); }
+    .list-card.active .lc-count { color: var(--paper); }
+    .list-card.active .lc-meta { color: var(--paper-2); }
+    .lc-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .lc-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      letter-spacing: -0.008em;
+      margin-bottom: 4px;
+    }
+    .lc-name em { font-style: italic; }
+    .lc-count {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 32px;
+      color: var(--ink);
+      line-height: 1.0;
+      margin-top: 12px;
+    }
+    .lc-meta {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-top: 6px;
+    }
+
+    .entry-list {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .entry {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
+      padding: 12px 16px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule-soft);
+      border-radius: 2px;
+      align-items: center;
+      transition: background .15s;
+    }
+    .entry:hover { background: var(--paper-2); }
+    .entry .e-email {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink);
+      word-break: break-all;
+    }
+    .entry .e-time {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      white-space: nowrap;
+    }
+    .entry .e-source {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-4);
+      background: var(--paper-2);
+      padding: 3px 7px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .aion-entry {
+      padding: 16px 20px;
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+    .aion-meta {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .aion-meta .name { color: var(--ink); font-family: var(--serif); font-style: italic; font-size: 16px; letter-spacing: 0; text-transform: none; }
+    .aion-meta .email { color: var(--accent); font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: none; }
+    .aion-meta .cat { background: var(--paper-2); padding: 3px 7px; border-radius: 2px; }
+    .aion-meta .when { color: var(--ink-3); }
+    .aion-subject {
+      font-family: var(--serif);
+      font-size: 17px;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .aion-body {
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      white-space: pre-wrap;
+    }
+    .aion-actions {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--rule-soft);
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .aion-actions a, .aion-actions button {
+      padding: 6px 12px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      cursor: pointer;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .aion-actions a:hover, .aion-actions button:hover { border-color: var(--ink); color: var(--ink); }
+
+    .empty-state {
+      padding: 56px 24px;
+      text-align: center;
+      border: 1px dashed var(--rule);
+      background: var(--paper-3);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-3);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◯</span>
+    <span class="st-name">Studio</span>
+    <span class="st-sub">— Subscribers</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="index.html">← Studio</a>
+    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<section class="studio-auth" id="studio-auth">
+  <div class="auth-inner">
+    <div class="auth-mark">Studio</div>
+    <h1>Enter to <em>continue.</em></h1>
+    <p class="lede">This room surfaces every email the site has captured locally and lets you export it for a real list provider.</p>
+    <form id="auth-form" class="auth-form">
+      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
+      <button type="submit">Enter <span class="arrow">→</span></button>
+    </form>
+    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
+    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
+  </div>
+</section>
+
+<main class="studio-main" id="studio-main" style="display:none">
+  <div class="editor-shell">
+
+    <div class="editor-head">
+      <div>
+        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Subscribers</div>
+        <h1><em>Subscribers</em></h1>
+      </div>
+      <div class="editor-status" id="editor-status"></div>
+    </div>
+
+    <div class="quick-add">
+      <div class="label">— Honest note about scope</div>
+      <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-2); margin-top: 8px;">
+        Every email captured by the site \u2014 Notebook subscribes, book-notify forms, AION1 intake completions \u2014 currently lives in the visitor's own <code>localStorage</code>. This room can only see captures made <strong>in this browser</strong>.
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-3); margin-top: 12px;">
+        That's a deliberate v1 trade. Once the backend (see <code>_brief/backend-plan.md</code>) is wired, this same room will read from a real database and every capture will be visible. The data shape stays identical, so the UI doesn't change \u2014 only the data source does.
+      </p>
+    </div>
+
+    <div class="editor-toolbar">
+      <div class="left"><span class="tb-count" id="tb-count">— captures across — lists</span></div>
+      <div class="right">
+        <button class="tb-btn ghost" type="button" id="btn-export">Export visible list as CSV</button>
+        <button class="tb-btn ghost danger" type="button" id="btn-clear" style="color: var(--accent); border-color: var(--accent);">Clear visible list</button>
+      </div>
+    </div>
+
+    <!-- Lists overview -->
+    <div class="lists-grid" id="lists-grid"></div>
+
+    <!-- Active list detail -->
+    <div id="list-detail"></div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="studio.js"></script>
+<script src="subscribers-admin.js"></script>
+</body>
+</html>
