@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validation · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .ov-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --ov-gr1:#07080c; --ov-gr2:#0c0d12; --ov-gr3:#11131a; --ov-gr4:#181b25;
+      --ov-ink:#ebe9e2; --ov-ink2:#b8b5ad; --ov-ink3:#6e6c66; --ov-ink4:#44433f;
+      --ov-acc:#6f9bb5; --ov-acc2:#4f7388; --ov-acc3:#2c4150; --ov-acc4:#13202a;
+      --ov-pos:#6fae86; --ov-pos3:#2f5b43; --ov-warm:#c0975e; --ov-warm3:#5c4626;
+      --ov-neg:#c98170; --ov-neg3:#5c3329; --ov-gold:#c2a25e; --ov-gold3:#5c4c26;
+      --ov-rule:#14161e; --ov-edge:#1c2030;
+      --ov-serif:"Newsreader",Georgia,serif; --ov-sans:"Inter",system-ui,sans-serif; --ov-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .ov-shell { max-width:1180px; margin:0 auto; padding:40px 32px 96px; }
+    .ov-crumbs { font-family:var(--ov-mono); font-size:11px; letter-spacing:0.14em; color:var(--ov-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .ov-crumbs a { color:var(--ov-ink2); text-decoration:none; }
+    .ov-crumbs a:hover { color:var(--ov-ink); }
+    .ov-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--ov-rule); padding-bottom:24px; margin-bottom:22px; flex-wrap:wrap; }
+    .ov-title { font-family:var(--ov-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--ov-ink); letter-spacing:-0.01em; }
+    .ov-title em { font-style:italic; }
+    .ov-sub { font-family:var(--ov-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--ov-ink3); margin-top:9px; max-width:74ch; text-wrap:pretty; }
+    .ov-sub em { font-style:italic; color:var(--ov-ink2); }
+    .ov-btn { background:transparent; border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink2); font-family:var(--ov-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; white-space:nowrap; }
+    .ov-btn:hover { border-color:var(--ov-acc3); color:var(--ov-ink); background:var(--ov-acc4); }
+
+    /* profile-progress ladder */
+    .ov-ladder { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--ov-rule); border:1px solid var(--ov-rule); border-radius:3px; overflow:hidden; margin-bottom:22px; }
+    .ov-rung { background:var(--ov-gr2); padding:12px 13px; min-height:64px; display:flex; flex-direction:column; gap:5px; }
+    .ov-rung .rn { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.1em; color:var(--ov-ink4); }
+    .ov-rung .rt { font-family:var(--ov-sans); font-weight:300; font-size:11.5px; line-height:1.3; color:var(--ov-ink3); text-wrap:pretty; }
+    .ov-rung.done { background:var(--ov-acc4); }
+    .ov-rung.done .rn { color:var(--ov-acc2); } .ov-rung.done .rt { color:var(--ov-ink2); }
+    .ov-rung.now { background:var(--ov-gr4); box-shadow:inset 0 0 0 1px var(--ov-gold3); }
+    .ov-rung.now .rn { color:var(--ov-gold); } .ov-rung.now .rt { color:var(--ov-ink); }
+    .ov-rung .tick { color:var(--ov-pos); }
+
+    .ov-stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .ov-stat { border:1px solid var(--ov-rule); border-radius:3px; background:var(--ov-gr2); padding:11px 16px; min-width:112px; }
+    .ov-stat .n { font-family:var(--ov-serif); font-weight:300; font-size:24px; color:var(--ov-ink); }
+    .ov-stat .l { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ov-ink4); margin-top:2px; }
+
+    .ov-panel { border:1px solid var(--ov-rule); border-radius:3px; background:var(--ov-gr2); margin-bottom:16px; overflow:hidden; }
+    .ov-ptop { padding:14px 20px; border-bottom:1px solid var(--ov-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .ov-plabel { font-family:var(--ov-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ov-acc); }
+    .ov-pnote { font-family:var(--ov-mono); font-size:9px; letter-spacing:0.04em; color:var(--ov-ink4); text-transform:none; }
+    .ov-pbody { padding:18px 20px; }
+
+    .ov-empty { border:1px dashed var(--ov-edge); border-radius:3px; padding:30px; text-align:center; color:var(--ov-ink3); font-family:var(--ov-sans); font-weight:300; font-size:13px; line-height:1.7; }
+    .ov-empty a { color:var(--ov-acc); text-decoration:none; border-bottom:1px solid var(--ov-acc3); }
+    .ov-empty em { font-style:italic; color:var(--ov-ink2); }
+
+    .ov-act { background:var(--ov-gr1); border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink2); font-family:var(--ov-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:8px 12px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .ov-act:hover { color:var(--ov-ink); border-color:var(--ov-acc3); }
+    .ov-act.primary { background:var(--ov-acc4); border-color:var(--ov-acc3); color:var(--ov-acc); }
+    .ov-act.primary:hover { color:var(--ov-ink); border-color:var(--ov-acc2); }
+    .ov-act.gold { background:rgba(194,162,94,0.07); border-color:var(--ov-gold3); color:var(--ov-gold); }
+    .ov-act.gold:hover { color:var(--ov-ink); border-color:var(--ov-gold); }
+    .ov-act:disabled { opacity:.32; cursor:not-allowed; }
+
+    /* page picker / campaign list */
+    .ov-pagecard { display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--ov-rule); border-radius:3px; background:var(--ov-gr3); padding:13px 16px; margin-bottom:10px; flex-wrap:wrap; }
+    .ov-pagecard .pn { font-family:var(--ov-serif); font-weight:400; font-size:17px; color:var(--ov-ink); }
+    .ov-pagecard .pm { font-family:var(--ov-mono); font-size:9px; letter-spacing:0.06em; color:var(--ov-ink4); margin-top:3px; }
+
+    .ov-status { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--ov-edge); border-radius:2px; padding:3px 9px; color:var(--ov-ink3); }
+    .ov-status.active { color:var(--ov-pos); border-color:var(--ov-pos3); }
+    .ov-status.draft { color:var(--ov-ink3); }
+    .ov-status.completed { color:var(--ov-acc); border-color:var(--ov-acc3); }
+    .ov-status.paused, .ov-status.cancelled { color:var(--ov-warm); border-color:var(--ov-warm3); }
+
+    .ov-block { font-family:var(--ov-mono); font-size:9.5px; color:var(--ov-neg); line-height:1.5; margin-top:8px; border-left:2px solid var(--ov-neg3); padding-left:10px; }
+
+    /* forms */
+    .ov-form { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+    .ov-form input, .ov-form select { background:var(--ov-gr1); border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink); font-family:var(--ov-sans); font-weight:300; font-size:12.5px; padding:8px 10px; }
+    .ov-form textarea { flex:1; min-width:100%; background:var(--ov-gr1); border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink); font-family:var(--ov-sans); font-weight:300; font-size:12.5px; line-height:1.55; padding:10px 12px; resize:vertical; min-height:70px; box-sizing:border-box; }
+    .ov-form input:focus, .ov-form select:focus, .ov-form textarea:focus { outline:none; border-color:var(--ov-acc3); }
+
+    /* stakeholders */
+    .ov-stk { display:flex; align-items:center; justify-content:space-between; gap:12px; border-left:2px solid var(--ov-acc3); padding:9px 0 9px 13px; margin-bottom:9px; flex-wrap:wrap; }
+    .ov-stk.leadership { border-color:var(--ov-gold3); }
+    .ov-stk .nm { font-family:var(--ov-sans); font-weight:400; font-size:13.5px; color:var(--ov-ink); }
+    .ov-stk .ty { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ov-acc2); }
+    .ov-stk .meta { font-family:var(--ov-sans); font-weight:300; font-size:11.5px; color:var(--ov-ink4); }
+    .ov-stkstat { font-family:var(--ov-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ov-ink3); }
+    .ov-stkstat.completed { color:var(--ov-pos); } .ov-stkstat.invited { color:var(--ov-acc); }
+
+    /* questions */
+    .ov-q { border:1px solid var(--ov-rule); border-radius:3px; background:var(--ov-gr3); padding:13px 15px; margin-bottom:11px; }
+    .ov-q .qmeta { display:flex; gap:7px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+    .ov-q .qdim { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ov-acc); }
+    .ov-q .qt { font-family:var(--ov-serif); font-weight:300; font-size:15.5px; line-height:1.5; color:var(--ov-ink); text-wrap:pretty; }
+    .ov-q .qhyp { font-family:var(--ov-sans); font-weight:300; font-style:italic; font-size:11.5px; color:var(--ov-ink4); margin-top:6px; line-height:1.5; border-left:2px solid var(--ov-edge); padding-left:10px; }
+    .ov-pri { font-family:var(--ov-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ov-edge); border-radius:2px; padding:2px 6px; color:var(--ov-ink3); }
+    .ov-pri.critical { color:var(--ov-neg); border-color:var(--ov-neg3); }
+    .ov-pri.high { color:var(--ov-gold); border-color:var(--ov-gold3); }
+    .ov-pri.medium { color:var(--ov-acc); border-color:var(--ov-acc3); }
+    .ov-gap { font-family:var(--ov-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ov-ink4); }
+    .ov-answer { display:flex; gap:7px; flex-wrap:wrap; align-items:flex-start; margin-top:11px; padding-top:11px; border-top:1px solid var(--ov-rule); }
+    .ov-answer select { background:var(--ov-gr1); border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink); font-family:var(--ov-sans); font-size:12px; padding:7px 9px; }
+    .ov-answer textarea { flex:1; min-width:220px; background:var(--ov-gr1); border:1px solid var(--ov-edge); border-radius:2px; color:var(--ov-ink); font-family:var(--ov-sans); font-weight:300; font-size:12px; line-height:1.5; padding:8px 10px; resize:vertical; min-height:48px; box-sizing:border-box; }
+    .ov-answer textarea:focus, .ov-answer select:focus { outline:none; border-color:var(--ov-acc3); }
+    .ov-respd { border-left:2px solid var(--ov-pos3); padding:7px 0 7px 12px; margin-top:9px; }
+    .ov-respd.contested { border-color:var(--ov-neg3); }
+    .ov-respd .rtxt { font-family:var(--ov-sans); font-weight:300; font-size:12px; color:var(--ov-ink2); line-height:1.5; text-wrap:pretty; }
+    .ov-respd .rmeta { font-family:var(--ov-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ov-ink4); margin-top:4px; }
+    .ov-respd .rmeta .imp-increase { color:var(--ov-pos); } .ov-respd .rmeta .imp-contested { color:var(--ov-neg); }
+
+    /* validated profile dims */
+    .ov-dim { display:grid; grid-template-columns:1.1fr 0.8fr 0.8fr 1.4fr; gap:10px; padding:9px 0; border-top:1px solid var(--ov-rule); align-items:baseline; }
+    .ov-dim:first-child { border-top:none; }
+    .ov-dim .dn { font-family:var(--ov-mono); font-size:9.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--ov-ink2); }
+    .ov-dim .dl { font-family:var(--ov-serif); font-style:italic; font-size:13.5px; color:var(--ov-ink); }
+    .ov-dim .dl.contested { color:var(--ov-neg); }
+    .ov-dim .dc { font-family:var(--ov-mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; }
+    .ov-dim .dc.none { color:var(--ov-ink4); } .ov-dim .dc.low { color:var(--ov-ink3); }
+    .ov-dim .dc.medium { color:var(--ov-acc); } .ov-dim .dc.high { color:var(--ov-pos); } .ov-dim .dc.validated { color:var(--ov-pos); }
+    .ov-dim .dh { font-family:var(--ov-mono); font-size:8.5px; color:var(--ov-ink4); line-height:1.4; }
+    .ov-dim .dh .arrow { color:var(--ov-acc2); }
+
+    /* events */
+    .ov-evt { border-left:2px solid var(--ov-acc3); padding:8px 0 8px 13px; margin-bottom:9px; }
+    .ov-evt.contested { border-color:var(--ov-neg3); }
+    .ov-evt .et { font-family:var(--ov-sans); font-weight:300; font-size:12.5px; color:var(--ov-ink2); line-height:1.5; }
+    .ov-evt .et b { color:var(--ov-ink); font-weight:500; }
+    .ov-evt .ec { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ov-ink4); margin-top:4px; }
+    .ov-evt .ec .arrow { color:var(--ov-acc); }
+    .ov-evt .ec .freq { color:var(--ov-gold); }
+
+    /* invite */
+    .ov-invite { background:var(--ov-gr2); border:1px solid var(--ov-rule); border-radius:2px; padding:12px 14px; margin-top:9px; }
+    .ov-invite .il { font-family:var(--ov-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ov-acc); margin-bottom:5px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .ov-invite .isub { font-family:var(--ov-sans); font-weight:500; font-size:12.5px; color:var(--ov-ink); }
+    .ov-invite .ibody { font-family:var(--ov-sans); font-weight:300; font-size:12px; color:var(--ov-ink2); line-height:1.6; margin-top:6px; white-space:pre-wrap; }
+
+    .ov-note { margin-top:40px; border-top:1px solid var(--ov-rule); padding-top:22px; font-family:var(--ov-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--ov-ink3); }
+    .ov-note em { font-style:italic; color:var(--ov-ink2); }
+    .ov-note a { color:var(--ov-acc); text-decoration:none; border-bottom:1px solid var(--ov-acc3); }
+    .ov-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ov-gr4); border:1px solid var(--ov-acc3); border-radius:3px; color:var(--ov-ink); font-family:var(--ov-mono); font-size:11px; letter-spacing:0.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; max-width:82vw; text-align:center; }
+    .ov-toast.show { opacity:1; }
+
+    @media (max-width:860px) { .ov-ladder { grid-template-columns:repeat(2,1fr); } .ov-dim { grid-template-columns:1fr; gap:3px; } }
+  </style>
+</head>
+<body class="ov-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Validation</span><span class="st-sub">— public estimate → validated understanding</span></div>
+  <div class="st-right">
+    <a class="st-link" href="public-intel.html">Public Intelligence ↗</a>
+    <a class="st-link" href="discovery.html">Deep Discovery ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="ov-shell">
+  <div class="ov-crumbs"><a href="index.html">Studio</a> / <a href="public-intel.html">Public Intelligence</a> / Validation</div>
+  <div class="ov-head">
+    <div>
+      <h1 class="ov-title">A public estimate is a start. <em>Stakeholders make it true.</em></h1>
+      <p class="ov-sub">
+        3B produced a useful — but unvalidated — public Organizational Frequency. This runtime improves its <em>accuracy</em>
+        through structured stakeholder participation. It reads the public page, generates questions <em>only</em> from gaps
+        (low-confidence dimensions, contradictions, unknowns, unvalidated claims) — never curiosity — records responses,
+        moves confidence, and writes a history-preserving evolution event for every change. The aim is accuracy, not sales,
+        recruitment, or hiring.
+      </p>
+    </div>
+    <button class="ov-btn" id="ov-reset" type="button">Reset validation</button>
+  </div>
+
+  <div class="ov-ladder" id="ov-ladder"></div>
+  <div class="ov-stats" id="ov-stats"></div>
+  <div id="ov-view"></div>
+
+  <p class="ov-note">
+    <em>Accuracy, not persuasion.</em> Every question points to a specific hypothesis drawn from the public estimate; nothing
+    is asked out of curiosity. <em>Contradiction is preserved as a signal</em>, never erased — and prior confidence values are
+    kept in history, never overwritten. Apollo / live contact discovery is <em>honest-blocked</em> (CSV and manual entry work);
+    email / WhatsApp send is not wired (the manual channel lets you deliver the note yourself and log the reply). Each validated
+    response can also write a <a href="discovery.html">Frequency Evolution</a> event. No outreach campaigns, resonance,
+    interviews, offers, scores, or ratings.
+  </p>
+</div>
+
+<div class="ov-toast" id="ov-toast"></div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-evolution.js"></script>
+<script src="../frequency/of-public-intel.js"></script>
+<script src="../frequency/of-org-validation.js"></script>
+<script src="org-validation-admin.js"></script>
+</body>
+</html>

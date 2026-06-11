@@ -625,6 +625,9 @@ body[data-chamber="structural"] .c-actions {
 
    The organism is alive as one body, not as a collection of
    atmospheric chambers.
+
+   Refinement 09: dormancy tiers slow the master pulse further.
+   The organism endures through absence — it does not decay.
    ============================================================= */
 html::before {
   content: "";
@@ -641,6 +644,36 @@ html::before {
   0%, 100% { opacity: 0.35; }
   50%      { opacity: 0.85; }
 }
+html[data-dormancy="1"]::before { animation-duration: 18000ms; opacity: 0.5; }
+html[data-dormancy="2"]::before { animation-duration: 26000ms; opacity: 0.4; }
+html[data-dormancy="3"]::before { animation-duration: 40000ms; opacity: 0.32; }
+
+/* Dormant strata ambient color shifts — the runtime cools as it
+   waits. Subtle. The body's background-color drifts toward a
+   cooler graphite at higher dormancy tiers. Per Refinement 09:
+   colder silence, not abandonment. */
+html[data-dormancy="1"] body { filter: hue-rotate(-2deg) saturate(0.96); }
+html[data-dormancy="2"] body { filter: hue-rotate(-4deg) saturate(0.92) brightness(0.97); }
+html[data-dormancy="3"] body { filter: hue-rotate(-6deg) saturate(0.88) brightness(0.94); }
+
+/* Memory weather — heavily-inhabited runtimes warm slightly.
+   The strata remember they've been read. Counted by total
+   sessions, applied as a faint warm bias to the body. */
+html[data-warmth="1"] body { filter: brightness(1.02) saturate(1.03); }
+html[data-warmth="2"] body { filter: brightness(1.04) saturate(1.06); }
+html[data-warmth="3"] body { filter: brightness(1.06) saturate(1.10); }
+/* Combined: dormancy wins when both are present — cooler is the
+   ambient default; warmth only shows when actively inhabited. */
+html[data-dormancy="1"][data-warmth="1"] body,
+html[data-dormancy="1"][data-warmth="2"] body,
+html[data-dormancy="1"][data-warmth="3"] body { filter: hue-rotate(-1deg) saturate(0.99); }
+html[data-dormancy="2"][data-warmth="1"] body,
+html[data-dormancy="2"][data-warmth="2"] body,
+html[data-dormancy="2"][data-warmth="3"] body { filter: hue-rotate(-3deg) saturate(0.94); }
+html[data-dormancy="3"][data-warmth="1"] body,
+html[data-dormancy="3"][data-warmth="2"] body,
+html[data-dormancy="3"][data-warmth="3"] body { filter: hue-rotate(-5deg) saturate(0.90) brightness(0.95); }
+
 /* Make sure the page content sits above the master pulse layer */
 body > * { position: relative; z-index: 2; }
 
@@ -674,6 +707,93 @@ body[data-chamber="structural"] {
   --rhythm-haunt:     9600ms;
   --rhythm-lineage:   7800ms;
   --rhythm-hold:      2000ms;
+}
+
+/* Foundation strata (Refinement 08) — reserved physics for the
+   deeper future chambers. Capacity / Multi-Scale / Character
+   live at multi-decade horizons; their breath should approach
+   geological time. */
+body[data-chamber="capacity"] {
+  --rhythm-breath:    9600ms;
+  --rhythm-emerge:    4200ms;
+  --rhythm-haunt:    11200ms;
+  --rhythm-lineage:   9600ms;
+  --rhythm-hold:      2400ms;
+  background-color: #040608;
+  background-image:
+    linear-gradient(to right,  rgba(120,130,150,0.012) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.012) 1px, transparent 1px),
+    /* The vast deep wash — the reservoir */
+    radial-gradient(ellipse 2200px 1400px at 50% 55%, rgba(217,148,102,0.044) 0%, transparent 70%);
+  background-size: 96px 96px, 96px 96px, 100% 100%;
+}
+body[data-chamber="capacity"] .chamber { background: transparent; }
+body[data-chamber="capacity"] .c-top { background: rgba(5,6,9,0.7); border-bottom-color: var(--rule-soft); }
+body[data-chamber="capacity"] .c-inquiry { background: transparent; border-right-color: var(--rule-soft); }
+body[data-chamber="capacity"] .c-composer { background: rgba(5,6,9,0.7); border-top-color: var(--rule-soft); }
+body[data-chamber="capacity"] .c-topology {
+  background:
+    radial-gradient(ellipse 1100px 900px at 50% 50%, rgba(217,148,102,0.020) 0%, transparent 70%),
+    transparent;
+}
+body[data-chamber="capacity"] .c-actions { border-top-color: var(--rule-soft); }
+
+body[data-chamber="multi-scale"] {
+  --rhythm-breath:   11200ms;
+  --rhythm-emerge:    5000ms;
+  --rhythm-haunt:    13200ms;
+  --rhythm-lineage:  11200ms;
+  --rhythm-hold:      2800ms;
+  background-color: #040608;
+  background-image:
+    linear-gradient(to right,  rgba(120,130,150,0.014) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.014) 1px, transparent 1px),
+    radial-gradient(ellipse 2400px 1600px at 50% 50%, rgba(217,148,102,0.038) 0%, transparent 70%);
+  background-size: 108px 108px, 108px 108px, 100% 100%;
+}
+body[data-chamber="multi-scale"] .chamber { background: transparent; }
+body[data-chamber="multi-scale"] .c-top { background: rgba(5,6,9,0.7); border-bottom-color: var(--rule-soft); }
+body[data-chamber="multi-scale"] .c-inquiry { background: transparent; border-right-color: var(--rule-soft); }
+body[data-chamber="multi-scale"] .c-composer { background: rgba(5,6,9,0.7); border-top-color: var(--rule-soft); }
+body[data-chamber="multi-scale"] .c-topology {
+  background:
+    radial-gradient(ellipse 1200px 900px at 50% 50%, rgba(217,148,102,0.018) 0%, transparent 72%),
+    transparent;
+}
+body[data-chamber="multi-scale"] .c-actions { border-top-color: var(--rule-soft); }
+body[data-chamber="character"] {
+  --rhythm-breath:   13600ms;
+  --rhythm-emerge:    6000ms;
+  --rhythm-haunt:    16800ms;
+  --rhythm-lineage:  13600ms;
+  --rhythm-hold:      3400ms;
+  background-color: #030507;
+  background-image:
+    linear-gradient(to right,  rgba(120,130,150,0.010) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,130,150,0.010) 1px, transparent 1px),
+    radial-gradient(ellipse 2600px 1800px at 50% 80%, rgba(217,148,102,0.034) 0%, transparent 70%);
+  background-size: 120px 120px, 120px 120px, 100% 100%;
+}
+body[data-chamber="character"] .chamber { background: transparent; }
+body[data-chamber="character"] .c-top { background: rgba(4,5,8,0.7); border-bottom-color: var(--rule-soft); }
+body[data-chamber="character"] .c-inquiry { background: transparent; border-right-color: var(--rule-soft); }
+body[data-chamber="character"] .c-composer { background: rgba(4,5,8,0.7); border-top-color: var(--rule-soft); }
+body[data-chamber="character"] .c-topology {
+  background:
+    radial-gradient(ellipse 1300px 1000px at 50% 60%, rgba(217,148,102,0.016) 0%, transparent 72%),
+    transparent;
+}
+body[data-chamber="character"] .c-actions { border-top-color: var(--rule-soft); }
+
+/* Runtime stillness (Refinement 08) — when a chamber has reached
+   `is-settled` on its <main>, the organism nearly stops breathing.
+   The master pulse slows by 2.5x. Geological silence, not sleep. */
+html:has(.chamber.is-settled)::before {
+  animation-duration: 36000ms !important;
+}
+.chamber.is-settled {
+  --rhythm-breath:    14000ms;
+  --rhythm-lineage:   14000ms;
 }
 
 /* The structural chamber's load-bearing ambient field — a very
@@ -737,6 +857,100 @@ body[data-chamber="structural"] > * { position: relative; z-index: 1; }
    shadow that suggests age. Nearly imperceptible. */
 .k-chamber[data-inhabited="true"] {
   box-shadow: inset 0 0 60px rgba(217,148,102,0.022);
+}
+
+/* =============================================================
+   THRESHOLD SEEPAGE (Refinement 09)
+   =============================================================
+   The threshold stays flat — surface civilization. But the
+   shaft below leaks the faintest pressure upward. A barely-
+   visible warm density along the lower edge, breathing on the
+   master pulse. Never announces. Just present.
+   ============================================================= */
+.k-seepage {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 1800px 380px at 50% 100%, rgba(217,148,102,0.022) 0%, transparent 75%);
+  opacity: 0.55;
+  animation: k-seepage-breath 14000ms ease-in-out infinite;
+}
+@keyframes k-seepage-breath {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.72; }
+}
+/* Dormant runtimes carry stronger seepage — the underground
+   keeps breathing while the surface is still. */
+html[data-dormancy="1"] .k-seepage { opacity: 0.55; }
+html[data-dormancy="2"] .k-seepage { opacity: 0.68; animation-duration: 22000ms; }
+html[data-dormancy="3"] .k-seepage { opacity: 0.78; animation-duration: 32000ms; }
+
+/* =============================================================
+   RESIDUE OF PRIOR DESCENT (Refinement 10)
+   =============================================================
+   The threshold carries the faintest atmospheric mark of the
+   stratum the reader was last in. Below conscious detection.
+   Never personalization theater — just quiet trace.
+
+   - surface     → no change (reader was barely below)
+   - diagnosis   → slight gravitational undertone (cooler seepage)
+   - cause       → denser seepage (more weight from below)
+   - foundation  → deepest seepage, slowest breath
+   ============================================================= */
+html[data-last-stratum="diagnosis"] .k-seepage {
+  background:
+    radial-gradient(ellipse 1800px 380px at 50% 100%, rgba(217,148,102,0.020) 0%, transparent 78%),
+    radial-gradient(ellipse 2200px 200px at 50% 100%, rgba(120,130,150,0.018) 0%, transparent 70%);
+}
+html[data-last-stratum="cause"] .k-seepage {
+  background:
+    radial-gradient(ellipse 1800px 420px at 50% 100%, rgba(217,148,102,0.026) 0%, transparent 78%),
+    radial-gradient(ellipse 2400px 240px at 50% 100%, rgba(80,90,110,0.028) 0%, transparent 70%);
+  opacity: 0.62;
+  animation-duration: 18000ms;
+}
+html[data-last-stratum="foundation"] .k-seepage {
+  background:
+    radial-gradient(ellipse 1800px 480px at 50% 100%, rgba(217,148,102,0.030) 0%, transparent 80%),
+    radial-gradient(ellipse 2600px 280px at 50% 100%, rgba(60,70,90,0.038) 0%, transparent 72%);
+  opacity: 0.72;
+  animation-duration: 24000ms;
+}
+
+/* =============================================================
+   RETURN PHENOMENOLOGY (Refinement 10)
+   =============================================================
+   First page load after dormancy. The page emerges more slowly,
+   the master pulse takes a longer first breath. Atmospheric,
+   never verbal. The reader feels return; is not told return.
+   ============================================================= */
+html[data-return] body {
+  animation: kairos-return-emerge 4800ms cubic-bezier(.4,0,.2,1) forwards;
+}
+html[data-return="2"] body { animation-duration: 6400ms; }
+html[data-return="3"] body { animation-duration: 8800ms; }
+@keyframes kairos-return-emerge {
+  0%   { opacity: 0; filter: blur(2.4px); }
+  35%  { opacity: 0.18; filter: blur(1.2px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+/* The master pulse takes one extra-long first breath after return.
+   After the first cycle it falls back to the dormancy-tier rate
+   set elsewhere. */
+html[data-return] ::before { animation-delay: 0ms !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-return] body { animation: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-seepage { animation: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -295,9 +295,9 @@ a{color:inherit;text-decoration:none}
 .index-overlay .ix-close .x{ font-size: 18px; line-height: 1; }
 .index-overlay .ix-cols{
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 64px;
-  max-width: 1280px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px 56px;
+  max-width: 1320px;
   margin: 0 auto;
   width: 100%;
 }
@@ -873,6 +873,22 @@ a{color:inherit;text-decoration:none}
 }
 .doorway .doorway-btn:hover{ background: var(--accent); }
 .doorway .doorway-btn:active{ transform: translateY(1px); }
+.doorway .doorway-actions{
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.doorway .doorway-btn.secondary{
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.doorway .doorway-btn.secondary:hover{
+  color: var(--paper);
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
 .doorway .doorway-btn .arrow{
   font-family: var(--serif);
   font-style: italic;

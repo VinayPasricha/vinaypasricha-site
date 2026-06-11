@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICP &amp; Targets · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .ic-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --ic-gr1:#07080c; --ic-gr2:#0c0d12; --ic-gr3:#11131a; --ic-gr4:#181b25;
+      --ic-ink:#ebe9e2; --ic-ink2:#b8b5ad; --ic-ink3:#6e6c66; --ic-ink4:#44433f;
+      --ic-acc:#6f9bb5; --ic-acc2:#4f7388; --ic-acc3:#2c4150; --ic-acc4:#13202a;
+      --ic-pos:#6fae86; --ic-pos3:#2f5b43; --ic-warm:#c0975e; --ic-warm3:#5c4626;
+      --ic-neg:#c98170; --ic-neg3:#5c3329; --ic-gold:#c2a25e; --ic-gold3:#5c4c26;
+      --ic-rule:#14161e; --ic-edge:#1c2030;
+      --ic-serif:"Newsreader",Georgia,serif; --ic-sans:"Inter",system-ui,sans-serif; --ic-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .ic-shell { max-width:1180px; margin:0 auto; padding:40px 32px 96px; }
+    .ic-crumbs { font-family:var(--ic-mono); font-size:11px; letter-spacing:0.14em; color:var(--ic-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .ic-crumbs a { color:var(--ic-ink2); text-decoration:none; }
+    .ic-crumbs a:hover { color:var(--ic-ink); }
+    .ic-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--ic-rule); padding-bottom:24px; margin-bottom:22px; flex-wrap:wrap; }
+    .ic-title { font-family:var(--ic-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--ic-ink); letter-spacing:-0.01em; }
+    .ic-title em { font-style:italic; }
+    .ic-sub { font-family:var(--ic-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--ic-ink3); margin-top:9px; max-width:74ch; text-wrap:pretty; }
+    .ic-sub em { font-style:italic; color:var(--ic-ink2); }
+    .ic-btn { background:transparent; border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink2); font-family:var(--ic-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; white-space:nowrap; }
+    .ic-btn:hover { border-color:var(--ic-acc3); color:var(--ic-ink); background:var(--ic-acc4); }
+
+    /* pipeline rail */
+    .ic-rail { display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--ic-rule); border:1px solid var(--ic-rule); border-radius:3px; overflow:hidden; margin-bottom:22px; }
+    .ic-stage { background:var(--ic-gr2); padding:11px 12px; min-height:62px; display:flex; flex-direction:column; gap:5px; }
+    .ic-stage .sn { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.1em; color:var(--ic-ink4); }
+    .ic-stage .st { font-family:var(--ic-sans); font-weight:300; font-size:11px; line-height:1.35; color:var(--ic-ink3); text-wrap:pretty; }
+    .ic-stage.done { background:var(--ic-acc4); }
+    .ic-stage.done .sn { color:var(--ic-acc2); } .ic-stage.done .st { color:var(--ic-ink2); }
+    .ic-stage.now { background:var(--ic-gr4); box-shadow:inset 0 0 0 1px var(--ic-acc3); }
+    .ic-stage.now .sn { color:var(--ic-acc); } .ic-stage.now .st { color:var(--ic-ink); }
+    .ic-stage .tick { font-size:9px; color:var(--ic-pos); }
+
+    .ic-stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .ic-stat { border:1px solid var(--ic-rule); border-radius:3px; background:var(--ic-gr2); padding:11px 16px; min-width:120px; }
+    .ic-stat .n { font-family:var(--ic-serif); font-weight:300; font-size:24px; color:var(--ic-ink); }
+    .ic-stat .l { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ic-ink4); margin-top:2px; }
+
+    .ic-panel { border:1px solid var(--ic-rule); border-radius:3px; background:var(--ic-gr2); margin-bottom:16px; overflow:hidden; }
+    .ic-ptop { padding:14px 20px; border-bottom:1px solid var(--ic-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .ic-plabel { font-family:var(--ic-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ic-acc); }
+    .ic-pnote { font-family:var(--ic-mono); font-size:9px; letter-spacing:0.04em; color:var(--ic-ink4); text-transform:none; }
+    .ic-pbody { padding:18px 20px; }
+
+    .ic-empty { border:1px dashed var(--ic-edge); border-radius:3px; padding:30px; text-align:center; color:var(--ic-ink3); font-family:var(--ic-sans); font-weight:300; font-size:13px; line-height:1.7; }
+    .ic-empty a { color:var(--ic-acc); text-decoration:none; border-bottom:1px solid var(--ic-acc3); }
+
+    /* interview / conversation */
+    .ic-convo { display:flex; flex-direction:column; gap:10px; max-height:380px; overflow-y:auto; padding-right:4px; }
+    .ic-msg { max-width:80%; }
+    .ic-msg.agent { align-self:flex-start; }
+    .ic-msg.vinay { align-self:flex-end; text-align:right; }
+    .ic-msg .who { font-family:var(--ic-mono); font-size:8px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ic-ink4); margin-bottom:4px; }
+    .ic-msg.agent .who { color:var(--ic-acc2); }
+    .ic-bubble { font-family:var(--ic-sans); font-weight:300; font-size:13.5px; line-height:1.6; padding:11px 14px; border-radius:3px; text-wrap:pretty; }
+    .ic-msg.agent .ic-bubble { background:var(--ic-gr3); border:1px solid var(--ic-rule); color:var(--ic-ink); border-left:2px solid var(--ic-acc3); }
+    .ic-msg.vinay .ic-bubble { background:var(--ic-acc4); border:1px solid var(--ic-acc3); color:var(--ic-ink2); }
+    .ic-answerbar { display:flex; gap:8px; align-items:flex-end; margin-top:16px; padding-top:16px; border-top:1px solid var(--ic-rule); }
+    .ic-answerbar textarea { flex:1; background:var(--ic-gr1); border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink); font-family:var(--ic-sans); font-weight:300; font-size:13.5px; line-height:1.5; padding:10px 12px; resize:vertical; min-height:54px; box-sizing:border-box; }
+    .ic-answerbar textarea:focus { outline:none; border-color:var(--ic-acc3); }
+    .ic-qhint { font-family:var(--ic-sans); font-style:italic; font-weight:300; font-size:11.5px; color:var(--ic-ink4); margin-top:8px; }
+
+    /* forms */
+    .ic-form { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+    .ic-form input, .ic-form select { background:var(--ic-gr1); border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink); font-family:var(--ic-sans); font-weight:300; font-size:12.5px; padding:8px 10px; }
+    .ic-form textarea { flex:1; min-width:100%; background:var(--ic-gr1); border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink); font-family:var(--ic-mono); font-size:12px; line-height:1.6; padding:10px 12px; resize:vertical; min-height:120px; box-sizing:border-box; }
+    .ic-form input:focus, .ic-form select:focus, .ic-form textarea:focus { outline:none; border-color:var(--ic-acc3); }
+
+    .ic-act { background:var(--ic-gr1); border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink2); font-family:var(--ic-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:8px 12px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .ic-act:hover { color:var(--ic-ink); border-color:var(--ic-acc3); }
+    .ic-act.primary { background:var(--ic-acc4); border-color:var(--ic-acc3); color:var(--ic-acc); }
+    .ic-act.primary:hover { color:var(--ic-ink); border-color:var(--ic-acc2); }
+    .ic-act.gold { background:rgba(194,162,94,0.07); border-color:var(--ic-gold3); color:var(--ic-gold); }
+    .ic-act.gold:hover { color:var(--ic-ink); border-color:var(--ic-gold); }
+    .ic-act.danger:hover { color:var(--ic-neg); border-color:var(--ic-neg3); }
+    .ic-act:disabled { opacity:.35; cursor:not-allowed; }
+
+    /* ICP definition */
+    .ic-icp { display:grid; grid-template-columns:repeat(2,1fr); gap:14px 26px; }
+    .ic-fld .k { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ic-ink4); margin-bottom:5px; }
+    .ic-fld .v { font-family:var(--ic-sans); font-weight:300; font-size:13px; line-height:1.55; color:var(--ic-ink2); }
+    .ic-fld.full { grid-column:1 / -1; }
+    .ic-tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .ic-tag { font-family:var(--ic-mono); font-size:9px; letter-spacing:0.06em; border:1px solid var(--ic-edge); border-radius:2px; padding:3px 8px; color:var(--ic-ink2); }
+    .ic-tag.excl { border-color:var(--ic-neg3); color:var(--ic-neg); text-decoration:line-through; text-decoration-thickness:1px; }
+    .ic-tag.sig { border-color:var(--ic-acc3); color:var(--ic-acc); }
+    .ic-tag.win { border-color:var(--ic-pos3); color:var(--ic-pos); }
+
+    /* universe */
+    .ic-uni { border:1px solid var(--ic-rule); border-radius:3px; background:var(--ic-gr3); padding:15px 17px; margin-bottom:12px; }
+    .ic-uni .un { font-family:var(--ic-serif); font-weight:400; font-size:18px; color:var(--ic-ink); }
+    .ic-uni .ud { font-family:var(--ic-sans); font-weight:300; font-size:12.5px; color:var(--ic-ink2); line-height:1.6; margin-top:6px; text-wrap:pretty; }
+    .ic-crit { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .ic-critpill { font-family:var(--ic-mono); font-size:9px; letter-spacing:0.04em; border:1px dashed var(--ic-edge); border-radius:2px; padding:5px 9px; color:var(--ic-ink3); }
+
+    /* discovery sources */
+    .ic-srcrow { display:flex; gap:10px; flex-wrap:wrap; }
+    .ic-src { flex:1; min-width:170px; border:1px solid var(--ic-rule); border-radius:3px; background:var(--ic-gr3); padding:12px 14px; }
+    .ic-src .sname { font-family:var(--ic-sans); font-weight:400; font-size:13px; color:var(--ic-ink); }
+    .ic-src .sstat { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; margin-top:6px; }
+    .ic-src .sstat.configured { color:var(--ic-pos); }
+    .ic-src .sstat.not_configured { color:var(--ic-ink4); }
+    .ic-src .sstat.blocked { color:var(--ic-neg); }
+    .ic-src .sbtn { margin-top:10px; }
+
+    /* selection console table */
+    .ic-tablewrap { overflow-x:auto; }
+    table.ic-table { width:100%; border-collapse:collapse; font-family:var(--ic-sans); }
+    .ic-table th { font-family:var(--ic-mono); font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ic-ink4); text-align:left; padding:9px 10px; border-bottom:1px solid var(--ic-rule); white-space:nowrap; font-weight:500; }
+    .ic-table td { font-weight:300; font-size:12.5px; color:var(--ic-ink2); padding:11px 10px; border-bottom:1px solid var(--ic-rule); vertical-align:top; }
+    .ic-table tr.selected td { background:var(--ic-acc4); }
+    .ic-table tr.queued td { background:rgba(194,162,94,0.05); }
+    .ic-table .co { font-family:var(--ic-sans); font-weight:400; font-size:13px; color:var(--ic-ink); }
+    .ic-table .reason { font-style:italic; color:var(--ic-ink3); font-size:11.5px; max-width:230px; text-wrap:pretty; }
+    .ic-table a.web { color:var(--ic-acc); text-decoration:none; border-bottom:1px solid var(--ic-acc3); font-family:var(--ic-mono); font-size:10px; }
+    .ic-table input[type=checkbox] { width:15px; height:15px; accent-color:var(--ic-acc); cursor:pointer; }
+    .ic-rowact { display:flex; gap:6px; flex-wrap:wrap; }
+    .ic-rowact button { background:transparent; border:1px solid var(--ic-edge); border-radius:2px; color:var(--ic-ink3); font-family:var(--ic-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; padding:5px 8px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .ic-rowact button:hover { color:var(--ic-ink); border-color:var(--ic-acc3); }
+    .ic-rowact button.go { color:var(--ic-gold); border-color:var(--ic-gold3); }
+    .ic-rowact button.go:hover { color:var(--ic-ink); border-color:var(--ic-gold); }
+    .ic-rowact button.danger:hover { color:var(--ic-neg); border-color:var(--ic-neg3); }
+
+    .ic-conf { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ic-edge); border-radius:2px; padding:2px 7px; color:var(--ic-ink3); }
+    .ic-conf.high { color:var(--ic-pos); border-color:var(--ic-pos3); }
+    .ic-conf.medium { color:var(--ic-acc); border-color:var(--ic-acc3); }
+    .ic-rs { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ic-ink4); }
+    .ic-rs.selected { color:var(--ic-gold); }
+
+    .ic-bulkbar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px; padding:10px 12px; border:1px solid var(--ic-rule); border-radius:3px; background:var(--ic-gr3); }
+    .ic-bulkbar .lbl { font-family:var(--ic-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ic-ink4); margin-right:auto; }
+
+    /* research queue */
+    .ic-q { display:flex; align-items:center; justify-content:space-between; gap:12px; border-left:2px solid var(--ic-gold3); padding:10px 0 10px 13px; margin-bottom:9px; flex-wrap:wrap; }
+    .ic-q .qn { font-family:var(--ic-sans); font-weight:400; font-size:13.5px; color:var(--ic-ink); }
+    .ic-q .qm { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ic-ink4); margin-top:3px; }
+    .ic-q .qstat { font-family:var(--ic-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ic-gold); }
+
+    .ic-note { margin-top:40px; border-top:1px solid var(--ic-rule); padding-top:22px; font-family:var(--ic-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--ic-ink3); }
+    .ic-note em { font-style:italic; color:var(--ic-ink2); }
+    .ic-note a { color:var(--ic-acc); text-decoration:none; border-bottom:1px solid var(--ic-acc3); }
+    .ic-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ic-gr4); border:1px solid var(--ic-acc3); border-radius:3px; color:var(--ic-ink); font-family:var(--ic-mono); font-size:11px; letter-spacing:0.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; max-width:80vw; text-align:center; }
+    .ic-toast.show { opacity:1; }
+
+    @media (max-width:860px) { .ic-rail { grid-template-columns:repeat(2,1fr); } .ic-icp { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body class="ic-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">ICP &amp; Targets</span><span class="st-sub">— company acquisition pipeline · target selection</span></div>
+  <div class="st-right">
+    <a class="st-link" href="world.html">World Discovery ↗</a>
+    <a class="st-link" href="intel.html">Intelligence ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="ic-shell">
+  <div class="ic-crumbs"><a href="index.html">Studio</a> / ICP &amp; Company Selection</div>
+  <div class="ic-head">
+    <div>
+      <h1 class="ic-title">Decide <em>who matters</em> before spending a minute researching them.</h1>
+      <p class="ic-sub">
+        Today, research begins before we know whether a company is worth it. This console reverses that:
+        <em>Product → ICP → Target Universe → Discovery → Human Selection → Research Queue</em>. An agent interviews you to
+        define the ideal customer, generates a target universe, gathers candidate companies, and lays them out for you to
+        select. Research begins only <em>after</em> a company is Marked For Research — and that happens in Build 3B, not here.
+      </p>
+    </div>
+    <button class="ic-btn" id="ic-reset" type="button">Reset pipeline</button>
+  </div>
+
+  <div class="ic-rail" id="ic-rail"></div>
+  <div class="ic-stats" id="ic-stats"></div>
+  <div id="ic-view"></div>
+
+  <p class="ic-note">
+    <em>Honest by construction.</em> There is no live Apollo, LinkedIn, public-search or job-board fetch in this
+    environment — a discovery run with no provider configured <em>blocks honestly</em> and fabricates nothing. Manual
+    import (CSV, Excel paste, Apollo export, or a pasted list) is the working path and the launch path. This layer only
+    <em>identifies and selects</em> targets; it performs no deep research, no organizational frequency, and no outreach.
+    <em>Mark For Research</em> queues a company for the Build 3B research runtime — nothing more.
+  </p>
+</div>
+
+<div class="ic-toast" id="ic-toast"></div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-icp.js"></script>
+<script src="icp-admin.js"></script>
+</body>
+</html>

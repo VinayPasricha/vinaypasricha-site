@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · Possible Futures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .case-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .case-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .case-mark { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .case-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 54pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .case-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .case-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 30pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .axis-suggestion { padding: 8pt 0 8pt 14pt; border-left: 2px solid var(--gold); margin: 0.13in 0; }
+  .axis-label { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4pt; }
+  .axis-suggestion-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- COVER -->
+<section class="page case-cover">
+  <div class="case-tag">Part Three · Final Case</div>
+
+  <div>
+    <div class="case-mark">CASE FIVE</div>
+    <h1 class="case-title">Possible<br>Futures.</h1>
+    <p class="case-tagline">Speculation under the strictest discipline the framework has imposed on itself.</p>
+  </div>
+
+  <div class="case-illustration">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- An open horizon: a line that fades into uncertainty -->
+      <g stroke="#0f1115" stroke-width="1.5" fill="none">
+        <line x1="40" y1="180" x2="140" y2="180"/>
+      </g>
+      <g stroke="#0f1115" stroke-width="1.2" stroke-dasharray="4 4" stroke-opacity="0.5">
+        <line x1="140" y1="180" x2="240" y2="180"/>
+      </g>
+      <!-- A few divergent dashed lines extending into the unknown -->
+      <g stroke="#1a2742" stroke-width="0.7" stroke-dasharray="2 4" stroke-opacity="0.4">
+        <line x1="140" y1="180" x2="240" y2="120"/>
+        <line x1="140" y1="180" x2="240" y2="60"/>
+        <line x1="140" y1="180" x2="240" y2="240"/>
+      </g>
+      <!-- The framework's vantage point -->
+      <circle cx="140" cy="180" r="4" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="case-tag" style="color: var(--mute);">— What the Framework Can and Cannot See —</div>
+</section>
+
+<!-- EPIGRAPH — POPPER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Case Five · Opening</div>
+  <div class="epigraph-text">
+    "The future is open.<br>
+    It is not contained in the past."
+  </div>
+  <div class="epigraph-attribution">— Karl Popper</div>
+  <div class="epigraph-source-note">The Open Universe · 1982</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE DISCIPLINE OF SPECULATION -->
+<section class="page opener">
+  <div class="running-head">Case Five · Possible Futures</div>
+  <div class="section-number">§ The Discipline of Speculation</div>
+  <h2 class="section-title">A Chapter Under<br>Strict Restraint.</h2>
+
+  <p class="prose dropcap">Every chapter in this book so far has examined cases. Rome existed. China exists. Modernity is the case the reader inhabits. AI is the case currently emerging at compressed timescale. Each could be located on the framework's eight axes because each was there to be located. The framework's authority over the prior cases came from the cases being available for examination.</p>
+
+  <p class="prose">This chapter is different. It speculates about cases that do not yet exist. The framework's authority cannot extend to such cases in the same way. The cases are not there to be examined. The framework's vocabulary can be applied to them only in the most tentative form — by identifying what the vocabulary suggests will matter, without claiming to know what will happen.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This chapter is therefore the shortest in Part Three. It must be. The framework has less to say with authority here than in any prior chapter, and the responsible response is to say less. The temptation, having earned credibility across Rome, China, Modernity, and AI, is to extend that credibility into territory it was not earned in. The chapter will resist. The discipline this chapter operates under is the strictest the manuscript has imposed on itself.</p>
+
+  <div class="folio folio-right">269</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Discipline of Speculation</div>
+
+  <p class="prose">The chapter accepts three explicit constraints. It will not predict specific events. It will not forecast which civilizations will arise or fail. It will not advocate for any particular future or against any other. Each of these prohibitions would be easy to violate, and each violation would cost the framework more than the violation gained. A framework that begins making predictions is no longer a coordinate system. It is an oracle, and oracles tend not to age well.</p>
+
+  <p class="prose">What the chapter will do is narrower and more honest. It will identify what the framework's vocabulary suggests will matter for any future civilization or intelligence under constraint. It will name the questions about the framework itself that only future cases can settle. It will acknowledge what the framework cannot see, and why those limits are not failures but features. And it will close Part Three by handing the framework to whoever picks it up next.</p>
+
+  <div class="pull-quote no-break">
+    A framework that begins making predictions<br>
+    is no longer a coordinate system.<br>
+    It is an oracle.
+  </div>
+
+  <p class="prose">A reader hoping for a chapter on scenarios — multiplanetary civilizations, post-scarcity societies, the convergent emergence of biological and artificial intelligence into something new — will be disappointed. Those scenarios may all happen. None of them is the framework's territory. The framework can name what would matter <em>if</em> they happened. The happenings themselves are for the world to provide.</p>
+
+  <div class="folio folio-left">270</div>
+</section>
+
+<!-- §2 · WHAT THE VOCABULARY SUGGESTS WILL MATTER -->
+<section class="page opener">
+  <div class="running-head">Case Five · Possible Futures</div>
+  <div class="section-number">§ What the Vocabulary Suggests Will Matter</div>
+  <h2 class="section-title">Structural Features<br>That Persist Across Cases.</h2>
+
+  <p class="prose dropcap">If the framework's prior readings hold, then certain structural features will matter for any future civilization or intelligence under constraint, regardless of the specific form that civilization takes. These are not predictions. They are statements about what the framework's vocabulary suggests will be load-bearing in whatever cases turn out to exist.</p>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Continuity</div>
+    <div class="axis-suggestion-body">Future civilizations that build distributed substrate — across many independent carriers, increasingly informational in form — will be more resilient than those that don't. The prior cases established this in three stages, from China's institutional decoupling to AI's informational distribution. The pattern is structural.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Truth</div>
+    <div class="axis-suggestion-body">The gap between truth-correction infrastructure and falsehood-production infrastructure will continue to be one of the load-bearing tensions of any advanced civilization. Civilizations that fail to maintain correction at the pace of production will accumulate errors faster than they can resolve them.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Capability</div>
+    <div class="axis-suggestion-body">Capability will continue to compound where the other directions support it. Civilizations that maximize Capability without corresponding Recursion and Purpose will eventually face the kind of consequences Rome and Ming-Qing China faced, on whatever timescales the future operates under.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Cooperation</div>
+    <div class="axis-suggestion-body">The scales of required cooperation will continue to expand. Coordination problems at planetary scale — climate, AI development, public health, infrastructure — already exceed the capacity of any single state. The framework suggests these problems will require cooperative structures that hold their own critics, of the kind the Cooperation chapter described.</div>
+  </div>
+
+  <div class="folio folio-right">271</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What the Vocabulary Suggests Will Matter</div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Expansion</div>
+    <div class="axis-suggestion-body">Frontiers will continue to be encountered. Each frontier will reveal another. Whether the next frontier is computational, biological, extraplanetary, or conceptual is not for the framework to say. The recursive horizon pattern the Expansion chapter named will apply in each case the future provides.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Creation</div>
+    <div class="axis-suggestion-body">The combinatorial substrate available for Creation will continue to grow. The framework's argument was that Creation tends to compound where the substrate is rich. Future civilizations operating on the substrate that AI, modern science, and global cooperation have built will have access to a combinatorial space without precedent.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Recursion</div>
+    <div class="axis-suggestion-body">Intelligences will increasingly model themselves and each other. AI modeling AI, civilization modeling AI, AI modeling civilization. The pattern will accelerate. The framework's reading is that civilizations that use this capacity well will outcompound those that develop it but do not act on what it reveals.</div>
+  </div>
+
+  <div class="axis-suggestion">
+    <div class="axis-label">Purpose</div>
+    <div class="axis-suggestion-body">The question of how ends are selected becomes more urgent as Capability and Creation continue to compound. The Purpose-installation problem AI raised — purposes specified by external parties for systems whose capabilities exceed the specifiers' predictive reach — is the most likely candidate for the central question the coming century will be answering, in some form, on some timescale.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Each of these is structural. None is predictive. The framework cannot say which futures will arrive. It can say that any future advanced civilization will navigate these axes, that the tensions among them will operate, and that the patterns the prior cases established will recur in modified forms in whatever cases the future produces.</p>
+
+  <div class="folio folio-left">272</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What the Vocabulary Suggests Will Matter</div>
+
+  <p class="prose">One additional observation deserves to be made before the chapter turns to its other restraints. The framework's most distinctive contribution to thinking about possible futures may be the reframe the closing of Part Two named — that civilizations exist within a possibility space, that no civilization can maximize all eight directions simultaneously, and that the work of advanced civilization is the discovery and maintenance of viable equilibria within the space.</p>
+
+  <p class="prose">This reframe applies as much to possible futures as to past cases. The futures that will turn out to be sustainable are not the ones that maximize any single direction. They are the ones that find arrangements capable of holding multiple directions in productive tension across time. The futures that will fail are the ones that pursue maximization without balance. The framework cannot say which futures will fall into which category. It can say that the category itself is the relevant one.</p>
+
+  <div class="pull-quote no-break">
+    The futures that succeed will not be the ones that maximize any direction.<br>
+    They will be the ones that balance them.
+  </div>
+
+  <p class="prose">This is the modest version of what the framework can offer about possible futures. Not a prediction. Not a prescription. A coordinate system. Within the coordinate system, the futures that arrive will be located, examined, and read by readers of frameworks yet to be written. The current framework provides the vocabulary. The future provides the cases.</p>
+
+  <div class="folio folio-right">273</div>
+</section>
+
+<!-- §3 · QUESTIONS FUTURE CASES WILL SETTLE -->
+<section class="page opener">
+  <div class="running-head">Case Five · Possible Futures</div>
+  <div class="section-number">§ Questions Future Cases Will Settle</div>
+  <h2 class="section-title">What the Framework<br>Has Not Resolved.</h2>
+
+  <p class="prose dropcap">The framework itself has unresolved questions that no case examined so far has fully settled. The future-edition document that accompanies the manuscript records them explicitly. The chapter notes them here because the relevant point is structural — these questions are not the framework's failures. They are the framework's openings. Future cases will pressure them further, as the AI case pressured three of them. Eventually some of them will be answered. Others will remain open. That is the honest condition of any framework that takes itself seriously.</p>
+
+  <p class="prose">The principal unresolved questions, in compressed form:</p>
+
+  <p class="prose" style="margin-top:0.7em;">Is Purpose actually a meta-direction rather than a peer direction? The AI case pressured this question toward yes. Future cases involving intelligences with engineered, modified, and re-engineered purposes will pressure it further. A future edition may need to restructure the framework's tier architecture to acknowledge what this question has been asking.</p>
+
+  <p class="prose">Does the possibility space itself evolve? The Creation chapter's combinatorial-substrate observation suggested it does. AI provides further evidence that it does. The question is not yet settled. Future cases that occupy positions the current framework's axes cannot fully describe will press it further.</p>
+
+  <p class="prose">Is Decoupled Continuity actually a deeper phenomenon — Distributed or Informational Continuity — operating at multiple levels of abstraction? The AI case made this question almost unavoidable. A future edition may rename and reorganize the continuity concept around the deeper phenomenon. Other future cases will determine whether the proposed three-stage progression is the right structure.</p>
+
+  <div class="folio folio-right">274</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Questions Future Cases Will Settle</div>
+
+  <p class="prose">Two further questions deserve to be added here, drawn from the cumulative reading of all five cases.</p>
+
+  <p class="prose">Does the eight-axis architecture survive contact with civilizations the framework was not built for? The AI case suggested it does. The cases that have not yet emerged will continue to test it. Whether the eight directions remain as built, or are extended to nine or ten, or are reorganized into different structures, depends on what those cases reveal.</p>
+
+  <p class="prose">Are there directions the framework has missed? Almost certainly. The framework's eight survived the four tests applied in Part One. Future cases may force the recognition of directions the framework's authors did not identify. The historical reading of any framework eventually shows what the framework's contemporaries could not see. This framework will not be different.</p>
+
+  <div class="pull-quote no-break">
+    The framework's unresolved questions are not its failures.<br>
+    They are its openings.
+  </div>
+
+  <p class="prose">What the framework can offer about all of these questions is the same modest contribution. It can specify what it does not know clearly enough that future cases can settle the questions when those cases arrive. A framework whose unresolved questions are stated explicitly is more useful than a framework that pretends to have settled them. The cases that will come will, in time, do the settling. The framework's task is to have asked the right questions, in the right form, in advance.</p>
+
+  <div class="folio folio-left">275</div>
+</section>
+
+<!-- §4 · WHAT THIS FRAMEWORK CANNOT SEE -->
+<section class="page opener">
+  <div class="running-head">Case Five · Possible Futures</div>
+  <div class="section-number">§ What This Framework Cannot See</div>
+  <h2 class="section-title">Three Limits, Stated<br>So They Do Not Surprise.</h2>
+
+  <p class="prose dropcap">A framework's value depends in part on its honesty about what it cannot do. Three limits of this framework are worth stating plainly, so that no reader carries away an inflated estimate of what the framework's vocabulary can deliver.</p>
+
+  <p class="prose"><strong>The framework cannot see specific events.</strong> Civilizations rise and fall through chains of contingent events the framework cannot predict. It can identify the pressures certain configurations generate. It cannot identify which events will resolve those pressures, on what timescale, with what particular consequences. The history that future readers will eventually write will contain specifics the framework's vocabulary cannot anticipate. It was not built to.</p>
+
+  <p class="prose"><strong>The framework cannot see what it was not built to see.</strong> The eight directions are the framework's coordinate system. They were derived from the cases the framework's authors had available — primarily biological intelligence operating in human civilizations and, more recently, in artificial intelligence systems. If future civilizations develop along axes the framework has not identified, the framework will read those civilizations inadequately. There are almost certainly directions the framework has missed. The future-edition document records the candidates that have been flagged so far. There are likely others no one has yet seen.</p>
+
+  <p class="prose" style="margin-top:0.9em;"><strong>The framework cannot see beyond its own historical moment.</strong> It was written from inside a particular civilization, at a particular time, by a particular author with particular blind spots. Its limits are the limits of its origin. Future readers, writing about cases the framework cannot anticipate, will discover those limits in ways the framework cannot. This is structural. It is not a failing of this framework specifically. It is the condition of any framework built by intelligence under constraint, working with the cases available to it at the moment of writing.</p>
+
+  <div class="folio folio-right">276</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What This Framework Cannot See</div>
+
+  <p class="prose">These are honest acknowledgments rather than apologies. A framework that pretended to see what it cannot would not be a framework. It would be an oracle. The book has tried, throughout, to be the first kind of thing rather than the second. The discipline that produced the prior chapters — describe, do not prescribe; locate, do not predict; identify pressures, do not forecast events — has been the source of whatever credibility the framework has earned. Maintaining that discipline through a chapter on possible futures is harder than maintaining it through chapters on settled cases. The chapter has tried.</p>
+
+  <div class="pull-quote no-break">
+    A framework that pretended to see what it cannot<br>
+    would not be a framework.<br>
+    It would be an oracle.
+  </div>
+
+  <p class="prose">A final observation. The limits stated above are not arguments against using the framework. They are arguments for using it carefully. A coordinate system that knows what it cannot locate is more useful than a coordinate system that does not. The framework's value comes from the cases it can illuminate within its limits, not from any pretended ability to operate beyond them. Readers who use the framework in this spirit will find it more durable than readers who try to extract from it what it does not contain.</p>
+
+  <div class="folio folio-left">277</div>
+</section>
+
+<!-- §5 · CLOSING OF PART THREE -->
+<section class="page opener">
+  <div class="running-head">Case Five · Possible Futures</div>
+  <div class="section-number">§ Closing of Part Three</div>
+  <h2 class="section-title">The Cases Are<br>Complete.</h2>
+
+  <p class="prose dropcap">Five cases have now been examined. Rome was the demonstration. China was the first real test, and the case that extended the framework's vocabulary with Decoupled Continuity. Modernity was the live diagnosis of a civilization the reader inhabits. AI was the framework's encounter with a kind of intelligence the framework was not specifically built to handle, and the case that pressured three unresolved questions toward partial answers. Possible Futures was the framework's disciplined silence about cases that do not yet exist.</p>
+
+  <p class="prose">Each case applied the framework's procedure with the discipline the procedure required. Each produced observations the framework's vocabulary made available. Each refined the framework in some respect or pressured questions the prior cases had left open. None broke the framework. None merely restated what other analyses already established. By my reading and subject to the reader's verdict, the framework survived the five tests with the kinds of refinements that strengthen a framework rather than weaken it.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The book has done what it set out to do. The framework was built across Part One and justified across Part Two. The cases of Part Three applied it. What remains is for those who pick up the framework next, with whatever cases the future provides, to do what the present authors could not. Future readers will find limits the present author cannot see. They will identify directions the present framework has missed. They will resolve questions the present chapters had to leave open. That is how frameworks evolve when they are real, and the framework presented here, by my hope, is real enough to evolve.</p>
+
+  <div class="folio folio-right">278</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Closing of Part Three</div>
+
+  <p class="prose">A final word about the book's larger ambition, stated more plainly than any prior chapter has stated it.</p>
+
+  <p class="prose">The framework was built to describe how civilizations evolve. Across the writing of the manuscript, the framework's actual subject became less clear at the surface and more clear underneath. The directions the framework identified turned out to apply to intelligence under constraint wherever it can be observed — biological intelligence in civilizations, civilizations in their political and cultural forms, scientific communities, religious traditions, artificial intelligence systems, possibly intelligence forms not yet examined. The framework's vocabulary survived the application across each of these. Whether the framework's actual subject is therefore civilizations, or intelligence under constraint, or some larger phenomenon the framework has been circling without naming, is a question the future-edition document records and that future cases will eventually settle.</p>
+
+  <div class="pull-quote no-break">
+    The framework's subject may be larger than civilizations.<br>
+    The cases that have not yet emerged will say.
+  </div>
+
+  <p class="prose">For now, the modest claim is enough. Five cases have been examined. The framework's eight directions have illuminated each, with refinements that the cases themselves forced. The reader has the vocabulary. What follows from the vocabulary is for those who hold it.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>Part Three is complete. The book is complete. The cases that will come, will come.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-left">279</div>
+</section>
+
+<!-- END-OF-BOOK -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Part Three · End of the Manuscript</div>
+  <div class="epigraph-text">
+    "The compass was the first metaphor.<br>
+    The possibility space was the last.<br>
+    What lies within it is for those who occupy it to decide."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.7in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.7in;" class="mono">— END —</div>
+</section>
+
+</body>
+</html>

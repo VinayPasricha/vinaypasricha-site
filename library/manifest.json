@@ -1,7 +1,35 @@
 {
   "_comment": "Full-text manuscripts for in-page AI reader assistance. Updated whenever a new edition is uploaded. The reader page loads the relevant entry via library.js -> window.library.getBook(slug).",
-  "updated_at": "2026-05-27",
+  "updated_at": "2026-06-04",
   "books": {
+    "civilization": {
+      "slug": "civilization",
+      "title": "Civilization",
+      "subtitle": "The Compass — A framework for evaluating the direction of intelligent civilizations.",
+      "author": "Vinay Pasricha",
+      "edition": "Vol. I (2026)",
+      "source_files": "library/civilization/source/ (19 typeset HTML chapters)",
+      "cover_file": "library/civilization/jacket.pdf",
+      "cover_source_html": "library/civilization/cover-standalone.html",
+      "cover_image": "assets/images/civilization-cover-front.jpg",
+      "book_page": "paths/civilization.html",
+      "text_path": "library/civilization/full-text.txt",
+      "chapters_index_path": "library/civilization/chapters.json",
+      "chunks_index_path": "library/civilization/chunks.json",
+      "runtime_doc": "library/civilization/RUNTIME.md",
+      "runtime_files": ["js/civilization-runtime.js", "js/civilization-chat.js", "css/civilization-runtime.css"],
+      "thesis": "Intelligence evolves along eight identifiable directions — four Foundations (Continuity, Truth, Capability, Cooperation) and four Frontiers (Expansion, Creation, Recursion, Purpose). A civilizational compass, not a map.",
+      "structure": {
+        "part_one": "The Compass — the case for direction, the four tests, the reduction, falsification",
+        "part_two": "The Eight Directions — one chapter per direction, plus interlude and closing",
+        "part_three": "Reading a Civilization — method applied to Rome, China, Modernity, and AI",
+        "epilogue": "Standing at the Edge of the Map"
+      },
+      "chars": 395856,
+      "chapters": 19,
+      "status": "full",
+      "note": "Full text extracted from the 19-file print HTML manuscript. Source HTML (with illustrations and typeset structure) preserved under library/civilization/source/. Ready for a runtime to be built on top."
+    },
     "execution-doctrine": {
       "slug": "execution-doctrine",
       "title": "Vinay's Execution Doctrine",

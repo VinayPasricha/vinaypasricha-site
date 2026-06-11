@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person Research · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .pr-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --pr-gr1:#07080c; --pr-gr2:#0c0d12; --pr-gr3:#11131a; --pr-gr4:#181b25;
+      --pr-ink:#ebe9e2; --pr-ink2:#b8b5ad; --pr-ink3:#6e6c66; --pr-ink4:#44433f;
+      --pr-freq:#6f9bb5; --pr-freq2:#4f7388; --pr-freq3:#2c4150; --pr-freq4:#13202a;
+      --pr-pos:#6fae86; --pr-pos3:#2f5b43; --pr-warm:#c0975e; --pr-warm3:#5c4626;
+      --pr-neg:#c98170; --pr-neg3:#5c3329; --pr-gold:#c2a25e; --pr-gold3:#5c4c26;
+      --pr-rule:#14161e; --pr-edge:#1c2030;
+      --pr-serif:"Newsreader",Georgia,serif; --pr-sans:"Inter",system-ui,sans-serif; --pr-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .pr-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .pr-crumbs { font-family:var(--pr-mono); font-size:11px; letter-spacing:0.14em; color:var(--pr-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .pr-crumbs a { color:var(--pr-ink2); text-decoration:none; }
+    .pr-head { border-bottom:1px solid var(--pr-rule); padding-bottom:24px; margin-bottom:18px; }
+    .pr-title { font-family:var(--pr-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--pr-ink); letter-spacing:-0.01em; }
+    .pr-title em { font-style:italic; }
+    .pr-sub { font-family:var(--pr-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--pr-ink3); margin-top:9px; max-width:66ch; text-wrap:pretty; }
+    .pr-notimpl { border:1px dashed var(--pr-warm3); border-radius:3px; background:rgba(192,151,94,0.05); padding:10px 14px; margin-bottom:22px; font-family:var(--pr-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--pr-warm); line-height:1.7; }
+    .pr-btn { background:transparent; border:1px solid var(--pr-edge); border-radius:2px; color:var(--pr-ink2); font-family:var(--pr-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:9px 12px; cursor:pointer; transition:all .25s; }
+    .pr-btn:hover { border-color:var(--pr-freq3); color:var(--pr-ink); background:var(--pr-freq4); }
+
+    .pr-intake { border:1px solid var(--pr-edge); border-radius:3px; background:var(--pr-gr2); padding:18px 20px; margin-bottom:24px; }
+    .pr-label { font-family:var(--pr-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--pr-freq); margin-bottom:12px; }
+    .pr-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    .pr-field { display:flex; flex-direction:column; gap:5px; }
+    .pr-field label { font-family:var(--pr-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pr-ink4); }
+    .pr-field input, .pr-field select { background:var(--pr-gr1); border:1px solid var(--pr-edge); border-radius:2px; color:var(--pr-ink); font-family:var(--pr-sans); font-weight:300; font-size:13px; padding:9px 11px; min-width:180px; }
+    .pr-field input:focus, .pr-field select:focus { outline:none; border-color:var(--pr-freq3); }
+    .pr-go { background:var(--pr-freq4); border:1px solid var(--pr-freq3); border-radius:2px; color:var(--pr-freq); font-family:var(--pr-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 16px; cursor:pointer; }
+    .pr-go:hover { color:var(--pr-ink); border-color:var(--pr-freq2); }
+
+    .pr-reqs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    .pr-reqchip { border:1px solid var(--pr-edge); border-radius:2px; background:var(--pr-gr2); padding:8px 12px; cursor:pointer; font-family:var(--pr-sans); font-weight:300; font-size:12.5px; color:var(--pr-ink2); transition:all .2s; }
+    .pr-reqchip:hover { border-color:var(--pr-freq3); color:var(--pr-ink); }
+    .pr-reqchip.sel { border-color:var(--pr-freq2); background:var(--pr-freq4); color:var(--pr-ink); }
+    .pr-reqchip .s { font-family:var(--pr-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pr-ink4); display:block; margin-top:3px; }
+
+    .pr-empty { border:1px dashed var(--pr-edge); border-radius:3px; padding:40px 36px; text-align:center; color:var(--pr-ink3); font-family:var(--pr-sans); font-weight:300; font-size:14px; line-height:1.75; }
+    .pr-panel { border:1px solid var(--pr-rule); border-radius:3px; background:var(--pr-gr2); margin-bottom:16px; overflow:hidden; }
+    .pr-ptop { padding:14px 20px; border-bottom:1px solid var(--pr-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .pr-plabel { font-family:var(--pr-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--pr-freq); }
+    .pr-cq { font-family:var(--pr-sans); font-weight:300; font-style:italic; font-size:12px; color:var(--pr-ink4); margin-top:3px; }
+    .pr-pbody { padding:16px 20px; }
+
+    .pr-q { font-family:var(--pr-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--pr-edge); border-radius:2px; padding:2px 7px; color:var(--pr-ink3); }
+    .pr-q.high { color:var(--pr-pos); border-color:var(--pr-pos3); } .pr-q.medium { color:var(--pr-freq); border-color:var(--pr-freq3); } .pr-q.low { color:var(--pr-ink4); }
+    .pr-q.manual_input_required, .pr-q.blocked, .pr-q.pending_review { color:var(--pr-warm); border-color:var(--pr-warm3); }
+    .pr-q.manual_paste { color:var(--pr-pos); border-color:var(--pr-pos3); }
+
+    .pr-src { border:1px solid var(--pr-rule); border-radius:2px; background:var(--pr-gr3); padding:12px 14px; margin-bottom:10px; }
+    .pr-src-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .pr-src .stt { font-family:var(--pr-sans); font-weight:400; font-size:13px; color:var(--pr-ink); }
+    .pr-src .stm { font-family:var(--pr-mono); font-size:8.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--pr-ink4); margin-top:3px; }
+    .pr-src .stm a { color:var(--pr-freq2); }
+    .pr-src .note { font-family:var(--pr-sans); font-weight:300; font-size:11.5px; color:var(--pr-warm); margin-top:6px; line-height:1.5; }
+    .pr-src textarea { width:100%; box-sizing:border-box; background:var(--pr-gr1); border:1px solid var(--pr-edge); border-radius:2px; color:var(--pr-ink); font-family:var(--pr-sans); font-weight:300; font-size:12px; line-height:1.5; padding:8px 10px; margin-top:8px; resize:vertical; min-height:54px; }
+    .pr-src textarea:focus { outline:none; border-color:var(--pr-freq3); }
+    .pr-src .pasted { font-family:var(--pr-sans); font-weight:300; font-size:11.5px; color:var(--pr-ink3); margin-top:6px; line-height:1.5; font-style:italic; }
+    .pr-act { background:var(--pr-gr1); border:1px solid var(--pr-edge); border-radius:2px; color:var(--pr-ink2); font-family:var(--pr-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:7px 11px; cursor:pointer; transition:all .2s; margin-top:8px; }
+    .pr-act:hover { color:var(--pr-ink); border-color:var(--pr-freq3); }
+    .pr-act.primary { background:var(--pr-freq4); border-color:var(--pr-freq3); color:var(--pr-freq); }
+
+    .pr-hyp { border-left:2px solid var(--pr-freq3); padding:7px 0 7px 13px; margin-bottom:9px; }
+    .pr-hyp .ht { font-family:var(--pr-serif); font-weight:300; font-size:14px; line-height:1.5; color:var(--pr-ink); text-wrap:pretty; }
+    .pr-hyp .hr { font-family:var(--pr-mono); font-size:8.5px; letter-spacing:0.06em; color:var(--pr-ink4); margin-top:4px; }
+    .pr-frow { display:grid; grid-template-columns:1.2fr 1.4fr 0.6fr; gap:10px; padding:7px 0; border-top:1px solid var(--pr-rule); align-items:baseline; }
+    .pr-frow:first-child { border-top:none; font-family:var(--pr-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pr-ink4); }
+    .pr-frow .fd { font-family:var(--pr-mono); font-size:9.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--pr-ink3); }
+    .pr-frow .fr { font-family:var(--pr-sans); font-weight:300; font-size:12.5px; color:var(--pr-ink); }
+    .pr-frow .fr.none { color:var(--pr-ink4); }
+
+    /* resonance screen */
+    .pr-screen { border:1px solid var(--pr-freq3); border-radius:3px; background:var(--pr-gr3); padding:16px 18px; }
+    .pr-next { display:inline-block; font-family:var(--pr-mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-radius:2px; padding:6px 12px; margin-bottom:10px; }
+    .pr-next.approach_candidate { color:var(--pr-pos); border:1px solid var(--pr-pos3); background:rgba(111,174,134,0.08); }
+    .pr-next.collect_more_evidence { color:var(--pr-freq); border:1px solid var(--pr-freq3); background:var(--pr-freq4); }
+    .pr-next.manual_review { color:var(--pr-warm); border:1px solid var(--pr-warm3); }
+    .pr-next.do_not_approach_yet { color:var(--pr-neg); border:1px solid var(--pr-neg3); }
+    .pr-ssum { font-family:var(--pr-sans); font-weight:300; font-size:13px; line-height:1.65; color:var(--pr-ink2); margin-bottom:12px; text-wrap:pretty; }
+    .pr-sgrp { margin-bottom:10px; }
+    .pr-sgrp .gl { font-family:var(--pr-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px; }
+    .pr-sgrp.pos .gl { color:var(--pr-pos); } .pr-sgrp.fric .gl { color:var(--pr-warm); } .pr-sgrp.miss .gl { color:var(--pr-ink3); } .pr-sgrp.risk .gl { color:var(--pr-neg); }
+    .pr-sgrp ul { margin:0; padding-left:15px; } .pr-sgrp li { font-family:var(--pr-sans); font-weight:300; font-size:12px; line-height:1.5; color:var(--pr-ink2); margin-bottom:3px; }
+    .pr-noscore { font-family:var(--pr-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pr-ink4); margin-top:10px; }
+
+    .pr-note { margin-top:40px; border-top:1px solid var(--pr-rule); padding-top:22px; font-family:var(--pr-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--pr-ink3); }
+    .pr-note em { font-style:italic; color:var(--pr-ink2); }
+    .pr-note a { color:var(--pr-freq); text-decoration:none; border-bottom:1px solid var(--pr-freq3); }
+  </style>
+</head>
+<body class="pr-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Person Research</span><span class="st-sub">— public-evidence intake → preliminary screen</span></div>
+  <div class="st-right">
+    <a class="st-link" href="person-intel.html">Person Intel ↗</a>
+    <a class="st-link" href="hiring.html">Hiring ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="pr-shell">
+  <div class="pr-crumbs"><a href="index.html">Studio</a> / Person Research</div>
+  <div class="pr-head">
+    <h1 class="pr-title">Start from a <em>LinkedIn URL</em> — honestly.</h1>
+    <p class="pr-sub">
+      The front door to candidate intelligence. Enter a LinkedIn URL or a name + company and the runtime opens a
+      research request, then <em>reuses</em> the Person Intelligence engine to build a preliminary brief, a
+      preliminary frequency, and — against a target role/mandate — a lightweight resonance screen with a next
+      action. It does <em>not</em> fetch the web or scrape LinkedIn; it asks you to paste real public material.
+    </p>
+  </div>
+  <div class="pr-notimpl" id="pr-banner"></div>
+  <div class="pr-intake" id="pr-intake"></div>
+  <div class="pr-reqs" id="pr-reqs"></div>
+  <div id="pr-view"></div>
+  <p class="pr-note">
+    <em>Honest by construction.</em> Live web search and LinkedIn scraping are <strong>NOT IMPLEMENTED</strong> — a
+    URL is stored, never scraped, and every public-evidence slot is marked <em>manual input required</em> until you
+    paste real text. Pasted sources feed the same Person Intelligence engine; the screen is a recruiter aid only —
+    <em>no score, no ranking, no fit %, no hire/reject decision, no automated contact</em>.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="../frequency/of-person-research.js"></script>
+<script src="person-research-admin.js"></script>
+</body>
+</html>

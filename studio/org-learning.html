@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .ol-body { background:#07080c; color:#ebe9e2; }
+    .ol-body .st-name { white-space:nowrap; }
+    .ol-body .st-sub { white-space:nowrap; }
+    @media (max-width:1000px) { .ol-body .st-sub { display:none; } }
+    :root {
+      --ol-gr1:#07080c; --ol-gr2:#0c0d12; --ol-gr3:#11131a; --ol-gr4:#181b25;
+      --ol-ink:#ebe9e2; --ol-ink2:#b8b5ad; --ol-ink3:#6e6c66; --ol-ink4:#44433f;
+      --ol-acc:#6f9bb5; --ol-acc2:#4f7388; --ol-acc3:#2c4150; --ol-acc4:#13202a;
+      --ol-pos:#6fae86; --ol-pos3:#2f5b43; --ol-warm:#c0975e; --ol-warm3:#5c4626;
+      --ol-neg:#c98170; --ol-neg3:#5c3329; --ol-gold:#c2a25e; --ol-gold3:#5c4c26;
+      --ol-rule:#14161e; --ol-edge:#1c2030;
+      --ol-serif:"Newsreader",Georgia,serif; --ol-sans:"Inter",system-ui,sans-serif; --ol-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .ol-shell { max-width:1180px; margin:0 auto; padding:40px 32px 96px; }
+    .ol-crumbs { font-family:var(--ol-mono); font-size:11px; letter-spacing:0.14em; color:var(--ol-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .ol-crumbs a { color:var(--ol-ink2); text-decoration:none; }
+    .ol-crumbs a:hover { color:var(--ol-ink); }
+    .ol-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--ol-rule); padding-bottom:24px; margin-bottom:22px; flex-wrap:wrap; }
+    .ol-title { font-family:var(--ol-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--ol-ink); letter-spacing:-0.01em; }
+    .ol-title em { font-style:italic; }
+    .ol-sub { font-family:var(--ol-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--ol-ink3); margin-top:9px; max-width:74ch; text-wrap:pretty; }
+    .ol-sub em { font-style:italic; color:var(--ol-ink2); }
+    .ol-btn { background:transparent; border:1px solid var(--ol-edge); border-radius:2px; color:var(--ol-ink2); font-family:var(--ol-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; white-space:nowrap; }
+    .ol-btn:hover { border-color:var(--ol-acc3); color:var(--ol-ink); background:var(--ol-acc4); }
+    .ol-runbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+
+    .ol-stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .ol-stat { border:1px solid var(--ol-rule); border-radius:3px; background:var(--ol-gr2); padding:11px 16px; min-width:104px; }
+    .ol-stat .n { font-family:var(--ol-serif); font-weight:300; font-size:24px; color:var(--ol-ink); }
+    .ol-stat .l { font-family:var(--ol-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ol-ink4); margin-top:2px; }
+
+    .ol-panel { border:1px solid var(--ol-rule); border-radius:3px; background:var(--ol-gr2); margin-bottom:16px; overflow:hidden; }
+    .ol-ptop { padding:14px 20px; border-bottom:1px solid var(--ol-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .ol-plabel { font-family:var(--ol-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ol-acc); }
+    .ol-pnote { font-family:var(--ol-mono); font-size:9px; letter-spacing:0.04em; color:var(--ol-ink4); text-transform:none; }
+    .ol-pbody { padding:18px 20px; }
+
+    .ol-empty { border:1px dashed var(--ol-edge); border-radius:3px; padding:30px; text-align:center; color:var(--ol-ink3); font-family:var(--ol-sans); font-weight:300; font-size:13px; line-height:1.7; }
+    .ol-empty a { color:var(--ol-acc); text-decoration:none; border-bottom:1px solid var(--ol-acc3); }
+    .ol-empty em { font-style:italic; color:var(--ol-ink2); }
+
+    .ol-act { background:var(--ol-gr1); border:1px solid var(--ol-edge); border-radius:2px; color:var(--ol-ink2); font-family:var(--ol-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 13px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .ol-act:hover { color:var(--ol-ink); border-color:var(--ol-acc3); }
+    .ol-act.primary { background:var(--ol-acc4); border-color:var(--ol-acc3); color:var(--ol-acc); }
+    .ol-act.primary:hover { color:var(--ol-ink); border-color:var(--ol-acc2); }
+    .ol-act:disabled { opacity:.32; cursor:not-allowed; }
+
+    /* tabs */
+    .ol-tabs { display:flex; gap:2px; flex-wrap:wrap; margin-bottom:16px; border-bottom:1px solid var(--ol-rule); }
+    .ol-tab { background:transparent; border:0; border-bottom:2px solid transparent; color:var(--ol-ink3); font-family:var(--ol-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 13px; cursor:pointer; transition:all .2s; }
+    .ol-tab:hover { color:var(--ol-ink2); }
+    .ol-tab.on { color:var(--ol-acc); border-bottom-color:var(--ol-acc); }
+    .ol-tab .badge { color:var(--ol-ink4); }
+
+    /* confidence chip */
+    .ol-cf { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--ol-edge); border-radius:2px; padding:2px 7px; color:var(--ol-ink3); white-space:nowrap; }
+    .ol-cf.very_low { color:var(--ol-ink4); } .ol-cf.low { color:var(--ol-warm); border-color:var(--ol-warm3); }
+    .ol-cf.medium { color:var(--ol-acc); border-color:var(--ol-acc3); } .ol-cf.high { color:var(--ol-pos); border-color:var(--ol-pos3); }
+    .ol-cf.very_high { color:var(--ol-pos); border-color:var(--ol-pos); background:rgba(111,174,134,0.08); }
+
+    /* pattern cards */
+    .ol-pat { border:1px solid var(--ol-rule); border-radius:3px; background:var(--ol-gr3); padding:15px 17px; margin-bottom:12px; border-left:2px solid var(--ol-edge); }
+    .ol-pat.success_pattern { border-left-color:var(--ol-pos); }
+    .ol-pat.failure_pattern { border-left-color:var(--ol-neg); }
+    .ol-pat.emerging_pattern { border-left-color:var(--ol-warm); }
+    .ol-pat.contradictory_pattern { border-left-color:var(--ol-gold); }
+    .ol-pat .pmeta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:8px; }
+    .ol-pat .ptype { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ol-ink3); }
+    .ol-pat .pdim { font-family:var(--ol-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ol-acc); }
+    .ol-pat .pn { font-family:var(--ol-serif); font-weight:400; font-size:18px; color:var(--ol-ink); line-height:1.3; text-wrap:pretty; }
+    .ol-pat .pd { font-family:var(--ol-sans); font-weight:300; font-size:12.5px; color:var(--ol-ink2); line-height:1.6; margin-top:7px; text-wrap:pretty; }
+    .ol-samp { font-family:var(--ol-mono); font-size:8.5px; letter-spacing:0.06em; color:var(--ol-ink3); }
+
+    /* sequence steps */
+    .ol-seq { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:11px; padding-top:11px; border-top:1px solid var(--ol-rule); }
+    .ol-seqlbl { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ol-ink4); width:100%; margin-bottom:2px; }
+    .ol-step { font-family:var(--ol-sans); font-weight:300; font-size:11.5px; color:var(--ol-ink); background:var(--ol-gr1); border:1px solid var(--ol-edge); border-radius:2px; padding:5px 10px; }
+    .ol-stepar { color:var(--ol-acc2); font-family:var(--ol-mono); font-size:11px; }
+    .ol-seqout { font-family:var(--ol-sans); font-style:italic; font-weight:300; font-size:11.5px; color:var(--ol-pos); margin-top:8px; width:100%; }
+
+    /* support / contradiction split */
+    .ol-split { display:flex; gap:18px; flex-wrap:wrap; margin-top:11px; padding-top:11px; border-top:1px solid var(--ol-rule); }
+    .ol-col { flex:1; min-width:200px; }
+    .ol-colh { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
+    .ol-colh.sup { color:var(--ol-pos); } .ol-colh.con { color:var(--ol-neg); }
+    .ol-ob { font-family:var(--ol-sans); font-weight:300; font-size:11px; color:var(--ol-ink3); line-height:1.5; padding:5px 0 5px 10px; border-left:1px solid var(--ol-rule); margin-bottom:5px; text-wrap:pretty; }
+    .ol-ob.con { border-left-color:var(--ol-neg3); }
+    .ol-ob b { color:var(--ol-ink2); font-weight:500; }
+
+    /* confidence reasoning + history */
+    .ol-reason { font-family:var(--ol-sans); font-weight:300; font-style:italic; font-size:11px; color:var(--ol-ink4); margin-top:9px; line-height:1.5; }
+    .ol-hist { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:9px; }
+    .ol-histlbl { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ol-ink4); }
+    .ol-snap { font-family:var(--ol-mono); font-size:8.5px; color:var(--ol-ink3); border:1px solid var(--ol-rule); border-radius:2px; padding:3px 7px; }
+    .ol-snap .s-n { color:var(--ol-ink2); }
+
+    /* observations table */
+    .ol-tablewrap { overflow-x:auto; }
+    table.ol-table { width:100%; border-collapse:collapse; font-family:var(--ol-sans); }
+    .ol-table th { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ol-ink4); text-align:left; padding:9px 10px; border-bottom:1px solid var(--ol-rule); white-space:nowrap; font-weight:500; }
+    .ol-table td { font-weight:300; font-size:12px; color:var(--ol-ink2); padding:10px; border-bottom:1px solid var(--ol-rule); vertical-align:top; }
+    .ol-table .co { font-family:var(--ol-sans); font-weight:400; font-size:12.5px; color:var(--ol-ink); }
+    .ol-out { font-family:var(--ol-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--ol-edge); border-radius:2px; padding:2px 7px; }
+    .ol-out.positive { color:var(--ol-pos); border-color:var(--ol-pos3); } .ol-out.negative { color:var(--ol-neg); border-color:var(--ol-neg3); }
+    .ol-out.mixed { color:var(--ol-warm); border-color:var(--ol-warm3); } .ol-out.unknown { color:var(--ol-ink4); }
+    .ol-miniseq { font-family:var(--ol-mono); font-size:10px; color:var(--ol-ink3); }
+
+    /* insights + failures */
+    .ol-ins { border:1px solid var(--ol-rule); border-radius:3px; background:var(--ol-gr3); padding:14px 16px; margin-bottom:11px; border-left:2px solid var(--ol-acc3); }
+    .ol-ins .it { font-family:var(--ol-serif); font-style:italic; font-size:17px; color:var(--ol-ink); line-height:1.35; text-wrap:pretty; }
+    .ol-ins .id { font-family:var(--ol-sans); font-weight:300; font-size:12.5px; color:var(--ol-ink2); line-height:1.6; margin-top:7px; text-wrap:pretty; }
+    .ol-ins .im { display:flex; gap:8px; align-items:center; margin-top:9px; }
+
+    .ol-note { margin-top:40px; border-top:1px solid var(--ol-rule); padding-top:22px; font-family:var(--ol-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--ol-ink3); }
+    .ol-note em { font-style:italic; color:var(--ol-ink2); }
+    .ol-note a { color:var(--ol-acc); text-decoration:none; border-bottom:1px solid var(--ol-acc3); }
+    .ol-note strong { color:var(--ol-ink2); font-weight:500; }
+    .ol-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ol-gr4); border:1px solid var(--ol-acc3); border-radius:3px; color:var(--ol-ink); font-family:var(--ol-mono); font-size:11px; letter-spacing:0.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; max-width:82vw; text-align:center; }
+    .ol-toast.show { opacity:1; }
+
+    @media (max-width:860px) { .ol-split { flex-direction:column; } }
+  </style>
+</head>
+<body class="ol-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Learning</span><span class="st-sub">— what we observe across all organizations</span></div>
+  <div class="st-right">
+    <a class="st-link" href="evolution-engine.html">Evolution ↗</a>
+    <a class="st-link" href="mission-gap.html">Mission &amp; Gaps ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="ol-shell">
+  <div class="ol-crumbs"><a href="index.html">Studio</a> / <a href="evolution-engine.html">Evolution</a> / Learning</div>
+  <div class="ol-head">
+    <div>
+      <h1 class="ol-title">Stop asking <em>what should happen.</em> Start observing <em>what usually does.</em></h1>
+      <p class="ol-sub">
+        Every layer before this one studied a single organization. This one learns <em>across</em> them. It reads the
+        evolution paths, events, and outcomes of every tracked company and extracts <em>recurring patterns</em> — which
+        sequences accompany improvement, which shapes precede failure, and where the evidence contradicts itself. It is
+        an <em>observer</em>: it never claims one thing causes another, never modifies a profile, and never hides a
+        contradiction. Recommendations stop being expert opinion and start becoming <em>observed organizational learning</em>.
+      </p>
+    </div>
+    <button class="ol-btn" id="ol-reset" type="button">Reset learning</button>
+  </div>
+
+  <div class="ol-runbar">
+    <button class="ol-act primary" id="ol-observe">① Observe across organizations</button>
+    <button class="ol-act primary" id="ol-learn">② Extract patterns &amp; insights</button>
+  </div>
+
+  <div class="ol-stats" id="ol-stats"></div>
+  <div id="ol-view"></div>
+
+  <p class="ol-note">
+    <strong>Observation, never causation.</strong> Patterns are stated as <em>“frequently associated with,” “commonly
+    seen,” “often precedes”</em> — never <em>causes, proves, or guarantees</em>. No pattern exists without supporting
+    observations; if the evidence thins, confidence falls. Contradictions are first-class — every pattern stores the cases
+    that <em>did not</em> fit, and they are never hidden. Confidence is a function of sample size and consistency, tracked
+    over time with history preserved. 3F reads the evolution layers and writes only learning objects; it modifies no
+    profile, mission, or path. This is not analytics, BI, or a consulting report — it is the start of an evidence base.
+  </p>
+</div>
+
+<div class="ol-toast" id="ol-toast"></div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-mission-gap.js"></script>
+<script src="../frequency/of-evolution-engine.js"></script>
+<script src="../frequency/of-org-learning.js"></script>
+<script src="org-learning-admin.js"></script>
+</body>
+</html>

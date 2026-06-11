@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talent Graph · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .tg-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --tg-gr1:#07080c; --tg-gr2:#0c0d12; --tg-gr3:#11131a; --tg-gr4:#181b25;
+      --tg-ink:#ebe9e2; --tg-ink2:#b8b5ad; --tg-ink3:#6e6c66; --tg-ink4:#44433f;
+      --tg-freq:#6f9bb5; --tg-freq2:#4f7388; --tg-freq3:#2c4150; --tg-freq4:#13202a;
+      --tg-pos:#6fae86; --tg-pos3:#2f5b43; --tg-warm:#c0975e; --tg-warm3:#5c4626;
+      --tg-neg:#c98170; --tg-neg3:#5c3329; --tg-gold:#c2a25e; --tg-gold3:#5c4c26;
+      --tg-rule:#14161e; --tg-edge:#1c2030;
+      --tg-serif:"Newsreader",Georgia,serif; --tg-sans:"Inter",system-ui,sans-serif; --tg-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .tg-shell { max-width:1160px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .tg-crumbs { font-family:var(--tg-mono); font-size:11px; letter-spacing:0.14em; color:var(--tg-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .tg-crumbs a { color:var(--tg-ink2); text-decoration:none; }
+    .tg-head { border-bottom:1px solid var(--tg-rule); padding-bottom:22px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+    .tg-title { font-family:var(--tg-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--tg-ink); letter-spacing:-0.01em; }
+    .tg-title em { font-style:italic; }
+    .tg-sub { font-family:var(--tg-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--tg-ink3); margin-top:9px; max-width:64ch; text-wrap:pretty; }
+    .tg-btn { background:transparent; border:1px solid var(--tg-edge); border-radius:2px; color:var(--tg-ink2); font-family:var(--tg-mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 12px; cursor:pointer; }
+    .tg-btn:hover { border-color:var(--tg-freq3); color:var(--tg-ink); background:var(--tg-freq4); }
+    .tg-tiles { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--tg-rule); border:1px solid var(--tg-rule); border-radius:3px; overflow:hidden; margin-bottom:22px; }
+    .tg-tile { background:var(--tg-gr2); padding:14px 16px; }
+    .tg-tile .tn { font-family:var(--tg-serif); font-weight:300; font-size:24px; line-height:1; color:var(--tg-ink2); }
+    .tg-tile.prof .tn { color:var(--tg-pos); } .tg-tile.dup .tn { color:var(--tg-warm); } .tg-tile.intel .tn { color:var(--tg-freq); } .tg-tile.cand .tn { color:var(--tg-gold); }
+    .tg-tile .tl { font-family:var(--tg-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--tg-ink3); margin-top:7px; }
+    .tg-section { font-family:var(--tg-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--tg-freq); margin:22px 0 12px; }
+    .tg-panel { border:1px solid var(--tg-rule); border-radius:3px; background:var(--tg-gr2); overflow:hidden; }
+    .tg-pbody { padding:6px 0; }
+    .tg-empty { font-family:var(--tg-sans); font-weight:300; font-size:12.5px; color:var(--tg-ink4); padding:14px 18px; }
+
+    .tg-src { display:grid; grid-template-columns:1.2fr 1fr auto auto; gap:12px; padding:10px 18px; border-top:1px solid var(--tg-rule); align-items:center; }
+    .tg-src:first-child { border-top:none; }
+    .tg-src .sn { font-family:var(--tg-sans); font-weight:400; font-size:12.5px; color:var(--tg-ink); }
+    .tg-src .sd { font-family:var(--tg-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; color:var(--tg-ink4); margin-top:2px; }
+    .tg-st { font-family:var(--tg-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--tg-edge); border-radius:2px; padding:2px 7px; justify-self:start; }
+    .tg-st.configured { color:var(--tg-pos); border-color:var(--tg-pos3); } .tg-st.not_configured { color:var(--tg-warm); border-color:var(--tg-warm3); } .tg-st.failed, .tg-st.paused { color:var(--tg-neg); border-color:var(--tg-neg3); }
+    .tg-mini { background:var(--tg-gr1); border:1px solid var(--tg-edge); border-radius:2px; color:var(--tg-ink3); font-family:var(--tg-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; padding:5px 8px; cursor:pointer; justify-self:end; }
+    .tg-mini:hover { color:var(--tg-ink); border-color:var(--tg-freq3); }
+    .tg-mini.warn { color:var(--tg-warm); border-color:var(--tg-warm3); }
+
+    .tg-imp { padding:12px 18px; display:flex; flex-direction:column; gap:7px; }
+    .tg-imp .row { display:flex; gap:7px; flex-wrap:wrap; } .tg-imp .row > * { flex:1; min-width:130px; }
+    .tg-imp select, .tg-imp input, .tg-imp textarea { background:var(--tg-gr1); border:1px solid var(--tg-edge); border-radius:2px; color:var(--tg-ink); font-family:var(--tg-sans); font-weight:300; font-size:12px; padding:8px 10px; }
+    .tg-imp textarea { resize:vertical; min-height:50px; }
+    .tg-imp select:focus, .tg-imp input:focus, .tg-imp textarea:focus { outline:none; border-color:var(--tg-freq3); }
+    .tg-act { background:var(--tg-freq4); border:1px solid var(--tg-freq3); border-radius:2px; color:var(--tg-freq); font-family:var(--tg-mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:8px 11px; cursor:pointer; align-self:flex-start; }
+    .tg-act:hover { color:var(--tg-ink); border-color:var(--tg-freq2); }
+
+    .tg-prof { border-top:1px solid var(--tg-rule); padding:12px 18px; }
+    .tg-prof:first-child { border-top:none; }
+    .tg-prof-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .tg-prof .pn { font-family:var(--tg-serif); font-weight:300; font-size:16px; color:var(--tg-ink); }
+    .tg-prof .pn .r { font-family:var(--tg-sans); font-size:12px; color:var(--tg-ink4); }
+    .tg-prof .pm { font-family:var(--tg-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; color:var(--tg-ink4); margin-top:3px; }
+    .tg-pst { font-family:var(--tg-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; border:1px solid var(--tg-edge); border-radius:2px; padding:2px 7px; }
+    .tg-pst.active { color:var(--tg-pos); border-color:var(--tg-pos3); } .tg-pst.duplicate { color:var(--tg-warm); border-color:var(--tg-warm3); } .tg-pst.archived { color:var(--tg-ink4); }
+    .tg-chain { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .tg-chip { font-family:var(--tg-mono); font-size:7.5px; letter-spacing:0.06em; text-transform:uppercase; border:1px solid var(--tg-edge); border-radius:2px; padding:2px 6px; color:var(--tg-ink4); }
+    .tg-chip.on { color:var(--tg-pos); border-color:var(--tg-pos3); }
+    .tg-prof-act { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .tg-msel { background:var(--tg-gr1); border:1px solid var(--tg-edge); border-radius:2px; color:var(--tg-ink2); font-family:var(--tg-mono); font-size:8.5px; padding:6px 8px; }
+
+    .tg-dup { border-top:1px solid var(--tg-rule); padding:10px 18px; display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+    .tg-dup:first-child { border-top:none; }
+    .tg-dup .dt { font-family:var(--tg-sans); font-weight:300; font-size:12px; color:var(--tg-ink2); }
+    .tg-dup .dm { font-family:var(--tg-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; color:var(--tg-ink4); margin-top:2px; }
+
+    .tg-note { margin-top:30px; border-top:1px solid var(--tg-rule); padding-top:22px; font-family:var(--tg-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--tg-ink3); }
+    .tg-note em { font-style:italic; color:var(--tg-ink2); } .tg-note a { color:var(--tg-freq); text-decoration:none; border-bottom:1px solid var(--tg-freq3); }
+    @media (max-width:820px){ .tg-tiles{ grid-template-columns:repeat(3,1fr);} .tg-src{ grid-template-columns:1fr; gap:5px;} }
+  </style>
+</head>
+<body class="tg-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Talent Graph</span><span class="st-sub">— owned talent → intelligence → resonance → outreach</span></div>
+  <div class="st-right">
+    <a class="st-link" href="search.html">Search ↗</a>
+    <a class="st-link" href="outreach.html">Outreach ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="tg-shell">
+  <div class="tg-crumbs"><a href="index.html">Studio</a> / Talent Graph</div>
+  <div class="tg-head">
+    <div>
+      <h1 class="tg-title">Every source, <em>one canonical profile.</em></h1>
+      <p class="tg-sub">
+        The talent graph connects owned sources — Goodspace, resume DB, referrals, GitHub, community, past
+        candidates — uniformly. Each becomes a <em>TalentProfile</em> that flows into the existing Person
+        Intelligence → Frequency → Resonance → Outreach chain, without re-entry. Real connectors block honestly
+        until configured; manual/referral import works today. One human, one canonical profile, many sources.
+      </p>
+    </div>
+    <button class="tg-btn" id="tg-reset" type="button">Reset</button>
+  </div>
+  <div class="tg-tiles" id="tg-tiles"></div>
+  <div class="tg-section">Talent sources &amp; connectors</div>
+  <div class="tg-panel"><div class="tg-pbody" id="tg-sources"></div></div>
+  <div class="tg-section">Import a talent profile (manual / referral / seed)</div>
+  <div class="tg-panel"><div class="tg-imp" id="tg-import"></div></div>
+  <div class="tg-section">Duplicate resolution · one human, one canonical profile</div>
+  <div class="tg-panel"><div class="tg-pbody" id="tg-dups"></div></div>
+  <div class="tg-section">Talent profiles · → intelligence → resonance → outreach</div>
+  <div class="tg-panel"><div class="tg-pbody" id="tg-profiles"></div></div>
+  <p class="tg-note">
+    <em>Honest by construction.</em> Goodspace DB / LinkedIn connectors block (<span style="font-family:var(--tg-mono);font-size:11px">not_configured</span>)
+    until wired — no fake integration, no scraping, no fabricated candidates. Sync never overwrites existing
+    intelligence; new material is evidence that evolves through the normal pipelines. Person Intelligence and
+    Resonance are never bypassed — a profile must pass through both before outreach. <a href="outreach.html">Outreach</a> stays approval-gated.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="../frequency/of-person-research.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-emergence.js"></script>
+<script src="../frequency/of-hiring.js"></script>
+<script src="../frequency/of-discovery-outreach.js"></script>
+<script src="../frequency/of-talent.js"></script>
+<script src="talent-admin.js"></script>
+</body>
+</html>

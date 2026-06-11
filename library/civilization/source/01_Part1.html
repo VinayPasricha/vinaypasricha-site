@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0f1115;
+    --paper:      #faf8f4;
+    --paper-deep: #f3efe7;
+    --rule:       #1c1f26;
+    --cosmos:     #1a2742;
+    --indigo:     #2d3a6b;
+    --gold:       #b8954f;
+    --mute:       #6b6960;
+  }
+
+  @page { size: 6in 9in; margin: 0; }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: #2a2722; color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-optical-sizing: auto; font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 6in; min-height: 9in;
+    margin: 24px auto; padding: 0.75in 0.7in;
+    background: var(--paper); color: var(--ink);
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column;
+  }
+
+  .page::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%);
+    pointer-events: none;
+  }
+
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  p.lead { margin-bottom: 1em; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+
+  /* COVER */
+  .cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; }
+  .cover-mark { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--mute); letter-spacing: 0.18em; text-transform: uppercase; }
+  .cover-spine { display: flex; justify-content: space-between; align-items: center; }
+  .cover-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 56pt; line-height: 0.95; letter-spacing: -0.03em; color: var(--ink); margin: 0.1in 0 0.15in 0; }
+  .cover-subtitle { font-family: "Space Grotesk", sans-serif; font-weight: 400; font-size: 13pt; line-height: 1.4; letter-spacing: 0.02em; color: var(--cosmos); max-width: 4in; }
+  .cover-part { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; }
+  .cover-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.3in 0; }
+  .cover-footer { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.2em; text-transform: uppercase; text-align: center; }
+
+  /* EPIGRAPH PAGE */
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+
+  /* SECTION OPENER */
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .section-epigraph { border-left: 1px solid var(--gold); padding-left: 14pt; margin: 0 0 0.4in 0; max-width: 4in; }
+  .section-epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-size: 10.5pt; line-height: 1.5; color: var(--ink); margin: 0 0 6pt 0; }
+  .section-epigraph-source { font-family: "Space Grotesk", sans-serif; font-size: 8.5pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); }
+
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+
+  .illustration { margin: 0.35in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after { bottom: -7pt; }
+
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+
+  .center-line { text-align: center; margin: 0.8em 0; }
+
+  /* Test blocks (now used for the four tests) */
+  .test-block { background: var(--paper-deep); padding: 12pt 14pt; margin: 0.15in 0; border-left: 3px solid var(--cosmos); }
+  .test-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 4pt; }
+  .test-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 4pt 0; }
+  .test-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.5; color: var(--ink); }
+
+  /* Tier headings on reveal page */
+  .tier-header {
+    font-family: "JetBrains Mono", monospace; font-size: 8.5pt;
+    color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase;
+    margin: 0.2in 0 0.12in 0; text-align: center;
+  }
+  .tier-subhead {
+    font-family: "Source Serif 4", serif; font-style: italic;
+    font-size: 10pt; color: var(--mute);
+    text-align: center; margin-bottom: 0.18in;
+    max-width: 4in; margin-left: auto; margin-right: auto;
+  }
+
+  .directions-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 0.15in; margin: 0.1in 0;
+  }
+  .direction-card { text-align: center; padding: 0.12in 0.08in; border: 1px solid var(--paper-deep); }
+  .direction-card.frontier { background: rgba(26,39,66,0.04); border-color: rgba(26,39,66,0.15); }
+  .direction-card svg { margin: 0 auto 6pt auto; display: block; }
+  .direction-number { font-family: "JetBrains Mono", monospace; font-size: 7pt; color: var(--gold); letter-spacing: 0.2em; }
+  .direction-name { font-family: "Space Grotesk", sans-serif; font-size: 11pt; font-weight: 500; color: var(--ink); margin-top: 2pt; letter-spacing: 0.02em; }
+  .direction-blurb { font-family: "Source Serif 4", serif; font-size: 8pt; line-height: 1.35; color: var(--mute); margin-top: 4pt; font-style: italic; }
+
+  .demoted-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.12in; margin: 0.18in 0 0.1in 0;
+  }
+  .demoted-card {
+    text-align: center; padding: 0.08in 0.05in;
+    border: 1px dashed var(--mute); opacity: 0.7;
+  }
+  .demoted-card .direction-name { font-size: 9pt; font-weight: 400; }
+  .demoted-card .direction-number { font-size: 6.5pt; }
+  .demoted-strike { font-family: "JetBrains Mono", monospace; font-size: 6.5pt; color: var(--mute); letter-spacing: 0.1em; margin-top: 3pt; }
+
+  .next-arrow { margin-top: 0.25in; text-align: center; font-family: "Space Grotesk", sans-serif; font-size: 11pt; font-weight: 400; color: var(--cosmos); letter-spacing: 0.05em; }
+  .next-arrow strong { font-weight: 600; color: var(--ink); }
+
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: US Letter or 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- ============================================================
+     COVER PAGE — eight markers, foundations vs frontiers encoded
+     ============================================================ -->
+<section class="page cover">
+  <div class="cover-spine">
+    <span class="cover-mark">Civilization</span>
+    <span class="cover-mark">Vol. I</span>
+  </div>
+
+  <div>
+    <div class="cover-part">Part One</div>
+    <h1 class="cover-title">The<br>Compass.</h1>
+    <p class="cover-subtitle">A framework for evaluating the direction of intelligent civilizations.</p>
+  </div>
+
+  <div class="cover-illustration">
+    <svg viewBox="0 0 360 360" width="280" height="280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="#1a2742" stop-opacity="0.9"/>
+          <stop offset="60%" stop-color="#1a2742" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#1a2742" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Outer ring (Frontiers) — four points -->
+      <circle cx="180" cy="180" r="160" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <g fill="#2d3a6b">
+        <circle cx="180" cy="20"  r="3"/>
+        <circle cx="340" cy="180" r="3"/>
+        <circle cx="180" cy="340" r="3"/>
+        <circle cx="20"  cy="180" r="3"/>
+      </g>
+      <!-- Inner ring (Foundations) — four points, gold, closer in -->
+      <circle cx="180" cy="180" r="100" fill="none" stroke="#b8954f" stroke-width="0.6" stroke-opacity="0.5"/>
+      <g fill="#b8954f">
+        <circle cx="180" cy="80"  r="3.5"/>
+        <circle cx="280" cy="180" r="3.5"/>
+        <circle cx="180" cy="280" r="3.5"/>
+        <circle cx="80"  cy="180" r="3.5"/>
+      </g>
+      <!-- Spiral suggesting the unfurling of intelligence -->
+      <g fill="none" stroke="#1a2742" stroke-width="1.0" stroke-opacity="0.35">
+        <path d="M 180 180
+                 m 0 -10 a 10 10 0 1 1 0.01 0
+                 m 0 -10 a 20 20 0 1 1 0.01 0
+                 m 0 -10 a 30 30 0 1 1 0.01 0
+                 m 0 -10 a 40 40 0 1 1 0.01 0
+                 m 0 -10 a 50 50 0 1 1 0.01 0
+                 m 0 -10 a 60 60 0 1 1 0.01 0
+                 m 0 -10 a 70 70 0 1 1 0.01 0
+                 m 0 -10 a 80 80 0 1 1 0.01 0
+                 m 0 -10 a 90 90 0 1 1 0.01 0"/>
+      </g>
+      <circle cx="180" cy="180" r="160" fill="url(#cg)"/>
+      <circle cx="180" cy="180" r="3.5" fill="#0f1115"/>
+      <line x1="180" y1="180" x2="180" y2="32" stroke="#0f1115" stroke-width="1.2"/>
+      <polygon points="180,20 175,32 185,32" fill="#0f1115"/>
+    </svg>
+  </div>
+
+  <div class="cover-footer">— Four Foundations · Four Frontiers —</div>
+</section>
+
+<!-- ============================================================
+     EPIGRAPH PAGE — SAGAN
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Part One · Opening</div>
+  <div class="epigraph-text">
+    "We are a way for the cosmos to know itself."
+  </div>
+  <div class="epigraph-attribution">— Carl Sagan</div>
+  <div style="margin-top: 1.2in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================================
+     INTRODUCTION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ Introduction</div>
+  <h2 class="section-title">A Conscious<br>Universe.</h2>
+
+  <p class="stanza dropcap">Our universe is approximately fourteen billion years old.</p>
+  <p class="stanza">For most of that time there were no civilizations.</p>
+  <p class="stanza">No governments.</p>
+  <p class="stanza">No economies.</p>
+  <p class="stanza">No religions.</p>
+  <p class="stanza">No technologies.</p>
+  <p class="stanza">No books.</p>
+  <p class="stanza">No cities.</p>
+  <p class="stanza">No human beings.</p>
+
+  <p class="stanza" style="margin-top:1em;">Then, somewhere on an ordinary planet orbiting an ordinary star, matter began organizing itself into increasingly complex forms.</p>
+
+  <p class="stanza">Atoms became molecules.</p>
+  <p class="stanza">Molecules became cells.</p>
+  <p class="stanza">Cells became organisms.</p>
+  <p class="stanza">Organisms became minds.</p>
+  <p class="stanza">Minds began asking questions.</p>
+
+  <p class="stanza" style="margin-top:1em;">And for the first time that we know of, a part of the universe became conscious of itself.</p>
+
+  <p class="stanza"><em>We call that part humanity.</em></p>
+
+  <div class="folio folio-right">001</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Introduction</div>
+
+  <p class="prose">The story is familiar. The implications are not.</p>
+
+  <p class="prose">For thousands of years humanity has attempted to understand its future. We have asked what technologies we will invent, which nations will rise, which ideologies will prevail, whether we will conquer disease, colonize space, or survive our own creations.</p>
+
+  <p class="stanza" style="margin-top:1em;">These are important questions.</p>
+  <p class="stanza">They are not the most important question.</p>
+
+  <p class="stanza" style="margin-top:1em;">A deeper question hides beneath all of them.</p>
+
+  <div class="pull-quote no-break">
+    If intelligence emerged once, could it have emerged before?<br>
+    If it emerged before, where is it now?
+  </div>
+
+  <p class="stanza">And if it has a future, do we?</p>
+
+  <div class="folio folio-left">002</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Introduction</div>
+
+  <p class="prose">The modern world largely assumes that the future is unknowable. Events are treated as random. History is treated as accidental. Civilizations are treated as unique.</p>
+
+  <p class="stanza" style="margin-top:1em;">This work begins from a different premise.</p>
+  <p class="stanza"><strong>The future is not arbitrary.</strong></p>
+  <p class="stanza">The details may be uncertain. The direction is not.</p>
+
+  <p class="prose" style="margin-top:1em;">The central claim of this book is that intelligence evolves along identifiable directions. These directions are not political. They are not cultural. They are not religious. They are not uniquely human.</p>
+
+  <p class="stanza">They emerge wherever intelligence emerges.</p>
+
+  <p class="prose" style="margin-top:1em;">If this claim is correct, its implications are profound. For the first time, humanity possesses the possibility of a long-range reference frame against which its decisions may be measured.</p>
+
+  <p class="stanza" style="margin-top:0.6em;">A way of distinguishing signal from noise.</p>
+  <p class="stanza">A way of distinguishing activity from advancement.</p>
+  <p class="stanza">A way of distinguishing futures aligned with the deeper development of intelligence from those that are not.</p>
+
+  <div class="folio folio-right">003</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Introduction</div>
+
+  <p class="stanza">A civilization can move rapidly and still move in the wrong direction.</p>
+  <p class="stanza">Success and progress are not always the same thing.</p>
+
+  <p class="prose" style="margin-top:1em;">For if intelligence possesses direction, then progress is not a matter of opinion.</p>
+
+  <div class="pull-quote no-break">
+    It is a matter of alignment.
+  </div>
+
+  <p class="stanza">This book does not attempt to predict the future.</p>
+  <p class="stanza"><em>It attempts to identify the deeper currents that create it.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-left">004</div>
+</section>
+
+<!-- ============================================================
+     CHAPTER — THE CASE FOR DIRECTION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ One</div>
+  <h2 class="section-title">The Case<br>for Direction.</h2>
+
+  <div class="section-epigraph">
+    <p class="section-epigraph-text">"From so simple a beginning, endless forms most beautiful and most wonderful have been, and are being, evolved."</p>
+    <div class="section-epigraph-source">— Charles Darwin</div>
+  </div>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 380 200" width="360" height="190" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#1a2742" stroke-width="0.8" stroke-linecap="round">
+        <path d="M 30 180 Q 60 100 100 180"/>
+        <path d="M 30 180 Q 80 60  140 180"/>
+        <path d="M 30 180 Q 110 30 190 180"/>
+        <path d="M 30 180 Q 150 10 250 180"/>
+        <path d="M 30 180 Q 200 0  310 180"/>
+        <path d="M 30 180 Q 260 0  370 180"/>
+      </g>
+      <g fill="#b8954f">
+        <circle cx="30" cy="180" r="3"/>
+        <circle cx="100" cy="180" r="2"/>
+        <circle cx="140" cy="180" r="2"/>
+        <circle cx="190" cy="180" r="2.5"/>
+        <circle cx="250" cy="180" r="2.5"/>
+        <circle cx="310" cy="180" r="3"/>
+        <circle cx="370" cy="180" r="3.5"/>
+      </g>
+      <g font-family="JetBrains Mono, monospace" font-size="6" fill="#6b6960" letter-spacing="0.1em" text-anchor="middle">
+        <text x="30"  y="195">MATTER</text>
+        <text x="100" y="195">CELL</text>
+        <text x="140" y="195">ORGAN</text>
+        <text x="190" y="195">MIND</text>
+        <text x="250" y="195">CULTURE</text>
+        <text x="310" y="195">CIVIL.</text>
+        <text x="370" y="195">→</text>
+      </g>
+    </svg>
+    <div class="caption">Fig. 1 — Cascades of Complexity</div>
+  </div>
+
+  <div class="folio folio-right">005</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case for Direction</div>
+
+  <p class="prose dropcap">One of the defining discoveries of modern thought is that apparent chaos often conceals deeper order.</p>
+
+  <p class="prose">Charles Darwin showed that the extraordinary diversity of life emerges from a simple underlying process. Historians such as Arnold Toynbee and Oswald Spengler searched for recurring patterns in the rise and decline of civilizations. Nikolai Kardashev proposed that civilizations themselves may evolve through recognizable stages. More recently, complexity science and researchers such as Peter Turchin have continued the search for deep structural regularities beneath the apparent chaos of history.</p>
+
+  <p class="stanza" style="margin-top:0.7em;">This work belongs to that tradition while extending its scope.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Its central claim is that intelligence itself evolves along identifiable directions. These directions concern the ways in which intelligence preserves itself, accumulates knowledge, expands its capabilities, coordinates at larger scales, and increasingly shapes the reality it inhabits.</p>
+
+  <p class="prose">Beneath the apparent chaos of wars, inventions, ideologies, religions, governments, economic systems, and technological revolutions, persistent patterns can be observed.</p>
+
+  <div class="folio folio-left">006</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case for Direction</div>
+
+  <p class="stanza">Knowledge accumulates.</p>
+  <p class="stanza">Capability expands.</p>
+  <p class="stanza">Memory deepens.</p>
+  <p class="stanza">Cooperation scales.</p>
+  <p class="stanza">The ability of intelligence to understand and shape reality increases.</p>
+
+  <p class="prose" style="margin-top:1em;">The path is neither smooth nor guaranteed. Entire civilizations collapse. Wars destroy centuries of accumulated progress. Ideas disappear. Institutions decay. Yet across thousands of years, the larger movement remains unmistakable.</p>
+
+  <p class="stanza" style="margin-top:1em;">An obvious objection presents itself.</p>
+
+  <p class="prose">Perhaps these patterns do not describe the direction of intelligence itself. Perhaps they merely describe the characteristics shared by civilizations that survive long enough to be observed.</p>
+
+  <p class="stanza" style="margin-top:0.7em;">For the purposes of this work, the distinction is largely irrelevant.</p>
+
+  <p class="prose">If certain directions repeatedly characterize the civilizations that endure, then those directions become indispensable to any civilization that wishes to endure.</p>
+
+  <div class="folio folio-right">007</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case for Direction</div>
+
+  <p class="stanza">This is not a political claim.</p>
+  <p class="stanza">It is not a cultural claim.</p>
+  <p class="stanza">It is not a religious claim.</p>
+  <p class="stanza">It is an observational claim.</p>
+
+  <p class="prose" style="margin-top:1em;">Nor is this book a prediction, a manifesto, or a work of science fiction.</p>
+
+  <p class="prose">It is a civilizational framework. Its purpose is to identify the deeper currents that shape the evolution of intelligence and to provide a reference frame against which every serious vision of the future may be evaluated.</p>
+
+  <p class="prose" style="margin-top:1em;">In this work, alignment carries no moral meaning. It is an instrumental concept. Just as a navigator aligns a vessel with the realities of geography and weather, civilizations must align themselves with the realities that govern the long-term development of intelligence if they wish to endure.</p>
+
+  <p class="prose">Whether such alignment is always comfortable, desirable, or humane is a separate question. History suggests that progress often demands adaptations that earlier generations would have found unsettling, and perhaps even unacceptable.</p>
+
+  <div class="folio folio-left">008</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case for Direction</div>
+
+  <p class="stanza" style="margin-top:1em;">The central question of this work is therefore not:</p>
+
+  <p class="center-line display" style="font-size:18pt; font-weight:300; color:var(--mute); margin: 0.6em 0;">What will happen?</p>
+
+  <p class="stanza">The more important question is:</p>
+
+  <p class="center-line display" style="font-size:18pt; font-weight:400; color:var(--cosmos); margin: 0.6em 0;">What is the direction every intelligent civilization must ultimately travel?</p>
+
+  <p class="prose" style="margin-top:1.4em;">Before attempting to answer that question, we must first understand the distinction between a map and a compass.</p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">009</div>
+</section>
+
+<!-- ============================================================
+     A NOTE ON MAPS AND COMPASSES
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ Two</div>
+  <h2 class="section-title">A Note on Maps<br>and Compasses.</h2>
+
+  <div class="section-epigraph">
+    <p class="section-epigraph-text">"The map is not the territory."</p>
+    <div class="section-epigraph-source">— Alfred Korzybski</div>
+  </div>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 220 220" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#1a2742" stroke-width="0.8">
+        <circle cx="110" cy="110" r="100"/>
+        <circle cx="110" cy="110" r="80" stroke-opacity="0.5"/>
+        <circle cx="110" cy="110" r="60" stroke-opacity="0.3"/>
+      </g>
+      <g stroke="#1a2742" stroke-width="1">
+        <line x1="110" y1="10"  x2="110" y2="22"/>
+        <line x1="110" y1="198" x2="110" y2="210"/>
+        <line x1="10"  y1="110" x2="22"  y2="110"/>
+        <line x1="198" y1="110" x2="210" y2="110"/>
+      </g>
+      <g stroke="#1a2742" stroke-width="0.5" stroke-opacity="0.6">
+        <line x1="41" y1="41"   x2="49" y2="49"/>
+        <line x1="179" y1="41"  x2="171" y2="49"/>
+        <line x1="41" y1="179"  x2="49" y2="171"/>
+        <line x1="179" y1="179" x2="171" y2="171"/>
+      </g>
+      <polygon points="110,18 105,114 110,108 115,114" fill="#0f1115"/>
+      <polygon points="110,202 105,106 110,112 115,106" fill="#b8954f" opacity="0.8"/>
+      <text x="110" y="6" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#0f1115" letter-spacing="0.2em">N</text>
+      <text x="110" y="218" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="#6b6960">S</text>
+      <text x="3" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="#6b6960">W</text>
+      <text x="216" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="#6b6960">E</text>
+      <circle cx="110" cy="110" r="3.5" fill="#0f1115"/>
+      <circle cx="110" cy="110" r="1.2" fill="#b8954f"/>
+    </svg>
+    <div class="caption">Fig. 2 — North remains North</div>
+  </div>
+
+  <div class="folio folio-right">010</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Note on Maps and Compasses</div>
+
+  <p class="stanza dropcap">A map attempts to describe the terrain.</p>
+  <p class="stanza">A compass identifies direction.</p>
+  <p class="stanza">The distinction is important.</p>
+
+  <p class="prose" style="margin-top:1em;">Throughout history, humanity has repeatedly attempted to draw maps of the future.</p>
+
+  <p class="stanza">Some predicted endless prosperity. Others predicted collapse.</p>
+  <p class="stanza">Some imagined a world united by reason. Others imagined a world consumed by conflict.</p>
+
+  <p class="stanza" style="margin-top:0.7em;">Every generation believed it understood the landscape that lay ahead.</p>
+  <p class="stanza">Every generation was wrong.</p>
+
+  <p class="prose" style="margin-top:1em;">New discoveries emerged. New technologies appeared. Empires rose and fell. Ideas once considered impossible became commonplace.</p>
+
+  <p class="stanza">The landscape changed.</p>
+  <p class="stanza">The maps became obsolete.</p>
+
+  <div class="folio folio-left">011</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Note on Maps and Compasses</div>
+
+  <p class="prose">Yet beneath these changes, something remarkable remained.</p>
+
+  <p class="stanza"><em>The deeper currents endured.</em></p>
+
+  <p class="prose" style="margin-top:0.7em;">Knowledge continued to accumulate. Capability continued to expand. The scale at which intelligence operated continued to increase. Civilizations came and went, but the larger movement persisted.</p>
+
+  <p class="stanza" style="margin-top:1em;">This observation suggests a possibility.</p>
+
+  <p class="prose">Perhaps humanity has been searching for the wrong thing. Perhaps the future cannot be mapped in detail.</p>
+
+  <p class="stanza">Perhaps what we need is not a map.</p>
+
+  <div class="pull-quote no-break">
+    Perhaps what we need is a compass.
+  </div>
+
+  <div class="folio folio-right">012</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Note on Maps and Compasses</div>
+
+  <p class="prose">The value of a map lies in its detail. The value of a compass lies in its permanence.</p>
+
+  <p class="prose">Maps must constantly be revised. A compass remains useful even when the landscape changes completely.</p>
+
+  <p class="stanza" style="margin-top:1em;">North remains north.</p>
+  <p class="stanza">The compass survives.</p>
+
+  <p class="prose" style="margin-top:1em;">This work does not claim to provide a map of the future. No map can survive centuries of discovery, invention, conflict, and transformation.</p>
+
+  <p class="stanza">Instead, it attempts to provide something more enduring.</p>
+
+  <p class="center-line display" style="font-size:18pt; font-weight:400; color:var(--cosmos); margin: 0.6em 0;">A civilizational compass.</p>
+
+  <p class="prose" style="margin-top:1em;">The value of a compass lies not in its ability to predict every step of the journey. Its value lies in its ability to distinguish movement from progress.</p>
+
+  <div class="folio folio-left">013</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Note on Maps and Compasses</div>
+
+  <p class="prose">A ship may travel thousands of miles and still be moving away from its destination.</p>
+
+  <p class="prose">A civilization may accumulate wealth, power, technology, and influence and still be moving away from its future.</p>
+
+  <p class="stanza" style="margin-top:1em;">Without a compass, activity can easily be mistaken for advancement.</p>
+
+  <p class="prose" style="margin-top:1.4em;"><em>The pages that follow represent an attempt to build such a compass.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">014</div>
+</section>
+
+<!-- ============================================================
+     HOW THE DIRECTIONS WERE CHOSEN — REWRITTEN (FOUR TESTS)
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ Three</div>
+  <h2 class="section-title">How the Directions<br>Were Chosen.</h2>
+
+  <div class="section-epigraph">
+    <p class="section-epigraph-text">"The first principle is that you must not fool yourself — and you are the easiest person to fool."</p>
+    <div class="section-epigraph-source">— Richard Feynman</div>
+  </div>
+
+  <p class="prose dropcap">The directions presented in this work were not selected because they are desirable. They were not selected because they are fashionable. They were not selected because they reflect the author's preferences.</p>
+
+  <p class="prose">They were selected because they survived a deliberately demanding process. Twelve candidate directions were proposed and subjected to four tests. Each test was designed to eliminate any direction that could not justify itself on its own merits.</p>
+
+  <p class="stanza" style="margin-top:0.6em;">Four of the twelve did not survive.</p>
+  <p class="stanza">Eight did.</p>
+
+  <p class="prose" style="margin-top:0.6em;">The reduction is not a failure of the inquiry. It is the inquiry working. A framework that retained every candidate it tested would be a framework that wasn't testing them.</p>
+
+  <div class="folio folio-left">015</div>
+</section>
+
+<section class="page">
+  <div class="running-head">How the Directions Were Chosen</div>
+
+  <p class="prose">The four tests are stated below. Each is intentionally narrow. A direction that fails any one of them is, for the purposes of this work, not a primary direction.</p>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test One</div>
+    <div class="test-name">Survival</div>
+    <div class="test-body">Can an intelligent civilization persist indefinitely without it? If the answer is yes, the candidate is not a primary direction. It may be desirable. It may be valuable. But it is not necessary.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Two</div>
+    <div class="test-name">Universality</div>
+    <div class="test-body">Does it appear across biology, civilizations, and observable intelligence systems? A direction that emerges only within a single tradition or substrate is not universal enough to be foundational.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Three</div>
+    <div class="test-name">Independence</div>
+    <div class="test-body">Can it be derived from the other candidates? If a proposed direction is simply another direction expressed in different language, it is not independent and should be folded into the more fundamental one.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Four</div>
+    <div class="test-name">Reality</div>
+    <div class="test-body">Does reality consistently reward movement toward it and punish movement away from it? This is the strictest test. The historical record must show a measurable pattern, not a coincidence.</div>
+  </div>
+
+  <div class="folio folio-right">016</div>
+</section>
+
+<section class="page">
+  <div class="running-head">How the Directions Were Chosen</div>
+
+  <p class="prose">These tests are not equally easy to apply. The Survival test is the cleanest. The Reality test is the strictest. Universality and Independence sit between them, requiring judgment.</p>
+
+  <p class="prose">The framework openly acknowledges that the four tests admit degree. A direction may pass three tests cleanly and the fourth only conditionally. In such cases, the framework retains the direction but flags the weaker leg explicitly. Hiding such weaknesses would defeat the purpose of testing in the first place.</p>
+
+  <div class="pull-quote no-break">
+    A framework that retained every candidate it tested would be a framework that wasn't testing them.
+  </div>
+
+  <p class="prose">The reader is encouraged to challenge the directions. To test them against history. To test them against the present. To test them against their own expectations of the future.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>What follows is not a list of values. It is the residue left behind after the tests were applied.</em></p>
+
+  <div class="folio folio-left">017</div>
+</section>
+
+<!-- ============================================================
+     NEW · THE REDUCTION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ Four</div>
+  <h2 class="section-title">The Reduction.</h2>
+
+  <p class="prose dropcap">Twelve candidates entered the tests. Eight passed all four. Four did not pass independence — each was found to be derivable from one of the survivors. They are not failures. They are mechanisms, optimization pressures, or consequences of deeper attractors. They remain visible in this book precisely because their demotions are part of the framework's history.</p>
+
+  <p class="prose">Each of the four demotions is stated below.</p>
+
+  <div class="test-block no-break" style="border-left-color: var(--mute);">
+    <div class="test-label" style="color: var(--mute);">Demoted</div>
+    <div class="test-name">Memory</div>
+    <div class="test-body">Memory was proposed as the preservation of accumulated knowledge across generations. On examination, Memory is one mechanism through which Continuity is achieved. The preservation of information is not separate from the broader imperative of persisting across time; it is a means by which that imperative operates. Memory therefore reappears as a major theme within Direction One, not as its own direction.</div>
+  </div>
+
+  <div class="test-block no-break" style="border-left-color: var(--mute);">
+    <div class="test-label" style="color: var(--mute);">Demoted</div>
+    <div class="test-name">Efficiency</div>
+    <div class="test-body">Efficiency was proposed as the optimization of capability under resource constraints. On examination, Efficiency is an optimization pressure that naturally appears wherever Capability operates against limits. It is not a separate direction; it is the shape Capability takes under scarcity. Efficiency therefore reappears as a theme within Direction Three.</div>
+  </div>
+
+  <div class="folio folio-right">018</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Reduction</div>
+
+  <div class="test-block no-break" style="border-left-color: var(--mute);">
+    <div class="test-label" style="color: var(--mute);">Demoted</div>
+    <div class="test-name">Integration</div>
+    <div class="test-body">Integration was proposed as the unification of disparate elements into coherent wholes. On examination, Integration emerges from prolonged Cooperation under Expansion: as cooperative systems extend their reach, structural coherence becomes both possible and necessary. Integration is the outcome, not the attractor. It reappears within Direction Four.</div>
+  </div>
+
+  <div class="test-block no-break" style="border-left-color: var(--mute);">
+    <div class="test-label" style="color: var(--mute);">Demoted</div>
+    <div class="test-name">Freedom</div>
+    <div class="test-body">Freedom is the most politically loaded demotion in the framework, and the one most owed an explicit defense. Freedom was proposed as a primary attractor. On examination, Freedom appears to emerge — when it emerges — from the operation of Truth and Recursion at scale. A civilization that takes alignment with reality seriously, and that turns its inquiry on itself, generates structural conditions that look like freedom from the inside. Civilizations that pursue Capability and Expansion without Truth and Recursion can suppress Freedom for extended periods. The framework therefore makes a falsifiable prediction: a civilization that suppresses Freedom while pursuing the other directions will eventually hit a ceiling in Truth and Recursion. If it does not, the framework is wrong about Freedom.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.25in;">The four demotions are visible throughout the chapters that follow. They have not been deleted from the book. They have been relocated to where the framework believes they actually operate.</p>
+
+  <div class="folio folio-left">019</div>
+</section>
+
+<!-- ============================================================
+     NEW · FALSIFICATION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ Five</div>
+  <h2 class="section-title">What Would<br>Invalidate This.</h2>
+
+  <div class="section-epigraph">
+    <p class="section-epigraph-text">"A theory that explains everything explains nothing."</p>
+    <div class="section-epigraph-source">— after Karl Popper</div>
+  </div>
+
+  <p class="prose dropcap">A framework that cannot be wrong is not a framework. It is a worldview wearing the costume of one. Any serious attempt to describe the directions of intelligence must therefore state, in advance, what evidence would cause the framework to be abandoned or substantially revised.</p>
+
+  <p class="prose">Three classes of evidence would invalidate the framework presented here.</p>
+
+  <p class="stanza" style="margin-top:0.8em;"><strong>First.</strong> A long-lived advanced civilization that systematically violated most of the directions.</p>
+  <p class="prose">If a civilization persisted for many millennia while exhibiting low Continuity, low Truth, low Capability, and low Cooperation — or while moving against several Frontiers without consequence — the framework's central claim would be falsified. No such civilization exists in the historical record. But the absence of evidence is not the same as evidence of absence; the framework remains open to revision.</p>
+
+  <div class="folio folio-right">020</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What Would Invalidate This</div>
+
+  <p class="stanza"><strong>Second.</strong> A consistent pattern of civilizations failing despite alignment with all eight directions.</p>
+  <p class="prose">If civilizations that took the eight directions seriously routinely collapsed, while civilizations indifferent to them flourished, the directions would not be selecting for what the framework claims they select for. The pattern would be reversed and the framework would need to be inverted or discarded.</p>
+
+  <p class="stanza" style="margin-top:0.8em;"><strong>Third.</strong> A new candidate direction that passes all four tests independently.</p>
+  <p class="prose">The framework claims to have identified eight primary attractors. If a ninth, tenth, or eleventh candidate emerged that passed the Survival, Universality, Independence, and Reality tests as cleanly as the current eight, the framework would need to expand. Eight is not sacred. It is the current best estimate.</p>
+
+  <p class="prose" style="margin-top:0.8em;">The framework's foundational tier — the first four directions — carries the strongest falsifiability. Their evidence base spans all known intelligent systems across all observable timescales. The frontier tier — the second four — carries weaker falsifiability, because the evidence base narrows to advanced intelligence operating over long timescales. This asymmetry is acknowledged, not hidden.</p>
+
+  <div class="pull-quote no-break">
+    The framework remains a framework precisely because it can fail.
+  </div>
+
+  <div class="folio folio-left">021</div>
+</section>
+
+<!-- ============================================================
+     WHAT SURVIVED — INTERLUDE
+     ============================================================ -->
+<section class="page" style="justify-content: center; text-align: center; padding: 1.5in 0.9in;">
+  <h2 class="section-title" style="text-align:center; font-size: 38pt; margin-bottom: 0.55in;">What<br>Survived.</h2>
+
+  <p class="stanza center-line">Most ideas failed.</p>
+  <p class="stanza center-line">Most ideologies failed.</p>
+  <p class="stanza center-line">Most institutions failed.</p>
+  <p class="stanza center-line">Most civilizations failed.</p>
+
+  <p class="stanza center-line" style="margin-top:0.4in;"><em>Yet certain tendencies appeared again and again.</em></p>
+
+  <p class="stanza center-line" style="margin-top:0.25in;">Across continents.</p>
+  <p class="stanza center-line">Across centuries.</p>
+  <p class="stanza center-line">Across technologies.</p>
+  <p class="stanza center-line">Across cultures.</p>
+  <p class="stanza center-line">Across empires.</p>
+
+  <div class="pull-quote no-break" style="margin-top:0.45in; font-size: 16pt;">
+    Eight survived the tests. What follows is the residue.
+  </div>
+
+  <div class="folio folio-left">022</div>
+</section>
+
+<!-- ============================================================
+     THE EIGHT DIRECTIONS — REVEAL (PAGE 1: FOUNDATIONS)
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ The Reveal</div>
+  <h2 class="section-title">The Eight<br>Directions.</h2>
+
+  <p class="prose" style="margin-top:0.1in;">The eight survivors fall into two distinct tiers. The first four appear necessary for any intelligence that persists at all. The second four appear most clearly in advanced intelligence operating over long timescales. The book treats them in that order — foundations first, frontiers second — because the frontiers presuppose the foundations.</p>
+
+  <div class="tier-header" style="margin-top:0.2in;">— The Four Foundations —</div>
+  <div class="tier-subhead">Necessary conditions for any intelligence that persists.</div>
+
+  <div class="directions-grid">
+    <div class="direction-card">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="10" fill="none" stroke="#0f1115" stroke-width="1.6"/>
+        <circle cx="18" cy="18" r="2.5" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">I</div>
+      <div class="direction-name">Continuity</div>
+      <div class="direction-blurb">Preservation of information through time.</div>
+    </div>
+    <div class="direction-card">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <polygon points="18,5 29,28 7,28" fill="none" stroke="#0f1115" stroke-width="1.6"/>
+        <line x1="18" y1="15" x2="18" y2="25" stroke="#b8954f" stroke-width="1.6"/>
+      </svg>
+      <div class="direction-number">II</div>
+      <div class="direction-name">Truth</div>
+      <div class="direction-blurb">Alignment of internal models with external reality.</div>
+    </div>
+    <div class="direction-card">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <g stroke="#0f1115" stroke-width="1.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="18" y2="14"/>
+          <line x1="18" y1="22" x2="18" y2="30"/>
+          <line x1="6" y1="18" x2="14" y2="18"/>
+          <line x1="22" y1="18" x2="30" y2="18"/>
+          <line x1="10" y1="10" x2="15" y2="15"/>
+          <line x1="21" y1="21" x2="26" y2="26"/>
+          <line x1="26" y1="10" x2="21" y2="15"/>
+          <line x1="15" y1="21" x2="10" y2="26"/>
+        </g>
+        <circle cx="18" cy="18" r="2.5" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">III</div>
+      <div class="direction-name">Capability</div>
+      <div class="direction-blurb">Conversion of information into effective action.</div>
+    </div>
+    <div class="direction-card">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="13" cy="18" r="7" fill="none" stroke="#0f1115" stroke-width="1.6"/>
+        <circle cx="23" cy="18" r="7" fill="none" stroke="#0f1115" stroke-width="1.6"/>
+        <circle cx="18" cy="18" r="1.8" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">IV</div>
+      <div class="direction-name">Cooperation</div>
+      <div class="direction-blurb">Combining capabilities across multiple intelligences.</div>
+    </div>
+  </div>
+
+  <div class="folio folio-right">023</div>
+</section>
+
+<!-- ============================================================
+     THE EIGHT DIRECTIONS — REVEAL (PAGE 2: FRONTIERS)
+     ============================================================ -->
+<section class="page">
+  <div class="running-head">The Eight Directions</div>
+
+  <div class="tier-header">— The Four Frontiers —</div>
+  <div class="tier-subhead">Toward which advanced intelligence moves once the foundations are secured.</div>
+
+  <div class="directions-grid">
+    <div class="direction-card frontier">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="4" fill="none" stroke="#0f1115" stroke-width="1.4"/>
+        <circle cx="18" cy="18" r="9" fill="none" stroke="#0f1115" stroke-width="1" stroke-opacity="0.7"/>
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#0f1115" stroke-width="0.8" stroke-opacity="0.4"/>
+        <circle cx="18" cy="18" r="1.5" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">V</div>
+      <div class="direction-name">Expansion</div>
+      <div class="direction-blurb">Extension into domains not yet reached.</div>
+    </div>
+    <div class="direction-card frontier">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <g stroke="#0f1115" stroke-width="1.6" stroke-linecap="round">
+          <line x1="18" y1="6" x2="18" y2="30"/>
+          <line x1="6" y1="18" x2="30" y2="18"/>
+          <line x1="10" y1="10" x2="26" y2="26"/>
+          <line x1="26" y1="10" x2="10" y2="26"/>
+        </g>
+        <circle cx="18" cy="18" r="3" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">VI</div>
+      <div class="direction-name">Creation</div>
+      <div class="direction-blurb">Generation of adaptive novelty.</div>
+    </div>
+    <div class="direction-card frontier">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="13" fill="none" stroke="#0f1115" stroke-width="1.6"/>
+        <circle cx="18" cy="18" r="8"  fill="none" stroke="#0f1115" stroke-width="1.2"/>
+        <circle cx="18" cy="18" r="4"  fill="none" stroke="#0f1115" stroke-width="1"/>
+        <circle cx="18" cy="18" r="1.6" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">VII</div>
+      <div class="direction-name">Recursion</div>
+      <div class="direction-blurb">Intelligence taking itself as object of inquiry.</div>
+    </div>
+    <div class="direction-card frontier">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <g stroke="#0f1115" stroke-width="1.2" stroke-linecap="round">
+          <line x1="6" y1="13" x2="24" y2="13" stroke-opacity="0.5"/>
+          <line x1="6" y1="18" x2="26" y2="18"/>
+          <line x1="6" y1="23" x2="24" y2="23" stroke-opacity="0.5"/>
+        </g>
+        <polygon points="26,18 22,15 22,21" fill="#0f1115"/>
+        <circle cx="30" cy="18" r="2.5" fill="#b8954f"/>
+      </svg>
+      <div class="direction-number">VIII</div>
+      <div class="direction-name">Purpose</div>
+      <div class="direction-blurb">Coordinated action toward selected ends.</div>
+    </div>
+  </div>
+
+  <div class="tier-header" style="margin-top:0.25in; color: var(--mute);">— Demoted Candidates —</div>
+  <div class="demoted-row">
+    <div class="demoted-card">
+      <div class="direction-name">Memory</div>
+      <div class="demoted-strike">→ Continuity</div>
+    </div>
+    <div class="demoted-card">
+      <div class="direction-name">Efficiency</div>
+      <div class="demoted-strike">→ Capability</div>
+    </div>
+    <div class="demoted-card">
+      <div class="direction-name">Integration</div>
+      <div class="demoted-strike">→ Cooperation</div>
+    </div>
+    <div class="demoted-card">
+      <div class="direction-name">Freedom</div>
+      <div class="demoted-strike">→ Truth · Recursion</div>
+    </div>
+  </div>
+
+  <div class="next-arrow">
+    The foundations come first.<br>
+    <strong>Direction One: Continuity →</strong>
+  </div>
+
+  <div class="folio folio-left">024</div>
+</section>
+
+<!-- ============================================================
+     NEW · FROM COMPASS TO LANDSCAPE
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Civilization · Part One</div>
+  <div class="section-number">§ A Final Note</div>
+  <h2 class="section-title">From Compass<br>to Landscape.</h2>
+
+  <p class="prose dropcap">The compass metaphor has served this part of the book well. It pointed in directions. It allowed us to distinguish movement from progress, signal from noise, activity from advancement. But every metaphor has its limit, and the compass's limit is now reachable.</p>
+
+  <p class="prose">A compass implies a single optimum direction. North. The eight directions identified in this work are not a single direction. They are eight different vectors. And — this is the observation that reshapes everything that follows — they are in measurable tension with each other.</p>
+
+  <p class="stanza" style="margin-top:0.7em;">Continuity pulls against Creation. Preservation conflicts with novelty.</p>
+  <p class="stanza">Cooperation pulls against Truth. Cohesion often suppresses inconvenient facts.</p>
+  <p class="stanza">Expansion pulls against Recursion. The outward push conflicts with the inward turn.</p>
+  <p class="stanza">Capability pulls against Purpose. Highly capable systems can drift purposeless.</p>
+
+  <p class="prose" style="margin-top:0.7em;">No civilization, biological lineage, or intelligence system can simultaneously maximize all eight. The directions are not commandments to be obeyed in unison. They are coordinates in a possibility space whose dimensions are in real tension.</p>
+
+  <div class="folio folio-right">025</div>
+</section>
+
+<section class="page">
+  <div class="running-head">From Compass to Landscape</div>
+
+  <p class="prose">This changes the central claim of the book in a way the careful reader will already have anticipated.</p>
+
+  <p class="prose">Long-term successful civilizations are not those that pursued any single direction with maximum intensity. The most religiously continuous civilizations were rarely the most creative. The most cooperative were rarely the most truthful with themselves. The most expansive were rarely the most reflective.</p>
+
+  <p class="stanza" style="margin-top:0.6em;">The long-term winners were not the maximizers.</p>
+  <p class="stanza"><em>They were the balancers.</em></p>
+
+  <p class="prose" style="margin-top:0.6em;">They occupied positions in an eight-dimensional space that were sustainable across centuries — not because they pushed hardest in any one direction, but because they found equilibria robust enough to hold across changes in technology, ideology, geography, and crisis.</p>
+
+  <div class="pull-quote no-break">
+    The directions are not a destination. They are a possibility space.
+  </div>
+
+  <p class="prose">The compass therefore evolves. By the close of this book, it will have become a landscape — and then a possibility space — without ever ceasing to be useful in its original form.</p>
+
+  <p class="prose">For now, in Part Two, we will examine each direction in turn. The foundations first. The frontiers after. Each direction will be defined, evidenced, and tested. The tensions between them will be flagged as they arise, and the deeper structure they jointly create will become visible only at the end.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The compass first. The landscape later.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-left">026</div>
+</section>
+
+<!-- ============================================================
+     END-OF-PART CLOSER — WHITEHEAD
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Part One</div>
+  <div class="epigraph-text">
+    "It is the business of the future to be dangerous."
+  </div>
+  <div class="epigraph-attribution">— Alfred North Whitehead</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.5in;" class="mono">PART TWO BEGINS · DIRECTION ONE · CONTINUITY</div>
+</section>
+
+</body>
+</html>

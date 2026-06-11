@@ -32,9 +32,9 @@ const SPINE_CHAMBERS = [
   { id: '04', slug: 'failure-recovery', name: 'Failure & Recovery',      x: 500, y: 360, status: 'pending', coord: 'F·4' },
   { id: '05', slug: 'human-constraint', name: 'Human Constraint',        x: 360, y: 430, status: 'pending', coord: 'H·5' },
   { id: '06', slug: 'structural-constraint', name: 'Structural Constraint', x: 640, y: 430, status: 'open',    coord: 'X·6' },
-  { id: '07', slug: 'capacity-expansion', name: 'Capacity Expansion',    x: 500, y: 510, status: 'pending', coord: 'K·7' },
-  { id: '08', slug: 'multi-scale',      name: 'Multi-Scale Systems',     x: 500, y: 590, status: 'pending', coord: 'M·8' },
-  { id: '09', slug: 'character',        name: 'Character of the Executor', x: 500, y: 660, status: 'pending', coord: 'E·9' },
+  { id: '07', slug: 'capacity-expansion', name: 'Capacity Expansion',    x: 500, y: 510, status: 'open',    coord: 'K·7' },
+  { id: '08', slug: 'multi-scale',      name: 'Multi-Scale Systems',     x: 500, y: 590, status: 'open',    coord: 'M·8' },
+  { id: '09', slug: 'character',        name: 'Character of the Executor', x: 500, y: 660, status: 'open',    coord: 'E·9' },
 ];
 
 // Doctrinal routing — derived from each chamber's spec.
@@ -57,6 +57,9 @@ function chamberHref(slug) {
     case 'sequence':              return '../sequence/index.html';
     case 'constraint':            return '../constraint/index.html';
     case 'structural-constraint': return '../structural/index.html';
+    case 'capacity-expansion':    return '../capacity/index.html';
+    case 'multi-scale':           return '../multiscale/index.html';
+    case 'character':             return '../character/index.html';
     default: return null;
   }
 }
@@ -98,9 +101,9 @@ function Spine({ currentSlug, visible, onDismiss }) {
             <em>KAIROS·1</em> · nine depths, one organism
           </div>
           <div className="spine-sub">
-            The runtime is descent. Chambers are stacked by depth;
-            higher-numbered chambers sit deeper in the doctrine.
-            Bright nodes are open; faint nodes are pending strata.
+            Depth encodes time. Surface holds near-term motion;
+            foundation holds multi-decade continuity. The chamber
+            you stand in is one stratum of the doctrine.
           </div>
         </div>
 
@@ -116,17 +119,51 @@ function Spine({ currentSlug, visible, onDismiss }) {
               <stop offset="50%" stopColor="rgba(217,148,102,0.02)" />
               <stop offset="100%" stopColor="rgba(120,130,150,0.01)" />
             </linearGradient>
+            {/* Geological zone gradients — surface lighter, foundation darker.
+                Per Refinement 08: depth encodes time. Each band carries its own
+                density. Strata, not labels. */}
+            <linearGradient id="zoneSurface" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(180,180,200,0.020)" />
+              <stop offset="100%" stopColor="rgba(180,180,200,0.012)" />
+            </linearGradient>
+            <linearGradient id="zoneDiagnosis" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(180,180,200,0.028)" />
+              <stop offset="100%" stopColor="rgba(180,180,200,0.020)" />
+            </linearGradient>
+            <linearGradient id="zoneCause" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(120,130,150,0.034)" />
+              <stop offset="100%" stopColor="rgba(120,130,150,0.028)" />
+            </linearGradient>
+            <linearGradient id="zoneFoundation" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(80,90,110,0.045)" />
+              <stop offset="100%" stopColor="rgba(60,70,90,0.06)" />
+            </linearGradient>
           </defs>
+
+          {/* Geological zones — horizontal strata behind everything */}
+          <rect x="0" y="0"   width="1000" height="190" fill="url(#zoneSurface)" />
+          <rect x="0" y="190" width="1000" height="170" fill="url(#zoneDiagnosis)" />
+          <rect x="0" y="360" width="1000" height="160" fill="url(#zoneCause)" />
+          <rect x="0" y="520" width="1000" height="180" fill="url(#zoneFoundation)" />
+          {/* Stratum seams — the geology between bands */}
+          <line x1="60" x2="940" y1="190" y2="190" stroke="rgba(180,180,200,0.05)" strokeWidth="0.3" strokeDasharray="1 6" />
+          <line x1="60" x2="940" y1="360" y2="360" stroke="rgba(180,180,200,0.05)" strokeWidth="0.3" strokeDasharray="1 6" />
+          <line x1="60" x2="940" y1="520" y2="520" stroke="rgba(180,180,200,0.05)" strokeWidth="0.3" strokeDasharray="1 6" />
 
           {/* The shaft — a faint vertical column behind the chambers,
               suggesting subterranean descent geometry */}
           <rect x="480" y="0" width="40" height="700" fill="url(#spineShaft)" />
 
-          {/* Depth-band markers — mono telemetry on the left edge */}
+          {/* Depth-band markers — mono telemetry on the left edge.
+              Per Refinement 08: each band names a temporal horizon, not just a depth. */}
           <text x="40" y="68"  fontFamily="JetBrains Mono, monospace" fontSize="8.5" letterSpacing="3" fill="rgba(180,180,200,0.32)">SURFACE</text>
+          <text x="40" y="82"  fontFamily="Newsreader, Georgia, serif" fontStyle="italic" fontSize="9.5" fill="rgba(180,180,200,0.18)">near-term motion</text>
           <text x="40" y="268" fontFamily="JetBrains Mono, monospace" fontSize="8.5" letterSpacing="3" fill="rgba(180,180,200,0.28)">DIAGNOSIS</text>
+          <text x="40" y="282" fontFamily="Newsreader, Georgia, serif" fontStyle="italic" fontSize="9.5" fill="rgba(180,180,200,0.16)">observable cycles</text>
           <text x="40" y="438" fontFamily="JetBrains Mono, monospace" fontSize="8.5" letterSpacing="3" fill="rgba(180,180,200,0.24)">CAUSE</text>
+          <text x="40" y="452" fontFamily="Newsreader, Georgia, serif" fontStyle="italic" fontSize="9.5" fill="rgba(180,180,200,0.14)">long-cycle forces</text>
           <text x="40" y="598" fontFamily="JetBrains Mono, monospace" fontSize="8.5" letterSpacing="3" fill="rgba(180,180,200,0.20)">FOUNDATION</text>
+          <text x="40" y="612" fontFamily="Newsreader, Georgia, serif" fontStyle="italic" fontSize="9.5" fill="rgba(180,180,200,0.12)">multi-decade continuity</text>
 
           {/* Edges — drawn first, beneath nodes */}
           {SPINE_EDGES.map(([a, b], i) => {

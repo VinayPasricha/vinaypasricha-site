@@ -1,0 +1,58 @@
+/* =============================================================
+   KAIROS·1 — Multi-Scale Systems Chamber · interior
+   ============================================================= */
+
+/* Force diamonds — distinct primitive from circles/rects */
+.ms-force .ms-force-shape {
+  fill: var(--gr-2);
+  stroke: var(--ink-3);
+  stroke-width: 0.9;
+  transition: stroke var(--slow), stroke-width var(--slow), fill var(--slow), filter var(--slow);
+}
+.ms-force--individual   .ms-force-shape { stroke: rgba(180,180,200,0.45); }
+.ms-force--team         .ms-force-shape { stroke: rgba(180,180,200,0.55); }
+.ms-force--organization .ms-force-shape { stroke: rgba(180,180,200,0.65); }
+.ms-force--mission      .ms-force-shape { stroke: rgba(180,180,200,0.75); }
+
+.ms-force.is-governing .ms-force-shape {
+  fill: var(--heat-4);
+  stroke: var(--heat);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 12px rgba(217,148,102,0.55));
+  animation: c-pulse-slow var(--rhythm-breath) ease-in-out infinite;
+}
+.ms-force.is-focused .ms-force-shape {
+  stroke: var(--heat-2);
+  filter: drop-shadow(0 0 6px rgba(217,148,102,0.35));
+}
+
+.ms-force-id {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.ms-force.is-governing .ms-force-id { fill: var(--heat); }
+
+.ms-force-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 400;
+  text-anchor: middle;
+  fill: var(--ink-2);
+  pointer-events: none;
+}
+
+/* Cross-scale links — radial lines, friction-encoded */
+.ms-link {
+  stroke: var(--ink-4);
+  stroke-width: 0.7;
+  transition: stroke var(--slow), stroke-width var(--slow);
+}
+.ms-link[data-friction="high"]   { stroke: var(--ink-3); stroke-width: 0.8; }
+.ms-link[data-friction="mid"]    { stroke: var(--ink-2); stroke-width: 1; }
+.ms-link[data-friction="low"]    { stroke: var(--heat-2); stroke-width: 1.3; filter: drop-shadow(0 0 3px rgba(217,148,102,0.35)); }
+.ms-link[data-friction="break"]  { stroke: var(--heat); stroke-width: 1.8; stroke-dasharray: 4 3; filter: drop-shadow(0 0 5px rgba(217,148,102,0.5)); }

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hiring · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .hr-body { background: #07080c; color: #ebe9e2; }
+    :root {
+      --hr-gr1: #07080c; --hr-gr2: #0c0d12; --hr-gr3: #11131a; --hr-gr4: #181b25;
+      --hr-ink: #ebe9e2; --hr-ink2: #b8b5ad; --hr-ink3: #6e6c66; --hr-ink4: #44433f;
+      --hr-freq: #6f9bb5; --hr-freq2: #4f7388; --hr-freq3: #2c4150; --hr-freq4: #13202a;
+      --hr-pos: #6fae86; --hr-pos3: #2f5b43;
+      --hr-warm: #c0975e; --hr-warm3: #5c4626;
+      --hr-neg: #c98170; --hr-neg3: #5c3329;
+      --hr-gold: #c2a25e; --hr-gold3: #5c4c26;
+      --hr-rule: #14161e; --hr-edge: #1c2030;
+      --hr-serif: "Newsreader", Georgia, serif;
+      --hr-sans: "Inter", system-ui, sans-serif;
+      --hr-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .hr-shell { max-width: 1140px; margin: 0 auto; padding: 40px 32px 96px; position: relative; z-index: 1; }
+    .hr-crumbs { font-family: var(--hr-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--hr-ink3); margin-bottom: 22px; text-transform: uppercase; }
+    .hr-crumbs a { color: var(--hr-ink2); text-decoration: none; }
+    .hr-crumbs a:hover { color: var(--hr-ink); }
+
+    .hr-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--hr-rule); padding-bottom: 24px; margin-bottom: 22px; }
+    .hr-title { font-family: var(--hr-serif); font-weight: 300; font-size: 32px; line-height: 1.2; color: var(--hr-ink); letter-spacing: -0.01em; }
+    .hr-title em { font-style: italic; }
+    .hr-sub { font-family: var(--hr-sans); font-weight: 300; font-size: 13.5px; line-height: 1.7; color: var(--hr-ink3); margin-top: 9px; max-width: 64ch; text-wrap: pretty; }
+    .hr-recruiter { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+    .hr-recruiter label { font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hr-ink4); }
+    .hr-recruiter input { background: var(--hr-gr1); border: 1px solid var(--hr-edge); border-radius: 2px; color: var(--hr-ink); font-family: var(--hr-sans); font-weight: 300; font-size: 13px; padding: 9px 12px; min-width: 160px; }
+    .hr-recruiter input:focus { outline: none; border-color: var(--hr-freq3); }
+
+    /* dashboard tiles */
+    .hr-tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--hr-rule); border: 1px solid var(--hr-rule); border-radius: 3px; overflow: hidden; margin-bottom: 26px; }
+    .hr-tile { background: var(--hr-gr2); padding: 16px 14px; }
+    .hr-tile .tn { font-family: var(--hr-serif); font-weight: 300; font-size: 26px; color: var(--hr-freq); line-height: 1; }
+    .hr-tile .tl { font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hr-ink3); margin-top: 7px; }
+
+    .hr-btn { background: transparent; border: 1px solid var(--hr-edge); border-radius: 2px; color: var(--hr-ink2); font-family: var(--hr-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 13px; cursor: pointer; transition: all .25s; white-space: nowrap; }
+    .hr-btn:hover { border-color: var(--hr-freq3); color: var(--hr-ink); background: var(--hr-freq4); }
+
+    .hr-section-label { font-family: var(--hr-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hr-freq); margin: 0 0 14px; }
+    .hr-empty { border: 1px dashed var(--hr-edge); border-radius: 3px; padding: 36px; text-align: center; color: var(--hr-ink3); font-family: var(--hr-sans); font-weight: 300; font-size: 14px; line-height: 1.7; }
+    .hr-empty a { color: var(--hr-freq); text-decoration: none; border-bottom: 1px solid var(--hr-freq3); }
+
+    /* pipeline cards */
+    .hr-pipe { border: 1px solid var(--hr-rule); border-radius: 3px; background: var(--hr-gr2); margin-bottom: 12px; cursor: pointer; transition: border-color .2s; }
+    .hr-pipe:hover { border-color: var(--hr-freq3); }
+    .hr-pipe.sel { border-color: var(--hr-freq2); }
+    .hr-pipe-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 20px; flex-wrap: wrap; }
+    .hr-pipe-name { font-family: var(--hr-serif); font-weight: 300; font-size: 18px; color: var(--hr-ink); }
+    .hr-pipe-name .sub { font-family: var(--hr-sans); font-size: 12px; color: var(--hr-ink4); margin-top: 3px; }
+    .hr-pipe-meta { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--hr-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hr-ink3); align-items: center; }
+    .hr-pipe-meta b { color: var(--hr-freq); }
+    .hr-stages { display: flex; gap: 1px; background: var(--hr-rule); border-top: 1px solid var(--hr-rule); overflow: hidden; }
+    .hr-stagecell { background: var(--hr-gr3); padding: 8px 6px; flex: 1; text-align: center; min-width: 0; }
+    .hr-stagecell .sc { font-family: var(--hr-serif); font-size: 16px; color: var(--hr-ink2); }
+    .hr-stagecell .sc.zero { color: var(--hr-ink4); }
+    .hr-stagecell .sl { font-family: var(--hr-mono); font-size: 7px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hr-ink4); margin-top: 3px; line-height: 1.2; }
+
+    /* detail panel */
+    .hr-detail { border: 1px solid var(--hr-freq3); border-radius: 3px; background: var(--hr-gr2); margin-top: 8px; overflow: hidden; }
+    .hr-dtop { padding: 16px 22px; border-bottom: 1px solid var(--hr-rule); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .hr-dtop .dn { font-family: var(--hr-serif); font-weight: 300; font-size: 20px; color: var(--hr-ink); }
+    .hr-dtop .ds { font-family: var(--hr-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hr-ink4); margin-top: 4px; }
+    .hr-dbody { padding: 18px 22px; }
+
+    .hr-addrow { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--hr-rule); }
+    .hr-in { background: var(--hr-gr1); border: 1px solid var(--hr-edge); border-radius: 2px; color: var(--hr-ink); font-family: var(--hr-sans); font-weight: 300; font-size: 12.5px; padding: 8px 10px; }
+    .hr-in:focus { outline: none; border-color: var(--hr-freq3); }
+    .hr-act { background: var(--hr-gr1); border: 1px solid var(--hr-edge); border-radius: 2px; color: var(--hr-ink2); font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 11px; cursor: pointer; transition: all .2s; }
+    .hr-act:hover { color: var(--hr-ink); border-color: var(--hr-freq3); }
+    .hr-act.primary { background: var(--hr-freq4); border-color: var(--hr-freq3); color: var(--hr-freq); }
+    .hr-act.primary:hover { color: var(--hr-ink); border-color: var(--hr-freq2); }
+    .hr-act.on { background: var(--hr-freq4); border-color: var(--hr-freq2); color: var(--hr-ink); }
+    .hr-act.gold { background: rgba(194,162,94,0.07); border-color: var(--hr-gold3); color: var(--hr-gold); }
+
+    /* candidate card */
+    .hr-cand { border: 1px solid var(--hr-rule); border-radius: 2px; background: var(--hr-gr3); padding: 14px 16px; margin-bottom: 12px; }
+    .hr-cand-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .hr-cand-name { font-family: var(--hr-serif); font-weight: 300; font-size: 17px; color: var(--hr-ink); }
+    .hr-cand-name .role { font-family: var(--hr-sans); font-size: 12px; color: var(--hr-ink4); }
+    .hr-status { font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--hr-edge); border-radius: 2px; padding: 3px 8px; color: var(--hr-ink3); }
+    .hr-status.qualified, .hr-status.submitted { color: var(--hr-freq); border-color: var(--hr-freq3); }
+    .hr-status.interviewing, .hr-status.offered { color: var(--hr-warm); border-color: var(--hr-warm3); }
+    .hr-status.joined { color: var(--hr-pos); border-color: var(--hr-pos3); }
+    .hr-status.rejected, .hr-status.withdrawn { color: var(--hr-ink4); }
+    .hr-cand-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+    .hr-shortpill { font-family: var(--hr-mono); font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hr-gold); border: 1px solid var(--hr-gold3); border-radius: 2px; padding: 3px 8px; }
+
+    /* resonance block */
+    .hr-res { border-left: 2px solid var(--hr-freq3); padding: 10px 0 10px 14px; margin-top: 12px; }
+    .hr-res .rl { font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hr-freq); margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+    .hr-res .rcb { font-family: var(--hr-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--hr-edge); border-radius: 2px; padding: 1px 6px; color: var(--hr-ink3); }
+    .hr-res .rsum { font-family: var(--hr-sans); font-weight: 300; font-size: 12.5px; line-height: 1.55; color: var(--hr-ink2); margin-bottom: 8px; text-wrap: pretty; }
+    .hr-res .rk { font-family: var(--hr-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hr-ink4); margin: 6px 0 3px; }
+    .hr-res ul { margin: 0; padding-left: 15px; }
+    .hr-res li { font-family: var(--hr-sans); font-weight: 300; font-size: 12px; line-height: 1.5; color: var(--hr-ink2); margin-bottom: 3px; }
+    .hr-res .noscore { font-family: var(--hr-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hr-ink4); margin-top: 8px; }
+
+    .hr-fb { border-left: 2px solid var(--hr-edge); padding: 6px 0 6px 12px; margin-top: 6px; }
+    .hr-fb.employer { border-color: var(--hr-freq3); }
+    .hr-fb.candidate { border-color: var(--hr-pos3); }
+    .hr-fb .ft { font-family: var(--hr-sans); font-weight: 300; font-size: 12px; line-height: 1.5; color: var(--hr-ink2); }
+    .hr-fb .fm { font-family: var(--hr-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hr-ink4); margin-top: 2px; }
+
+    .hr-fold { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hr-rule); }
+    .hr-fold summary { font-family: var(--hr-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hr-freq2); cursor: pointer; }
+    .hr-fold textarea { width: 100%; box-sizing: border-box; background: var(--hr-gr1); border: 1px solid var(--hr-edge); border-radius: 2px; color: var(--hr-ink); font-family: var(--hr-sans); font-weight: 300; font-size: 12px; line-height: 1.5; padding: 8px 10px; margin-top: 8px; resize: vertical; min-height: 38px; }
+    .hr-fold textarea:focus { outline: none; border-color: var(--hr-freq3); }
+    .hr-qlabel { font-family: var(--hr-sans); font-weight: 300; font-style: italic; font-size: 12px; color: var(--hr-ink3); margin-top: 8px; }
+
+    /* shortlist + signals columns */
+    .hr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--hr-rule); border: 1px solid var(--hr-rule); border-radius: 3px; overflow: hidden; margin-top: 18px; }
+    .hr-col { background: var(--hr-gr2); padding: 16px 18px; }
+    .hr-sig { border-left: 2px solid var(--hr-warm3); padding: 6px 0 6px 12px; margin-bottom: 7px; }
+    .hr-sig .st { font-family: var(--hr-sans); font-weight: 300; font-size: 12px; line-height: 1.45; color: var(--hr-ink2); }
+    .hr-sig .sm { font-family: var(--hr-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hr-ink4); margin-top: 2px; }
+    .hr-sl-cand { display: flex; justify-content: space-between; gap: 8px; font-family: var(--hr-sans); font-weight: 300; font-size: 12.5px; color: var(--hr-ink2); padding: 5px 0; border-top: 1px solid var(--hr-rule); }
+    .hr-sl-cand:first-child { border-top: none; }
+
+    .hr-note { margin-top: 40px; border-top: 1px solid var(--hr-rule); padding-top: 22px; font-family: var(--hr-sans); font-weight: 300; font-size: 13px; line-height: 1.75; color: var(--hr-ink3); }
+    .hr-note em { font-style: italic; color: var(--hr-ink2); }
+    .hr-note a { color: var(--hr-freq); text-decoration: none; border-bottom: 1px solid var(--hr-freq3); }
+
+    @media (max-width: 860px) { .hr-tiles { grid-template-columns: repeat(3, 1fr); } .hr-cols { grid-template-columns: 1fr; } .hr-stages { flex-wrap: wrap; } }
+  </style>
+</head>
+<body class="hr-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◇</span>
+    <span class="st-name">Hiring</span>
+    <span class="st-sub">— Live Hiring Execution · recruiter workspace</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="mandates.html">Mandates ↗</a>
+    <a class="st-link" href="discovery.html">Discovery ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="hr-shell">
+  <div class="hr-crumbs"><a href="index.html">Studio</a> / Hiring</div>
+
+  <div class="hr-head">
+    <div>
+      <h1 class="hr-title">Run real mandates. <em>Real hires, real joins, real learning.</em></h1>
+      <p class="hr-sub">
+        The live hiring layer. Organizations discover people and people discover organizations through
+        Organizational Frequency. Add candidates to a mandate, run a 15-minute Frequency Discovery, generate a
+        <em>future-state resonance analysis</em> (never a fit score), shortlist, collect feedback, and track
+        joins. Every signal feeds learning. Recruiters stay in control — no automation, no auto-offers.
+      </p>
+    </div>
+    <div class="hr-recruiter">
+      <label>Recruiter</label>
+      <input type="text" id="hr-recruiter" placeholder="Your name">
+    </div>
+  </div>
+
+  <div class="hr-tiles" id="hr-tiles"></div>
+  <div class="hr-section-label">My Mandates · pipeline</div>
+  <div id="hr-pipelines"></div>
+  <div id="hr-detail"></div>
+
+  <p class="hr-note">
+    <em>Launch operational layer.</em> Frequency Discovery reuses the person-frequency engine; Resonance
+    Analysis reuses the emergent-outcome engine — future-state only, with no score, ranking, or percentage.
+    One candidate, one thread, many channels (website · email · WhatsApp · voice). Employer feedback,
+    candidate feedback and join outcomes are captured as <em>learning signals</em> — stored, never used to
+    auto-redesign frequency. No sourcing automation, no auto-hiring, no autonomous agents.
+  </p>
+</div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-research.js"></script>
+<script src="../frequency/of-validation.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-required.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-emergence.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-hiring.js"></script>
+<script src="hiring-admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discovery · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    .dv-body { background: #07080c; color: #ebe9e2; }
+    :root {
+      --dv-gr1: #07080c; --dv-gr2: #0c0d12; --dv-gr3: #11131a; --dv-gr4: #181b25;
+      --dv-ink: #ebe9e2; --dv-ink2: #b8b5ad; --dv-ink3: #6e6c66; --dv-ink4: #44433f;
+      --dv-freq: #6f9bb5; --dv-freq2: #4f7388; --dv-freq3: #2c4150; --dv-freq4: #13202a;
+      --dv-pos: #6fae86; --dv-pos3: #2f5b43;
+      --dv-warm: #c0975e; --dv-warm3: #5c4626;
+      --dv-neg: #c98170; --dv-neg3: #5c3329;
+      --dv-gold: #c2a25e; --dv-gold3: #5c4c26;
+      --dv-rule: #14161e; --dv-edge: #1c2030;
+      --dv-serif: "Newsreader", Georgia, serif;
+      --dv-sans: "Inter", system-ui, sans-serif;
+      --dv-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .dv-shell { max-width: 1120px; margin: 0 auto; padding: 40px 32px 96px; position: relative; z-index: 1; }
+    .dv-crumbs { font-family: var(--dv-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--dv-ink3); margin-bottom: 22px; text-transform: uppercase; }
+    .dv-crumbs a { color: var(--dv-ink2); text-decoration: none; }
+    .dv-crumbs a:hover { color: var(--dv-ink); }
+
+    .dv-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--dv-rule); padding-bottom: 26px; margin-bottom: 26px; }
+    .dv-title { font-family: var(--dv-serif); font-weight: 300; font-size: 33px; line-height: 1.2; color: var(--dv-ink); letter-spacing: -0.01em; }
+    .dv-title em { font-style: italic; }
+    .dv-sub { font-family: var(--dv-sans); font-weight: 300; font-size: 14px; line-height: 1.7; color: var(--dv-ink3); margin-top: 10px; max-width: 66ch; text-wrap: pretty; }
+    .dv-btn { background: transparent; border: 1px solid var(--dv-edge); border-radius: 2px; color: var(--dv-ink2); font-family: var(--dv-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 14px; cursor: pointer; transition: all .25s; white-space: nowrap; }
+    .dv-btn:hover { border-color: var(--dv-freq3); color: var(--dv-ink); background: var(--dv-freq4); }
+
+    .dv-pickrow { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 26px; }
+    .dv-field { display: flex; flex-direction: column; gap: 6px; }
+    .dv-field label { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dv-ink4); }
+    .dv-field select, .dv-field input { background: var(--dv-gr1); border: 1px solid var(--dv-edge); border-radius: 2px; color: var(--dv-ink); font-family: var(--dv-sans); font-weight: 300; font-size: 13px; padding: 10px 12px; min-width: 180px; }
+    .dv-field select:focus, .dv-field input:focus { outline: none; border-color: var(--dv-freq3); }
+    .dv-go { background: var(--dv-freq4); border: 1px solid var(--dv-freq3); border-radius: 2px; color: var(--dv-freq); font-family: var(--dv-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; }
+    .dv-go:hover { color: var(--dv-ink); border-color: var(--dv-freq2); }
+
+    .dv-empty { border: 1px dashed var(--dv-edge); border-radius: 3px; padding: 40px 36px; text-align: center; color: var(--dv-ink3); font-family: var(--dv-sans); font-weight: 300; font-size: 14.5px; line-height: 1.75; }
+    .dv-empty a { color: var(--dv-freq); text-decoration: none; border-bottom: 1px solid var(--dv-freq3); }
+
+    /* ---- state machine ---- */
+    .dv-states { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--dv-rule); border: 1px solid var(--dv-rule); border-radius: 3px; overflow: hidden; margin-bottom: 26px; }
+    .dv-stage { background: var(--dv-gr2); padding: 10px 11px; min-height: 64px; display: flex; flex-direction: column; gap: 5px; }
+    .dv-stage .sn { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.1em; color: var(--dv-ink4); }
+    .dv-stage .st { font-family: var(--dv-sans); font-weight: 300; font-size: 11px; line-height: 1.35; color: var(--dv-ink3); text-wrap: pretty; }
+    .dv-stage.done { background: var(--dv-freq4); }
+    .dv-stage.done .sn { color: var(--dv-freq2); }
+    .dv-stage.done .st { color: var(--dv-ink2); }
+    .dv-stage.now { background: var(--dv-gr4); box-shadow: inset 0 0 0 1px var(--dv-freq3); }
+    .dv-stage.now .sn { color: var(--dv-freq); }
+    .dv-stage.now .st { color: var(--dv-ink); }
+    .dv-stage .tick { font-size: 9px; color: var(--dv-pos); }
+
+    /* ---- panels ---- */
+    .dv-panel { border: 1px solid var(--dv-rule); border-radius: 3px; background: var(--dv-gr2); margin-bottom: 18px; overflow: hidden; }
+    .dv-ptop { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 22px; border-bottom: 1px solid var(--dv-rule); flex-wrap: wrap; }
+    .dv-plabel { font-family: var(--dv-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dv-freq); }
+    .dv-pbody { padding: 18px 22px; }
+    .dv-cq { font-family: var(--dv-sans); font-weight: 300; font-style: italic; font-size: 12px; color: var(--dv-ink4); margin-top: 3px; }
+
+    .dv-badge { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 2px; padding: 3px 9px; border: 1px solid var(--dv-edge); color: var(--dv-ink3); }
+    .dv-badge.ok { color: var(--dv-pos); border-color: var(--dv-pos3); }
+    .dv-badge.warn { color: var(--dv-warm); border-color: var(--dv-warm3); }
+    .dv-badge.pend { color: var(--dv-ink4); }
+    .dv-badge.gold { color: var(--dv-gold); border-color: var(--dv-gold3); }
+
+    .dv-kv { font-family: var(--dv-sans); font-weight: 300; font-size: 13px; line-height: 1.6; color: var(--dv-ink2); margin-bottom: 8px; }
+    .dv-kv .k { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dv-ink4); display: inline-block; min-width: 120px; }
+    .dv-kv em { font-style: italic; color: var(--dv-ink); }
+
+    .dv-inline { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; margin-top: 6px; }
+    .dv-mini { background: var(--dv-gr1); border: 1px solid var(--dv-edge); border-radius: 2px; color: var(--dv-ink); font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; padding: 8px 10px; }
+    .dv-mini:focus { outline: none; border-color: var(--dv-freq3); }
+    .dv-act { background: var(--dv-gr1); border: 1px solid var(--dv-edge); border-radius: 2px; color: var(--dv-ink2); font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 12px; cursor: pointer; transition: all .2s; }
+    .dv-act:hover { color: var(--dv-ink); border-color: var(--dv-freq3); }
+    .dv-act.primary { background: var(--dv-freq4); border-color: var(--dv-freq3); color: var(--dv-freq); }
+    .dv-act.primary:hover { color: var(--dv-ink); border-color: var(--dv-freq2); }
+    .dv-act.gold { background: rgba(194,162,94,0.07); border-color: var(--dv-gold3); color: var(--dv-gold); }
+    .dv-act:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* stakeholders */
+    .dv-stk { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-left: 2px solid var(--dv-freq3); padding: 8px 0 8px 13px; margin-bottom: 8px; flex-wrap: wrap; }
+    .dv-stk .nm { font-family: var(--dv-sans); font-weight: 400; font-size: 13.5px; color: var(--dv-ink); }
+    .dv-stk .ty { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dv-freq2); }
+    .dv-stk .meta { font-family: var(--dv-sans); font-weight: 300; font-size: 11.5px; color: var(--dv-ink4); }
+    .dv-req { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .dv-reqpill { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px dashed var(--dv-edge); border-radius: 2px; padding: 5px 10px; color: var(--dv-ink4); }
+    .dv-reqpill.have { border-style: solid; border-color: var(--dv-pos3); color: var(--dv-pos); }
+
+    /* queue */
+    .dv-q { border: 1px solid var(--dv-rule); border-radius: 2px; background: var(--dv-gr3); padding: 12px 14px; margin-bottom: 10px; }
+    .dv-q .qq { font-family: var(--dv-serif); font-weight: 300; font-size: 15px; line-height: 1.5; color: var(--dv-ink); text-wrap: pretty; }
+    .dv-q .qsrc { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.06em; color: var(--dv-ink4); margin-top: 6px; line-height: 1.5; }
+    .dv-q .qsrc b { color: var(--dv-freq2); }
+    .dv-q .qmeta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+    .dv-q .qrole { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dv-ink3); }
+    .dv-answer { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--dv-rule); }
+    .dv-answer .lbl { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dv-ink4); }
+    .dv-chan { background: var(--dv-gr1); border: 1px solid var(--dv-edge); border-radius: 2px; color: var(--dv-ink2); font-family: var(--dv-mono); font-size: 9px; padding: 6px 8px; }
+
+    /* thread */
+    .dv-thread { border: 1px solid var(--dv-rule); border-radius: 2px; background: var(--dv-gr3); padding: 14px 16px; margin-bottom: 12px; }
+    .dv-thread .th { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; align-items: baseline; }
+    .dv-thread .thn { font-family: var(--dv-sans); font-weight: 400; font-size: 13.5px; color: var(--dv-ink); }
+    .dv-thread .ths { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dv-ink4); }
+    .dv-msg { border-left: 2px solid var(--dv-edge); padding: 5px 0 5px 12px; margin-bottom: 7px; }
+    .dv-msg.aeon { border-color: var(--dv-freq3); }
+    .dv-msg.stakeholder { border-color: var(--dv-pos3); }
+    .dv-msg .mtxt { font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; line-height: 1.5; color: var(--dv-ink2); text-wrap: pretty; }
+    .dv-msg .mmeta { font-family: var(--dv-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dv-ink4); margin-top: 2px; }
+    .dv-chanbadge { color: var(--dv-freq2); }
+
+    /* contradiction + coherence */
+    .dv-contra { border-left: 2px solid var(--dv-neg3); padding: 9px 0 9px 14px; margin-bottom: 10px; }
+    .dv-contra.major { border-color: var(--dv-neg); }
+    .dv-contra .cd { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dv-neg); margin-bottom: 5px; }
+    .dv-contra .cs { font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; line-height: 1.5; color: var(--dv-ink2); }
+    .dv-contra .cs b { color: var(--dv-ink); font-weight: 400; }
+    .dv-coh { display: grid; grid-template-columns: 1.2fr 0.8fr 1.4fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--dv-rule); align-items: baseline; }
+    .dv-coh:first-child { border-top: none; }
+    .dv-coh .cdn { font-family: var(--dv-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dv-ink3); }
+    .dv-coh .clv { font-family: var(--dv-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .dv-coh .clv.aligned { color: var(--dv-pos); }
+    .dv-coh .clv.divergent { color: var(--dv-neg); }
+    .dv-coh .clv.partial { color: var(--dv-warm); }
+    .dv-coh .clv.unknown { color: var(--dv-ink4); }
+    .dv-coh .cev { font-family: var(--dv-sans); font-weight: 300; font-size: 11.5px; color: var(--dv-ink4); line-height: 1.4; }
+
+    /* frequency evolution (1L) */
+    .dv-evt { border-left: 2px solid var(--dv-freq3); padding: 8px 0 8px 13px; margin-bottom: 9px; }
+    .dv-evt.contradicted { border-color: var(--dv-neg3); }
+    .dv-evt.unknown_to_known { border-color: var(--dv-pos3); }
+    .dv-evt .et { font-family: var(--dv-sans); font-weight: 300; font-size: 13px; line-height: 1.5; color: var(--dv-ink); }
+    .dv-evt .et b { color: var(--dv-freq); font-weight: 500; }
+    .dv-evt .em { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dv-ink4); margin-top: 4px; }
+    .dv-evt .em .ct { color: var(--dv-freq2); }
+    .dv-lf { display: grid; grid-template-columns: 1.3fr 0.7fr 0.7fr 1.6fr; gap: 10px; padding: 7px 0; border-top: 1px solid var(--dv-rule); align-items: baseline; }
+    .dv-lf:first-child { border-top: none; }
+    .dv-lf .lfd { font-family: var(--dv-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dv-ink3); }
+    .dv-lf .lfl { font-family: var(--dv-sans); font-weight: 300; font-size: 13px; color: var(--dv-ink); }
+    .dv-lf .lfl.contested { color: var(--dv-neg); font-style: italic; }
+    .dv-lf .lfs { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dv-ink4); }
+    .dv-lf .lfsrc { font-family: var(--dv-mono); font-size: 8.5px; letter-spacing: 0.06em; color: var(--dv-freq2); }
+    .dv-lf .lfsrc.contra { color: var(--dv-neg); }
+    .dv-mand { border-left: 2px solid var(--dv-gold3); padding: 7px 0 7px 13px; margin-bottom: 8px; }
+    .dv-mand .mt { font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; color: var(--dv-ink2); }
+    .dv-mand .mt b { color: var(--dv-gold); font-weight: 500; }
+    .dv-stale { border-left: 2px solid var(--dv-warm3); padding: 7px 0 7px 13px; margin-bottom: 8px; font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; color: var(--dv-warm); }
+    .dv-bigbtn { background: var(--dv-freq4); border: 1px solid var(--dv-freq3); border-radius: 2px; color: var(--dv-freq); font-family: var(--dv-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 18px; cursor: pointer; transition: all .25s; }
+    .dv-bigbtn:hover { color: var(--dv-ink); border-color: var(--dv-freq2); }
+    .dv-bigbtn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* report */
+    .dv-report { border: 1px solid var(--dv-freq3); border-radius: 3px; background: var(--dv-gr3); padding: 22px 24px; }
+    .dv-rsec { margin-bottom: 16px; }
+    .dv-rsec .rl { font-family: var(--dv-mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dv-freq); margin-bottom: 6px; }
+    .dv-rsec .rt { font-family: var(--dv-sans); font-weight: 300; font-size: 13px; line-height: 1.65; color: var(--dv-ink2); text-wrap: pretty; }
+    .dv-rsec ul { margin: 0; padding-left: 16px; }
+    .dv-rsec li { font-family: var(--dv-sans); font-weight: 300; font-size: 12.5px; line-height: 1.55; color: var(--dv-ink2); margin-bottom: 4px; }
+
+    .dv-note { margin-top: 40px; border-top: 1px solid var(--dv-rule); padding-top: 22px; font-family: var(--dv-sans); font-weight: 300; font-size: 13px; line-height: 1.75; color: var(--dv-ink3); }
+    .dv-note em { font-style: italic; color: var(--dv-ink2); }
+    .dv-note a { color: var(--dv-freq); text-decoration: none; border-bottom: 1px solid var(--dv-freq3); }
+
+    @media (max-width: 860px) { .dv-states { grid-template-columns: repeat(2, 1fr); } .dv-coh { grid-template-columns: 1fr; gap: 2px; } }
+  </style>
+</head>
+<body class="dv-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◇</span>
+    <span class="st-name">Discovery</span>
+    <span class="st-sub">— Deep Lane · Frequency Discovery Runtime</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="mandates.html">Mandates ↗</a>
+    <a class="st-link" href="intel.html">Intelligence ↗</a>
+    <a class="st-link" href="hiring.html">Hiring ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="dv-shell">
+  <div class="dv-crumbs"><a href="index.html">Studio</a> / Discovery</div>
+
+  <div class="dv-head">
+    <div>
+      <h1 class="dv-title">We built a map from public signal. Now we <em>deepen it.</em></h1>
+      <p class="dv-sub">
+        The operational Deep Lane. Discovery never starts from a blank sheet — by now the runtime holds a
+        mission, an essence hypothesis, a frequency map and Tier-0 research. Discovery <em>validates, challenges,
+        refines and deepens</em> that map through the organization's own stakeholders, across any channel.
+        Sponsor must be verified first; the ₹25,000 fee is payable only after completion. Questions come only
+        from gaps — never curiosity. Contradiction is a signal, not an error.
+      </p>
+    </div>
+    <button class="dv-btn" id="dv-reset" type="button">Reset discovery</button>
+  </div>
+
+  <div class="dv-pickrow" id="dv-pick"></div>
+  <div id="dv-stage-row"></div>
+  <div id="dv-view"></div>
+
+  <p class="dv-note">
+    <em>Research → Hypothesis → Validation → Refinement → Frequency Evolution.</em> One thread per stakeholder —
+    website, email, WhatsApp and voice all write into the same memory; the channel is irrelevant, the thread is
+    primary. Discovery ends when required stakeholders are reached, the frequency model stabilizes, major
+    contradictions are reviewed and the report is generated — not when every question is answered. No sourcing,
+    candidates, matching, or hiring execution.
+  </p>
+</div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-research.js"></script>
+<script src="../frequency/of-validation.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-required.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-emergence.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-discovery.js"></script>
+<script src="../frequency/of-evolution.js"></script>
+<script src="discovery-admin.js"></script>
+
+</body>
+</html>

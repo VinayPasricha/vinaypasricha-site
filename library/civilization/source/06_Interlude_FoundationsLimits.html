@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Interlude: When Foundations Meet Their Limits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .interlude-cover { justify-content: center; align-items: center; text-align: center; padding: 1.6in 0.9in; }
+  .interlude-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.5in; }
+  .interlude-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 44pt; letter-spacing: -0.03em; line-height: 0.95; color: var(--ink); margin: 0 0 0.4in 0; }
+  .interlude-epigraph { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 14pt; line-height: 1.45; color: var(--mute); max-width: 4in; margin: 0 auto; }
+  .interlude-attrib { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 9.5pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); margin-top: 0.3in; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  /* Frontier preview cards */
+  .frontier-preview { display: grid; grid-template-columns: 50pt 1fr; gap: 12pt 16pt; margin: 0.15in 0; padding: 10pt 0; border-bottom: 1px solid var(--paper-deep); align-items: start; }
+  .frontier-num { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.2em; text-align: center; padding-top: 4pt; }
+  .frontier-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 16pt; color: var(--ink); margin: 0 0 4pt 0; letter-spacing: -0.01em; }
+  .frontier-def { font-family: "Source Serif 4", serif; font-style: italic; font-size: 10pt; color: var(--cosmos); margin-bottom: 5pt; }
+  .frontier-blurb { font-family: "Source Serif 4", serif; font-size: 9.5pt; line-height: 1.5; color: var(--ink); }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- INTERLUDE — TITLE PAGE -->
+<section class="page interlude-cover">
+  <div class="interlude-tag">Part Two · Interlude</div>
+  <h1 class="interlude-title">When Foundations<br>Meet Their Limits.</h1>
+  <p class="interlude-epigraph">"A man's reach should exceed his grasp, or what's a heaven for?"</p>
+  <div class="interlude-attrib">— Robert Browning</div>
+  <div style="margin-top: 0.7in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- § THE FOUNDATIONS ARE NOT ENOUGH -->
+<section class="page opener">
+  <div class="running-head">Interlude · Foundations to Frontiers</div>
+  <div class="section-number">§ The Foundations Are Not Enough</div>
+  <h2 class="section-title">Survival Is Not<br>the Same as Growth.</h2>
+
+  <p class="prose dropcap">A civilization can survive for a thousand years and still fail to become what it could have been. A civilization with the Four Foundations is, by the framework's standard, present. It can preserve information through time. It can correct that information against reality. It can convert what it knows into effective action. It can combine the capabilities of its members into something greater than any of them could be alone. These four are sufficient for a civilization to exist. They are not sufficient for it to advance.</p>
+
+  <p class="prose">A surprising number of civilizations have demonstrated this. Highly developed Foundations have, throughout history, produced civilizations of striking durability that nevertheless settled into long periods of essentially stable equilibrium. The Egyptian Old Kingdom maintained recognizable institutions and a shared cultural form for roughly five centuries with relatively little structural change. The classical Maya operated complex cities, calendars, and writing systems for the better part of a millennium. Tokugawa Japan maintained a stable internal order, refined craft traditions, and high literacy for over two and a half centuries — deliberately closed to outside influence and to most internal change. Ming China, in its late centuries, achieved a level of administrative continuity that few states have ever matched.</p>
+
+  <p class="prose" style="margin-top:0.7em;">These civilizations were not failures. They survived, in many cases, longer than the civilizations we now consider more dynamic. They had Continuity. They had functional Truth-correction within the limits their cultures permitted. They had Capability sufficient for their populations. They had Cooperation at scale.</p>
+
+  <p class="prose">What they did not have, in the periods we are examining, was compounding. They produced steady-state achievements that, however impressive, remained essentially what they had been. The next generation inherited what the previous generation had built, maintained it well, and handed it forward largely unchanged. The plateau was real, defensible, and — by the standards of the Foundations alone — entirely successful.</p>
+
+  <div class="folio folio-right">107</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Foundations Are Not Enough</div>
+
+  <p class="prose">This is the distinction the framework now requires. Persistence is not flourishing. A civilization that lasts but does not compound is alive in the most literal sense — it is preserving itself across time — but it is not extending. A civilization that compounds is doing something different. It is accumulating capability, knowledge, reach, scale, understanding, and possibility at rates that exceed steady-state replacement. It is going somewhere.</p>
+
+  <p class="prose">The Foundations describe a stable plateau. They do not describe a trajectory. The civilizations that have produced the most consequential trajectories in human history — the Greek city-states in their classical century, the Song Chinese in their scientific and economic peak, early modern Europe at the moment of the Scientific Revolution, the United States across the second half of the twentieth century — were doing something the steady-state civilizations were not. They were actively pursuing the directions beyond survival.</p>
+
+  <div class="pull-quote no-break">
+    The Foundations make a civilization possible.<br>
+    They do not make it advanced.
+  </div>
+
+  <p class="prose">These additional directions — the Four Frontiers — are not refinements. They are not optional extensions for civilizations that have time on their hands. They are the structural feature that distinguishes civilizations that compound from civilizations that merely last. They are also harder to attain and harder to sustain than the Foundations themselves, because each presupposes that the Foundations are already secure.</p>
+
+  <p class="prose">The chapters that follow examine each Frontier in turn. Before they do, a brief preview is warranted, so that what follows can be read as a single arc rather than four independent claims.</p>
+
+  <div class="folio folio-left">108</div>
+</section>
+
+<!-- § WHAT CHANGES WHEN THE PURSUIT BEGINS -->
+<section class="page opener">
+  <div class="running-head">Interlude · Foundations to Frontiers</div>
+  <div class="section-number">§ The Shift</div>
+  <h2 class="section-title">What Changes<br>at the Plateau's Edge.</h2>
+
+  <p class="prose dropcap">When a civilization moves from steady-state survival into active compounding, what changes is not the Foundations. The Foundations remain present. What changes is that the civilization begins, deliberately or not, to pursue a different set of directions on top of the Foundations it has secured.</p>
+
+  <p class="prose">The pursuit produces measurable shifts. The civilization begins extending into domains it had not previously occupied — physical, informational, computational, or conceptual. It begins generating forms, techniques, and ideas that did not previously exist in any tradition. It begins examining itself with the same scrutiny it applies to its environment. It begins selecting long-horizon goals coherent enough to organize centuries of effort.</p>
+
+  <p class="prose" style="margin-top:0.7em;">These four shifts are the Four Frontiers. Each can be observed in the historical record. Each emerges most clearly in civilizations that have already secured the Foundations and have, in effect, surplus capacity to pursue what survival alone does not require.</p>
+
+  <p class="prose">The Frontiers are not universal across all intelligence in the way the Foundations are. Bacteria pursue Continuity. They do not pursue Recursion. A village pursues Cooperation. It does not pursue Expansion at civilizational scale. The Foundations describe what any intelligence must do to exist. The Frontiers describe what advanced intelligence does once existence is no longer the primary problem.</p>
+
+  <div class="pull-quote no-break">
+    The Foundations describe what intelligence must do to exist.<br>
+    The Frontiers describe what intelligence does<br>
+    once existence is no longer the primary problem.
+  </div>
+
+  <div class="folio folio-right">109</div>
+</section>
+
+<!-- § THE FOUR FRONTIERS PREVIEWED -->
+<section class="page opener">
+  <div class="running-head">Interlude · Foundations to Frontiers</div>
+  <div class="section-number">§ The Four Frontiers Previewed</div>
+  <h2 class="section-title">Four Directions<br>Beyond Survival.</h2>
+
+  <p class="prose dropcap">The Frontiers will be examined in detail in the chapters that follow. A brief sketch is given here so the architecture of what remains in Part Two is visible at a single glance.</p>
+
+  <div class="frontier-preview no-break">
+    <div class="frontier-num">V</div>
+    <div>
+      <div class="frontier-name">Expansion</div>
+      <div class="frontier-def">The extension of intelligence into domains not yet reached.</div>
+      <div class="frontier-blurb">Every intelligence eventually encounters a horizon — the place where its knowledge ends, its maps stop, and possibility begins. Expansion is the direction that decides what intelligence does when it arrives there. Not territory. Not conquest. The movement of intelligence into previously unreached spaces — physical, informational, computational, conceptual, temporal, experiential.</div>
+    </div>
+  </div>
+
+  <div class="frontier-preview no-break">
+    <div class="frontier-num">VI</div>
+    <div>
+      <div class="frontier-name">Creation</div>
+      <div class="frontier-def">The generation of adaptive novelty.</div>
+      <div class="frontier-blurb">Not random change. Not chaos. The production of new forms, structures, techniques, and possibilities that solve problems or open new possibility spaces. Creation is the direction by which civilizations stop merely transmitting what they were given and begin producing what was not there before.</div>
+    </div>
+  </div>
+
+  <div class="frontier-preview no-break">
+    <div class="frontier-num">VII</div>
+    <div>
+      <div class="frontier-name">Recursion</div>
+      <div class="frontier-def">Intelligence taking itself as object of inquiry.</div>
+      <div class="frontier-blurb">Not consciousness. Not self-awareness in the everyday sense. Recursion is the structural capacity of intelligence to make itself the subject of its own investigation. Science studying science. Civilizations studying civilization. Minds studying mind. The direction that allows intelligence to redesign itself rather than merely to adapt to its environment.</div>
+    </div>
+  </div>
+
+  <div class="frontier-preview no-break">
+    <div class="frontier-num">VIII</div>
+    <div>
+      <div class="frontier-name">Purpose</div>
+      <div class="frontier-def">Coordinated action across time toward selected ends.</div>
+      <div class="frontier-blurb">Not meaning. Not ideology. Not fulfillment. Purpose concerns the selection and maintenance of goals sufficiently coherent to organize intelligence across long periods. A civilization with the capability to act in the world but without the coordination to point that capability in any sustained direction does not produce trajectories. It produces motion without progress.</div>
+    </div>
+  </div>
+
+  <div class="folio folio-right">110</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Four Frontiers Previewed</div>
+
+  <p class="prose">Two structural observations are worth making before the Frontiers are examined individually.</p>
+
+  <p class="prose">The first is that the Frontiers do not form a clean sequential chain in the way the Foundations do. Continuity precedes Truth precedes Capability precedes Cooperation in a strict dependency order. The Frontiers are different. They emerge together, in clusters, in civilizations that have surplus to spend on the directions beyond survival. Expansion can occur without strong Recursion. Recursion can develop without much Expansion. Purpose can be present even when Creation is dormant. The order in which the Frontiers will be examined is logical but not strictly necessary in the way the Foundations' order is.</p>
+
+  <p class="prose">The second observation is more important and deserves to be flagged here, before the chapters that follow. The Frontiers are in tension with each other and with the Foundations.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Expansion pulls against Continuity — extending into new domains stresses the institutions that preserve old ones. Creation pulls against Continuity in a different way — novelty destabilizes preserved forms. Recursion pulls against Cooperation — self-examination disrupts the consensus that holds groups together. Purpose pulls against Capability — coordinating action toward selected ends requires constraints on what individual capability is permitted to do. And the Frontiers tug at each other — the most expansive civilizations are rarely the most reflective; the most creative are rarely the most purposeful; the most purposeful are rarely the most exploratory.</p>
+
+  <p class="prose">These tensions are not failures of the framework. They are features of advanced civilization. The closing of Part Two will return to them more fully. For now, the reader should expect that each Frontier chapter will not only examine its direction in isolation but flag the tensions that direction generates with the others.</p>
+
+  <div class="pull-quote no-break">
+    The Frontiers are not a checklist.<br>
+    They are a possibility space.
+  </div>
+
+  <div class="folio folio-left">111</div>
+</section>
+
+<!-- § BRIDGE TO DIRECTION FIVE -->
+<section class="page">
+  <div class="running-head">Interlude · Foundations to Frontiers</div>
+
+  <p class="prose">The Foundations are now complete. They describe what any intelligence must do to persist at all. They are sufficient for survival, sufficient for civilization in its most basic form, sufficient for many of the steady-state societies that have populated most of human history. They are not sufficient for what advanced civilizations have done with the time the Foundations have purchased.</p>
+
+  <p class="prose">What follows are the four directions that distinguish civilizations that compound from civilizations that merely last. They are harder. They are more fragile. They are also where the most consequential work of human history has occurred — every scientific revolution, every great expansion of human capability, every reconsideration of what humanity might become, every long-horizon goal that has organized centuries of effort.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The first of the Frontiers asks the oldest of the questions intelligence has put to itself.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>How far can we go?</em></p>
+
+  <p class="prose" style="margin-top:0.9em;">Direction Five is what civilizations do when survival is no longer enough and they begin to ask what lies beyond.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The first frontier is Expansion.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">112</div>
+</section>
+
+</body>
+</html>

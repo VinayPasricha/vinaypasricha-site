@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Adapter — Lab</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --gr-1:#07080c; --gr-2:#0c0d12; --gr-3:#11131a; --gr-4:#181b25;
+    --ink:#ebe9e2; --ink-2:#b8b5ad; --ink-3:#6e6c66; --ink-4:#44433f;
+    --freq:#6f9bb5; --freq-2:#4f7388; --freq-3:#2c4150; --freq-4:#13202a;
+    --warn:#b58a6f; --warn-3:#50382c; --pos:#7c9b6f; --pos-3:#33442c;
+    --rule:#14161e; --rule-edge:#1c2030;
+    --serif:"Newsreader",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{ background:radial-gradient(120% 70% at 50% -10%, rgba(111,155,181,0.06), transparent 60%), var(--gr-1); color:var(--ink); font-family:var(--serif); min-height:100vh; -webkit-font-smoothing:antialiased; }
+  a{color:var(--freq);text-decoration:none}
+  .top{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:22px 32px; border-bottom:1px solid var(--rule); }
+  .mark{ font-family:var(--mono); font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--ink-2); display:flex; gap:10px; align-items:center; }
+  .mark .dot{ width:6px;height:6px;border-radius:50%;background:var(--freq);box-shadow:0 0 10px rgba(111,155,181,.6); }
+  .house{ font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-3); }
+  .wrap{ max-width:1180px; margin:0 auto; padding:32px; display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start; }
+  .eyebrow{ grid-column:1/-1; font-family:var(--mono); font-size:10.5px; letter-spacing:0.26em; text-transform:uppercase; color:var(--freq); }
+  .eyebrow em{ color:var(--ink-3); font-style:italic; text-transform:none; letter-spacing:.04em; }
+  .card{ border:1px solid var(--rule-edge); border-radius:3px; background:var(--gr-2); padding:20px 22px; }
+  .card h2{ font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-3); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+  .card h2 .pill{ color:var(--freq); border:1px solid var(--freq-3); border-radius:2px; padding:2px 8px; font-size:9px; letter-spacing:0.12em; }
+  label{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-4); margin:12px 0 6px; }
+  input, textarea, select{ width:100%; background:var(--gr-3); border:1px solid var(--rule-edge); border-radius:2px; color:var(--ink); font-family:var(--sans); font-size:14px; font-weight:300; padding:10px 12px; resize:none; }
+  input:focus, textarea:focus, select:focus{ outline:none; border-color:var(--freq-3); }
+  .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  button{ background:transparent; border:1px solid var(--freq-3); border-radius:2px; color:var(--freq); font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 14px; cursor:pointer; transition:all .2s; }
+  button:hover{ background:var(--freq-4); color:var(--ink); border-color:var(--freq-2); }
+  button.warn{ color:var(--warn); border-color:var(--warn-3); } button.warn:hover{ background:rgba(181,138,111,.12); color:var(--ink); }
+  button.solid{ background:var(--freq); color:var(--gr-1); border-color:var(--freq); } button.solid:hover{ background:var(--ink); border-color:var(--ink); }
+  .who{ font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-3); }
+  .who b{ color:var(--freq); font-weight:500; }
+  .log{ display:flex; flex-direction:column; gap:8px; max-height:420px; overflow-y:auto; }
+  .ev{ border-left:2px solid var(--freq-3); padding:9px 0 9px 14px; }
+  .ev.rec{ border-left-color:var(--warn-3); }
+  .ev .et{ font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--freq-2); display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:5px; }
+  .ev .et .tag{ border:1px solid var(--rule-edge); border-radius:2px; padding:1px 6px; color:var(--ink-4); }
+  .ev .et .tag.prov{ color:var(--ink-3); } .ev .et .tag.sup{ color:var(--warn); border-color:var(--warn-3); }
+  .ev .ec{ font-family:var(--sans); font-size:13px; font-weight:300; line-height:1.55; color:var(--ink-2); text-wrap:pretty; }
+  .ev .ec .k{ color:var(--ink-4); font-family:var(--mono); font-size:10px; }
+  .turns{ display:flex; flex-direction:column; gap:6px; margin-top:12px; max-height:160px; overflow-y:auto; }
+  .turn{ font-family:var(--sans); font-size:13px; font-weight:300; color:var(--ink-2); }
+  .turn .r{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-4); margin-right:8px; }
+  .turn.agent .r{ color:var(--freq-2); }
+  .mem{ font-family:var(--sans); font-size:13px; font-weight:300; line-height:1.6; color:var(--ink-2); white-space:pre-wrap; text-wrap:pretty; }
+  .mem .k{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-4); display:block; margin:14px 0 6px; }
+  .uid{ font-family:var(--mono); font-size:11px; color:var(--freq); word-break:break-all; }
+  .note{ font-family:var(--sans); font-size:12px; font-weight:300; color:var(--ink-4); line-height:1.6; margin-top:10px; text-wrap:pretty; }
+  .full{ grid-column:1/-1; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="mark"><span class="dot"></span> Memory Adapter</div>
+    <div class="house"><a href="index.html">vinaypasricha.com</a> · localStorage mode · of.memory.v2</div>
+  </header>
+
+  <main class="wrap">
+    <div class="eyebrow">Storage-adapter lab · <em>proves the v1.1 contract end-to-end before any backend exists</em></div>
+
+    <!-- Identity -->
+    <section class="card">
+      <h2>Identity <span class="pill" id="mode-pill">local</span></h2>
+      <label>Google email (verified) · mandatory</label>
+      <input id="email" placeholder="you@gmail.com" value="vinay@goodspace.ai">
+      <label>Phone (collected, NOT OTP-verified) · mandatory</label>
+      <input id="phone" placeholder="+91…" value="+91 98765 43210">
+      <div class="row">
+        <button class="solid" id="signin">Sign in / create user</button>
+        <button class="warn" id="erase">Erase (crypto-shred)</button>
+      </div>
+      <div class="note" id="who">Not signed in.</div>
+    </section>
+
+    <!-- Conversation simulator -->
+    <section class="card">
+      <h2>Conversation <span class="pill" id="sess-pill">no session</span></h2>
+      <label>Runtime</label>
+      <select id="runtime">
+        <option value="org_frequency">org_frequency</option>
+        <option value="kairos">kairos</option>
+        <option value="signal">signal</option>
+        <option value="civilization">civilization</option>
+      </select>
+      <label>Turn text</label>
+      <textarea id="turn" rows="2" placeholder="Type a turn…"></textarea>
+      <div class="row">
+        <button id="start">Start session</button>
+        <button id="say-user">+ user turn</button>
+        <button id="say-agent">+ agent turn</button>
+        <button class="solid" id="end">End → essence</button>
+        <button id="reconcile">Reconciliation pass</button>
+      </div>
+      <div class="turns" id="turns"></div>
+    </section>
+
+    <!-- Structured events -->
+    <section class="card full">
+      <h2>Append structured essence events</h2>
+      <div class="row">
+        <button data-add="fact">+ fact</button>
+        <button data-add="fact-contra">+ contradicting fact (supersedes last)</button>
+        <button data-add="journey">+ journey_position</button>
+        <button data-add="frequency">+ frequency_update</button>
+        <button data-add="validate">+ operator_validation (validate last fact)</button>
+      </div>
+      <div class="note">Each writes an event in the exact <span class="uid">v1.1</span> shape. Contradictions never edit the original — they write a new event with <em>provenance.supersedes</em>, and the prior fact is left in place (operator retires it).</div>
+    </section>
+
+    <!-- Essence Log -->
+    <section class="card">
+      <h2>Essence Log <span class="pill" id="ev-count">0</span></h2>
+      <div class="log" id="log"></div>
+    </section>
+
+    <!-- Rehydrate -->
+    <section class="card">
+      <h2>GET /memory — rehydrate</h2>
+      <div class="row"><button id="refresh">Read memory</button></div>
+      <div class="mem" id="mem"></div>
+    </section>
+  </main>
+
+  <script src="js/memory.js"></script>
+  <script>
+  (function(){
+    var sessionId = null, lastFactId = null;
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function refreshWho(){
+      var uid = Memory.getUserId();
+      var st = Memory._load();
+      $('who').innerHTML = uid
+        ? 'user_id <span class="uid">'+uid+'</span><br>'+esc(st.email||'')+' · '+esc(st.phone||'')+' <span style="color:var(--ink-4)">(phone unverified)</span>'
+        : 'Not signed in.';
+    }
+    function renderTurns(){
+      var st = Memory._load();
+      var ts = sessionId ? st.turns.filter(function(t){return t.session_id===sessionId;}) : [];
+      $('turns').innerHTML = ts.map(function(t){ return '<div class="turn '+t.role+'"><span class="r">'+t.role+'</span>'+esc(t.text)+'</div>'; }).join('') || '<div class="note">No turns yet.</div>';
+    }
+    function renderLog(){
+      var st = Memory._load();
+      $('ev-count').textContent = st.events.length;
+      $('log').innerHTML = st.events.slice().reverse().map(function(e){
+        var sup = e.provenance.supersedes ? '<span class="tag sup">supersedes</span>' : '';
+        var body = '';
+        var c = e.content || {};
+        if (e.type==='conversation_summary') body = esc(c.summary)+' <span class="k">· surprise '+esc(c.surprise)+' · '+c.turn_count+' turns · '+esc(c.ended_by)+'</span>';
+        else if (e.type==='fact') body = esc(c.statement)+' <span class="k">· '+esc(c.subject)+'</span>';
+        else if (e.type==='journey_position') body = '<span class="k">book</span> '+esc(c.book)+' · <span class="k">concept</span> '+esc(c.concept)+' · '+esc(c.next_step);
+        else if (e.type==='frequency_update') body = esc(c.dimension)+': '+c.previous_value+' → '+c.new_value+' <span class="k">· '+esc(c.stage)+'</span>';
+        else if (e.type==='inner_change_note') body = esc(c.note);
+        else if (e.type==='operator_validation') body = '<span class="k">'+esc(c.decision)+'</span> → '+esc(c.target_event_id).slice(0,8);
+        else body = esc(JSON.stringify(c));
+        return '<div class="ev'+(e.pass==='reconciliation'?' rec':'')+'">'+
+          '<div class="et">'+esc(e.type)+' <span class="tag">'+esc(e.runtime)+'</span> <span class="tag">'+esc(e.pass)+'</span> <span class="tag prov">'+esc(e.provenance.source)+' · '+esc(e.provenance.status)+'</span>'+sup+'</div>'+
+          '<div class="ec">'+body+'</div></div>';
+      }).join('') || '<div class="note">Empty.</div>';
+    }
+    function refreshAll(){ refreshWho(); renderTurns(); renderLog(); }
+
+    function requireUser(){ if(!Memory.getUserId()){ alert('Sign in first.'); return false; } return true; }
+
+    $('signin').onclick=function(){ Memory.setUser({ email:$('email').value, phone:$('phone').value, google_id:'google-'+Date.now() }); refreshAll(); };
+    $('erase').onclick=function(){ if(confirm('Erase all memory for this user?')){ Memory.erase('user_command').then(function(){ sessionId=null; lastFactId=null; $('sess-pill').textContent='no session'; refreshAll(); $('mem').textContent=''; }); } };
+
+    $('start').onclick=function(){ if(!requireUser())return; sessionId = Memory.startSession($('runtime').value); $('sess-pill').textContent='session '+sessionId.slice(0,8); renderTurns(); };
+    function addTurn(role){ if(!sessionId){ alert('Start a session first.'); return; } var t=$('turn').value.trim(); if(!t)return; Memory.recordTurn(sessionId, role, t); $('turn').value=''; renderTurns(); }
+    $('say-user').onclick=function(){ addTurn('user'); };
+    $('say-agent').onclick=function(){ addTurn('agent'); };
+    $('end').onclick=function(){ if(!sessionId){ alert('No session.'); return; } var id=sessionId; Memory.endSession(id,'explicit').then(function(){ $('sess-pill').textContent='finalized '+id.slice(0,8); refreshAll(); }); };
+    $('reconcile').onclick=function(){ if(!sessionId){ alert('Need a finalized session to reconcile.'); return; } Memory.reconcile(sessionId).then(refreshAll); };
+
+    document.querySelectorAll('[data-add]').forEach(function(b){
+      b.onclick=function(){
+        if(!requireUser())return;
+        var kind=b.getAttribute('data-add'); var rt=$('runtime').value; var ev;
+        if(kind==='fact'){ ev=Memory.events.fact({ statement:'The user prefers concise, direct answers.', subject:'user', evidence:'"keep it short"' }, { runtime:rt, source:'user_said', confidence:0.7 }); lastFactId=ev.event_id; }
+        else if(kind==='fact-contra'){ ev=Memory.events.fact({ statement:'The user actually wants detailed, thorough answers.', subject:'user', evidence:'"explain everything"' }, { runtime:rt, source:'user_said', confidence:0.7, supersedes:lastFactId }); }
+        else if(kind==='journey'){ ev=Memory.events.journeyPosition({ book:'civilization', chamber:null, concept:'continuity', next_step:'Read the chapter on Truth.' }, { runtime:rt, source:'agent_inferred', confidence:0.6 }); }
+        else if(kind==='frequency'){ ev=Memory.events.frequencyUpdate({ target:'user', dimension:'autonomy_level', previous_value:0.4, new_value:0.7, stage:'discovery', evidence:'Took ownership of the decision.' }, { runtime:rt, source:'agent_inferred', confidence:0.6 }); }
+        else if(kind==='validate'){ if(!lastFactId){ alert('Add a fact first.'); return; } ev=Memory.events.operatorValidation({ target_event_id:lastFactId, decision:'validated', note:'Confirmed in Studio.' }, { runtime:'studio', source:'operator_asserted', confidence:1, status:'validated' });
+          // also flip the target fact's status (operator gate) — append a fresh validated fact superseding
+        }
+        Memory.appendEvents([ev]).then(renderLog);
+      };
+    });
+
+    $('refresh').onclick=function(){ Memory.getMemory().then(function(m){
+      $('mem').innerHTML =
+        '<span class="k">living_summary</span>'+(esc(m.living_summary)||'<span style="color:var(--ink-4)">—</span>')+
+        '<span class="k">journey_position</span>'+(m.journey_position?esc(JSON.stringify(m.journey_position)):'—')+
+        '<span class="k">validated_facts ('+m.validated_facts.length+')</span>'+(m.validated_facts.map(function(f){return esc(f.statement);}).join('<br>')||'—')+
+        '<span class="k">recent_events</span>'+m.recent_events.length+' returned · as_of '+esc(m.as_of);
+    }); };
+
+    refreshAll();
+  })();
+  </script>
+</body>
+</html>

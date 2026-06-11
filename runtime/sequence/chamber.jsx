@@ -302,6 +302,10 @@ function Chamber() {
   // can differentiate this chamber from the denser Observatory.
   useEffect(() => {
     document.body.setAttribute('data-chamber', 'sequence');
+    // Refinement 10: mark the visit so the threshold can carry
+    // residue of the reader's prior descent on next return.
+    const s = window.kairos.state.load();
+    window.kairos.state.markChamberVisit(s, 'sequence');
     return () => document.body.removeAttribute('data-chamber');
   }, []);
 
@@ -386,7 +390,7 @@ function Chamber() {
   const isFresh = isFreshEntryRef.current && (seq.inquiry_log || []).length <= 1;
 
   return (
-    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '')} data-screen-label="01 Sequence Chamber">
+    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '') + (seq.phase === 'settled' ? ' is-settled' : '')} data-screen-label="01 Sequence Chamber">
 
       {/* Top bar */}
       <header className="c-top">

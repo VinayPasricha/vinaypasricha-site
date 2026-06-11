@@ -126,6 +126,28 @@
       "amazon": null,
       "excerpt_path": "signal/index.html",
       "notify": true
+    },
+    {
+      "slug": "civilization",
+      "volume": "VI",
+      "title": "Civilization",
+      "subtitle": "A framework for evaluating the direction of intelligent civilizations.",
+      "cover": "assets/images/civilization-cover-front.jpg",
+      "year": "2026",
+      "pages": null,
+      "isbn": null,
+      "status": "published",
+      "pitch": "Intelligence does not evolve at random. Beneath the chaos of history runs a hidden order — eight directions every enduring civilization is pulled along. Civilization builds a compass, not a map: a reference frame for telling progress from mere motion, and for measuring any serious vision of the future.",
+      "topics": [
+        "The four tests every candidate direction had to survive",
+        "Four Foundations and four Frontiers — the eight directions of intelligence",
+        "Why a compass outlasts every map of the future",
+        "Reading Rome, China, modernity, and AI through one framework"
+      ],
+      "amazon": null,
+      "excerpt_path": "paths/civilization.html",
+      "series": "Civilization · Volume I",
+      "publisher": "The Meridian Press"
     }
   ]
 }

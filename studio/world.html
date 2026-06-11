@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Discovery · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .wd-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --wd-gr1:#07080c; --wd-gr2:#0c0d12; --wd-gr3:#11131a; --wd-gr4:#181b25;
+      --wd-ink:#ebe9e2; --wd-ink2:#b8b5ad; --wd-ink3:#6e6c66; --wd-ink4:#44433f;
+      --wd-acc:#6f9bb5; --wd-acc2:#4f7388; --wd-acc3:#2c4150; --wd-acc4:#13202a;
+      --wd-pos:#6fae86; --wd-pos3:#2f5b43; --wd-warm:#c0975e; --wd-warm3:#5c4626;
+      --wd-neg:#c98170; --wd-neg3:#5c3329; --wd-gold:#c2a25e; --wd-gold3:#5c4c26;
+      --wd-rule:#14161e; --wd-edge:#1c2030;
+      --wd-serif:"Newsreader",Georgia,serif; --wd-sans:"Inter",system-ui,sans-serif; --wd-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .wd-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; }
+    .wd-crumbs { font-family:var(--wd-mono); font-size:11px; letter-spacing:0.14em; color:var(--wd-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .wd-crumbs a { color:var(--wd-ink2); text-decoration:none; }
+    .wd-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--wd-rule); padding-bottom:24px; margin-bottom:22px; flex-wrap:wrap; }
+    .wd-title { font-family:var(--wd-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--wd-ink); letter-spacing:-0.01em; }
+    .wd-title em { font-style:italic; }
+    .wd-sub { font-family:var(--wd-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--wd-ink3); margin-top:9px; max-width:70ch; text-wrap:pretty; }
+    .wd-btn { background:transparent; border:1px solid var(--wd-edge); border-radius:2px; color:var(--wd-ink2); font-family:var(--wd-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; }
+    .wd-btn:hover { border-color:var(--wd-acc3); color:var(--wd-ink); background:var(--wd-acc4); }
+
+    .wd-stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .wd-stat { border:1px solid var(--wd-rule); border-radius:3px; background:var(--wd-gr2); padding:11px 16px; min-width:120px; }
+    .wd-stat .n { font-family:var(--wd-serif); font-weight:300; font-size:24px; color:var(--wd-ink); }
+    .wd-stat .l { font-family:var(--wd-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--wd-ink4); margin-top:2px; }
+
+    .wd-policy { display:flex; gap:14px; align-items:center; flex-wrap:wrap; border:1px solid var(--wd-rule); border-radius:3px; background:var(--wd-gr2); padding:12px 16px; margin-bottom:20px; font-family:var(--wd-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--wd-ink3); }
+    .wd-policy b { color:var(--wd-acc); }
+    .wd-policy .gate { color:var(--wd-pos); }
+
+    .wd-panel { border:1px solid var(--wd-rule); border-radius:3px; background:var(--wd-gr2); margin-bottom:16px; overflow:hidden; }
+    .wd-ptop { padding:13px 18px; border-bottom:1px solid var(--wd-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .wd-plabel { font-family:var(--wd-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--wd-acc); }
+    .wd-pbody { padding:16px 18px; }
+
+    .wd-form { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+    .wd-form select, .wd-form input { background:var(--wd-gr1); border:1px solid var(--wd-edge); border-radius:2px; color:var(--wd-ink); font-family:var(--wd-sans); font-weight:300; font-size:12.5px; padding:8px 10px; }
+    .wd-form textarea { flex:1; min-width:100%; background:var(--wd-gr1); border:1px solid var(--wd-edge); border-radius:2px; color:var(--wd-ink); font-family:var(--wd-sans); font-weight:300; font-size:12.5px; line-height:1.55; padding:9px 11px; resize:vertical; min-height:90px; box-sizing:border-box; }
+    .wd-form select:focus, .wd-form input:focus, .wd-form textarea:focus { outline:none; border-color:var(--wd-acc3); }
+
+    .wd-act { background:var(--wd-gr1); border:1px solid var(--wd-edge); border-radius:2px; color:var(--wd-ink2); font-family:var(--wd-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:8px 12px; cursor:pointer; transition:all .2s; }
+    .wd-act:hover { color:var(--wd-ink); border-color:var(--wd-acc3); }
+    .wd-act.primary { background:var(--wd-acc4); border-color:var(--wd-acc3); color:var(--wd-acc); }
+    .wd-act.primary:hover { color:var(--wd-ink); border-color:var(--wd-acc2); }
+    .wd-act.danger:hover { color:var(--wd-neg); border-color:var(--wd-neg3); }
+    .wd-act:disabled { opacity:.35; cursor:not-allowed; }
+
+    .wd-empty { border:1px dashed var(--wd-edge); border-radius:3px; padding:30px; text-align:center; color:var(--wd-ink3); font-family:var(--wd-sans); font-weight:300; font-size:13px; }
+
+    /* chips */
+    .wd-chip { font-family:var(--wd-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--wd-edge); border-radius:2px; padding:2px 7px; color:var(--wd-ink3); }
+    .wd-chip.high { color:var(--wd-pos); border-color:var(--wd-pos3); }
+    .wd-chip.medium { color:var(--wd-acc); border-color:var(--wd-acc3); }
+    .wd-chip.low { color:var(--wd-ink4); }
+    .wd-chip.urg-high { color:var(--wd-neg); border-color:var(--wd-neg3); }
+    .wd-chip.urg-medium { color:var(--wd-warm); border-color:var(--wd-warm3); }
+    .wd-chip.observed { color:var(--wd-pos); border-color:var(--wd-pos3); }
+    .wd-chip.status { color:var(--wd-gold); border-color:var(--wd-gold3); }
+
+    /* signal rows */
+    .wd-sig { border-left:2px solid var(--wd-edge); padding:7px 0 7px 12px; margin-bottom:8px; }
+    .wd-sig.observed { border-color:var(--wd-pos3); }
+    .wd-sig .top { display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+    .wd-sig .ty { font-family:var(--wd-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--wd-acc2); }
+    .wd-sig .co { font-family:var(--wd-sans); font-weight:400; font-size:12.5px; color:var(--wd-ink); }
+    .wd-sig .ev { font-family:var(--wd-sans); font-weight:300; font-style:italic; font-size:11.5px; color:var(--wd-ink4); margin-top:3px; line-height:1.45; text-wrap:pretty; }
+
+    /* opportunity cards */
+    .wd-opp { border:1px solid var(--wd-rule); border-radius:3px; background:var(--wd-gr3); padding:15px 17px; margin-bottom:13px; }
+    .wd-opp .oh { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; }
+    .wd-opp .nm { font-family:var(--wd-serif); font-weight:400; font-size:18px; color:var(--wd-ink); }
+    .wd-opp .ty { font-family:var(--wd-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--wd-acc); margin-top:3px; }
+    .wd-opp .meta { display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; }
+    .wd-opp .angle { font-family:var(--wd-sans); font-weight:300; font-size:12.5px; color:var(--wd-ink2); line-height:1.6; margin-top:10px; border-left:2px solid var(--wd-acc3); padding-left:11px; text-wrap:pretty; }
+    .wd-opp .reason { font-family:var(--wd-mono); font-size:9px; color:var(--wd-ink4); margin-top:7px; line-height:1.5; }
+    .wd-opp .actions { display:flex; gap:7px; flex-wrap:wrap; margin-top:13px; padding-top:12px; border-top:1px solid var(--wd-rule); }
+
+    .wd-hyp { background:var(--wd-gr2); border:1px solid var(--wd-rule); border-radius:2px; padding:12px 14px; margin-top:11px; }
+    .wd-hyp .hl { font-family:var(--wd-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--wd-acc); margin-bottom:5px; }
+    .wd-hyp .ht { font-family:var(--wd-serif); font-weight:300; font-size:15px; line-height:1.5; color:var(--wd-ink); text-wrap:pretty; }
+    .wd-hyp .hr { font-family:var(--wd-mono); font-size:8.5px; color:var(--wd-ink4); margin-top:6px; line-height:1.5; }
+    .wd-hyp .vq { font-family:var(--wd-sans); font-weight:300; font-style:italic; font-size:12px; color:var(--wd-ink2); margin-top:4px; padding-left:11px; border-left:2px solid var(--wd-gold3); line-height:1.5; }
+
+    .wd-draft { background:var(--wd-gr2); border:1px solid var(--wd-gold3); border-radius:2px; padding:12px 14px; margin-top:11px; }
+    .wd-draft .dl { font-family:var(--wd-mono); font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--wd-gold); margin-bottom:6px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .wd-draft .ds { font-family:var(--wd-sans); font-weight:500; font-size:13px; color:var(--wd-ink); }
+    .wd-draft .db { font-family:var(--wd-sans); font-weight:300; font-size:12.5px; color:var(--wd-ink2); line-height:1.65; white-space:pre-wrap; margin-top:6px; }
+    .wd-draft .blk { font-family:var(--wd-mono); font-size:8.5px; color:var(--wd-neg); margin-top:8px; }
+
+    .wd-run { display:flex; justify-content:space-between; gap:10px; align-items:baseline; border-left:2px solid var(--wd-edge); padding:7px 0 7px 12px; margin-bottom:7px; flex-wrap:wrap; }
+    .wd-run.blocked { border-color:var(--wd-neg3); }
+    .wd-run.completed { border-color:var(--wd-pos3); }
+    .wd-run .rt { font-family:var(--wd-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--wd-ink2); }
+    .wd-run .rd { font-family:var(--wd-sans); font-weight:300; font-size:11.5px; color:var(--wd-ink4); }
+    .wd-run .err { font-family:var(--wd-mono); font-size:9px; color:var(--wd-neg); width:100%; margin-top:4px; }
+
+    .wd-note { margin-top:40px; border-top:1px solid var(--wd-rule); padding-top:22px; font-family:var(--wd-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--wd-ink3); }
+    .wd-note em { font-style:italic; color:var(--wd-ink2); }
+    .wd-note a { color:var(--wd-acc); text-decoration:none; border-bottom:1px solid var(--wd-acc3); }
+    .wd-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--wd-gr4); border:1px solid var(--wd-acc3); border-radius:3px; color:var(--wd-ink); font-family:var(--wd-mono); font-size:11px; letter-spacing:0.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; }
+    .wd-toast.show { opacity:1; }
+  </style>
+</head>
+<body class="wd-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">World Discovery</span><span class="st-sub">— signal-driven opportunity detection</span></div>
+  <div class="st-right">
+    <a class="st-link" href="intel.html">Intelligence ↗</a>
+    <a class="st-link" href="search.html">Search ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="wd-shell">
+  <div class="wd-crumbs"><a href="index.html">Studio</a> / World Discovery</div>
+  <div class="wd-head">
+    <div>
+      <h1 class="wd-title">The world emits signals <em>before anyone sends a mandate.</em></h1>
+      <p class="wd-sub">
+        The runtime shifts from waiting for a brief to <em>watching for the pattern</em> — hiring surges, reposted roles,
+        funding, leadership change, deteriorating reviews. Each becomes a traceable signal, then a company opportunity,
+        then a mission hypothesis. Researched opportunities flow into <a href="intel.html" style="color:var(--wd-acc)">Organizational Intelligence</a>;
+        only then is an outreach draft written — and never sent automatically.
+      </p>
+    </div>
+    <button class="wd-btn" id="wd-reset" type="button">Reset world discovery</button>
+  </div>
+
+  <div class="wd-stats" id="wd-stats"></div>
+  <div class="wd-policy" id="wd-policy"></div>
+  <div id="wd-view"></div>
+
+  <p class="wd-note">
+    <em>Honest by construction.</em> There is no live web search, no LinkedIn scraping, and no funding-data feed in this
+    environment — a scan reports that plainly and processes only the real material you import. Signal detection is a
+    deterministic lexicon that quotes the sentence it matched. The default policy <em>requires review</em>; no outreach
+    is ever sent autonomously. World Discovery detects opportunity — <a href="intel.html">Intelligence</a> interprets the
+    organization and <a href="search.html">Search</a> finds evidence; this layer duplicates neither.
+  </p>
+</div>
+
+<div class="wd-toast" id="wd-toast"></div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-search.js"></script>
+<script src="../frequency/of-research.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-intel.js"></script>
+<script src="../frequency/of-world.js"></script>
+<script src="world-admin.js"></script>
+</body>
+</html>

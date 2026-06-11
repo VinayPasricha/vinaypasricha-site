@@ -9,9 +9,9 @@
 
 Vinay Pasricha is the founder of GoodSpace AI (an AI-driven hiring
 platform; 500,000+ people hired) and previously founded WLC College
-India (built 1990–2020, 50,000+ alumni). He is the author of three
-published books — *AI for Business Leaders*, *The Execution Doctrine*,
-and *The SIV Method* — and is currently writing two further works:
+India (built 1990–2020, 50,000+ alumni). He is the author of
+*AI for Business Leaders*, *The SIV Method*, *The Execution Doctrine*,
+*Organizational Frequency*, and *Civilization* — and is currently writing
 the non-fiction *The Signal*, and a speculative-fiction cycle (working
 title *Between Two Dawns*) being released here serially. Based in
 Delhi, India.
@@ -62,6 +62,10 @@ listed here.
   instrument for thinking under pressure.
 - **The Signal** (in progress · non-fiction) — on growing through
   meaningful conversations with AI.
+- **Civilization** (published · The Meridian Press) — a framework for
+  evaluating the direction of intelligent civilizations: eight directions,
+  four Foundations and four Frontiers. Page:
+  <https://vinaypasricha.com/paths/civilization.html>
 - **Between Two Dawns** (in progress · fiction · working title) — a
   three-movement speculative cycle: the dawn of humanity, the bridge of
   the present, and a future two thousand years from now. Released

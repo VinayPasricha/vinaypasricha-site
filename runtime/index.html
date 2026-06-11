@@ -19,6 +19,11 @@
 
 <main class="kairos" data-screen-label="01 KAIROS·1 Threshold">
 
+  <!-- Threshold seepage (Refinement 09) — faint underground
+       pressure carried up from the shaft below. Almost
+       imperceptible. Never announces descent. -->
+  <div class="k-seepage" aria-hidden="true"></div>
+
   <!-- =====================================================
        The reticle — slow-rotating observatory glyph
        sitting behind the threshold text.
@@ -101,7 +106,7 @@
       &nbsp;·&nbsp; an execution runtime, adjacent to <a href="../books.html">the books</a>
     </div>
     <div class="k-tele">
-      <span class="pulse"></span>v0.5 · 3 of 9 chambers open
+      <span class="pulse"></span>v1.0 · 6 of 9 chambers open
     </div>
   </header>
 
@@ -168,25 +173,22 @@
         <div class="k-chamber-purpose">Systems, process, tooling, decision architecture.</div>
       </div>
 
-      <div class="k-chamber is-pending" role="listitem">
-        <div class="k-chamber-num">Chamber 07</div>
+      <div class="k-chamber is-open" role="listitem" tabindex="0" onclick="window.location.href='capacity/index.html'" onkeydown="if(event.key==='Enter')window.location.href='capacity/index.html'">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 07 · Open</div>
         <div class="k-chamber-name">Capacity <em>Expansion</em></div>
-        <div class="k-chamber-purpose">Measure true expansion versus false strain.</div>
-        <div class="k-pending-mark">pending</div>
+        <div class="k-chamber-purpose">The Reservoir. Stable carrying capacity across years.</div>
       </div>
 
-      <div class="k-chamber is-pending" role="listitem">
-        <div class="k-chamber-num">Chamber 08</div>
+      <div class="k-chamber is-open" role="listitem" tabindex="0" onclick="window.location.href='multiscale/index.html'" onkeydown="if(event.key==='Enter')window.location.href='multiscale/index.html'">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 08 · Open</div>
         <div class="k-chamber-name">Multi-Scale <em>Systems</em></div>
         <div class="k-chamber-purpose">Individual, team, organization, mission coherence.</div>
-        <div class="k-pending-mark">pending</div>
       </div>
 
-      <div class="k-chamber is-pending" role="listitem">
-        <div class="k-chamber-num">Chamber 09</div>
+      <div class="k-chamber is-open" role="listitem" tabindex="0" onclick="window.location.href='character/index.html'" onkeydown="if(event.key==='Enter')window.location.href='character/index.html'">
+        <div class="k-chamber-num"><span class="open-dot"></span>Chamber 09 · Open</div>
         <div class="k-chamber-name">Character of the <em>Executor</em></div>
         <div class="k-chamber-purpose">Honesty, patience, focus, sequence discipline.</div>
-        <div class="k-pending-mark">pending</div>
       </div>
 
     </div>
@@ -222,6 +224,7 @@
       <a href="sequence/index.html">Chamber 01</a>
       <a href="constraint/index.html">Chamber 02</a>
       <a href="structural/index.html">Chamber 06</a>
+      <a href="capacity/index.html">Chamber 07</a>
       <a href="../books.html">The books</a>
       <a href="../signal/index.html">The Signal</a>
       <a href="../index.html">Index</a>
@@ -234,10 +237,28 @@
 <script>
   // Quiet continuity — if the reader has prior runtime state,
   // surface a single restrained line.
+  // Refinement 09: also stamp dormancy/warmth tiers on <html> so
+  // the threshold's atmosphere reflects how long the organism
+  // has been waiting and how much it has been inhabited.
   (function () {
     let state = null;
     try { state = JSON.parse(localStorage.getItem('kairos.runtime.v1') || 'null'); } catch (e) {}
     if (!state) return;
+
+    // Dormancy + warmth
+    const last = (state.identity && state.identity.last_visit) || 0;
+    const visits = (state.identity && state.identity.sessions_count) || 0;
+    const days = last ? (Date.now() - last) / 86400000 : 0;
+    let dormancy = 0;
+    if (days >= 60) dormancy = 3;
+    else if (days >= 14) dormancy = 2;
+    else if (days >= 1) dormancy = 1;
+    let warmth = 0;
+    if (visits >= 60) warmth = 3;
+    else if (visits >= 20) warmth = 2;
+    else if (visits >= 5) warmth = 1;
+    if (dormancy > 0) document.documentElement.setAttribute('data-dormancy', String(dormancy));
+    if (warmth > 0) document.documentElement.setAttribute('data-warmth', String(warmth));
 
     // Geological depth — atmospheric, no counts. Per Refinement 04:
     // inhabitation is *sensed*, not quantified. Chambers carrying

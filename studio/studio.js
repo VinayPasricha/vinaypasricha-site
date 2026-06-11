@@ -13,10 +13,10 @@
    then paste the resulting hex into PASSPHRASE_HASH below.
    ============================================================= */
 
-// SHA-256 of 'vinay123' — easy temporary passphrase. Strengthen before public.
-const PASSPHRASE_HASH = '6cf62c18e5a01c4eec83e97509bd7f4c12ee9143ece9a831d2777e7184de65b2';
-// Allow simple bypass during dev via the URL: ?key=vinay123
-const DEV_KEY = 'vinay123';
+// SHA-256 of 'vik123' — personal passphrase. Strengthen before public.
+const PASSPHRASE_HASH = '536d21660e50d9ab4ca788dea02ff597c43ff1e55622953b8cb833d1039a8f4c';
+// Allow simple bypass via the URL: ?key=vik123 (used by the Index menu's Studio link)
+const DEV_KEY = 'vik123';
 
 async function sha256(str) {
   const buf = new TextEncoder().encode(str);

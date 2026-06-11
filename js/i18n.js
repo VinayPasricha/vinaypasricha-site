@@ -118,8 +118,13 @@ async function i18nLoadPack(lang) {
   if (!pack) {
     try {
       // Resolve path — work from any depth on the site
-      const inPaths = /\/paths\//.test(location.pathname) || /\/signal\//.test(location.pathname) || /\/studio\//.test(location.pathname);
-      const url = (inPaths ? '../' : '') + 'assets/data/i18n/' + lang + '.json';
+      const KNOWN = ['paths', 'signal', 'studio', 'frequency', 'runtime', 'library'];
+      const dirSegs = location.pathname.replace(/[^/]*$/, '').split('/').filter(Boolean);
+      let prefix = '';
+      for (let i = 0; i < dirSegs.length; i++) {
+        if (KNOWN.includes(dirSegs[i])) { prefix = '../'.repeat(dirSegs.length - i); break; }
+      }
+      const url = prefix + 'assets/data/i18n/' + lang + '.json';
       const res = await fetch(url, { cache: 'no-cache' });
       if (res.ok) {
         const d = await res.json();
@@ -426,6 +431,12 @@ function i18nApplyTranslation(unit, translated) {
 }
 
 async function i18nClaudeBatch(strings) {
+  // No AI bridge available (static hosting without the backend worker):
+  // skip live translation quietly. Shipped packs still apply; anything
+  // not in the pack simply stays in English instead of throwing.
+  if (typeof window.claude === 'undefined' || typeof window.claude?.complete !== 'function') {
+    return [];
+  }
   const lang = I18N_LANGUAGES[i18nCurrentLang];
   const dict = {};
   strings.forEach((s, i) => { dict[String(i)] = s; });

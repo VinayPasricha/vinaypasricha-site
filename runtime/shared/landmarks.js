@@ -29,6 +29,9 @@
         if (kind === 'sequence')   return h.kind === 'sequence' || (!h.kind && h.data && h.data.actions);
         if (kind === 'constraint') return h.kind === 'constraint';
         if (kind === 'structural') return h.kind === 'structural';
+        if (kind === 'capacity')   return h.kind === 'capacity';
+        if (kind === 'multi-scale') return h.kind === 'multi-scale';
+        if (kind === 'character')   return h.kind === 'character';
         return false;
       })
       .map((entry) => {
@@ -79,6 +82,52 @@
             closed_at: entry.closed_at || data.last_modified || 0,
             origin: governing ? 'governing' : 'strengthening',
             kind: 'structural',
+          };
+        }
+        if (kind === 'capacity') {
+          const stabilized = (data.loads || []).filter(l => l.state === 'stabilized');
+          const featured = stabilized[0] || (data.loads || [])[0];
+          const label = featured
+            ? featured.label
+            : (data.one_stabilization || '(no carrying field surfaced)');
+          return {
+            id: 'lm-' + (data.id || ('k' + Math.random().toString(36).slice(2, 7))),
+            label: String(label || '').trim(),
+            sub_label: 'tier ' + (data.field_radius_tier || 1),
+            cycle_id: data.id,
+            closed_at: entry.closed_at || data.last_modified || 0,
+            origin: stabilized.length > 0 ? 'governing' : 'strengthening',
+            kind: 'capacity',
+          };
+        }
+        if (kind === 'multi-scale') {
+          const governing = (data.forces || []).find(f => f.governs);
+          const label = governing
+            ? governing.label
+            : (data.one_intervention || '(no scale surfaced)');
+          return {
+            id: 'lm-' + (data.id || ('m' + Math.random().toString(36).slice(2, 7))),
+            label: String(label || '').trim(),
+            sub_label: data.dominant_scale || '',
+            cycle_id: data.id,
+            closed_at: entry.closed_at || data.last_modified || 0,
+            origin: governing ? 'governing' : 'strengthening',
+            kind: 'multi-scale',
+          };
+        }
+        if (kind === 'character') {
+          const governing = (data.pillars || []).find(p => p.governs);
+          const label = governing
+            ? governing.label
+            : (data.one_realignment || '(no pillar surfaced)');
+          return {
+            id: 'lm-' + (data.id || ('e' + Math.random().toString(36).slice(2, 7))),
+            label: String(label || '').trim(),
+            sub_label: governing ? governing.state : '',
+            cycle_id: data.id,
+            closed_at: entry.closed_at || data.last_modified || 0,
+            origin: governing ? 'governing' : 'strengthening',
+            kind: 'character',
           };
         }
         return null;

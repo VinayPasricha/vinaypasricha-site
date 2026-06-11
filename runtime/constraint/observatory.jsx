@@ -258,6 +258,8 @@ function Observatory() {
   // applies the heavier ground + heavier central pressure field.
   oUseEffect(() => {
     document.body.setAttribute('data-chamber', 'constraint');
+    const s = window.kairos.state.load();
+    window.kairos.state.markChamberVisit(s, 'constraint');
     return () => document.body.removeAttribute('data-chamber');
   }, []);
 
@@ -365,7 +367,7 @@ function Observatory() {
   })[cn.phase || 'observe'];
 
   return (
-    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '')} data-screen-label="02 Constraint Observatory">
+    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '') + (cn.phase === 'settled' ? ' is-settled' : '')} data-screen-label="02 Constraint Observatory">
 
       <header className="c-top">
         <div className="c-breadcrumb">

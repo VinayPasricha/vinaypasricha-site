@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interviews &amp; Offers · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .iv-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --iv-gr1:#07080c; --iv-gr2:#0c0d12; --iv-gr3:#11131a; --iv-gr4:#181b25;
+      --iv-ink:#ebe9e2; --iv-ink2:#b8b5ad; --iv-ink3:#6e6c66; --iv-ink4:#44433f;
+      --iv-freq:#6f9bb5; --iv-freq2:#4f7388; --iv-freq3:#2c4150; --iv-freq4:#13202a;
+      --iv-pos:#6fae86; --iv-pos3:#2f5b43; --iv-warm:#c0975e; --iv-warm3:#5c4626;
+      --iv-neg:#c98170; --iv-neg3:#5c3329; --iv-gold:#c2a25e; --iv-gold3:#5c4c26;
+      --iv-rule:#14161e; --iv-edge:#1c2030;
+      --iv-serif:"Newsreader",Georgia,serif; --iv-sans:"Inter",system-ui,sans-serif; --iv-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .iv-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .iv-crumbs { font-family:var(--iv-mono); font-size:11px; letter-spacing:0.14em; color:var(--iv-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .iv-crumbs a { color:var(--iv-ink2); text-decoration:none; }
+    .iv-head { border-bottom:1px solid var(--iv-rule); padding-bottom:22px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+    .iv-title { font-family:var(--iv-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--iv-ink); letter-spacing:-0.01em; }
+    .iv-title em { font-style:italic; }
+    .iv-sub { font-family:var(--iv-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--iv-ink3); margin-top:9px; max-width:64ch; text-wrap:pretty; }
+    .iv-notimpl { border:1px dashed var(--iv-warm3); border-radius:3px; background:rgba(192,151,94,0.05); padding:9px 14px; margin-bottom:18px; font-family:var(--iv-mono); font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--iv-warm); line-height:1.7; }
+    .iv-btn { background:transparent; border:1px solid var(--iv-edge); border-radius:2px; color:var(--iv-ink2); font-family:var(--iv-mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 12px; cursor:pointer; }
+    .iv-btn:hover { border-color:var(--iv-freq3); color:var(--iv-ink); background:var(--iv-freq4); }
+    .iv-btn.go { background:var(--iv-freq4); border-color:var(--iv-freq3); color:var(--iv-freq); }
+    .iv-new { border:1px solid var(--iv-edge); border-radius:3px; background:var(--iv-gr2); padding:14px 18px; margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    .iv-field { display:flex; flex-direction:column; gap:5px; }
+    .iv-field label { font-family:var(--iv-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--iv-ink4); }
+    .iv-field select, .iv-field input { background:var(--iv-gr1); border:1px solid var(--iv-edge); border-radius:2px; color:var(--iv-ink); font-family:var(--iv-sans); font-weight:300; font-size:13px; padding:8px 11px; min-width:170px; }
+    .iv-field select:focus, .iv-field input:focus { outline:none; border-color:var(--iv-freq3); }
+    .iv-empty { font-family:var(--iv-sans); font-weight:300; font-size:13px; color:var(--iv-ink4); border:1px dashed var(--iv-edge); border-radius:3px; padding:34px; text-align:center; }
+    .iv-empty a { color:var(--iv-freq); text-decoration:none; }
+
+    .iv-card { border:1px solid var(--iv-rule); border-radius:3px; background:var(--iv-gr2); margin-bottom:16px; overflow:hidden; }
+    .iv-ctop { display:flex; justify-content:space-between; gap:12px; align-items:baseline; padding:14px 20px; border-bottom:1px solid var(--iv-rule); flex-wrap:wrap; }
+    .iv-cname { font-family:var(--iv-serif); font-weight:300; font-size:19px; color:var(--iv-ink); }
+    .iv-cname .r { font-family:var(--iv-sans); font-size:12px; color:var(--iv-ink4); }
+    .iv-stage { display:flex; gap:5px; flex-wrap:wrap; }
+    .iv-step { font-family:var(--iv-mono); font-size:7.5px; letter-spacing:0.06em; text-transform:uppercase; border:1px solid var(--iv-rule); border-radius:2px; padding:2px 6px; color:var(--iv-ink4); }
+    .iv-step.on { color:var(--iv-freq); border-color:var(--iv-freq3); }
+    .iv-cbody { padding:14px 20px; }
+    .iv-status { font-family:var(--iv-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--iv-edge); border-radius:2px; padding:3px 8px; }
+    .iv-status.analyzed, .iv-status.completed { color:var(--iv-pos); border-color:var(--iv-pos3); } .iv-status.scheduled, .iv-status.invited { color:var(--iv-freq); border-color:var(--iv-freq3); } .iv-status.proposed { color:var(--iv-warm); border-color:var(--iv-warm3); } .iv-status.cancelled { color:var(--iv-ink4); }
+
+    .iv-q { border-left:2px solid var(--iv-freq3); padding:5px 0 5px 12px; margin-bottom:6px; }
+    .iv-q .qt { font-family:var(--iv-sans); font-weight:300; font-size:12.5px; color:var(--iv-ink2); }
+    .iv-q .qm { font-family:var(--iv-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; color:var(--iv-freq2); margin-top:2px; }
+    .iv-ta { width:100%; box-sizing:border-box; background:var(--iv-gr1); border:1px solid var(--iv-edge); border-radius:2px; color:var(--iv-ink); font-family:var(--iv-sans); font-weight:300; font-size:12px; line-height:1.5; padding:9px 11px; margin-top:8px; resize:vertical; min-height:64px; }
+    .iv-ta:focus { outline:none; border-color:var(--iv-freq3); }
+    .iv-act { background:var(--iv-gr1); border:1px solid var(--iv-edge); border-radius:2px; color:var(--iv-ink2); font-family:var(--iv-mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:8px 11px; cursor:pointer; margin-top:8px; margin-right:6px; }
+    .iv-act:hover { color:var(--iv-ink); border-color:var(--iv-freq3); }
+    .iv-act.primary { background:var(--iv-freq4); border-color:var(--iv-freq3); color:var(--iv-freq); }
+    .iv-act.pos { border-color:var(--iv-pos3); color:var(--iv-pos); } .iv-act.neg { border-color:var(--iv-neg3); color:var(--iv-neg); }
+    .iv-label { font-family:var(--iv-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--iv-freq2); margin:14px 0 8px; }
+    .iv-findings { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    @media (max-width:700px){ .iv-findings{ grid-template-columns:1fr; } }
+    .iv-find { border-left:2px solid var(--iv-pos3); padding:4px 0 4px 10px; }
+    .iv-find .fd { font-family:var(--iv-mono); font-size:9px; letter-spacing:0.06em; text-transform:uppercase; color:var(--iv-ink3); }
+    .iv-find .ft { font-family:var(--iv-sans); font-weight:300; font-size:11.5px; color:var(--iv-ink2); line-height:1.4; }
+    .iv-evo { border-left:2px solid var(--iv-freq3); padding:5px 0 5px 12px; margin-bottom:5px; }
+    .iv-evo .et { font-family:var(--iv-sans); font-weight:300; font-size:12px; color:var(--iv-ink); }
+    .iv-evo .et b { color:var(--iv-freq); } .iv-evo .em { font-family:var(--iv-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; color:var(--iv-ink4); margin-top:2px; }
+    .iv-con { border-left:2px solid var(--iv-neg3); padding:6px 0 6px 12px; margin-bottom:6px; }
+    .iv-con .ct { font-family:var(--iv-sans); font-weight:300; font-size:12px; color:var(--iv-ink2); } .iv-con .ct b { color:var(--iv-neg); }
+    .iv-stale { border:1px solid var(--iv-warm3); border-radius:3px; background:rgba(192,151,94,0.06); padding:10px 14px; margin-top:10px; font-family:var(--iv-sans); font-weight:300; font-size:12.5px; color:var(--iv-warm); }
+
+    .iv-offer { border:1px solid var(--iv-gold3); border-radius:3px; background:rgba(194,162,94,0.04); padding:14px 16px; margin-top:12px; }
+    .iv-offer .ol { font-family:var(--iv-mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--iv-gold); margin-bottom:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .iv-ostat { font-family:var(--iv-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; border:1px solid var(--iv-edge); border-radius:2px; padding:2px 6px; color:var(--iv-ink3); }
+    .iv-ostat.accepted, .iv-ostat.approved, .iv-ostat.sent { color:var(--iv-pos); border-color:var(--iv-pos3); } .iv-ostat.declined, .iv-ostat.withdrawn { color:var(--iv-neg); border-color:var(--iv-neg3); } .iv-ostat.pending_approval, .iv-ostat.draft { color:var(--iv-gold); border-color:var(--iv-gold3); }
+    .iv-obasis { font-family:var(--iv-sans); font-weight:300; font-size:11.5px; line-height:1.5; color:var(--iv-ink4); margin-bottom:8px; text-wrap:pretty; }
+    .iv-oin { width:100%; box-sizing:border-box; background:var(--iv-gr1); border:1px solid var(--iv-edge); border-radius:2px; color:var(--iv-ink); font-family:var(--iv-sans); font-weight:300; font-size:12px; padding:8px 10px; margin-bottom:6px; }
+
+    .iv-note { margin-top:30px; border-top:1px solid var(--iv-rule); padding-top:22px; font-family:var(--iv-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--iv-ink3); }
+    .iv-note em { font-style:italic; color:var(--iv-ink2); } .iv-note a { color:var(--iv-freq); text-decoration:none; border-bottom:1px solid var(--iv-freq3); }
+  </style>
+</head>
+<body class="iv-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Interviews &amp; Offers</span><span class="st-sub">— interview is validation · offer is human</span></div>
+  <div class="st-right">
+    <a class="st-link" href="outreach.html">Outreach ↗</a>
+    <a class="st-link" href="hiring.html">Hiring ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="iv-shell">
+  <div class="iv-crumbs"><a href="index.html">Studio</a> / Interviews &amp; Offers</div>
+  <div class="iv-head">
+    <div>
+      <h1 class="iv-title">An interview is <em>validation</em>, not just evaluation.</h1>
+      <p class="iv-sub">
+        Public research raised hypotheses; the interview answers them. Paste a transcript and the runtime extracts
+        first-party evidence, validates the person's frequency through the gated path, logs every change as an
+        evolution event, preserves contradictions, and marks resonance <em>stale</em> for regeneration. An offer
+        may only be drafted against fresh resonance, needs employer approval, and is never accepted on the
+        candidate's behalf.
+      </p>
+    </div>
+    <button class="iv-btn" id="iv-reset" type="button">Reset</button>
+  </div>
+  <div class="iv-notimpl" id="iv-banner"></div>
+  <div class="iv-new" id="iv-new"></div>
+  <div id="iv-list"></div>
+  <p class="iv-note">
+    <em>Honest by construction.</em> Calendar / video / recording / transcription are provider hooks
+    (<strong>NOT IMPLEMENTED</strong>) — scheduling and transcript are manual; no fake recordings. Raw transcript
+    never updates frequency — only validated interview understanding does, with an evolution event and preserved
+    history. A candidate's observations about the <em>organization</em> never touch org frequency directly; they
+    become mediated learning signals. No scores, no rankings, no autonomous offers, no acceptance on the
+    candidate's behalf. <a href="hiring.html">Joins</a> open in Hiring.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="../frequency/of-person-research.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-emergence.js"></script>
+<script src="../frequency/of-hiring.js"></script>
+<script src="../frequency/of-discovery-outreach.js"></script>
+<script src="../frequency/of-capabilities.js"></script>
+<script src="../frequency/of-interview.js"></script>
+<script src="../frequency/of-offer.js"></script>
+<script src="interviews-admin.js"></script>
+</body>
+</html>

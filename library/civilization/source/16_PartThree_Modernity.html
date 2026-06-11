@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · Modernity: The Substrate Question</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .case-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .case-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .case-mark { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .case-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 60pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .case-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .case-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 17pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4.2in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 30pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.25in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .surprise-tag { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 8pt; }
+  /* Substrate inventory */
+  .substrate-list { display: grid; grid-template-columns: 130pt 1fr; gap: 8pt 14pt; padding: 4pt 0; margin: 0.12in 0; }
+  .substrate-label { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; padding-top: 2pt; }
+  .substrate-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.5; color: var(--ink); }
+  .axis-row { display: grid; grid-template-columns: 110pt 80pt 1fr; gap: 10pt 14pt; padding: 5pt 0; border-bottom: 1px solid var(--paper-deep); align-items: baseline; }
+  .axis-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; color: var(--ink); }
+  .axis-score { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--cosmos); letter-spacing: 0.1em; }
+  .axis-note { font-family: "Source Serif 4", serif; font-size: 9pt; line-height: 1.4; color: var(--mute); font-style: italic; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- COVER -->
+<section class="page case-cover">
+  <div class="case-tag">Part Three · Third Case</div>
+
+  <div>
+    <div class="case-mark">CASE THREE</div>
+    <h1 class="case-title">Modernity.</h1>
+    <p class="case-tagline">A live case. The civilization the reader is inside. The substrate question, posed.</p>
+  </div>
+
+  <div class="case-illustration">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- A network — distributed nodes connected by lines, suggesting modernity's distributed substrate -->
+      <g stroke="#1a2742" stroke-width="0.8" stroke-opacity="0.5">
+        <line x1="60" y1="80" x2="140" y2="60"/>
+        <line x1="140" y1="60" x2="220" y2="80"/>
+        <line x1="60" y1="80" x2="100" y2="160"/>
+        <line x1="100" y1="160" x2="180" y2="160"/>
+        <line x1="220" y1="80" x2="180" y2="160"/>
+        <line x1="100" y1="160" x2="140" y2="220"/>
+        <line x1="180" y1="160" x2="140" y2="220"/>
+        <line x1="140" y1="60" x2="100" y2="160"/>
+        <line x1="140" y1="60" x2="180" y2="160"/>
+      </g>
+      <g fill="#0f1115">
+        <circle cx="60"  cy="80"  r="6"/>
+        <circle cx="140" cy="60"  r="7"/>
+        <circle cx="220" cy="80"  r="6"/>
+        <circle cx="100" cy="160" r="7"/>
+        <circle cx="180" cy="160" r="7"/>
+        <circle cx="140" cy="220" r="6"/>
+      </g>
+      <circle cx="140" cy="140" r="3" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="case-tag" style="color: var(--mute);">— The Substrate Question —</div>
+</section>
+
+<!-- EPIGRAPH — ELIOT -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Case Three · Opening</div>
+  <div class="epigraph-text">
+    "Where is the wisdom we have lost in knowledge?<br>
+    Where is the knowledge we have lost in information?"
+  </div>
+  <div class="epigraph-attribution">— T.S. Eliot</div>
+  <div class="epigraph-source-note">The Rock · 1934</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE LIVE CASE -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ The Live Case</div>
+  <h2 class="section-title">The First Case<br>the Reader Inhabits.</h2>
+
+  <p class="prose dropcap">The two prior cases were complete. Rome reached a verdict in 476, then again in 1453. China is still going, but the dynastic system the framework read ended in 1912, more than a century ago. The civilizations the framework has so far examined are, in the relevant sense, settled cases. Their trajectories have arrived. The diagnoses the framework offered could be checked against historical record.</p>
+
+  <p class="prose">This chapter examines a case that is not settled. The civilization the reader currently inhabits — call it modernity, broadly understood as the global civilization that emerged from the convergent transformations of the past three centuries — is still in motion. Its trajectory has not arrived. The framework can locate it on the eight axes, name its tensions, identify its overdeveloped and neglected directions, and indicate likely pressures. The framework cannot read forward to the conclusion, because the conclusion has not yet occurred.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This requires a different discipline than the prior chapters operated under. The chapter on Rome could afford to be specific about consequences because the consequences are visible. The chapter on China could afford to be confident about Decoupled Continuity because the case had been running for two thousand years. This chapter must be more careful. It can describe what modernity looks like through the framework. It must resist the temptation to predict where modernity is going. The framework was built to identify pressures, not to forecast events.</p>
+
+  <div class="folio folio-right">238</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Live Case</div>
+
+  <p class="prose">The chapter's central question is therefore not the question one might expect. The chapter does not ask <em>what is wrong with modernity</em>, or <em>is modernity declining</em>, or <em>will modernity fall</em>. Each of these questions is unanswerable from inside the case, and the framework has resisted, throughout Part Three, the temptation to answer questions it does not have evidence for.</p>
+
+  <p class="prose">The chapter asks instead a question the framework's prior cases have made askable. Rome preserved an empire that, when the state failed, mostly failed with it. China preserved a civilization that operated above any specific dynasty. Modernity has not yet faced the state-failure test that distinguishes these two cases. The relevant question is therefore not <em>will modernity survive,</em> which the framework cannot answer. The question is <em>what is the substrate modernity is actually preserving?</em> If states fail or are radically transformed, what would persist? The answer is the framework's diagnostic contribution to this case.</p>
+
+  <div class="pull-quote no-break">
+    Rome preserved an empire.<br>
+    China preserved a civilization.<br>
+    Modernity is preserving — what, exactly?
+  </div>
+
+  <p class="prose">Four observations follow. Each is generated by applying the framework to modernity with discipline. None is a prediction. Each is the framework's attempt to identify what modernity has actually built, what stresses its position generates, and what configuration it currently occupies. The reader is invited to read along with the framework's working and to form their own judgment about whether the readings illuminate something the inherited pictures of modernity do not.</p>
+
+  <div class="folio folio-left">239</div>
+</section>
+
+<!-- §2 · LOCATING MODERNITY -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ Locating Modernity</div>
+  <h2 class="section-title">Maximum on Almost<br>Every Axis.</h2>
+
+  <p class="prose dropcap">Modernity is, by most of the framework's measures, the most extreme position any civilization has yet occupied. The eight-axis scoring is striking in how unusual it appears compared to the historical cases the framework has examined.</p>
+
+  <div class="axis-row">
+    <div class="axis-name">Continuity</div>
+    <div class="axis-score">MIXED</div>
+    <div class="axis-note">Unprecedented informational continuity (digital archives, the internet). Weaker institutional continuity in many domains — most modern institutions are young.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Truth</div>
+    <div class="axis-score">HIGH — UNDER STRESS</div>
+    <div class="axis-note">Strongest truth-correction infrastructure in history. Also strongest falsehood-production infrastructure in history. The race is live.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Capability</div>
+    <div class="axis-score">MAXIMUM</div>
+    <div class="axis-note">Compounding through technology at rates no prior civilization approached.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Cooperation</div>
+    <div class="axis-score">MAXIMUM</div>
+    <div class="axis-note">Global supply chains, scientific community, international institutions, internet-mediated coordination. The largest cooperative system ever assembled.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Expansion</div>
+    <div class="axis-score">ACTIVE — UNEVEN</div>
+    <div class="axis-note">Geographic expansion essentially complete on Earth. Active expansion into computational, biological, cosmic, and conceptual domains.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Creation</div>
+    <div class="axis-score">MAXIMUM</div>
+    <div class="axis-note">Sciences and technologies compounding. Generative AI as the first deliberate creation-generator at machine speed.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Recursion</div>
+    <div class="axis-score">VERY HIGH</div>
+    <div class="axis-note">Social science, neuroscience, AI interpretability, climate modeling, constitutional self-amendment. Examines itself more than any predecessor.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Purpose</div>
+    <div class="axis-score">LOW</div>
+    <div class="axis-note">No unifying long-horizon end. Multiple competing partial purposes. The framework's most exposed reading.</div>
+  </div>
+
+  <div class="folio folio-right">240</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating Modernity</div>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 300 300" width="270" height="270" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="120" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <g stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.5">
+        <line x1="150" y1="150" x2="150" y2="30"/>
+        <line x1="150" y1="150" x2="234" y2="66"/>
+        <line x1="150" y1="150" x2="270" y2="150"/>
+        <line x1="150" y1="150" x2="234" y2="234"/>
+        <line x1="150" y1="150" x2="150" y2="270"/>
+        <line x1="150" y1="150" x2="66" y2="234"/>
+        <line x1="150" y1="150" x2="30" y2="150"/>
+        <line x1="150" y1="150" x2="66" y2="66"/>
+      </g>
+      <g fill="none" stroke="#1a2742" stroke-opacity="0.18" stroke-width="0.5">
+        <circle cx="150" cy="150" r="30"/>
+        <circle cx="150" cy="150" r="60"/>
+        <circle cx="150" cy="150" r="90"/>
+        <circle cx="150" cy="150" r="120"/>
+      </g>
+      <!-- Modernity: high on most axes, low on Purpose. The Purpose deficit is visible as the indented arm of the polygon. -->
+      <polygon points="150,75 220,70 265,150 230,225 240,260 60,225 35,150 60,70"
+               fill="#b8954f" fill-opacity="0.22" stroke="#b8954f" stroke-width="1.3"/>
+      <!-- Indented Purpose point -->
+      <circle cx="60" cy="70" r="3" fill="#1a2742"/>
+      <g font-family="JetBrains Mono, monospace" font-size="6.5" fill="#0f1115" letter-spacing="0.1em" text-anchor="middle">
+        <text x="150" y="22">CONTINUITY</text>
+        <text x="244" y="60">TRUTH</text>
+        <text x="284" y="153">CAPABILITY</text>
+        <text x="244" y="246">COOPERATION</text>
+        <text x="150" y="284">EXPANSION</text>
+        <text x="55" y="246">CREATION</text>
+        <text x="14" y="153">RECURSION</text>
+        <text x="55" y="60">PURPOSE</text>
+      </g>
+      <circle cx="150" cy="150" r="3" fill="#0f1115"/>
+    </svg>
+    <div class="caption">Fig. 11 — Modernity: the most-of-everything civilization, with one conspicuous indentation.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.1in;">The polygon reveals something the prior radar charts in this book did not show. Modernity's profile is unusual not because of where it is strong — the strength is unprecedented but expected — but because of where it is weak. Almost every axis is near the outer ring of the possibility space. One axis is notably indented. The Purpose axis sits well below the others. The polygon is, in effect, a near-circle with a notch.</p>
+
+  <div class="folio folio-left">241</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating Modernity</div>
+
+  <p class="prose">Two observations about the location before the chapter proceeds to the surprises.</p>
+
+  <p class="prose">First, the location is genuinely without precedent. No prior civilization the framework has examined occupied this particular shape in the possibility space. Rome had strong Continuity-Capability-Cooperation and weaker Recursion-Creation. China had strong Continuity-Capability-Cooperation and weaker Recursion-Creation. Both had functional Purpose. Modernity has strong Continuity (in informational form), maximum Capability, maximum Cooperation, very high Recursion, maximum Creation, active Expansion, mixed Truth — and weak Purpose. The profile is novel. The framework has not previously seen this configuration in a civilization that survived long enough to be examined.</p>
+
+  <p class="prose">Second, the prior framework readings would have suggested that this configuration should not be stable. Continuity-Capability lock-in required strong Continuity and weak Recursion-Creation. Modernity has the opposite — high Continuity-Capability <em>and</em> high Recursion-Creation. The framework's diagnostic for lock-in does not apply. Modernity is, by the framework's earlier logic, in a position the prior cases did not occupy. The framework cannot read modernity by reading Rome or China and adding adjustments. The reading must be done fresh.</p>
+
+  <div class="pull-quote no-break">
+    Modernity's profile is novel.<br>
+    The framework cannot read it by reading Rome.<br>
+    Or China.
+  </div>
+
+  <p class="prose">This forces a more disciplined reading than the prior chapters required. The framework will offer four observations about modernity. None of them carries the weight the equivalent observations carried about settled cases. Each is the framework's attempt to identify a structural feature of modernity that conventional analyses tend to obscure. The reader is invited to evaluate whether the observations illuminate or distort.</p>
+
+  <div class="folio folio-right">242</div>
+</section>
+
+<!-- §3 · SURPRISE ONE -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ Observation One</div>
+  <div class="surprise-tag">— The Most-of-Everything Civilization —</div>
+  <h2 class="section-title">Strong on Seven Axes.<br>Weak on One.</h2>
+
+  <p class="prose dropcap">The first observation the framework produces is the unusual shape of modernity's profile. Seven of the eight axes sit near the high end of the possibility space. Capability, Cooperation, Creation, Recursion, and (in modified form) Expansion are at or near historical maxima. Truth is high at the institutional level, though under stress that the chapter will return to. Continuity is mixed, weak in institutional form but unprecedented in informational form. Only Purpose sits conspicuously below the others.</p>
+
+  <p class="prose">This configuration is, on examination, the most directionally diversified civilization the framework has yet observed. Prior civilizations clustered their strengths along particular axis groups — Continuity-Capability-Cooperation for the institutional empires, Creation-Recursion-Truth for the brief reflective bursts like Athens. Modernity does not cluster. Modernity is, by the framework's reading, strong almost everywhere. The exceptions are not where one might expect.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A reader trained on historical comparisons would expect modernity's deficit to lie somewhere along the Continuity axis. The intuition is that modern civilization is fast-moving, disruption-prone, less rooted in tradition than its predecessors. This intuition is partially true at the institutional level — modern institutions are typically younger than their pre-modern equivalents. But it is sharply false at the informational level. Modernity's preservation of accumulated knowledge is unprecedented. Every scientific paper published since the seventeenth century is accessible somewhere. Digital archives now contain more of human cultural output than any prior civilization preserved across centuries. The Continuity weakness is therefore mixed, not uniform.</p>
+
+  <div class="folio folio-right">243</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Most-of-Everything Civilization</div>
+
+  <p class="prose">The actual indentation in modernity's profile is somewhere unexpected. It is along the Purpose axis. Modernity has unprecedented Capability, unprecedented Cooperation, unprecedented Creation, unprecedented Recursion — and no unifying long-horizon end that organizes the application of these. The framework's reading is that modernity has built the most capable instrument of intelligent action in human history while becoming less clear, not more clear, about what the instrument is to be used for.</p>
+
+  <div class="pull-quote no-break">
+    Modernity has built the most capable instrument<br>
+    of intelligent action in history,<br>
+    while becoming unclear what it is for.
+  </div>
+
+  <p class="prose">A few qualifications. The Purpose deficit is not a moral judgment. It is a structural observation. Modernity has no shortage of partial purposes — economic growth, scientific advance, individual fulfillment, technological progress, environmental stewardship, human rights, national identity, religious revival, secular liberalism. These are real and consequential. What modernity lacks, in the framework's sense, is a single coherent long-horizon purpose that organizes the others. Each of modernity's partial purposes operates as a serious project for some constituency. None operates as the civilization's defining direction.</p>
+
+  <p class="prose">This is the framework's first specific contribution to the modernity case. The structural feature that distinguishes modernity from the prior civilizations the framework examined is not weakness in the directions one would expect. It is the absence of unified Purpose alongside the strength of nearly everything else. Whether this is a vulnerability or a stable configuration is the question the chapter will return to.</p>
+
+  <div class="folio folio-left">244</div>
+</section>
+
+<!-- §4 · SURPRISE TWO -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ Observation Two</div>
+  <div class="surprise-tag">— Partial Decoupled Continuity —</div>
+  <h2 class="section-title">Some of It Lives<br>Above the State.</h2>
+
+  <p class="prose dropcap">The second observation applies the concept the China chapter introduced. China survived state collapse because its civilizational substrate had been decoupled from any particular state — operating across writing, canon, bureaucratic template, examination system, and Confucian frame at a level above the political institutions. The framework can now ask: what does modernity's substrate look like by the same measure?</p>
+
+  <p class="prose">The honest answer is that modernity's substrate is mixed. Some of it is decoupled. Some of it is state-coupled. The proportions matter, and they are not clearly understood from inside the case.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A partial inventory.</p>
+
+  <div class="substrate-list">
+    <div class="substrate-label">Decoupled</div>
+    <div class="substrate-body">Scientific knowledge and method, distributed across thousands of institutions in dozens of countries. The Internet's foundational protocols. Market mechanisms (in compromised form). Mathematics, the universal mathematical canon. Religious and philosophical traditions older than any current state. Some universities, especially the medieval-origin ones. Open-source software ecosystems.</div>
+  </div>
+
+  <div class="substrate-list">
+    <div class="substrate-label">State-Coupled</div>
+    <div class="substrate-body">Rule of law in any specific jurisdiction. Currency (mostly, though digital and crypto experiments exist). Social safety nets and public welfare provision. Military and policing functions. Public health infrastructure. Most legal protections of individual rights. Public education at primary and secondary levels.</div>
+  </div>
+
+  <div class="substrate-list">
+    <div class="substrate-label">Mixed</div>
+    <div class="substrate-body">Universities (some decoupled, some state-funded). Healthcare (mixed across countries). Media (private-corporate plus state-licensed). Scientific funding (private and public). Internet infrastructure (private operators on state-allocated frequencies, in state jurisdictions).</div>
+  </div>
+
+  <div class="folio folio-right">245</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Partial Decoupled Continuity</div>
+
+  <p class="prose">The reading the framework can offer is therefore conditional. If modern states were to fail — and the framework does not predict that they will — what would persist of modernity is the decoupled substrate. Scientific knowledge would persist. The Internet's protocols would persist in any form where physical infrastructure could support them. Mathematics and the mathematical sciences would persist. Universities with substantial endowments and traditions older than their host states would persist. Religious institutions would persist. Markets would attempt to persist, with varying success depending on whether physical infrastructure and basic security could be maintained.</p>
+
+  <p class="prose">What would not persist, or would persist only as memory, are the state-coupled functions. Rule of law would fragment. Currency would face crisis. Social safety nets would collapse. Public health would degrade. Most contemporary protections of individual rights would lose enforcement. The civilization that emerged from such a transition would be recognizably descended from current modernity but might not be the same civilization in the framework's sense.</p>
+
+  <div class="pull-quote no-break">
+    What persists of modernity depends on which half of the substrate<br>
+    actually survives state failure.<br>
+    The framework cannot predict which half that is.
+  </div>
+
+  <p class="prose">This is the framework's second specific contribution. Modernity has built partial Decoupled Continuity. The proportion of its substrate that operates above the state is real and substantial — scientific knowledge alone would constitute one of the largest decoupled civilizational substrates in history. But the proportion that remains state-coupled is also large. Modernity has not, on the framework's reading, completed the move China made. Whether it will, or whether it should, is for the civilization itself to determine. The framework can only note that the proportion is uncertain and that this uncertainty is consequential.</p>
+
+  <div class="folio folio-left">246</div>
+</section>
+
+<!-- §5 · SURPRISE THREE -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ Observation Three</div>
+  <div class="surprise-tag">— Truth Under Live Stress —</div>
+  <h2 class="section-title">The Race Between<br>Correction and Falsehood.</h2>
+
+  <p class="prose dropcap">The third observation concerns the axis where modernity's position is most live and least settled. The Truth chapter in Part Two examined what happens to civilizations whose truth-correction mechanisms are overwhelmed by the rate of falsehood production. The case the chapter examined was structural rather than current. The current modern moment is, in the framework's reading, the first historical instance of that structural problem operating at planetary scale.</p>
+
+  <p class="prose">Modernity has built the strongest truth-correction infrastructure in history. Peer-reviewed science, adversarial law, independent investigative journalism, statistical agencies, regulatory science, audit functions, formal opposition in legislatures, fact-checking apparatuses, public-health surveillance systems. The infrastructure is unprecedented in scale and sophistication.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Modernity has also built the strongest falsehood-production infrastructure in history. Algorithmic content distribution that selects for engagement rather than accuracy. Generative artificial intelligence systems capable of producing plausible synthetic content at machine speed. Highly targeted political and commercial messaging at individual-personalization scale. Social media platforms whose business models reward attention regardless of correspondence to reality. Geopolitical information operations conducted by state and non-state actors. The convergence of these capabilities is recent — most of the listed components reached current scale only in the past two decades.</p>
+
+  <div class="folio folio-right">247</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Truth Under Live Stress</div>
+
+  <p class="prose">The framework's reading: the race between these two infrastructures is live. The truth-correction apparatus has had centuries to refine itself. It has not yet adapted to the speed and scale at which the falsehood-production apparatus currently operates. Whether the correction can adapt fast enough is, in the framework's view, the most consequential open question of the current decade. The reader will know the answer in their own lifetime, which is what makes this observation different in kind from the framework's readings of Rome or China.</p>
+
+  <p class="prose">A specific structural point follows. The truth-correction institutions modernity built were designed for an earlier ratio between falsehood and correction. Newspapers, courts, peer review, regulatory agencies — each operated effectively when the production of falsehood was constrained by the difficulty of producing high-quality false content. That constraint has eroded. The institutions are running at the same speed they were built for. The falsehood production around them is running much faster. The gap is widening.</p>
+
+  <div class="pull-quote no-break">
+    The truth-correction infrastructure was built for an earlier ratio.<br>
+    The falsehood-production infrastructure has changed the ratio.<br>
+    The institutions have not yet caught up.
+  </div>
+
+  <p class="prose">The framework's specific contribution here is to identify this not as a moral problem about lying but as a structural problem about institutional pacing. Civilizations whose truth-correction mechanisms operate slower than their falsehood-production mechanisms accumulate errors faster than they can resolve them. The framework's Truth chapter named this dynamic. The modernity chapter notes that it is currently operating, at unprecedented scale, in the civilization the reader inhabits. Whether modernity will adapt its institutions to close the gap, or whether the gap will close other things first, is the question. The framework cannot predict. It can only flag.</p>
+
+  <div class="folio folio-left">248</div>
+</section>
+
+<!-- §6 · SURPRISE FOUR — THE SUBSTRATE QUESTION -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ Observation Four · The Chapter's Central Move</div>
+  <div class="surprise-tag">— The Substrate Question —</div>
+  <h2 class="section-title">What Is Modernity<br>Actually Preserving?</h2>
+
+  <p class="prose dropcap">The fourth observation is the question the chapter has been organized around. The Rome chapter examined a civilization that preserved an empire and watched the empire fall while substantial elements of the civilization migrated to successor structures. The China chapter examined a civilization that preserved a substrate operating above the dynasty, and watched dynasties fall while the substrate persisted. The framework can now ask: what is modernity actually preserving? What is the substrate that, if states are stressed or transformed, would carry the civilization forward?</p>
+
+  <p class="prose">The answer the framework can offer is structurally honest and substantively incomplete. Modernity is preserving several things, in varying proportions, with varying degrees of decoupling from its political institutions.</p>
+
+  <p class="prose" style="margin-top:0.7em;"><strong>Accumulated knowledge.</strong> This is modernity's strongest preserved substrate. Scientific knowledge, mathematical results, historical records, cultural production, technical know-how. All preserved across thousands of institutions in dozens of countries, with extensive backup, replication, and accessibility. If states fail, this substrate has a substantial chance of persisting wherever physical infrastructure can support it.</p>
+
+  <p class="prose"><strong>Methods.</strong> The scientific method, market mechanisms, legal procedure, peer review, double-entry accounting, statistical inference. These are decoupled in the strongest sense — they can be re-instantiated by any sufficient carrier. The methods may be modernity's most durable preserved substrate, because they do not depend on any specific institution to operate.</p>
+
+  <div class="folio folio-right">249</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Substrate Question</div>
+
+  <p class="prose"><strong>Networks.</strong> The Internet's protocols. The interconnections between scientific communities. Global trade networks. Religious and philosophical communities operating across borders. Universities with international student bodies and faculty exchanges. These are partially decoupled. They depend on infrastructure that requires political stability to maintain, but the patterns of connection they embody could be re-instantiated relatively quickly if infrastructure survives.</p>
+
+  <p class="prose"><strong>Capabilities.</strong> The cumulative ability to manufacture, transport, communicate, calculate, treat disease, generate energy, and produce food at scale. This is partially decoupled. The specific capabilities depend on supply chains that span states and on infrastructure that requires maintenance. But the knowledge of how to perform these tasks is preserved widely enough that capability could be re-instantiated even if specific implementations fail.</p>
+
+  <p class="prose"><strong>Political forms.</strong> Constitutional democracy, judicial independence, freedom of inquiry, individual rights enforcement. These are largely state-coupled. They are templates that can be re-instantiated in principle, but their actual operation requires functional state institutions. Whether they would survive serious state failure is the most uncertain element of modernity's preserved substrate.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Modernity is therefore preserving a substantial decoupled substrate (knowledge, methods, partly networks, partly capabilities) and a substantial state-coupled substrate (most political forms, most welfare functions, most legal protections). The proportion is unsettled. The chapter cannot determine it, and the framework declines to predict it. What the framework can do is identify the proportion as the question modernity must answer about itself.</p>
+
+  <div class="folio folio-left">250</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Substrate Question</div>
+
+  <p class="prose">This generates a sharper version of the chapter's central question. Modernity's resilience depends on what proportion of its substrate is decoupled and what proportion is state-coupled. A modernity in which most consequential substrate were decoupled would resemble China — capable of surviving state failure with the civilization largely intact. A modernity in which most consequential substrate were state-coupled would resemble Rome — vulnerable to losing much of the civilization if the state failed. The current proportion is somewhere between these poles.</p>
+
+  <div class="pull-quote no-break">
+    Modernity's resilience depends on which half of its substrate<br>
+    turns out to be the load-bearing half.<br>
+    No one currently knows which half that is.
+  </div>
+
+  <p class="prose">This is the framework's most specific contribution to the modernity case. The conventional discussion of modernity's resilience addresses individual concerns — democratic backsliding, technological disruption, climate stress, demographic shift, geopolitical realignment. The framework reorganizes the question. Each of these concerns is more or less consequential depending on whether the institutions they threaten are part of modernity's decoupled substrate or its state-coupled substrate. A threat to a decoupled institution is, in the framework's reading, a different kind of problem than a threat to a state-coupled one. The first is recoverable. The second is not, in the same way.</p>
+
+  <p class="prose">A civilization aligned with Direction Eight — Purpose, in the framework's vocabulary — would, given the substrate question, organize itself around the deliberate cultivation of Decoupled Continuity in the institutions whose loss would be most catastrophic. The framework cannot tell modernity what to want. It can suggest that, if modernity wants the durability China achieved, the structural feature to build is the same one China built: civilizational substrate that operates above the state.</p>
+
+  <div class="folio folio-right">251</div>
+</section>
+
+<!-- §7 · WHAT THE FRAMEWORK SUGGESTS -->
+<section class="page opener">
+  <div class="running-head">Case Three · Modernity</div>
+  <div class="section-number">§ What the Framework Suggests</div>
+  <h2 class="section-title">A Diagnosis,<br>Not a Verdict.</h2>
+
+  <p class="prose dropcap">Four observations have been generated. None is a prediction. Each is the framework's attempt to identify a structural feature of modernity that conventional analyses tend to obscure. Together they describe a civilization the framework can locate but cannot read forward, because the trajectory has not yet completed.</p>
+
+  <p class="prose">Modernity occupies a position that is, on the eight axes, more strongly developed than any prior civilization the framework has examined. Capability, Cooperation, Creation, and Recursion are at or near historical maxima. Truth-correction infrastructure is unprecedented but currently under stress that the chapter cannot predict the outcome of. Continuity is unusually mixed — informational substrate is robust, institutional substrate is variable. Purpose is conspicuously weak. The combination is novel. The framework has not seen it before.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The chapter's most specific contribution is to reframe modernity's central diagnostic question. The question is not whether modernity will survive, or whether modernity is in decline, or whether modernity is moral. The question, the framework suggests, is what proportion of modernity's substrate is decoupled from its political institutions and what proportion is coupled to them. This proportion will determine what survives if the political institutions are stressed. Most contemporary debates about modernity's future would gain in clarity by being recast in these structural terms.</p>
+
+  <div class="folio folio-right">252</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What the Framework Suggests</div>
+
+  <p class="prose">A second observation is worth marking. Modernity's Purpose deficit is the framework's most exposed reading, and it is the one most likely to produce productive disagreement. A reader could object that modernity has many purposes operating simultaneously — economic, scientific, humanitarian, technological — and that this plurality is itself a kind of meta-purpose. The framework would respond that the framework's notion of Purpose is more specific. Purpose, in the framework's vocabulary, is coordinated long-horizon goal-pursuit at civilizational scale. Multiple partial purposes competing for resources do not satisfy this definition in the way Roman civic Purpose or Chinese Confucian Purpose did. Whether the absence of unified Purpose is, structurally, a strength or a weakness is the open question the rest of the twenty-first century is likely to answer.</p>
+
+  <p class="prose">A third observation closes the chapter's diagnostic. The framework's reading of modernity is more conditional than its readings of Rome or China because modernity has not yet faced the test the prior civilizations had to face. Rome was tested in 476. China was tested repeatedly. Modernity has not. The reading of modernity is therefore a reading of a civilization at its position in the possibility space, with the trajectory ahead of it. What the framework can do is identify the position, name the tensions, and indicate the pressures. What the framework cannot do is read the resolution.</p>
+
+  <div class="pull-quote no-break">
+    The framework can read modernity's position.<br>
+    The trajectory belongs to those who occupy it.
+  </div>
+
+  <p class="prose">A reader who has come this far may notice that the framework's discipline has held. The chapter has not preached. It has not predicted. It has not advocated. It has located a civilization in the possibility space, identified what is unusual about that location, and named the structural questions the location generates. The reader is left with a diagnostic vocabulary, not a verdict. What follows from the vocabulary is for those who hold it.</p>
+
+  <div class="folio folio-left">253</div>
+</section>
+
+<!-- §8 · BRIDGE TO AI -->
+<section class="page">
+  <div class="running-head">Case Three · Modernity</div>
+
+  <p class="prose">Three cases have now been examined. Rome failed politically and persisted partially through what migrated of its substrate. China survived politically across all its dynastic collapses by virtue of decoupled substrate that operated above any specific state. Modernity has built a profile the framework has not previously observed — strong on nearly every axis, conspicuously weak on Purpose, with a substrate whose decoupled proportion is uncertain. Each case has tested the framework's procedure. Each has revealed something the prior cases could not have revealed alone. The framework has, by my reading, survived the three tests with refinements that have made it stronger.</p>
+
+  <p class="prose">One case remains. It is the strangest. The civilizations examined so far have all been biological — human populations operating with various institutional configurations across various territories and timescales. The next case is not biological. Artificial intelligence is, in the framework's vocabulary, a new kind of intelligence under constraint, currently emerging at compressed timescales, embedded in modernity but increasingly distinguishable from it. The framework was built without specifically anticipating it. Whether the framework's eight directions apply to it as cleanly as they applied to Rome and China is the test the fourth case will conduct.</p>
+
+  <div class="pull-quote no-break">
+    Modernity has not yet faced the substrate question.<br>
+    Artificial intelligence is asking it differently.
+  </div>
+
+  <p class="prose">The fourth case is the first non-biological intelligence the framework will examine. The reading will necessarily be more speculative than the prior cases. The framework will proceed with appropriate caution.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>The fourth case is Artificial Intelligence.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">254</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of the Third Case</div>
+  <div class="epigraph-text">
+    "Modernity is the most capable civilization in history,<br>
+    operating without unified Purpose,<br>
+    on a substrate it has not finished deciding to preserve."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">FOURTH CASE BEGINS · ARTIFICIAL INTELLIGENCE</div>
+</section>
+
+</body>
+</html>

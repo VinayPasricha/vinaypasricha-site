@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · Rome in Eight Dimensions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .case-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .case-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .case-mark { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .case-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 64pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .case-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .case-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 30pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.25in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  /* Surprise marker block */
+  .surprise-tag { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 8pt; }
+  /* Score row for the locating step */
+  .axis-row { display: grid; grid-template-columns: 110pt 80pt 1fr; gap: 10pt 14pt; padding: 5pt 0; border-bottom: 1px solid var(--paper-deep); align-items: baseline; }
+  .axis-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; color: var(--ink); }
+  .axis-score { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--cosmos); letter-spacing: 0.1em; }
+  .axis-note { font-family: "Source Serif 4", serif; font-size: 9pt; line-height: 1.4; color: var(--mute); font-style: italic; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- COVER -->
+<section class="page case-cover">
+  <div class="case-tag">Part Three · First Case</div>
+
+  <div>
+    <div class="case-mark">CASE ONE</div>
+    <h1 class="case-title">Rome.</h1>
+    <p class="case-tagline">In eight dimensions, and what they reveal that the inherited picture does not.</p>
+  </div>
+
+  <div class="case-illustration">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- Stylized Roman aqueduct arch profile rendered abstractly -->
+      <g stroke="#0f1115" stroke-width="2" fill="none">
+        <path d="M 60 200 L 60 160 A 22 22 0 0 1 104 160 L 104 200"/>
+        <path d="M 104 200 L 104 150 A 26 26 0 0 1 156 150 L 156 200"/>
+        <path d="M 156 200 L 156 160 A 22 22 0 0 1 200 160 L 200 200"/>
+        <line x1="50" y1="200" x2="210" y2="200" stroke-width="2.4"/>
+        <line x1="50" y1="138" x2="210" y2="138" stroke-width="1.4" stroke-opacity="0.6"/>
+      </g>
+      <circle cx="140" cy="80" r="6" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="case-tag" style="color: var(--mute);">— The First Empirical Test —</div>
+</section>
+
+<!-- EPIGRAPH — GIBBON -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Case One · Opening</div>
+  <div class="epigraph-text">
+    "I have described the triumph<br>
+    of barbarism and religion."
+  </div>
+  <div class="epigraph-attribution">— Edward Gibbon</div>
+  <div class="epigraph-source-note">Decline and Fall of the Roman Empire · conclusion · 1788</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · WHAT THIS CHAPTER CANNOT DO -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ What This Chapter Cannot Do</div>
+  <h2 class="section-title">You Already<br>Know the Story.</h2>
+
+  <p class="prose dropcap">Rome is the most over-explained civilization in Western intellectual history. Every educated reader has been told, by the time they encounter this chapter, some version of why Rome rose and why Rome fell. Gibbon told one version. Toynbee told another. The economic historians have their version, the military historians have theirs, the cultural historians have theirs. There are versions in which Rome fell because of plague, versions in which Rome fell because of climate, versions in which Rome fell because of Christianity, versions in which Rome fell because of currency debasement, versions in which Rome fell because it ran out of cheap conquest. The shelf of explanations is as long as the shelf of histories.</p>
+
+  <p class="prose">This chapter cannot add to that shelf. It is not a history. It is not a chronology of decline. It is not an argument about which of the inherited causes was the real one. The reader picking up this chapter for a new theory of why Rome fell should look elsewhere — the libraries are full of better candidates than the framework can produce on that question.</p>
+
+  <p class="prose" style="margin-top:0.9em;">What the chapter can do is something different. The framework's eight directions will be applied to Rome with discipline. The application will produce a picture of Rome as a position in the eight-dimensional possibility space, and a reading of what pressures that position generated. The picture will not be a chronicle. It will be a diagnosis. If the diagnosis adds something to the inherited picture, the framework has earned the chapter that contains it. If the diagnosis does not, the framework has not.</p>
+
+  <div class="folio folio-right">202</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What This Chapter Cannot Do</div>
+
+  <p class="prose">The bar is exacting. A framework that cannot surprise a reasonably educated reader about Rome — about <em>Rome,</em> the most-analyzed civilization in the world — has not earned the right to address civilizations the reader knows less about. The framework's value, if any, is measured by what the framework can show that two centuries of professional historiography have not already shown. The standard is high. The chapter accepts it.</p>
+
+  <p class="prose">The reading offered below contains, by my count, four observations the inherited picture of Rome does not quite produce. Each of them follows from the framework's own logic rather than from any historical fact unavailable to other readings. The framework was built before the case was examined. The case is examined now to find out whether the framework was worth building.</p>
+
+  <div class="pull-quote no-break">
+    A framework that cannot surprise a reasonably educated reader about Rome<br>
+    has not earned the right to address civilizations<br>
+    the reader knows less about.
+  </div>
+
+  <p class="prose">The chapter proceeds in three movements. First, Rome is located on each of the eight axes — abbreviated, since the procedure is by now familiar. Second, four observations the framework's locating produces are examined in turn. Third, the structural pattern behind all four is identified and named. The bridge to the second case follows.</p>
+
+  <div class="folio folio-left">203</div>
+</section>
+
+<!-- §2 · LOCATING ROME -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Locating Rome</div>
+  <h2 class="section-title">A Position That<br>Did Not Stay Still.</h2>
+
+  <p class="prose dropcap">Rome cannot be located at a single point in the possibility space, because Rome did not stay still. The Roman Republic of the third century BCE is a different position from the Empire under Augustus, which is a different position from the Empire under Hadrian, which is a different position from the Late Empire under Constantine, which is a different position from the Eastern continuation in 1000 CE. The civilization moved through the space across its long run. The interesting framework reading is not where Rome was. It is the trajectory Rome traced.</p>
+
+  <p class="prose">For the purposes of an initial reading, the position of Rome at its territorial peak (c. 117 CE, under Trajan) is a useful reference point. The other phases of Rome's history can then be described as deviations from this reference. The reading below scores Rome at that peak across the eight axes.</p>
+
+  <div class="axis-row">
+    <div class="axis-name">Continuity</div>
+    <div class="axis-score">VERY HIGH</div>
+    <div class="axis-note">Institutional preservation across centuries; transmission mechanisms unmatched in their period.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Truth</div>
+    <div class="axis-score">MIXED</div>
+    <div class="axis-note">High in engineering, military intelligence, legal procedure. Low in theoretical inquiry.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Capability</div>
+    <div class="axis-score">VERY HIGH</div>
+    <div class="axis-note">Military, engineering, administrative capacity unmatched in their era at scale.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Cooperation</div>
+    <div class="axis-score">VERY HIGH</div>
+    <div class="axis-note">Citizenship and Roman law as integration mechanisms across enormous diversity.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Expansion</div>
+    <div class="axis-score">HIGH — THEN ZERO</div>
+    <div class="axis-note">Massive growth, then a sudden halt around 117 CE that the chapter will return to.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Creation</div>
+    <div class="axis-score">MODERATE — UNEVEN</div>
+    <div class="axis-note">Institutional creation enormous. Theoretical and scientific creation conspicuously thin.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Recursion</div>
+    <div class="axis-score">LOW — RISING LATE</div>
+    <div class="axis-note">Modest in the imperial peak. Greatly amplified in the Late Empire — a pattern the chapter will examine.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Purpose</div>
+    <div class="axis-score">DECLINING</div>
+    <div class="axis-note">Strong in the Republic and the conquest era. Increasingly diffuse from the second century onward.</div>
+  </div>
+
+  <div class="folio folio-right">204</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating Rome</div>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 300 300" width="270" height="270" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="120" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <!-- Eight axes -->
+      <g stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.5">
+        <line x1="150" y1="150" x2="150" y2="30"/>
+        <line x1="150" y1="150" x2="234" y2="66"/>
+        <line x1="150" y1="150" x2="270" y2="150"/>
+        <line x1="150" y1="150" x2="234" y2="234"/>
+        <line x1="150" y1="150" x2="150" y2="270"/>
+        <line x1="150" y1="150" x2="66" y2="234"/>
+        <line x1="150" y1="150" x2="30" y2="150"/>
+        <line x1="150" y1="150" x2="66" y2="66"/>
+      </g>
+      <g fill="none" stroke="#1a2742" stroke-opacity="0.18" stroke-width="0.5">
+        <circle cx="150" cy="150" r="30"/>
+        <circle cx="150" cy="150" r="60"/>
+        <circle cx="150" cy="150" r="90"/>
+        <circle cx="150" cy="150" r="120"/>
+      </g>
+      <!-- Rome at peak ~117 CE -->
+      <polygon points="150,45 230,75 265,150 215,225 250,260 100,225 75,150 105,90"
+               fill="#b8954f" fill-opacity="0.22" stroke="#b8954f" stroke-width="1.3"/>
+      <!-- Rome late ~400 CE — dashed, contracted Expansion, raised Recursion -->
+      <polygon points="150,55 215,90 240,150 205,220 215,240 105,220 80,150 90,75"
+               fill="none" stroke="#1a2742" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.7"/>
+      <g font-family="JetBrains Mono, monospace" font-size="6.5" fill="#0f1115" letter-spacing="0.1em" text-anchor="middle">
+        <text x="150" y="22">CONTINUITY</text>
+        <text x="244" y="60">TRUTH</text>
+        <text x="284" y="153">CAPABILITY</text>
+        <text x="244" y="246">COOPERATION</text>
+        <text x="150" y="284">EXPANSION</text>
+        <text x="55" y="246">CREATION</text>
+        <text x="14" y="153">RECURSION</text>
+        <text x="55" y="60">PURPOSE</text>
+      </g>
+      <circle cx="150" cy="150" r="3" fill="#0f1115"/>
+    </svg>
+    <div class="caption">Fig. 9 — Rome at peak (solid) and Late Empire (dashed). The movement is the point.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.1in;">The two polygons in the diagram are the framework's first claim about Rome. They are not history. They are positions. The solid polygon is the Roman position around 117 CE — high on Continuity, Capability, Cooperation, with Expansion at its maximum and Recursion still modest. The dashed polygon is the same civilization roughly three centuries later — Expansion collapsed, Capability slightly contracted, Recursion conspicuously raised. The civilization moved. The framework's task is now to read what the movement reveals.</p>
+
+  <div class="folio folio-left">205</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating Rome</div>
+
+  <p class="prose">Several features of the locating deserve a moment of comment before the chapter turns to the observations the locating produces.</p>
+
+  <p class="prose">First, Rome's strengths cluster on one side of the possibility space. Continuity, Capability, Cooperation, and (during the expansive phase) Expansion are all on or near the maximum. These four directions sit adjacent to one another in the diagram and reinforce one another in practice. Roman institutional Continuity made Roman Capability possible at scale; Roman Cooperation through citizenship enabled both Continuity and Capability to extend across a multilingual, multireligious territory; Expansion fed the system with new resources, new soldiers, new opportunities for the institutional machinery to operate on. The cluster is mutually reinforcing.</p>
+
+  <p class="prose">Second, Rome's weaknesses cluster on the other side. Creation in the theoretical sense, Recursion in the systematic sense, and (in the late period) coherent Purpose are all conspicuously below the level the other axes might predict. These three directions also sit adjacent to one another in the diagram, and they too reinforce one another in practice. Their joint weakness is not an accident of Roman talent. It is a structural consequence of how Rome's strengths were configured.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Third — and this is the observation that the rest of the chapter will examine — the Roman position is not just a locating. It is a <em>type</em> of civilizational configuration. Other civilizations have occupied similar positions and produced similar trajectories. The framework's value comes from identifying the type, not from describing the specific Roman case.</p>
+
+  <div class="pull-quote no-break">
+    The strengths cluster on one side of the space.<br>
+    The weaknesses cluster on the other.<br>
+    The pattern is not Roman. It is structural.
+  </div>
+
+  <div class="folio folio-right">206</div>
+</section>
+
+<!-- §3 · SURPRISE ONE -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Observation One</div>
+  <div class="surprise-tag">— The First Surprise —</div>
+  <h2 class="section-title">Rome Did Not<br>Fall in 476.</h2>
+
+  <p class="prose dropcap">The first observation the framework produces is one historians have made before, but that the inherited cultural picture of Rome continues to obscure. The Western Roman state ceased operations in 476. Almost nothing else about Rome ended on that date. Roman law continued and continues. Latin remained the language of European scholarship for a thousand years afterward. The Roman administrative template — diocese, province, governor — was adopted by both the Christian Church and the medieval European states. Roman engineering principles structured European construction for a millennium. The Eastern continuation operated as a recognizable Roman political entity until 1453.</p>
+
+  <p class="prose">By the framework's definition — civilizations as processes, not entities — Rome did not fall in 476. The Western state apparatus failed. The civilization migrated. Some of it migrated geographically, eastward to Constantinople. Some migrated institutionally, into the Roman Catholic Church (whose very structure preserved the imperial administrative template). Some migrated by absorption, as the legal and administrative forms of the empire were adopted by the successor states. By the year 800, Charlemagne was being crowned <em>Imperator Romanorum.</em> By 1500, Roman law was the substrate of every continental European legal tradition. By 1900, the term <em>civilization</em> in modern languages was still a Latin inheritance.</p>
+
+  <div class="folio folio-right">207</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Observation One</div>
+
+  <p class="prose">The framework's specific contribution here is not the observation that Roman law continues — historians have known this. The framework's contribution is to make clear that the popular picture of Rome's "fall" is, by the framework's standard, a category error. A civilization is a process. Processes can lose visible structures while continuing in altered forms. Rome's visible structure failed in the West. The process did not.</p>
+
+  <p class="prose">This matters because the language of "fall" smuggles in an assumption the framework rejects — that civilizations are entities, and that entities either persist or disappear. The framework's reading is that civilizations more typically migrate, transform, and reincorporate. The dramatic narrative of fall is, on examination, an artifact of the entity-language. Replace it with the process-language and the Roman case becomes substantially less dramatic and substantially more interesting.</p>
+
+  <div class="pull-quote no-break">
+    The Roman state fell.<br>
+    The Roman civilization migrated.
+  </div>
+
+  <p class="prose">A useful exercise for the reader, before moving to the second observation: try to identify, in the present world, the contemporary institutions that most directly inherit Roman patterns. The Catholic Church, the civil-law jurisdictions of continental Europe and Latin America, the architectural conventions of public buildings in most national capitals, the calendar, the academic credentialing system, the very vocabulary of governance. The list is long. Each item on it is, by the framework's definition, Rome continuing.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This is the first thing the framework reveals that the popular picture does not. Rome did not end. It is operating, in modified form, in much of the world the reader currently inhabits.</p>
+
+  <div class="folio folio-left">208</div>
+</section>
+
+<!-- §4 · SURPRISE TWO -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Observation Two</div>
+  <div class="surprise-tag">— The Second Surprise —</div>
+  <h2 class="section-title">Expansion Stopped<br>Three Centuries Early.</h2>
+
+  <p class="prose dropcap">The conventional picture treats Rome's decline as roughly contemporaneous with its political collapse — the third and fourth centuries as a long sickening, the fifth as the death. The framework's locating produces a different timeline. The decisive directional change in Rome did not occur in the fifth century. It occurred in the second.</p>
+
+  <p class="prose">In 117 CE, the Emperor Trajan died after extending Roman territory to its maximum recorded reach — Mesopotamia, Armenia, Dacia, the full Mediterranean basin, and territory in three continents. His successor, Hadrian, made a decision that historians have noted but that the framework reads more sharply. Hadrian withdrew from several of Trajan's recent conquests, consolidated the borders, and built defensive walls. The walls were physical (Hadrian's Wall in Britain is the famous example) and conceptual (the formalization of the <em>limes</em> as a defended border rather than an expanding frontier). From 117 CE forward, Roman expansion essentially stopped.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework's reading: Rome moved from an expansive configuration to a defensive configuration in roughly a single generation. The directional position changed dramatically. The Expansion axis collapsed. The remaining three and a half centuries of the Western Empire were lived under a different configuration — one in which the expansive feedback loops that had powered the prior centuries were no longer available.</p>
+
+  <div class="folio folio-right">209</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Observation Two</div>
+
+  <p class="prose">This matters because Rome's institutional configuration was structured around continued expansion. The Roman political economy assumed inflows from conquered territories — slaves, tribute, agricultural produce, new soldiers raised in newly subjected populations. The Roman political legitimation system was structured around military victory — emperors validated their authority by extending the empire. The Roman fiscal system depended, in part, on the periodic injection of new wealth from new conquests. When expansion stopped, all three of these structures faced gradual but inexorable pressure.</p>
+
+  <p class="prose">The framework predicts what historians have observed: that the centuries after 117 CE produced steadily intensifying fiscal stress, military overextension on static borders, and political fragility as legitimation became harder to manufacture. The conventional picture treats these as features of "decline." The framework reads them as the predictable consequences of a directional configuration that had lost one of its load-bearing axes.</p>
+
+  <p class="prose" style="margin-top:0.7em;">There is a deeper observation lurking in this gap, and it deserves to be stated explicitly. Civilizations rarely collapse at the moment they change direction. They collapse when the consequences of that change finally arrive. The change had occurred by Hadrian's reign. The arrival took the next three and a half centuries.</p>
+
+  <div class="pull-quote no-break">
+    Civilizations rarely collapse when they change direction.<br>
+    They collapse when the consequences of that change finally arrive.
+  </div>
+
+  <p class="prose">This is the framework's second specific contribution. The dramatic narrative of "decline and fall" is, on examination, the long working-out of a directional shift that had already happened. By 476, the Western state was managing the consequences of a change made three and a half centuries earlier. The fall, in this reading, is less a sudden event than the eventual political expression of a structural configuration that had stopped working much earlier.</p>
+
+  <div class="folio folio-left">210</div>
+</section>
+
+<!-- §5 · SURPRISE THREE -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Observation Three</div>
+  <div class="surprise-tag">— The Third Surprise —</div>
+  <h2 class="section-title">Why Rome Had<br>No Scientific Revolution.</h2>
+
+  <p class="prose dropcap">The third observation is the framework's sharpest contribution and the one historians have addressed most awkwardly. Rome inherited Greek science, Greek philosophy, Greek mathematics, and Greek medical knowledge. Rome had the wealth, the institutional stability, the leisure class, the literate population, and the geographic scale to support a scientific revolution at any point in its five centuries of imperial peak. It did not produce one. Why?</p>
+
+  <p class="prose">The conventional answers are familiar. Rome was practical, not theoretical. Slavery removed the labor pressure for technological innovation. Roman intellectual culture rewarded oratory over inquiry. Christianity, in Gibbon's reading, redirected energy from natural philosophy to theology. Each of these answers captures something. None explains why, with all the Greek substrate readily available and centuries of stable institutional support to operate within, no Roman intellectual community produced what early modern Europe produced.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework's reading is different and, I think, more useful. Scientific revolutions are not produced by access to inherited knowledge. They are produced by a directional configuration in which Recursion and Creation operate together at sufficient scale. Recursion supplies the structural disposition to examine and revise inherited assumptions. Creation supplies the willingness to produce forms that did not previously exist. Without both, accumulated knowledge can be elaborated but not overturned.</p>
+
+  <div class="folio folio-right">211</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Observation Three</div>
+
+  <p class="prose">Rome was structurally poor on both axes. The Recursion axis was modest at peak and stayed modest through most of the imperial period — the Romans wrote histories of themselves, but they did not develop systematic procedures for examining and revising their own intellectual frameworks. The Creation axis, on the framework's reading, was strong in institutional creation (law, administration, civic identity) but conspicuously thin in theoretical creation. Romans built laws. They did not build new mathematics. They wrote enormous quantities of philosophy. They produced no Galileo.</p>
+
+  <p class="prose">The framework's claim is not that Romans were incapable of theoretical thought. Cicero, Lucretius, Seneca, Marcus Aurelius are all serious intellectual figures. The framework's claim is that Roman <em>institutional configuration</em> did not produce the Recursion-Creation feedback that, when it does occur, generates the kind of cumulative theoretical overturning that early modern Europe produced. Rome's strengths were elsewhere. The strengths were extraordinary. They did not include this.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A natural objection: was anyone going to produce a scientific revolution in the second century CE, or is this a thirteen-centuries-too-early demand? The framework's answer is that no one was going to, including Rome — but the question of <em>why</em> Rome did not is still illuminating. The Greek substrate was sufficient. The institutional resources were sufficient. The leisure class was sufficient. What was missing was a configuration that rewarded theoretical novelty over institutional refinement. Rome's configuration rewarded the latter and was, accordingly, magnificent at it.</p>
+
+  <div class="pull-quote no-break">
+    Rome could refine the same problem<br>
+    a hundred times.<br>
+    Rome could not produce a Newton.
+  </div>
+
+  <div class="folio folio-left">212</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Observation Three</div>
+
+  <p class="prose">This observation matters for two reasons beyond its application to Rome.</p>
+
+  <p class="prose">First, it suggests a framework-generated explanation for one of the most-asked counterfactual questions in Western history. "Why didn't Rome have a scientific revolution?" is a question every educated reader has at least passively encountered. The conventional answers are partial. The framework's suggestion is structural — Rome's position in the possibility space did not generate the Recursion-Creation feedback that, when present at sufficient scale, appears to produce scientific revolutions. The claim is testable. It generates the prediction that civilizations occupying similar positions to Rome's should tend to fail to produce scientific revolutions even when they possess the necessary substrate. Imperial China is the obvious case to compare. The next chapter will do exactly that.</p>
+
+  <p class="prose">Second, the observation provides a framework-generated <em>positive</em> hypothesis about what scientific revolutions appear to require. They are not produced by intelligence, wealth, leisure, or inherited learning, although all of these help. They are produced — when they occur — by a directional configuration in which Recursion and Creation reinforce one another at sufficient scale. This is, on examination, a reasonable description of what happened in seventeenth-century Northern Europe and what did not happen anywhere else in the centuries before or shortly after. The framework's suggestion is structural, not Eurocentric — the hypothesis is that the same configuration, occurring elsewhere, would tend to produce similar outcomes.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This is, so far, the framework's sharpest contribution. It is also the chapter's most exposed claim. The Rome reading alone cannot establish it — Rome is one case. The hypothesis stands or falls on whether civilizations with similar configurations produced similar non-results. The China chapter that follows is where the hypothesis is actually tested. Until then, the framework's claim about Rome is best read as a suggestion: that this structural picture appears to organize the available evidence more usefully than the inherited alternatives, pending the verdict of cases yet to be read.</p>
+
+  <div class="folio folio-right">213</div>
+</section>
+
+<!-- §6 · SURPRISE FOUR -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Observation Four</div>
+  <div class="surprise-tag">— The Fourth Surprise —</div>
+  <h2 class="section-title">The Late Empire's<br>Recursive Turn.</h2>
+
+  <p class="prose dropcap">The fourth observation is the mirror image of the third. The framework predicts what happens when an expansive civilization's outward push is blocked but its institutional infrastructure remains intact. The energy redirected from Expansion becomes available, in part, for Recursion. The framework predicts the Late Empire's intellectual character as a consequence of its structural position. The historical record confirms the prediction.</p>
+
+  <p class="prose">Between roughly the second and fifth centuries — exactly the period when Expansion was blocked and the empire was operating under steady-state stress — Roman intellectual life underwent a transformation. Christianity emerged as a serious philosophical tradition. Plotinus and the Neoplatonists conducted some of the most sophisticated metaphysical reflection in any era. Augustine produced <em>City of God</em> and the <em>Confessions</em>, the latter arguably the first systematic work of recursive self-examination in Western literature. Boethius wrote the <em>Consolation of Philosophy</em> in prison, waiting to be executed. The Theodosian Code and later the Justinianic Code consolidated five centuries of Roman law into systematic and self-referential structures.</p>
+
+  <p class="prose" style="margin-top:0.9em;">By the standards of any prior phase of Roman history, this is a striking concentration of recursive intellectual work. By the standards of any prior civilization's response to expansive blockage, it is also predictable. When an intelligence under constraint cannot push outward, the framework predicts, it pushes inward. The Late Empire is one of the cleanest historical examples of the prediction operating.</p>
+
+  <div class="folio folio-right">214</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Observation Four</div>
+
+  <p class="prose">The conventional picture of the Late Empire treats this intellectual flowering as paradoxical — how could a civilization in decline produce its deepest reflective work? The framework dissolves the paradox. The Late Empire's intellectual flowering is not in tension with the political stress; it is, in part, a consequence of it. Recursion rises when Expansion falls. The energy that no longer has anywhere outward to go finds something inward to do.</p>
+
+  <p class="prose">This pattern recurs. Late Han China produced its most reflective historiography while the dynasty was visibly failing. The late Ottoman intellectual flowering occurred as the empire was contracting. The most philosophically reflective period in any major civilization tends to occur when its expansive phase has ended but its institutional infrastructure has not yet collapsed. The framework predicts this. The historical record, when examined, supports it.</p>
+
+  <div class="pull-quote no-break">
+    Recursion rises when Expansion falls.<br>
+    The Late Empire is not paradoxical.<br>
+    It is predicted.
+  </div>
+
+  <p class="prose">The pattern extends beyond a handful of named thinkers. The same centuries produced the rise of monastic communities — first the Egyptian desert fathers, then Cassian, then Benedict and his Rule of 529 CE — whose structural function was the systematic discipline of self-examination at scale. A monastery, in the framework's vocabulary, is recursive infrastructure. It is a built environment for taking one's own life as the object of inquiry across decades. The simultaneous codification of Roman law into the Theodosian and Justinianic Codes was a parallel recursive achievement at the institutional level — five centuries of accumulated legal practice taken as an object of systematic examination and reorganization. Stoicism's later imperial form, particularly under Marcus Aurelius and Epictetus, was a recursive philosophy of self-examination distributed widely across the literate population.</p>
+
+  <p class="prose">Augustine alone is not the case. The case is that a civilization whose Expansion had stopped redirected energy across multiple domains into the recursive examination of itself — philosophical, theological, legal, monastic, personal. The framework predicts the redirection. The historical record displays it across all these registers simultaneously.</p>
+
+  <p class="prose">A subtlety worth marking. The Late Empire's Recursion did not save the Western state. The political collapse occurred anyway. What the Recursion did was produce a body of work — Augustine's theology, the Justinianic Code, the Neoplatonic tradition, the early Christian intellectual culture, the monastic discipline — that proved more durable than the state that produced it. Augustine is still read. Roman law is still in force. The monastic tradition still operates. The state failed. The recursive work the state's pressure produced survived the state.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This connects to the first observation. What persisted of Rome was not the political structure. It was, disproportionately, the intellectual and institutional output of the period when the political structure was failing. The Late Empire's Recursion is part of what migrated into the post-Roman world. The framework reads this as the predicted output of a civilization whose Expansion phase had ended.</p>
+
+  <div class="folio folio-left">215</div>
+</section>
+
+<!-- §7 · THE LOCK-IN -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ The Pattern Behind the Surprises</div>
+  <h2 class="section-title">Continuity–Capability<br>Lock-In.</h2>
+
+  <p class="prose dropcap">The four observations above are related. Each follows from the same structural fact about Rome's position in the possibility space. The framework's contribution is most concentrated in naming this structural fact and showing what it produces. The fact, stated as plainly as the framework can state it, is that Rome occupied a configuration in which Continuity, Capability, and Cooperation reinforced one another so successfully that the directions opposing them — Creation, Recursion, and (eventually) coherent Purpose — could not develop to compensating levels. The configuration was self-reinforcing. It was also, in the long run, self-limiting.</p>
+
+  <p class="prose">Call this <strong>Continuity–Capability lock-in</strong>. A civilization in this configuration gets better and better at being what it already is. Its institutions become more sophisticated. Its administrative apparatus expands its reach. Its inherited forms are refined to an extraordinary degree. What it cannot do, while occupying this configuration, is become something else. The very institutional genius that makes the civilization durable makes it unable to reform itself in any deep sense.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Lock-in is not a moral failing. It is a structural feature of certain directional configurations. The civilizations most subject to it are typically the most institutionally impressive of their eras. Their lock-in is invisible from within, because it does not feel like an inability. It feels like mastery. The civilization is doing brilliantly what it does. The configuration that allows the brilliance also closes off the directions in which the civilization would need to grow to remain viable when its conditions change.</p>
+
+  <div class="folio folio-right">216</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Pattern Behind the Surprises</div>
+
+  <p class="prose">Rome's four surprises now resolve into one structural picture. Rome did not fall because it lacked virtue, lost faith, mismanaged money, or failed militarily, although it did versions of all of these. Rome's fundamental problem was that it had become so good at being Rome that it could no longer become anything else. When the conditions that had rewarded its specific configuration changed — when Expansion was no longer available to feed the inflow on which the configuration depended — the civilization had no directional reserve along the axes that would have allowed reinvention. The Late Empire's Recursive turn was, in a sense, the reserve trying to develop, three centuries too late and at insufficient scale.</p>
+
+  <div class="pull-quote no-break">
+    Rome got so good at being Rome<br>
+    that it could no longer become anything else.
+  </div>
+
+  <p class="prose">This is the pattern. Rome is one instance. The framework predicts that the pattern will appear in other civilizations that occupied similar configurations. Imperial China is the obvious comparison and the subject of the next chapter — a civilization with even higher Continuity than Rome, with comparable Capability and Cooperation, with similarly modest Recursion-Creation in its imperial centuries. The comparison will test whether the framework's reading of Rome holds up when applied to a different civilization with a similar configuration.</p>
+
+  <p class="prose" style="margin-top:0.7em;">If the framework's reading of Rome generalizes, the chapter has done its work. If it does not, the framework has overreached. The next chapter is the test.</p>
+
+  <div class="folio folio-left">217</div>
+</section>
+
+<!-- §8 · WHAT THE FRAMEWORK HAS REVEALED -->
+<section class="page opener">
+  <div class="running-head">Case One · Rome</div>
+  <div class="section-number">§ Closing the Case</div>
+  <h2 class="section-title">What the Framework<br>Has Revealed.</h2>
+
+  <p class="prose dropcap">A chapter on Rome has now been written. The reader is invited to evaluate whether the framework has earned it. Four observations were generated by applying the eight directions to Rome with discipline. Each was framework-generated rather than inherited from the historiographic literature. Each, on examination, illuminates something the conventional pictures of Rome leave partially obscured.</p>
+
+  <p class="prose">The reader will know whether the observations were surprising. The framework cannot judge that. The framework can only note that the observations were produced by the procedure — locating, identifying tensions, naming overdeveloped and neglected directions, reading the trajectory. None of them required historical evidence the framework did not start with. All of them required only the procedure applied with attention.</p>
+
+  <p class="prose" style="margin-top:0.9em;">If the procedure produced something useful here, the procedure may be expected to produce something useful applied to other civilizations. If the procedure did not, then either the framework or its operator failed at the test. The reader is asked to judge with the same discipline the framework was asked to operate under. The case studies that follow will produce or fail to produce comparable observations on their own subjects. By the end of Part Three, the cumulative evidence will be available for the reader to decide whether the framework is genuinely diagnostic or merely descriptive in technical clothing.</p>
+
+  <div class="folio folio-right">218</div>
+</section>
+
+<!-- §9 · BRIDGE TO CHINA -->
+<section class="page">
+  <div class="running-head">Case One · Rome</div>
+
+  <p class="prose">One observation, before the chapter closes, is worth marking as the bridge to the next case. The framework's diagnosis of Rome rests on the claim that Continuity-Capability lock-in is a recurring structural pattern, not a Roman peculiarity. The diagnosis is therefore testable. There exists a civilization, more institutionally durable than Rome, that occupied a similar configuration for longer than Rome did, with comparable Continuity-Capability strengths and similarly modest Recursion-Creation. That civilization is China.</p>
+
+  <p class="prose">The Chinese case is also more difficult than the Roman case for the framework, because China did not fall. China survives. The dynasties cycled. The civilization persisted. If the framework's reading of Rome is correct — if Continuity-Capability lock-in is the underlying pattern — then China should display the same configuration with the same kinds of pressures and the same kinds of consequences, while still managing to persist where Rome's Western state did not. The framework is asked to explain both the similarity and the difference.</p>
+
+  <div class="pull-quote no-break">
+    Rome failed.<br>
+    China survived.<br>
+    The framework must explain both.
+  </div>
+
+  <p class="prose">That is the next chapter. If the framework can explain why two civilizations occupying similar configurations produced different outcomes — and what specifically about China's configuration allowed it to persist where Rome's did not — the framework will have demonstrated something neither chapter alone could demonstrate. The case for the framework's diagnostic power either deepens at that point or weakens.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>The second case is China.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">219</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of the First Case</div>
+  <div class="epigraph-text">
+    "Rome got so good at being Rome<br>
+    that it could no longer become anything else.<br>
+    The next case is the civilization that did."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">SECOND CASE BEGINS · CHINA</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    /* ---- People admin · graphite, matches Missions / Runtime Memory ---- */
+    .px-body { background: #07080c; color: #ebe9e2; }
+    :root {
+      --px-gr1: #07080c; --px-gr2: #0c0d12; --px-gr3: #11131a; --px-gr4: #181b25;
+      --px-ink: #ebe9e2; --px-ink2: #b8b5ad; --px-ink3: #6e6c66; --px-ink4: #44433f;
+      --px-freq: #6f9bb5; --px-freq2: #4f7388; --px-freq3: #2c4150; --px-freq4: #13202a;
+      --px-rule: #14161e; --px-edge: #1c2030;
+      --px-serif: "Newsreader", Georgia, serif;
+      --px-sans: "Inter", system-ui, sans-serif;
+      --px-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .px-shell { max-width: 1080px; margin: 0 auto; padding: 40px 32px 96px; position: relative; z-index: 1; }
+    .px-crumbs { font-family: var(--px-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--px-ink3); margin-bottom: 22px; text-transform: uppercase; }
+    .px-crumbs a { color: var(--px-ink2); text-decoration: none; }
+    .px-crumbs a:hover { color: var(--px-ink); }
+
+    .px-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--px-rule); padding-bottom: 26px; margin-bottom: 30px; }
+    .px-title { font-family: var(--px-serif); font-weight: 300; font-size: 34px; line-height: 1.2; color: var(--px-ink); letter-spacing: -0.01em; }
+    .px-title em { font-style: italic; }
+    .px-sub { font-family: var(--px-sans); font-weight: 300; font-size: 14px; line-height: 1.7; color: var(--px-ink3); margin-top: 10px; max-width: 62ch; text-wrap: pretty; }
+    .px-actions { display: flex; gap: 10px; flex: 0 0 auto; }
+    .px-btn { background: transparent; border: 1px solid var(--px-edge); border-radius: 2px; color: var(--px-ink2); font-family: var(--px-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 14px; cursor: pointer; transition: all .25s; white-space: nowrap; }
+    .px-btn:hover { border-color: var(--px-freq3); color: var(--px-ink); background: var(--px-freq4); }
+
+    .px-stats { display: flex; gap: 28px; font-family: var(--px-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--px-ink3); margin-bottom: 34px; flex-wrap: wrap; }
+    .px-stats b { color: var(--px-freq); font-weight: 500; }
+
+    .px-empty { border: 1px dashed var(--px-edge); border-radius: 3px; padding: 48px 36px; text-align: center; color: var(--px-ink3); font-family: var(--px-sans); font-weight: 300; font-size: 15px; line-height: 1.7; }
+    .px-empty a { color: var(--px-freq); text-decoration: none; border-bottom: 1px solid var(--px-freq3); }
+
+    .px-person { border: 1px solid var(--px-rule); border-radius: 3px; background: var(--px-gr2); margin-bottom: 22px; overflow: hidden; }
+    .px-person.is-mock { border-style: dashed; }
+    .px-ptop { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 22px 26px; border-bottom: 1px solid var(--px-rule); }
+    .px-pname { font-family: var(--px-serif); font-weight: 300; font-size: 23px; line-height: 1.35; color: var(--px-ink); }
+    .px-pname em { font-style: italic; }
+    .px-pid { font-family: var(--px-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--px-ink4); margin-top: 7px; }
+    .px-mock-tag { font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #9a7b4e; border: 1px solid #4a3b22; border-radius: 2px; padding: 3px 7px; }
+
+    .px-pills { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; max-width: 320px; }
+    .px-pill { font-family: var(--px-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--px-freq); border: 1px solid var(--px-freq3); border-radius: 2px; padding: 3px 8px; white-space: nowrap; }
+    .px-pill.mute { color: var(--px-ink3); border-color: var(--px-edge); }
+
+    .px-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--px-rule); }
+    .px-cell { background: var(--px-gr2); padding: 20px 26px; }
+    .px-cell.full { grid-column: 1 / -1; }
+    .px-label { font-family: var(--px-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--px-freq2); margin-bottom: 12px; }
+    .px-kv { display: flex; gap: 12px; font-family: var(--px-sans); font-weight: 300; font-size: 13.5px; line-height: 1.65; color: var(--px-ink2); margin-bottom: 6px; }
+    .px-kv .k { flex: 0 0 116px; font-family: var(--px-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--px-ink4); padding-top: 3px; }
+    .px-kv .v { flex: 1; }
+    .px-kv .v em { font-style: italic; color: var(--px-ink); }
+
+    /* promotion-path chain */
+    .px-chain { font-family: var(--px-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--px-ink4); line-height: 1.9; }
+    .px-chain b { color: var(--px-freq2); }
+
+    /* sub-sections inside a person card */
+    .px-sect { background: var(--px-gr3); border-top: 1px solid var(--px-rule); padding: 22px 26px 24px; }
+    .px-sect.alt { background: var(--px-gr2); }
+    .px-sect .px-label { color: var(--px-freq); }
+    .px-sub2 { font-family: var(--px-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--px-freq2); margin: 18px 0 10px; }
+    .px-sub2:first-child { margin-top: 0; }
+
+    /* evidence */
+    .px-ev { border-left: 2px solid var(--px-freq3); padding: 7px 0 7px 14px; margin-bottom: 9px; }
+    .px-ev .et { font-family: var(--px-sans); font-weight: 300; font-size: 13px; line-height: 1.6; color: var(--px-ink2); text-wrap: pretty; }
+    .px-ev .em2 { font-family: var(--px-mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--px-ink4); margin-top: 4px; }
+    .px-ev .em2 .dim { color: var(--px-freq2); }
+
+    /* hypotheses + validation rows (shared with org vocabulary) */
+    .px-hrow { border-left: 2px solid var(--px-edge); padding: 9px 0 9px 14px; margin-bottom: 12px; }
+    .px-hrow.supported { border-color: #3f7d5a; }
+    .px-hrow.contradicted { border-color: #8a4b3f; }
+    .px-hrow.mixed { border-color: #9a7b4e; }
+    .px-hstate { font-family: var(--px-sans); font-weight: 300; font-size: 13.5px; line-height: 1.55; color: var(--px-ink); margin-bottom: 7px; text-wrap: pretty; }
+    .px-hstate em { font-style: italic; }
+    .px-hmeta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .px-status { font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; border: 1px solid var(--px-edge); color: var(--px-ink3); }
+    .px-status.supported { color: #6fae86; border-color: #2f5b43; }
+    .px-status.contradicted { color: #c98170; border-color: #5c3329; }
+    .px-status.mixed { color: #c0975e; border-color: #5c4626; }
+    .px-status.untested { color: var(--px-ink4); }
+    .px-conf { font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--px-ink4); }
+    .px-conf b { color: var(--px-freq); }
+    .px-hbtns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .px-hbtn { background: var(--px-gr1); border: 1px solid var(--px-edge); border-radius: 2px; color: var(--px-ink2); font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all .2s; }
+    .px-hbtn:hover { color: var(--px-ink); border-color: var(--px-freq3); }
+
+    /* validated understanding */
+    .px-und { border: 1px solid #2f5b43; border-radius: 2px; background: rgba(63,125,90,0.06); padding: 12px 14px; margin-bottom: 9px; }
+    .px-und .ut { font-family: var(--px-sans); font-weight: 300; font-size: 13.5px; line-height: 1.5; color: var(--px-ink); }
+    .px-und .um { font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #6fae86; margin-top: 5px; }
+
+    /* person frequency table */
+    .px-ftable { border: 1px solid var(--px-rule); border-radius: 2px; overflow: hidden; }
+    .px-fhead, .px-frow { display: grid; grid-template-columns: 1.3fr 0.9fr 0.8fr; gap: 12px; padding: 9px 14px; }
+    .px-fhead { background: var(--px-gr1); font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--px-ink4); }
+    .px-frow { background: var(--px-gr2); border-top: 1px solid var(--px-rule); align-items: baseline; }
+    .px-frow .dn { font-family: var(--px-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--px-ink3); }
+    .px-frow .lv { font-family: var(--px-sans); font-weight: 300; font-size: 13px; color: var(--px-ink); }
+    .px-frow .lv.unknown { color: var(--px-ink4); }
+    .px-gpc { font-family: var(--px-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 1px 5px; border-radius: 2px; border: 1px solid var(--px-edge); color: var(--px-ink4); display: inline-block; }
+    .px-gpc.high { color: #6fae86; border-color: #2f5b43; }
+    .px-gpc.medium { color: #c0975e; border-color: #5c4626; }
+    .px-gpc.low { color: var(--px-ink4); }
+    .px-fev { grid-column: 1 / -1; font-family: var(--px-sans); font-weight: 300; font-size: 11.5px; line-height: 1.5; color: var(--px-ink4); padding-top: 2px; }
+    .px-fsum { font-family: var(--px-sans); font-weight: 300; font-size: 13px; line-height: 1.7; color: var(--px-ink2); margin: 4px 0 14px; text-wrap: pretty; }
+    .px-fsum b { color: var(--px-ink); font-weight: 400; }
+    .px-conf-line { font-family: var(--px-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--px-ink4); margin: 12px 0 4px; }
+    .px-conf-line b { color: var(--px-freq); }
+    .px-noscore { font-family: var(--px-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--px-ink4); margin-top: 10px; }
+
+    /* promotion history */
+    .px-plog { border-left: 2px solid #2f5b43; padding: 6px 0 6px 13px; margin-bottom: 7px; }
+    .px-plog .pt { font-family: var(--px-sans); font-weight: 300; font-size: 12.5px; color: var(--px-ink2); }
+    .px-plog .pm { font-family: var(--px-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6fae86; margin-top: 3px; }
+
+    .px-vnext { font-family: var(--px-sans); font-weight: 300; font-size: 13px; line-height: 1.6; color: var(--px-ink3); margin-top: 10px; }
+    .px-vnext b { color: var(--px-ink2); font-weight: 400; }
+
+    .px-note { margin-top: 40px; border-top: 1px solid var(--px-rule); padding-top: 22px; font-family: var(--px-sans); font-weight: 300; font-size: 13px; line-height: 1.75; color: var(--px-ink3); }
+    .px-note em { font-style: italic; color: var(--px-ink2); }
+    .px-note a { color: var(--px-freq); text-decoration: none; border-bottom: 1px solid var(--px-freq3); }
+
+    @media (max-width: 760px) {
+      .px-grid { grid-template-columns: 1fr; }
+      .px-head { flex-direction: column; align-items: flex-start; }
+      .px-fhead, .px-frow { grid-template-columns: 1.2fr 0.8fr 0.7fr; }
+    }
+  </style>
+</head>
+<body class="px-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◇</span>
+    <span class="st-name">People</span>
+    <span class="st-sub">— the Person Frequency Engine</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../frequency/person.html">Discover a person ↗</a>
+    <a class="st-link" href="person-intel.html">Person Intelligence ↗</a>
+    <a class="st-link" href="missions.html">Missions ↗</a>
+    <a class="st-link" href="outcomes.html">Outcomes ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="px-shell">
+  <div class="px-crumbs"><a href="index.html">Studio</a> / People</div>
+
+  <div class="px-head">
+    <div>
+      <h1 class="px-title">A person, understood <em>in isolation.</em></h1>
+      <p class="px-sub">
+        The Person Frequency Engine — built with the same rigor as the organization side, and
+        deliberately one-sided. Each person is an evidence trail promoted, without shortcuts, along
+        <span style="font-family:var(--px-mono);font-size:12px">Evidence → Hypothesis → Validation → Validated Understanding → Person Frequency</span>.
+        No matching. No resonance. No fit scores. No personality types. The person exists on their own first.
+      </p>
+    </div>
+    <div class="px-actions">
+      <button class="px-btn" id="px-seed-example" type="button">Load example (mock)</button>
+      <button class="px-btn" id="px-reset" type="button">Reset people</button>
+    </div>
+  </div>
+
+  <div class="px-stats" id="px-stats"></div>
+  <div id="px-list"></div>
+
+  <p class="px-note">
+    <em>Real vs mock.</em> People discovered through <a href="../frequency/person.html">Aeon1 person discovery</a>
+    are real records in <span style="font-family:var(--px-mono);font-size:12px">of.runtime.v1</span> on this device.
+    The <em>Load example</em> button writes one clearly-tagged mock person, fully validated, so the chain
+    Evidence → Understanding → Frequency is visible end to end. Memory stays gated: this engine writes only
+    Person Understanding and Person Frequency — never Essence, Transformation, or Resonance.
+  </p>
+</div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="people-admin.js"></script>
+
+</body>
+</html>

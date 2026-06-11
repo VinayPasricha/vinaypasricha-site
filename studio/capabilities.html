@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capabilities · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .cp-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --cp-gr1:#07080c; --cp-gr2:#0c0d12; --cp-gr3:#11131a; --cp-gr4:#181b25;
+      --cp-ink:#ebe9e2; --cp-ink2:#b8b5ad; --cp-ink3:#6e6c66; --cp-ink4:#44433f;
+      --cp-freq:#6f9bb5; --cp-freq2:#4f7388; --cp-freq3:#2c4150; --cp-freq4:#13202a;
+      --cp-pos:#6fae86; --cp-pos3:#2f5b43; --cp-warm:#c0975e; --cp-warm3:#5c4626;
+      --cp-neg:#c98170; --cp-neg3:#5c3329; --cp-gold:#c2a25e; --cp-gold3:#5c4c26;
+      --cp-rule:#14161e; --cp-edge:#1c2030;
+      --cp-serif:"Newsreader",Georgia,serif; --cp-sans:"Inter",system-ui,sans-serif; --cp-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .cp-shell { max-width:1160px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .cp-crumbs { font-family:var(--cp-mono); font-size:11px; letter-spacing:0.14em; color:var(--cp-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .cp-crumbs a { color:var(--cp-ink2); text-decoration:none; }
+    .cp-head { border-bottom:1px solid var(--cp-rule); padding-bottom:22px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+    .cp-title { font-family:var(--cp-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--cp-ink); letter-spacing:-0.01em; }
+    .cp-title em { font-style:italic; }
+    .cp-sub { font-family:var(--cp-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--cp-ink3); margin-top:9px; max-width:64ch; text-wrap:pretty; }
+    .cp-btn { background:transparent; border:1px solid var(--cp-edge); border-radius:2px; color:var(--cp-ink2); font-family:var(--cp-mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 12px; cursor:pointer; }
+    .cp-btn:hover { border-color:var(--cp-freq3); color:var(--cp-ink); background:var(--cp-freq4); }
+    .cp-section { font-family:var(--cp-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--cp-freq); margin:24px 0 12px; }
+    .cp-panel { border:1px solid var(--cp-rule); border-radius:3px; background:var(--cp-gr2); overflow:hidden; }
+    .cp-pbody { padding:6px 0; }
+    .cp-empty { font-family:var(--cp-sans); font-weight:300; font-size:12.5px; color:var(--cp-ink4); padding:14px 18px; }
+
+    .cp-cap { display:grid; grid-template-columns:1.3fr 1fr 1.1fr auto; gap:12px; padding:11px 18px; border-top:1px solid var(--cp-rule); align-items:center; }
+    .cp-cap:first-child { border-top:none; }
+    .cp-cap .cn { font-family:var(--cp-mono); font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--cp-ink); }
+    .cp-cap .cd { font-family:var(--cp-sans); font-weight:300; font-size:11px; color:var(--cp-ink4); margin-top:2px; }
+    .cp-cap .cprov { font-family:var(--cp-sans); font-weight:300; font-size:12px; color:var(--cp-ink3); }
+    .cp-st { font-family:var(--cp-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--cp-edge); border-radius:2px; padding:3px 8px; justify-self:start; }
+    .cp-st.available, .cp-st.configured { color:var(--cp-pos); border-color:var(--cp-pos3); }
+    .cp-st.not_configured { color:var(--cp-warm); border-color:var(--cp-warm3); }
+    .cp-st.blocked, .cp-st.failed { color:var(--cp-neg); border-color:var(--cp-neg3); }
+    .cp-capact { display:flex; gap:5px; justify-self:end; }
+    .cp-mini { background:var(--cp-gr1); border:1px solid var(--cp-edge); border-radius:2px; color:var(--cp-ink3); font-family:var(--cp-mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; padding:5px 8px; cursor:pointer; }
+    .cp-mini:hover { color:var(--cp-ink); border-color:var(--cp-freq3); }
+    .cp-mini.pos { color:var(--cp-pos); border-color:var(--cp-pos3); } .cp-mini.warn { color:var(--cp-warm); border-color:var(--cp-warm3); }
+
+    .cp-cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width:820px){ .cp-cols{ grid-template-columns:1fr; } .cp-cap{ grid-template-columns:1fr; gap:5px; } }
+    .cp-form { padding:12px 18px; border-top:1px solid var(--cp-rule); display:flex; flex-direction:column; gap:7px; }
+    .cp-form input, .cp-form select, .cp-form textarea { background:var(--cp-gr1); border:1px solid var(--cp-edge); border-radius:2px; color:var(--cp-ink); font-family:var(--cp-sans); font-weight:300; font-size:12px; padding:8px 10px; }
+    .cp-form textarea { resize:vertical; min-height:48px; }
+    .cp-form input:focus, .cp-form select:focus, .cp-form textarea:focus { outline:none; border-color:var(--cp-freq3); }
+    .cp-row2 { display:flex; gap:7px; flex-wrap:wrap; } .cp-row2 > * { flex:1; min-width:120px; }
+    .cp-act { background:var(--cp-freq4); border:1px solid var(--cp-freq3); border-radius:2px; color:var(--cp-freq); font-family:var(--cp-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; cursor:pointer; align-self:flex-start; }
+    .cp-act:hover { color:var(--cp-ink); border-color:var(--cp-freq2); }
+
+    .cp-msg { padding:10px 18px; border-top:1px solid var(--cp-rule); }
+    .cp-msg:first-child { border-top:none; }
+    .cp-msg .ms { font-family:var(--cp-sans); font-weight:400; font-size:12.5px; color:var(--cp-ink); }
+    .cp-msg .mm { font-family:var(--cp-mono); font-size:8.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--cp-ink4); margin-top:3px; }
+    .cp-msg .mb { font-family:var(--cp-sans); font-weight:300; font-size:11.5px; color:var(--cp-ink3); margin-top:4px; line-height:1.5; }
+    .cp-mst { font-family:var(--cp-mono); font-size:8px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--cp-edge); border-radius:2px; padding:2px 6px; }
+    .cp-mst.blocked, .cp-mst.failed, .cp-mst.needs_review { color:var(--cp-warm); border-color:var(--cp-warm3); }
+    .cp-mst.sent, .cp-mst.routed { color:var(--cp-pos); border-color:var(--cp-pos3); }
+    .cp-mst.draft, .cp-mst.received { color:var(--cp-freq); border-color:var(--cp-freq3); }
+    .cp-note { margin-top:30px; border-top:1px solid var(--cp-rule); padding-top:22px; font-family:var(--cp-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--cp-ink3); }
+    .cp-note em { font-style:italic; color:var(--cp-ink2); }
+    .cp-note a { color:var(--cp-freq); text-decoration:none; border-bottom:1px solid var(--cp-freq3); }
+  </style>
+</head>
+<body class="cp-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Capabilities</span><span class="st-sub">— search &amp; transport · providers or honest hooks</span></div>
+  <div class="st-right">
+    <a class="st-link" href="agents.html">Agents ↗</a>
+    <a class="st-link" href="outreach.html">Outreach ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="cp-shell">
+  <div class="cp-crumbs"><a href="index.html">Studio</a> / Capabilities</div>
+  <div class="cp-head">
+    <div>
+      <h1 class="cp-title">What agents <em>can actually do</em> — and what blocks.</h1>
+      <p class="cp-sub">
+        The search &amp; transport layer agents call. Every capability reports <em>available / configured /
+        not_configured / blocked / failed</em>. When a provider isn't wired, the task blocks honestly — no fake
+        search, send, reply, or call. Manual-import paths and a "simulate provider" toggle let you exercise the
+        whole flow today; real providers drop in without redesign.
+      </p>
+    </div>
+    <button class="cp-btn" id="cp-reset" type="button">Reset</button>
+  </div>
+
+  <div class="cp-section">Capability Registry · provider status</div>
+  <div class="cp-panel"><div class="cp-pbody" id="cp-registry"></div></div>
+
+  <div class="cp-cols">
+    <div>
+      <div class="cp-section">Manual import · search result</div>
+      <div class="cp-panel"><div class="cp-form" id="cp-import"></div></div>
+      <div class="cp-section">Queue outbound message</div>
+      <div class="cp-panel"><div class="cp-form" id="cp-outform"></div></div>
+    </div>
+    <div>
+      <div class="cp-section">Manual inbound ingest · routes to a thread</div>
+      <div class="cp-panel"><div class="cp-form" id="cp-inform"></div></div>
+      <div class="cp-section">Safety &amp; compliance</div>
+      <div class="cp-panel"><div class="cp-form" id="cp-safety"></div></div>
+    </div>
+  </div>
+
+  <div class="cp-section">Outbound messages</div>
+  <div class="cp-panel"><div class="cp-pbody" id="cp-outbound"></div></div>
+  <div class="cp-section">Inbound messages · thread routing</div>
+  <div class="cp-panel"><div class="cp-pbody" id="cp-inbound"></div></div>
+  <div class="cp-section">Search results</div>
+  <div class="cp-panel"><div class="cp-pbody" id="cp-results"></div></div>
+
+  <p class="cp-note">
+    <em>Honest by construction.</em> "Mark configured" / "Simulate provider" wire a capability so the matching agent
+    proceeds; "Mark not configured" reverts it to blocking. Sending respects the safety gate (do-not-contact,
+    unsubscribe, consent, daily caps, cooldown) <em>and</em> the agent autonomy policy. Inbound replies route into
+    the existing <a href="hiring.html">Candidate</a>, Stakeholder and Reference threads — one person, one thread,
+    many channels. No fake sends, searches, or calls. <a href="agents.html">Agents</a> consume this layer.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="../frequency/of-person-research.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-emergence.js"></script>
+<script src="../frequency/of-hiring.js"></script>
+<script src="../frequency/of-discovery-outreach.js"></script>
+<script src="../frequency/of-capabilities.js"></script>
+<script src="../frequency/of-transport.js"></script>
+<script src="capabilities-admin.js"></script>
+</body>
+</html>

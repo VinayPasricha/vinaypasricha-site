@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outreach · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .ou-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --ou-gr1:#07080c; --ou-gr2:#0c0d12; --ou-gr3:#11131a; --ou-gr4:#181b25;
+      --ou-ink:#ebe9e2; --ou-ink2:#b8b5ad; --ou-ink3:#6e6c66; --ou-ink4:#44433f;
+      --ou-freq:#6f9bb5; --ou-freq2:#4f7388; --ou-freq3:#2c4150; --ou-freq4:#13202a;
+      --ou-pos:#6fae86; --ou-pos3:#2f5b43; --ou-warm:#c0975e; --ou-warm3:#5c4626;
+      --ou-neg:#c98170; --ou-neg3:#5c3329; --ou-gold:#c2a25e; --ou-gold3:#5c4c26;
+      --ou-rule:#14161e; --ou-edge:#1c2030;
+      --ou-serif:"Newsreader",Georgia,serif; --ou-sans:"Inter",system-ui,sans-serif; --ou-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .ou-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .ou-crumbs { font-family:var(--ou-mono); font-size:11px; letter-spacing:0.14em; color:var(--ou-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .ou-crumbs a { color:var(--ou-ink2); text-decoration:none; }
+    .ou-head { border-bottom:1px solid var(--ou-rule); padding-bottom:24px; margin-bottom:18px; }
+    .ou-title { font-family:var(--ou-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--ou-ink); letter-spacing:-0.01em; }
+    .ou-title em { font-style:italic; }
+    .ou-sub { font-family:var(--ou-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--ou-ink3); margin-top:9px; max-width:66ch; text-wrap:pretty; }
+    .ou-notimpl { border:1px dashed var(--ou-warm3); border-radius:3px; background:rgba(192,151,94,0.05); padding:10px 14px; margin-bottom:20px; font-family:var(--ou-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ou-warm); line-height:1.7; }
+    .ou-btn { background:transparent; border:1px solid var(--ou-edge); border-radius:2px; color:var(--ou-ink2); font-family:var(--ou-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:9px 12px; cursor:pointer; transition:all .25s; }
+    .ou-btn:hover { border-color:var(--ou-freq3); color:var(--ou-ink); background:var(--ou-freq4); }
+    .ou-go { background:var(--ou-freq4); border:1px solid var(--ou-freq3); border-radius:2px; color:var(--ou-freq); font-family:var(--ou-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 16px; cursor:pointer; }
+    .ou-go:hover { color:var(--ou-ink); border-color:var(--ou-freq2); }
+    .ou-intake { border:1px solid var(--ou-edge); border-radius:3px; background:var(--ou-gr2); padding:18px 20px; margin-bottom:20px; }
+    .ou-label { font-family:var(--ou-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ou-freq); margin-bottom:12px; }
+    .ou-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    .ou-field { display:flex; flex-direction:column; gap:5px; }
+    .ou-field label { font-family:var(--ou-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ou-ink4); }
+    .ou-field input, .ou-field select { background:var(--ou-gr1); border:1px solid var(--ou-edge); border-radius:2px; color:var(--ou-ink); font-family:var(--ou-sans); font-weight:300; font-size:13px; padding:9px 11px; min-width:200px; }
+    .ou-field input:focus, .ou-field select:focus { outline:none; border-color:var(--ou-freq3); }
+    .ou-searches { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    .ou-schip { border:1px solid var(--ou-edge); border-radius:2px; background:var(--ou-gr2); padding:8px 12px; cursor:pointer; font-family:var(--ou-sans); font-weight:300; font-size:12.5px; color:var(--ou-ink2); transition:all .2s; }
+    .ou-schip:hover { border-color:var(--ou-freq3); color:var(--ou-ink); }
+    .ou-schip.sel { border-color:var(--ou-freq2); background:var(--ou-freq4); color:var(--ou-ink); }
+    .ou-schip .s { font-family:var(--ou-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ou-ink4); display:block; margin-top:3px; }
+    .ou-empty { border:1px dashed var(--ou-edge); border-radius:3px; padding:40px; text-align:center; color:var(--ou-ink3); font-family:var(--ou-sans); font-weight:300; font-size:14px; line-height:1.75; }
+    .ou-empty a { color:var(--ou-freq); text-decoration:none; border-bottom:1px solid var(--ou-freq3); }
+    .ou-panel { border:1px solid var(--ou-rule); border-radius:3px; background:var(--ou-gr2); margin-bottom:16px; overflow:hidden; }
+    .ou-ptop { padding:14px 20px; border-bottom:1px solid var(--ou-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .ou-plabel { font-family:var(--ou-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ou-freq); }
+    .ou-cq { font-family:var(--ou-sans); font-weight:300; font-style:italic; font-size:12px; color:var(--ou-ink4); margin-top:3px; }
+    .ou-pbody { padding:16px 20px; }
+    .ou-q { font-family:var(--ou-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ou-edge); border-radius:2px; padding:2px 7px; color:var(--ou-ink3); }
+    .ou-q.high, .ou-q.approved, .ou-q.approved_for_outreach, .ou-q.approve_outreach { color:var(--ou-pos); border-color:var(--ou-pos3); }
+    .ou-q.medium, .ou-q.screened, .ou-q.researched { color:var(--ou-freq); border-color:var(--ou-freq3); }
+    .ou-q.low, .ou-q.needs_manual_input, .ou-q.needs_more_evidence, .ou-q.collect_more_evidence, .ou-q.pending_approval, .ou-q.manual_review { color:var(--ou-warm); border-color:var(--ou-warm3); }
+    .ou-q.rejected, .ou-q.do_not_approach, .ou-q.failed { color:var(--ou-neg); border-color:var(--ou-neg3); }
+    .ou-q.sent_placeholder { color:var(--ou-gold); border-color:var(--ou-gold3); }
+
+    .ou-cand { border:1px solid var(--ou-rule); border-radius:2px; background:var(--ou-gr3); padding:14px 16px; margin-bottom:12px; }
+    .ou-cand-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .ou-cand-name { font-family:var(--ou-serif); font-weight:300; font-size:17px; color:var(--ou-ink); }
+    .ou-cand-name .r { font-family:var(--ou-sans); font-size:12px; color:var(--ou-ink4); }
+    .ou-cand-meta { font-family:var(--ou-mono); font-size:8.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ou-ink4); margin-top:4px; }
+    .ou-cand-meta a { color:var(--ou-freq2); }
+    .ou-src { margin-top:10px; }
+    .ou-src textarea { width:100%; box-sizing:border-box; background:var(--ou-gr1); border:1px solid var(--ou-edge); border-radius:2px; color:var(--ou-ink); font-family:var(--ou-sans); font-weight:300; font-size:12px; line-height:1.5; padding:8px 10px; margin-top:6px; resize:vertical; min-height:50px; }
+    .ou-src textarea:focus { outline:none; border-color:var(--ou-freq3); }
+    .ou-src .note { font-family:var(--ou-sans); font-weight:300; font-size:11.5px; color:var(--ou-warm); margin-top:6px; line-height:1.5; }
+    .ou-act { background:var(--ou-gr1); border:1px solid var(--ou-edge); border-radius:2px; color:var(--ou-ink2); font-family:var(--ou-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:7px 11px; cursor:pointer; transition:all .2s; margin-top:8px; margin-right:6px; }
+    .ou-act:hover { color:var(--ou-ink); border-color:var(--ou-freq3); }
+    .ou-act.primary { background:var(--ou-freq4); border-color:var(--ou-freq3); color:var(--ou-freq); }
+    .ou-act.pos { border-color:var(--ou-pos3); color:var(--ou-pos); }
+    .ou-act.neg { border-color:var(--ou-neg3); color:var(--ou-neg); }
+
+    .ou-block { border-left:2px solid var(--ou-freq3); padding:6px 0 6px 13px; margin:8px 0; }
+    .ou-block .bl { font-family:var(--ou-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ou-freq2); margin-bottom:4px; }
+    .ou-block .bt { font-family:var(--ou-sans); font-weight:300; font-size:12.5px; line-height:1.55; color:var(--ou-ink2); text-wrap:pretty; }
+    .ou-next { display:inline-block; font-family:var(--ou-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; border-radius:2px; padding:5px 11px; }
+
+    .ou-draft { border:1px solid var(--ou-gold3); border-radius:3px; background:rgba(194,162,94,0.04); padding:14px 16px; margin-top:10px; }
+    .ou-draft .dl { font-family:var(--ou-mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ou-gold); margin-bottom:8px; }
+    .ou-draft .subj { font-family:var(--ou-sans); font-weight:500; font-size:13.5px; color:var(--ou-ink); margin-bottom:8px; }
+    .ou-draft .body { font-family:var(--ou-sans); font-weight:300; font-size:12.5px; line-height:1.65; color:var(--ou-ink2); white-space:pre-wrap; border:1px solid var(--ou-rule); border-radius:2px; padding:12px; background:var(--ou-gr1); }
+    .ou-draft .prov { font-family:var(--ou-mono); font-size:8.5px; letter-spacing:0.06em; color:var(--ou-ink4); margin-top:8px; line-height:1.6; }
+    .ou-draft .prov b { color:var(--ou-freq2); }
+
+    .ou-agents { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--ou-rule); border:1px solid var(--ou-rule); border-radius:3px; overflow:hidden; }
+    .ou-agent { background:var(--ou-gr2); padding:12px 14px; }
+    .ou-agent .an { font-family:var(--ou-sans); font-weight:400; font-size:13px; color:var(--ou-ink2); }
+    .ou-agent .ad { font-family:var(--ou-sans); font-weight:300; font-size:11px; color:var(--ou-ink4); margin:3px 0 6px; }
+    @media (max-width:760px){ .ou-agents{ grid-template-columns:1fr; } }
+
+    .ou-note { margin-top:40px; border-top:1px solid var(--ou-rule); padding-top:22px; font-family:var(--ou-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--ou-ink3); }
+    .ou-note em { font-style:italic; color:var(--ou-ink2); }
+    .ou-note a { color:var(--ou-freq); text-decoration:none; border-bottom:1px solid var(--ou-freq3); }
+  </style>
+</head>
+<body class="ou-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Outreach</span><span class="st-sub">— candidate discovery · approval-gated</span></div>
+  <div class="st-right">
+    <a class="st-link" href="mandates.html">Mandates ↗</a>
+    <a class="st-link" href="person-research.html">Person Research ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="ou-shell">
+  <div class="ou-crumbs"><a href="index.html">Studio</a> / Outreach</div>
+  <div class="ou-head">
+    <h1 class="ou-title">Discover candidates. <em>Draft outreach. You approve.</em></h1>
+    <p class="ou-sub">
+      AI-assisted candidate discovery after a mandate — with a recruiter in control before anything leaves the
+      building. Open a search mission against a mandate, add a candidate (LinkedIn URL or manual), reuse Person
+      Research for a preliminary brief + resonance screen, then generate a <em>personalized</em> outreach draft
+      that explains why this person may resonate — and approve or reject it. Nothing is sent automatically.
+    </p>
+  </div>
+  <div class="ou-notimpl" id="ou-banner"></div>
+  <div class="ou-intake" id="ou-intake"></div>
+  <div class="ou-searches" id="ou-searches"></div>
+  <div id="ou-view"></div>
+  <p class="ou-note">
+    <em>Approval-gated by construction.</em> Live candidate search (Goodspace DB / LinkedIn / Google / GitHub) is
+    <strong>NOT IMPLEMENTED</strong> — a search mission is created and marked <em>needs manual input</em>; candidates
+    are added by URL or by hand, researched via pasted public material, and screened by reusing the resonance
+    engine. Outreach drafts require <em>explicit human approval</em>; there is no email/WhatsApp transport, so an
+    approved draft only reaches <em>sent_placeholder</em>. No ranking, no score, no hire/reject, no auto-send.
+    Future agents are placeholders only.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="../frequency/of-person-research.js"></script>
+<script src="../frequency/of-discovery-outreach.js"></script>
+<script src="outreach-admin.js"></script>
+</body>
+</html>

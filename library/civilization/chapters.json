@@ -1,0 +1,60 @@
+{
+  "_comment": "Structural index of the Civilization manuscript. Maps the book's three-part architecture to its source HTML files (rich, illustrated) and provides section titles for a future runtime / reader UI. The clean prose lives in full-text.txt; these files preserve the original typeset structure.",
+  "slug": "civilization",
+  "title": "Civilization",
+  "volume_label": "Vol. I",
+  "subtitle": "The Compass — A framework for evaluating the direction of intelligent civilizations.",
+  "thesis": "Intelligence evolves along eight identifiable directions — four Foundations and four Frontiers. The book builds a civilizational compass rather than a map of the future.",
+  "structure": {
+    "foundations": ["Continuity", "Truth", "Capability", "Cooperation"],
+    "frontiers": ["Expansion", "Creation", "Recursion", "Purpose"]
+  },
+  "parts": [
+    {
+      "part": "Part One",
+      "name": "The Compass",
+      "files": [
+        { "file": "source/01_Part1.html", "sections": [
+          "A Conscious Universe", "The Case for Direction", "A Note on Maps and Compasses",
+          "How the Directions Were Chosen", "The Reduction", "What Would Invalidate This",
+          "What Survived", "The Eight Directions", "From Compass to Landscape" ] }
+      ]
+    },
+    {
+      "part": "Part Two",
+      "name": "The Eight Directions",
+      "files": [
+        { "file": "source/02_Direction1_Continuity.html", "direction": "I", "tier": "Foundation", "name": "Continuity" },
+        { "file": "source/03_Direction2_Truth.html", "direction": "II", "tier": "Foundation", "name": "Truth" },
+        { "file": "source/04_Direction3_Capability.html", "direction": "III", "tier": "Foundation", "name": "Capability" },
+        { "file": "source/05_Direction4_Cooperation.html", "direction": "IV", "tier": "Foundation", "name": "Cooperation" },
+        { "file": "source/06_Interlude_FoundationsLimits.html", "name": "Interlude: When Foundations Meet Their Limits" },
+        { "file": "source/07_Direction5_Expansion.html", "direction": "V", "tier": "Frontier", "name": "Expansion" },
+        { "file": "source/08_Direction6_Creation.html", "direction": "VI", "tier": "Frontier", "name": "Creation" },
+        { "file": "source/09_Direction7_Recursion.html", "direction": "VII", "tier": "Frontier", "name": "Recursion" },
+        { "file": "source/10_Direction8_Purpose.html", "direction": "VIII", "tier": "Frontier", "name": "Purpose" },
+        { "file": "source/11_PartTwoClosing_EightInTension.html", "name": "Closing: The Eight in Tension" }
+      ]
+    },
+    {
+      "part": "Part Three",
+      "name": "Reading a Civilization",
+      "files": [
+        { "file": "source/12_PartThree_HowToReadACivilization.html", "name": "How to Read a Civilization" },
+        { "file": "source/13_PartThree_WhatIsACivilization.html", "name": "What Is a Civilization?" },
+        { "file": "source/14_PartThree_Rome.html", "name": "Rome in Eight Dimensions" },
+        { "file": "source/15_PartThree_China.html", "name": "China: The Civilization That Survived Itself" },
+        { "file": "source/16_PartThree_Modernity.html", "name": "Modernity: The Substrate Question" },
+        { "file": "source/17_PartThree_AI.html", "name": "Artificial Intelligence" },
+        { "file": "source/18_PartThree_PossibleFutures.html", "name": "Possible Futures" }
+      ]
+    },
+    {
+      "part": "Epilogue",
+      "name": "Standing at the Edge of the Map",
+      "files": [
+        { "file": "source/19_Epilogue_StandingAtTheEdgeOfTheMap.html", "name": "Standing at the Edge of the Map" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person Intelligence · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .pi-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --pi-gr1:#07080c; --pi-gr2:#0c0d12; --pi-gr3:#11131a;
+      --pi-ink:#ebe9e2; --pi-ink2:#b8b5ad; --pi-ink3:#6e6c66; --pi-ink4:#44433f;
+      --pi-freq:#6f9bb5; --pi-freq2:#4f7388; --pi-freq3:#2c4150; --pi-freq4:#13202a;
+      --pi-pos:#6fae86; --pi-pos3:#2f5b43; --pi-warm:#c0975e; --pi-warm3:#5c4626;
+      --pi-neg:#c98170; --pi-neg3:#5c3329; --pi-gold:#c2a25e; --pi-gold3:#5c4c26;
+      --pi-rule:#14161e; --pi-edge:#1c2030;
+      --pi-serif:"Newsreader",Georgia,serif; --pi-sans:"Inter",system-ui,sans-serif; --pi-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .pi-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .pi-crumbs { font-family:var(--pi-mono); font-size:11px; letter-spacing:0.14em; color:var(--pi-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .pi-crumbs a { color:var(--pi-ink2); text-decoration:none; }
+    .pi-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--pi-rule); padding-bottom:24px; margin-bottom:18px; flex-wrap:wrap; }
+    .pi-title { font-family:var(--pi-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--pi-ink); letter-spacing:-0.01em; }
+    .pi-title em { font-style:italic; }
+    .pi-sub { font-family:var(--pi-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--pi-ink3); margin-top:9px; max-width:66ch; text-wrap:pretty; }
+    .pi-btn { background:transparent; border:1px solid var(--pi-edge); border-radius:2px; color:var(--pi-ink2); font-family:var(--pi-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; }
+    .pi-btn:hover { border-color:var(--pi-freq3); color:var(--pi-ink); background:var(--pi-freq4); }
+    .pi-notimpl { font-family:var(--pi-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pi-warm); border:1px dashed var(--pi-warm3); border-radius:2px; padding:6px 10px; display:inline-block; margin-bottom:18px; }
+
+    .pi-pickrow { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:22px; }
+    .pi-field { display:flex; flex-direction:column; gap:6px; }
+    .pi-field label { font-family:var(--pi-mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--pi-ink4); }
+    .pi-field select, .pi-field input { background:var(--pi-gr1); border:1px solid var(--pi-edge); border-radius:2px; color:var(--pi-ink); font-family:var(--pi-sans); font-weight:300; font-size:13px; padding:10px 12px; min-width:180px; }
+    .pi-field select:focus, .pi-field input:focus { outline:none; border-color:var(--pi-freq3); }
+    .pi-go { background:var(--pi-freq4); border:1px solid var(--pi-freq3); border-radius:2px; color:var(--pi-freq); font-family:var(--pi-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 16px; cursor:pointer; }
+    .pi-go:hover { color:var(--pi-ink); border-color:var(--pi-freq2); }
+    .pi-empty { border:1px dashed var(--pi-edge); border-radius:3px; padding:38px; text-align:center; color:var(--pi-ink3); font-family:var(--pi-sans); font-weight:300; font-size:14px; line-height:1.7; }
+
+    .pi-panel { border:1px solid var(--pi-rule); border-radius:3px; background:var(--pi-gr2); margin-bottom:16px; overflow:hidden; }
+    .pi-ptop { padding:14px 20px; border-bottom:1px solid var(--pi-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .pi-plabel { font-family:var(--pi-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--pi-freq); }
+    .pi-pbody { padding:16px 20px; }
+    .pi-cq { font-family:var(--pi-sans); font-weight:300; font-style:italic; font-size:12px; color:var(--pi-ink4); margin-top:3px; }
+    .pi-q { font-family:var(--pi-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--pi-edge); border-radius:2px; padding:2px 7px; color:var(--pi-ink3); }
+    .pi-q.high { color:var(--pi-pos); border-color:var(--pi-pos3); } .pi-q.medium { color:var(--pi-freq); border-color:var(--pi-freq3); } .pi-q.low { color:var(--pi-ink4); }
+
+    .pi-srcform { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+    .pi-srcform select, .pi-srcform input { background:var(--pi-gr1); border:1px solid var(--pi-edge); border-radius:2px; color:var(--pi-ink); font-family:var(--pi-sans); font-weight:300; font-size:12.5px; padding:8px 10px; }
+    .pi-srcform textarea { flex:1; min-width:100%; background:var(--pi-gr1); border:1px solid var(--pi-edge); border-radius:2px; color:var(--pi-ink); font-family:var(--pi-sans); font-weight:300; font-size:12.5px; line-height:1.5; padding:9px 11px; resize:vertical; min-height:90px; box-sizing:border-box; }
+    .pi-srcform textarea:focus, .pi-srcform select:focus, .pi-srcform input:focus { outline:none; border-color:var(--pi-freq3); }
+    .pi-act { background:var(--pi-gr1); border:1px solid var(--pi-edge); border-radius:2px; color:var(--pi-ink2); font-family:var(--pi-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; cursor:pointer; transition:all .2s; }
+    .pi-act:hover { color:var(--pi-ink); border-color:var(--pi-freq3); }
+    .pi-act.primary { background:var(--pi-freq4); border-color:var(--pi-freq3); color:var(--pi-freq); }
+    .pi-act.primary:hover { color:var(--pi-ink); border-color:var(--pi-freq2); }
+
+    .pi-src { display:flex; justify-content:space-between; gap:10px; align-items:baseline; border-left:2px solid var(--pi-freq3); padding:7px 0 7px 12px; margin-bottom:7px; flex-wrap:wrap; }
+    .pi-src.observed { border-color:var(--pi-pos3); }
+    .pi-src .st { font-family:var(--pi-sans); font-weight:400; font-size:12.5px; color:var(--pi-ink); }
+    .pi-src .sm { font-family:var(--pi-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pi-ink4); }
+
+    .pi-sig { border-left:2px solid var(--pi-edge); padding:6px 0 6px 12px; margin-bottom:6px; }
+    .pi-sig .sg { font-family:var(--pi-sans); font-weight:300; font-size:12.5px; color:var(--pi-ink2); }
+    .pi-sig .sgt { font-family:var(--pi-mono); font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pi-freq2); }
+    .pi-sig .sge { font-family:var(--pi-sans); font-weight:300; font-style:italic; font-size:11.5px; color:var(--pi-ink4); margin-top:3px; line-height:1.45; text-wrap:pretty; }
+    .pi-sigcols { columns:2; column-gap:18px; } @media (max-width:760px){ .pi-sigcols{ columns:1; } }
+
+    .pi-hyp { border:1px solid var(--pi-rule); border-radius:2px; background:var(--pi-gr3); padding:13px 16px; margin-bottom:10px; }
+    .pi-hyp .hl { font-family:var(--pi-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--pi-freq); margin-bottom:6px; display:flex; gap:8px; align-items:center; }
+    .pi-hyp .ht { font-family:var(--pi-serif); font-weight:300; font-size:15px; line-height:1.5; color:var(--pi-ink); text-wrap:pretty; }
+    .pi-hyp .hr { font-family:var(--pi-mono); font-size:8.5px; letter-spacing:0.06em; color:var(--pi-ink4); margin-top:6px; }
+    .pi-hyp .hr b { color:var(--pi-freq2); }
+    .pi-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; } @media (max-width:760px){ .pi-grid2{ grid-template-columns:1fr; } }
+    .pi-ftable { border:1px solid var(--pi-rule); border-radius:2px; overflow:hidden; }
+    .pi-frow { display:grid; grid-template-columns:1.2fr 1fr 0.6fr 1.6fr; gap:10px; padding:8px 12px; border-top:1px solid var(--pi-rule); align-items:baseline; }
+    .pi-frow:first-child { border-top:none; background:var(--pi-gr1); font-family:var(--pi-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pi-ink4); }
+    .pi-frow .fd { font-family:var(--pi-mono); font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--pi-ink3); }
+    .pi-frow .fe { font-family:var(--pi-sans); font-weight:300; font-size:12.5px; color:var(--pi-ink); }
+    .pi-frow .fe.none { color:var(--pi-ink4); }
+    .pi-frow .fr { font-family:var(--pi-sans); font-weight:300; font-size:11px; color:var(--pi-ink4); line-height:1.4; }
+    .pi-contra { border-left:2px solid var(--pi-neg3); padding:9px 0 9px 14px; margin-bottom:9px; }
+    .pi-contra.major { border-color:var(--pi-neg); }
+    .pi-contra .cd { font-family:var(--pi-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pi-neg); margin-bottom:5px; }
+    .pi-contra .cs { font-family:var(--pi-sans); font-weight:300; font-size:12.5px; line-height:1.5; color:var(--pi-ink2); }
+    .pi-contra .cs b { color:var(--pi-ink); font-weight:400; }
+    .pi-conf { background:var(--pi-gr3); border:1px solid var(--pi-freq3); border-radius:3px; padding:14px 16px; margin-bottom:16px; }
+    .pi-conf .cl { font-family:var(--pi-mono); font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--pi-freq); margin-bottom:6px; }
+    .pi-conf .cb { font-family:var(--pi-serif); font-weight:300; font-size:18px; color:var(--pi-ink); }
+    .pi-conf .cr { font-family:var(--pi-sans); font-weight:300; font-size:12.5px; line-height:1.6; color:var(--pi-ink3); margin-top:5px; text-wrap:pretty; }
+
+    /* references */
+    .pi-vq { border-left:2px solid var(--pi-gold3); padding:7px 0 7px 13px; margin-bottom:7px; }
+    .pi-vq .vt { font-family:var(--pi-serif); font-weight:300; font-size:13.5px; line-height:1.5; color:var(--pi-ink); text-wrap:pretty; }
+    .pi-vq .vm { font-family:var(--pi-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pi-gold); margin-top:3px; }
+    .pi-cov { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .pi-covpill { font-family:var(--pi-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; border:1px dashed var(--pi-edge); border-radius:2px; padding:5px 10px; color:var(--pi-ink4); }
+    .pi-covpill.met { border-style:solid; border-color:var(--pi-pos3); color:var(--pi-pos); }
+    .pi-ref { display:flex; justify-content:space-between; gap:10px; align-items:baseline; border-left:2px solid var(--pi-gold3); padding:7px 0 7px 12px; margin-bottom:7px; flex-wrap:wrap; }
+    .pi-ref .rn { font-family:var(--pi-sans); font-weight:400; font-size:12.5px; color:var(--pi-ink); }
+    .pi-ref .rm { font-family:var(--pi-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pi-ink4); }
+    .pi-consent { background:var(--pi-gr3); border:1px solid var(--pi-gold3); border-radius:3px; padding:14px 16px; margin:14px 0; }
+    .pi-consent .ct { font-family:var(--pi-sans); font-weight:300; font-size:13px; line-height:1.6; color:var(--pi-ink2); }
+    .pi-consent.granted { border-color:var(--pi-pos3); }
+
+    .pi-note { margin-top:40px; border-top:1px solid var(--pi-rule); padding-top:22px; font-family:var(--pi-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--pi-ink3); }
+    .pi-note em { font-style:italic; color:var(--pi-ink2); }
+    .pi-note a { color:var(--pi-freq); text-decoration:none; border-bottom:1px solid var(--pi-freq3); }
+  </style>
+</head>
+<body class="pi-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Person Intelligence</span><span class="st-sub">— who is this person, professionally</span></div>
+  <div class="st-right">
+    <a class="st-link" href="people.html">People ↗</a>
+    <a class="st-link" href="hiring.html">Hiring ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="pi-shell">
+  <div class="pi-crumbs"><a href="index.html">Studio</a> / Person Intelligence</div>
+  <div class="pi-head">
+    <div>
+      <h1 class="pi-title">Who is this person, <em>professionally?</em></h1>
+      <p class="pi-sub">
+        Build a serious Person Intelligence Brief from <em>real material you provide</em> — resume, LinkedIn text,
+        articles, posts, press, portfolio. Every signal quotes its source; every hypothesis traces to signals;
+        every confidence states its reasoning. Then prepare 10 professional references with explicit consent and
+        hypothesis-driven questions. No matching, ranking, fit score, or automated outreach — and only professional
+        behaviour from professional evidence.
+      </p>
+    </div>
+    <button class="pi-btn" id="pi-reset" type="button">Reset</button>
+  </div>
+  <div class="pi-notimpl">Live web search &amp; LinkedIn scraping · NOT IMPLEMENTED — paste real text / links below. The runtime never pretends to have searched.</div>
+  <div class="pi-pickrow" id="pi-pick"></div>
+  <div id="pi-view"></div>
+  <p class="pi-note">
+    <em>Honest by construction.</em> The runtime reasons over the material you paste — it does not scrape LinkedIn or
+    search the web. Résumé-only briefs are labelled <em>weak</em>; confidence rises with articles, press, and
+    validated references. References are prepared with explicit, stored consent; contacting them across website /
+    email / WhatsApp / voice is a <em>hook</em> for a later build — nothing is sent automatically.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-person-intel.js"></script>
+<script src="person-intel-admin.js"></script>
+</body>
+</html>

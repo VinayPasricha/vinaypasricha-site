@@ -1,0 +1,22 @@
+{
+  "name": "vinay-runtime-server",
+  "version": "0.1.0-stage1",
+  "private": true,
+  "type": "module",
+  "description": "Stage-1 memory server — auth, 5 endpoints, hash-chained Essence Log, crypto-shred, 30-day retention, migration. Implements _brief/memory-event-schema-v1.1.md.",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "node test/acceptance.mjs",
+    "gen-master-key": "node scripts/gen-master-key.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "retention": "node jobs/retention.mjs"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "@aws-sdk/client-s3": "^3.620.0",
+    "google-auth-library": "^9.11.0",
+    "shamir-secret-sharing": "^0.0.4"
+  },
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Direction Two: Truth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0f1115;
+    --paper:      #faf8f4;
+    --paper-deep: #f3efe7;
+    --rule:       #1c1f26;
+    --cosmos:     #1a2742;
+    --indigo:     #2d3a6b;
+    --gold:       #b8954f;
+    --mute:       #6b6960;
+  }
+
+  @page { size: 6in 9in; margin: 0; }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: #2a2722; color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-optical-sizing: auto; font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 6in; min-height: 9in;
+    margin: 24px auto; padding: 0.75in 0.7in;
+    background: var(--paper); color: var(--ink);
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column;
+  }
+
+  .page::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%);
+    pointer-events: none;
+  }
+
+  .display  { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono     { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  p.lead { margin-bottom: 1em; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+
+  .direction-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .direction-cover-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .direction-cover-roman { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .direction-cover-name { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 72pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .direction-cover-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .direction-cover-sigil { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+
+  .illustration { margin: 0.3in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+
+  .center-line { text-align: center; margin: 0.8em 0; }
+
+  .case-block { border-left: 2px solid var(--gold); padding: 8pt 0 8pt 14pt; margin: 0.18in 0; }
+  .case-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4pt; }
+  .case-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 3pt 0; letter-spacing: -0.01em; }
+  .case-span { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.1em; margin-bottom: 6pt; }
+  .case-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .case-lesson { font-family: "Source Serif 4", serif; font-style: italic; font-size: 9.5pt; color: var(--cosmos); margin-top: 5pt; }
+
+  .test-block { background: var(--paper-deep); padding: 14pt 16pt; margin: 0.18in 0; border-left: 3px solid var(--cosmos); }
+  .test-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 6pt; }
+  .test-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 15pt; color: var(--ink); margin: 0 0 6pt 0; }
+  .test-verdict { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 10pt; color: var(--cosmos); letter-spacing: 0.05em; margin-top: 4pt; }
+  .test-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- ============================================================
+     DIRECTION TWO — COVER
+     ============================================================ -->
+<section class="page direction-cover">
+  <div class="direction-cover-tag">Part Two · Foundation</div>
+
+  <div>
+    <div class="direction-cover-roman">DIRECTION  TWO</div>
+    <h1 class="direction-cover-name">Truth.</h1>
+    <p class="direction-cover-tagline">The corrective force that prevents continuity from becoming decay.</p>
+  </div>
+
+  <div class="direction-cover-sigil">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer field -->
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- Triangle — the truth sigil, scaled up -->
+      <polygon points="140,40 230,220 50,220" fill="none" stroke="#0f1115" stroke-width="2.4"/>
+      <!-- Vertical sightline -->
+      <line x1="140" y1="100" x2="140" y2="200" stroke="#b8954f" stroke-width="2.4"/>
+      <!-- A mark above and below — model and reality -->
+      <circle cx="140" cy="60"  r="3.2" fill="#b8954f"/>
+      <circle cx="140" cy="240" r="3.2" fill="#1a2742"/>
+      <g font-family="JetBrains Mono, monospace" font-size="8" fill="#6b6960" letter-spacing="0.15em" text-anchor="middle">
+        <text x="140" y="48">MODEL</text>
+        <text x="140" y="258">REALITY</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="direction-cover-tag" style="color: var(--mute);">Sigil II · Truth</div>
+</section>
+
+<!-- ============================================================
+     EPIGRAPH PAGE — ORWELL
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Direction Two · Opening</div>
+  <div class="epigraph-text">
+    "To see what is in front of one's nose needs a constant struggle."
+  </div>
+  <div class="epigraph-attribution">— George Orwell</div>
+  <div class="epigraph-source-note">In Front of Your Nose · 1946</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================================
+     §1 · THE CORRECTIVE DIRECTION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Corrective Direction</div>
+  <h2 class="section-title">Continuity Preserves.<br>Truth Corrects.</h2>
+
+  <p class="prose dropcap">The previous chapter ended on a question. Continue, but continue toward what? Continuity is the foundation that allows information to persist across time. It is the precondition for memory, for institutions, for civilization itself. But continuity solves only one problem. It does not solve the problem of error.</p>
+
+  <p class="prose">A civilization can preserve itself perfectly and still preserve the wrong thing. A tradition can be transmitted faithfully for a thousand years and still be transmitting a falsehood. A legal code can persist for centuries and still encode a misunderstanding of human nature. A scientific paradigm can hold for generations and still be wrong about the structure of reality.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">Continuity, by itself, is not a virtue.</p>
+  <p class="stanza">Continuity, by itself, is fossilization waiting to happen.</p>
+
+  <p class="prose" style="margin-top:0.9em;">What turns continuity into something more than fossilization is the presence of a second force. A force that pulls the preserved content toward the structure of reality and away from accumulated error. A force that prevents inherited belief from drifting indefinitely away from inherited evidence.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>That force is the second direction.</em></p>
+
+  <div class="folio folio-right">046</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Corrective Direction</div>
+
+  <p class="prose">Truth is what intelligence does when continuity is not enough. Truth is the corrective pressure that prevents the long chain of transmission from becoming a long chain of lies. It is the willingness of an intelligence to discover that what it has believed is not quite right, and to update what it carries forward.</p>
+
+  <p class="prose">The phrasing here matters. Truth is not the absence of error. Every intelligence makes errors continuously, and the most accurate models in the world are still approximations. Truth is the refusal to protect error once it has been recognized. It is the structural commitment to allowing the evidence to win.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A civilization moves toward Truth when it builds mechanisms that make its mistakes visible and its corrections possible. A civilization moves away from Truth when it builds mechanisms that conceal its mistakes and punish those who try to surface them.</p>
+
+  <div class="pull-quote no-break">
+    Truth is not the absence of error.<br>
+    It is the refusal to protect error.
+  </div>
+
+  <p class="prose">The history of intelligent systems is, in part, the history of this second force operating on top of the first. Continuity keeps the thread of information from breaking. Truth keeps the thread from carrying poison forward.</p>
+
+  <div class="folio folio-left">047</div>
+</section>
+
+<!-- ============================================================
+     §2 · WORKING DEFINITION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Working Definition</div>
+  <h2 class="section-title">Truth as<br>Correspondence.</h2>
+
+  <p class="prose dropcap">Truth, in this work, is not a moral category. It is not honesty. It is not sincerity. It is not the absence of deception. It is not the presence of virtue. The framework will use the word in a narrower, more operational sense.</p>
+
+  <p class="prose"><strong>Truth is the alignment between an internal model and external reality.</strong> It is the degree to which what an intelligence believes about the world corresponds to what the world is actually doing. It is, in a phrase, survival-grade correspondence.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A bacterium has truth in this sense, or fails to. Its chemical receptors model the gradient of nutrients in its environment. The accuracy of those receptors is not a metaphor. It is a measurable quantity. Bacteria with more accurate models locate food. Bacteria with less accurate models do not. The same logic, scaled up through every layer of biology and culture, defines Truth as the framework will use it.</p>
+
+  <p class="prose">A civilization has truth, or fails to, in the same sense. The accuracy of its agricultural models determines whether it can feed itself. The accuracy of its medical models determines whether its citizens survive disease. The accuracy of its economic models determines whether its institutions can price risk. The accuracy of its military models determines whether its armies march into reality or into disaster.</p>
+
+  <div class="folio folio-right">048</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Working Definition</div>
+
+  <p class="prose">This is the crucial point. The framework's claim about Truth is not that intelligent systems should be virtuous. The claim is that intelligent systems are subject to a measurable, civilization-shaping force. Systems whose models drift too far from reality, for too long, are punished by reality. The punishment is rarely immediate. It is rarely fair. It is rarely visible at the moment of error. But it arrives.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">A civilization can lie to itself temporarily.</p>
+  <p class="stanza"><em>Reality eventually collects the debt.</em></p>
+
+  <p class="prose" style="margin-top:0.9em;">The delay matters. A civilization can construct a false picture of itself, of its enemies, of its economy, of its environment, of its science, and live within that false picture for years or even generations. During that period, the false picture may even appear to work. Crops may seem to grow. Markets may seem to rise. Wars may seem winnable. Public health may seem secure.</p>
+
+  <p class="prose">Then reality collects.</p>
+
+  <p class="prose">The longer the delay, the more violent the correction. The most consequential failures of civilizations are not failures of execution. They are failures of correspondence — moments at which the gap between the civilization's models and the world's actual behavior became too large for the gap to be closed gently.</p>
+
+  <div class="folio folio-left">049</div>
+</section>
+
+<!-- ============================================================
+     §3 · EVIDENCE FROM BIOLOGY
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ Evidence · Biology</div>
+  <h2 class="section-title">Before Truth Was<br>a Philosophy.</h2>
+
+  <p class="prose dropcap">Long before truth became a philosophical concept, it was already a biological requirement. Every nervous system, every immune system, every sense organ, every behavioral instinct is, at bottom, a model of some feature of the world. Each model was built by evolution out of the bodies of organisms whose ancestors carried slightly more accurate versions. Each error was paid for, generation by generation, by organisms that did not survive to reproduce.</p>
+
+  <p class="prose">A predator that misreads the location of its prey starves. A prey animal that misreads the approach of a predator dies. A migrating bird that misreads the position of the magnetic pole arrives at the wrong continent. The cost of these errors is not abstract. The cost is the organism.</p>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 380 200" width="360" height="180" xmlns="http://www.w3.org/2000/svg">
+      <!-- INTERNAL MODEL on left -->
+      <g>
+        <circle cx="90" cy="100" r="55" fill="none" stroke="#1a2742" stroke-width="1.4"/>
+        <g stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.6">
+          <circle cx="70" cy="85"  r="4" fill="#b8954f" stroke="none"/>
+          <circle cx="105" cy="90" r="3" fill="#b8954f" stroke="none"/>
+          <circle cx="85" cy="115" r="3" fill="#b8954f" stroke="none"/>
+          <line x1="70" y1="85" x2="105" y2="90"/>
+          <line x1="105" y1="90" x2="85" y2="115"/>
+          <line x1="85" y1="115" x2="70" y2="85"/>
+        </g>
+        <text x="90" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#6b6960" letter-spacing="0.15em">INTERNAL MODEL</text>
+      </g>
+      <!-- Arrow/alignment -->
+      <g stroke="#b8954f" stroke-width="1" fill="none">
+        <line x1="150" y1="95" x2="230" y2="95"/>
+        <line x1="230" y1="105" x2="150" y2="105"/>
+      </g>
+      <text x="190" y="80" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6.5" fill="#b8954f" letter-spacing="0.15em">CORRESPONDENCE</text>
+      <!-- EXTERNAL REALITY on right -->
+      <g>
+        <rect x="240" y="50" width="100" height="100" fill="none" stroke="#1a2742" stroke-width="1.4"/>
+        <g fill="#0f1115">
+          <circle cx="260" cy="70"  r="4"/>
+          <circle cx="295" cy="75"  r="3"/>
+          <circle cx="320" cy="95"  r="4"/>
+          <circle cx="275" cy="125" r="3"/>
+          <circle cx="305" cy="130" r="4"/>
+        </g>
+        <text x="290" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#6b6960" letter-spacing="0.15em">EXTERNAL REALITY</text>
+      </g>
+    </svg>
+    <div class="caption">Fig. 5 — Truth as Survival-Grade Correspondence</div>
+  </div>
+
+  <div class="folio folio-right">050</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Biology</div>
+
+  <p class="prose">Perception itself, at every level of the biological hierarchy, is reality-modeling under survival pressure. The eye does not see the world. It constructs a model of the world from photons. The model is biased, lossy, partial, and species-specific. It is also, on average, accurate enough to navigate. The accuracy was not a choice. It was the price of admission.</p>
+
+  <p class="prose">The same is true of higher cognition. Pattern recognition, prediction, expectation, planning — each of these is a layer of internal modeling. Each layer can be more or less accurate. Each carries a measurable cost when accuracy fails. A herd animal that fails to model the intentions of its predators is removed from the herd. A primate that fails to model the intentions of its allies is removed from the alliance. A human that fails to model the structure of its physical environment falls from a height, drowns in a river, freezes in a winter it did not see coming.</p>
+
+  <p class="prose">The deeper observation is that biology, considered as a single long process, is itself a truth-discovery system. Evolution is a procedure for testing models of the world. Each organism is a hypothesis. Each generation is a result. The hypotheses that correspond to reality propagate. The hypotheses that do not are deleted, one body at a time.</p>
+
+  <div class="pull-quote no-break">
+    Each organism is a hypothesis.<br>
+    Each generation is a result.
+  </div>
+
+  <p class="prose">By the time intelligence becomes self-conscious enough to ask philosophical questions about truth, four billion years of biological truth-testing have already happened. The philosophical question arises late. The biological requirement was there from the beginning.</p>
+
+  <div class="folio folio-left">051</div>
+</section>
+
+<!-- ============================================================
+     § A NOTE ON NAVIGATION — TRUTH AT SEA
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ A Note on Navigation</div>
+  <h2 class="section-title">Truth<br>at Sea.</h2>
+
+  <p class="prose dropcap">Most truth-questions feel abstract. A few do not. When the question is where a ship is on an open ocean, the abstraction collapses. The ship can believe anything. The ocean only cares where it actually is.</p>
+
+  <p class="prose">For most of European maritime history, sailors could determine latitude — north-south position — from the angle of the sun or polar stars. Longitude — east-west position — could not be determined reliably at sea. A ship's belief about its longitude could be wrong by hundreds of miles, and the crew would not discover the error until they ran into something.</p>
+
+  <div class="case-block">
+    <div class="case-label">Truth Made Visible</div>
+    <div class="case-name">The Longitude Problem</div>
+    <div class="case-span">1707 — 1773</div>
+    <div class="case-body">In October 1707, four British warships ran aground at the Isles of Scilly in fog. Roughly two thousand sailors died. The navigators had believed they were dozens of miles from their actual position. Seven years later, the British Parliament passed the Longitude Act, offering an extraordinary prize for any method that could solve the problem of determining longitude at sea. After decades of work, the clockmaker John Harrison built marine chronometers accurate enough to maintain precise time across an ocean voyage. With precise time at a known reference, longitude could finally be computed. The ocean had not changed. The model had been corrected to match it.</div>
+    <div class="case-lesson">Reality grants no exemptions. Only better models grant survival.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.18in;">The Polynesian navigators, working without metal instruments, solved analogous problems by other means — sophisticated inherited models of wave patterns, star paths, bird flight, and cloud formations. Their models were accurate enough to cross thousands of miles of open Pacific routinely. When the models were lost, as happened on Easter Island after the ecological collapse, the technology of voyaging was lost with them. The principle was the same in both traditions. Where reality is unforgiving, only intelligence whose models correspond to reality survives.</p>
+
+  <div class="pull-quote no-break">
+    A ship can believe anything.<br>
+    The ocean only cares where it actually is.
+  </div>
+
+  <p class="prose">Navigation is Truth made visible. Every truth-question is, in its essence, a navigation question. A civilization that knows where it actually stands can choose where to go next. A civilization that does not, sails by belief into the rocks.</p>
+
+  <div class="folio folio-right">052</div>
+</section>
+
+<!-- ============================================================
+     §4 · EVIDENCE FROM SCIENCE
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ Evidence · Science</div>
+  <h2 class="section-title">The Loop<br>That Catches Errors.</h2>
+
+  <p class="prose dropcap">Science is the most powerful truth-correction mechanism humanity has yet built. It is not a body of knowledge. It is a procedure. The body of knowledge changes. The procedure is what persists.</p>
+
+  <p class="prose">The procedure is, in its essence, a loop. An intelligence observes the world. It builds a model. It uses the model to predict what reality will do. It checks whether reality cooperates. When reality refuses to cooperate, the model is revised. The new model produces new predictions. Reality is consulted again. The loop runs.</p>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 380 200" width="360" height="190" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#1a2742" stroke-width="1.2">
+        <!-- Four nodes around a loop -->
+        <circle cx="80"  cy="100" r="32"/>
+        <circle cx="190" cy="40"  r="32"/>
+        <circle cx="300" cy="100" r="32"/>
+        <circle cx="190" cy="160" r="32"/>
+      </g>
+      <g font-family="Space Grotesk, sans-serif" font-size="9" fill="#0f1115" text-anchor="middle" font-weight="500">
+        <text x="80"  y="103">OBSERVE</text>
+        <text x="190" y="43">PREDICT</text>
+        <text x="300" y="103">TEST</text>
+        <text x="190" y="163">REVISE</text>
+      </g>
+      <!-- Arrows between -->
+      <g stroke="#b8954f" stroke-width="1" fill="#b8954f">
+        <line x1="115" y1="85"  x2="155" y2="55"/>
+        <polygon points="155,55 145,55 152,62"/>
+        <line x1="225" y1="55"  x2="265" y2="85"/>
+        <polygon points="265,85 258,78 254,88"/>
+        <line x1="265" y1="115" x2="225" y2="145"/>
+        <polygon points="225,145 234,140 230,150"/>
+        <line x1="155" y1="145" x2="115" y2="115"/>
+        <polygon points="115,115 124,118 121,108"/>
+      </g>
+    </svg>
+    <div class="caption">Fig. 6 — The Truth-Correction Loop</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.15in;">Almost everything that distinguishes the modern world from every prior age can be traced, in some form, to the moment a critical mass of intelligence committed to running this loop deliberately, repeatedly, and at scale.</p>
+
+  <div class="folio folio-right">053</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Science</div>
+
+  <p class="prose">Consider what the loop produces. The medieval physician treating disease with prayer and bloodletting was not stupid. He was working with the best inherited model of his time. The model was wrong. It was wrong for centuries. The loop, run carefully on the question of what causes disease, eventually produced germ theory — and germ theory rebuilt medicine, public health, life expectancy, and the demographic structure of civilization within four generations.</p>
+
+  <p class="prose">The geocentric astronomers were not stupid either. They were working with the best inherited model of the cosmos. The model was wrong. The loop, run on the question of why the planets moved as they did, eventually produced heliocentrism, Newton's mechanics, Einstein's relativity, and the entire physical understanding by which spacecraft now leave the solar system on calculable trajectories.</p>
+
+  <p class="prose" style="margin-top:0.7em;">In each case the pattern is identical. Inherited model. Observation that does not fit. Resistance to revision. Eventual capitulation to evidence. New model. Greater capability.</p>
+
+  <p class="prose">The Royal Society, founded in 1660, adopted a motto that captures the whole structure in three Latin words. <em>Nullius in verba.</em> Take nobody's word for it. The motto is, in effect, the entire logic of Direction Two compressed into a slogan. It does not say the Society believes any particular thing. It says the Society will not believe a thing because it has been told to. The Society will check.</p>
+
+  <div class="pull-quote no-break">
+    Inherited model. Observation that does not fit.<br>
+    Eventual capitulation to evidence.
+  </div>
+
+  <div class="folio folio-left">054</div>
+</section>
+
+<!-- ============================================================
+     §5 · EVIDENCE FROM CIVILIZATION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ Evidence · Civilization</div>
+  <h2 class="section-title">Institutions That<br>Hear Reality.</h2>
+
+  <p class="prose dropcap">Truth becomes civilizational when a society builds institutions whose explicit function is to discover, preserve, and correct knowledge. The institutions take many forms — courts of evidence, public health authorities, statistical agencies, scientific academies, the audit and the census — but they share a common feature. They are mechanisms through which reality reports back to power.</p>
+
+  <p class="prose">Without such mechanisms, power has no way to know whether its decisions are working. With them, even a flawed civilization can correct itself faster than it makes new mistakes. The presence or absence of functional truth-reporting institutions is, on examination, one of the strongest predictors of which civilizations endure across centuries and which do not.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Consider what a few of these institutions actually do.</p>
+
+  <p class="prose">A court of evidence is, structurally, a forum in which competing claims about reality are subjected to scrutiny by parties with different interests, in front of a third party whose explicit job is to decide which claims correspond to what actually happened. A double-entry accounting system is a continuous machine for revealing when the official narrative of a firm's financial state diverges from the underlying operations. A census is an attempt to know how many people there actually are, what they actually do, and where they actually live, instead of believing what officials with reasons to lie report upward.</p>
+
+  <div class="folio folio-right">055</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Civilization</div>
+
+  <p class="prose">None of these institutions discovers truth perfectly. All of them are corruptible. All of them have failed at various points in their histories. The framework's claim is not that they are reliable. The framework's claim is more specific. A civilization that has these institutions can, on average, correct its mistakes faster than one that does not. A civilization that lets these institutions decay loses the capacity to know when it is wrong long before it loses the capacity to keep going.</p>
+
+  <p class="prose">This last point is important. The decay of truth-reporting institutions almost always precedes the visible failure of the civilization that hosts them. By the time the failures become obvious, the institutions that could have surfaced them earlier have usually been weakened for years. The collapse appears sudden only because the warning systems were already broken.</p>
+
+  <div class="pull-quote no-break">
+    Truth-reporting institutions are how reality reports back to power.
+  </div>
+
+  <p class="prose">The civilizations that have endured longest have, almost without exception, invested heavily in such institutions. The civilizations that have collapsed most catastrophically have, almost without exception, allowed them to be politicized, captured, defunded, or destroyed. The pattern is not subtle. It is one of the most robust empirical regularities in the historical record.</p>
+
+  <div class="folio folio-left">056</div>
+</section>
+
+<!-- ============================================================
+     §6 · CASE FROM FAILURE
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Case from Failure</div>
+  <h2 class="section-title">When Truth<br>Is Suppressed.</h2>
+
+  <p class="prose dropcap">The strongest evidence for Truth as a primary direction comes from examining what happens to civilizations and institutions that suppress it. The pattern is unambiguous. Suppression buys time. Reality eventually collects with interest.</p>
+
+  <div class="case-block">
+    <div class="case-label">Truth Suppressed</div>
+    <div class="case-name">Lysenkoism</div>
+    <div class="case-span">Soviet Union · c. 1930s–1960s</div>
+    <div class="case-body">Trofim Lysenko, an agronomist favored by Stalin, rejected the established science of genetics as bourgeois ideology. Lysenko's politically protected theories were adopted as official Soviet biology. Geneticists who disagreed were dismissed, imprisoned, or executed. Nikolai Vavilov, one of the great plant scientists of the twentieth century, died of starvation in prison. Soviet biology and agriculture were set back by decades. Crop yields suffered. A generation of researchers was lost.</div>
+    <div class="case-lesson">A state can command scientists to lie. It cannot command crops to obey the lie.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Truth Suppressed</div>
+    <div class="case-name">The Great Leap Forward</div>
+    <div class="case-span">People's Republic of China · 1958–1962</div>
+    <div class="case-body">Local officials, under political pressure to report extraordinary harvests, inflated grain production figures. The state collected grain quotas based on the inflated numbers. The actual harvest was insufficient. The reports were sustained by suppression of dissent and contrary evidence. The result was one of the deadliest famines in human history, with estimates ranging into the tens of millions of deaths. The truth was known locally and could not travel upward.</div>
+    <div class="case-lesson">When truth cannot travel upward, disaster travels downward.</div>
+  </div>
+
+  <div class="folio folio-right">057</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Failure</div>
+
+  <div class="case-block">
+    <div class="case-label">Truth Suppressed</div>
+    <div class="case-name">The Challenger Disaster</div>
+    <div class="case-span">28 January 1986</div>
+    <div class="case-body">Engineers at Morton Thiokol knew, before the launch, that the shuttle's O-ring seals had not been tested at the temperatures forecast for launch day, and that available data suggested they would fail in the cold. Their warnings were communicated up the management chain. Organizational pressure to maintain the launch schedule overruled the technical objection. The shuttle was launched. The O-rings failed. Seven astronauts died. The subsequent Rogers Commission found that the technical truth had been known and overruled — not missed.</div>
+    <div class="case-lesson">Technical systems fail not when reality is unknown, but when institutions cannot hear what reality says.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Truth Suppressed</div>
+    <div class="case-name">The 2008 Financial Crisis</div>
+    <div class="case-span">Global · 2007–2009</div>
+    <div class="case-body">A generation of financial models priced housing-market risk as if regional defaults were largely independent of one another. The assumption was convenient for the issuance of complex securities. It was also wrong. When the underlying assumption failed — when defaults turned out to be correlated across regions — the entire structure of mortgage-backed securities and their derivatives collapsed within months. The models had been generating apparent prosperity for years. The reality was waiting.</div>
+    <div class="case-lesson">Markets can price illusions for years. Reality reprices them in days.</div>
+  </div>
+
+  <div class="folio folio-left">058</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Failure</div>
+
+  <p class="prose">Four cases. Four different centuries — or near enough. Four different geographies. Four different proximate causes. The deeper structure is the same in every one.</p>
+
+  <p class="prose">In each case, the relevant intelligence had access to evidence that contradicted its operating model. In each case, institutional, political, or commercial pressures suppressed the contradicting evidence. In each case, the suppressed evidence did not go away. It accumulated in the gap between model and reality. And when the gap became too wide to be papered over, reality closed it violently — a famine, a fireball, a financial collapse, a generation of lost science.</p>
+
+  <p class="stanza" style="margin-top:1em;">Truth suppression does not make truth disappear.</p>
+  <p class="stanza"><em>It only postpones the cost.</em></p>
+
+  <p class="prose" style="margin-top:1em;">There is a temptation to read these cases as stories of corruption — corrupt scientists, corrupt officials, corrupt managers, corrupt traders. The temptation is misleading. In none of them were the suppressors of evidence primarily acting in cynical bad faith. Lysenko sincerely believed his biology. Local officials during the Great Leap Forward sincerely believed that intensified effort could produce the harvests they were reporting. NASA managers sincerely believed that prior successful launches were evidence the system worked. Wall Street modelers sincerely believed that national housing prices could not decline.</p>
+
+  <p class="prose">The deadliest falsehoods are not cynical lies. They are sincere beliefs, held by people whose entire institutional environment validated them daily, and whose careers, identities, and self-respect depended on the model being true. Cynical liars know they are lying and can sometimes be persuaded to stop. Sincere believers cannot be persuaded by evidence the system has already taught them to discount.</p>
+
+  <div class="pull-quote no-break">
+    The deadliest lies are the ones we mean.
+  </div>
+
+  <p class="prose">This is the harder lesson. Truth-suppression in mature institutions almost never wears the face of villainy. It wears the face of competence, of reasonableness, of professional consensus. By the time it can be recognized as suppression, the damage is usually done.</p>
+
+  <p class="prose" style="margin-top:0.6em;"><em>Reality always wins the last argument.</em></p>
+
+  <div class="folio folio-right">059</div>
+</section>
+
+<!-- ============================================================
+     §7 · CASE FROM SUCCESS
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Case from Success</div>
+  <h2 class="section-title">When Truth-Correction<br>Is Built In.</h2>
+
+  <p class="prose dropcap">The mirror image of suppression is institutionalized correction. The strongest evidence for Truth as a primary direction is the comparison between fields that built error-correction into their structure and fields that did not. Where correction was built in, capability compounded. Where it was not, capability stalled.</p>
+
+  <div class="case-block">
+    <div class="case-label">Truth Institutionalized</div>
+    <div class="case-name">Science as a Method</div>
+    <div class="case-span">c. 17th century — present</div>
+    <div class="case-body">Science survives not because scientists are honest, but because the procedure assumes they are not. Peer review, replication, public data, adversarial collaboration, statistical scrutiny, the entire apparatus of methodological skepticism — each is a mechanism designed to catch error before the error becomes consensus. The procedure failed often and continues to fail. But the procedure self-corrects, sometimes slowly, almost always eventually. No previous human enterprise has achieved comparable correction at comparable scale.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Truth Institutionalized</div>
+    <div class="case-name">Modern Aviation Safety</div>
+    <div class="case-span">c. 1950s — present</div>
+    <div class="case-body">Commercial aviation in 1950 was dangerous. Commercial aviation today is, per passenger mile, one of the safest activities a human can undertake. The change did not come from better materials or better engineers. It came from the institutionalization of truth-reporting. Mandatory incident reports. Anonymous near-miss reporting. Black boxes on every aircraft. Crew Resource Management procedures that explicitly empower junior officers to challenge captains. Each fatal accident is investigated to root cause and the findings are made public. Aviation got safer because aviation built systems through which reality was permitted to humiliate institutional authority.</div>
+  </div>
+
+  <div class="folio folio-right">060</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Success</div>
+
+  <div class="case-block">
+    <div class="case-label">Truth Institutionalized</div>
+    <div class="case-name">Evidence-Based Medicine</div>
+    <div class="case-span">c. 19th century — present</div>
+    <div class="case-body">For most of human history, medicine was a profession of authority — what the experienced practitioner believed, the patient received. Mortality reflected the belief. The shift to evidence-based medicine — randomized controlled trials, statistical analysis of outcomes, peer-reviewed journals, public reporting of complication rates — has been one of the largest single drivers of the doubling of human life expectancy across the past two centuries. The shift was not painless. It punished entire schools of practice. It made many distinguished physicians wrong in public. It worked.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">The pattern across all three cases is the same. Each field accepted that its practitioners would be wrong, frequently and embarrassingly. Each field designed mechanisms by which the wrongness would be detected, surfaced, recorded, and corrected. Each field's authority was, paradoxically, increased by the public humility of its error-correction procedures.</p>
+
+  <p class="prose">Compare these to fields that have not built such mechanisms. The fields where authority is protected from contradiction, where senior practitioners cannot be openly challenged, where data is not shared, where errors are not investigated to root cause — these fields stagnate. They may persist. They may even be culturally prestigious. They do not compound capability.</p>
+
+  <div class="pull-quote no-break">
+    Authority that cannot be embarrassed cannot improve.
+  </div>
+
+  <div class="folio folio-left">061</div>
+</section>
+
+<!-- ============================================================
+     §8 · TRUTH IS CORRECTION, NOT CERTAINTY
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ A Crucial Distinction</div>
+  <h2 class="section-title">Truth Is Not<br>Certainty.</h2>
+
+  <p class="prose dropcap">The argument so far is vulnerable to a particular kind of misreading. A reader sympathetic to scientific authority may take the chapter to be claiming that Truth-pursuing civilizations are more certain than their rivals. A reader hostile to institutional authority may take the chapter to be claiming that established institutions are reliably correct. Both readings are wrong, and both miss the deeper structure.</p>
+
+  <p class="prose">Truth, as the framework uses the word, is not certainty. It is correction.</p>
+
+  <p class="prose">A civilization committed to Truth does not claim that it is never wrong. It claims something more specific. It builds systems through which it can discover when it is wrong. The difference between these two claims is the difference between a civilization that can learn and a civilization that cannot.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">Certainty is brittle.</p>
+  <p class="stanza">Correction is durable.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Every great scientific theory has eventually been revised. Newton was revised by Einstein. Einstein will, in some form, eventually be revised by something we do not yet have. None of this reflects badly on Newton or Einstein. It reflects the fact that the procedure they were participating in is structurally committed to its own continued correction. They built better wrongness, not certainty.</p>
+
+  <div class="folio folio-right">062</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Crucial Distinction</div>
+
+  <p class="prose">This is also why Truth, as a civilizational direction, is not the same as the cultural authority of any particular set of experts at any particular moment. Experts are subject to the same forces that act on every intelligence. They can be wrong. They can suppress dissent. They can develop institutional incentives to protect their own consensus from contradictory evidence. When this happens, the institution stops embodying Truth, even though it may continue speaking in its name.</p>
+
+  <p class="prose">A civilization moving in the direction of Truth is, therefore, one that maintains the willingness to surface error against its own current authorities. It is not anti-expert. It is anti-immunization-from-correction. The two are easily confused but should not be.</p>
+
+  <div class="pull-quote no-break">
+    A truthful civilization is not one that never lies.<br>
+    It is one that can still hear reality when reality disagrees.
+  </div>
+
+  <p class="prose">This formulation also dissolves a common false opposition. It is sometimes claimed that institutions and free inquiry are in tension — that protecting credentialed authority must come at the cost of allowing challenge, or that allowing challenge must come at the cost of credentialed authority. The framework rejects this trade-off. The strongest truth-pursuing civilizations have been the ones that built both: credentialed authority that takes evidence seriously, and channels through which evidence can humiliate that authority when it deserves to be humiliated. Without both, the direction is not Truth. It is something narrower.</p>
+
+  <div class="folio folio-left">063</div>
+</section>
+
+<!-- ============================================================
+     §9 · MODERN STAKES
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ Modern Stakes</div>
+  <h2 class="section-title">The Speed<br>of Falsehood.</h2>
+
+  <p class="prose dropcap">Falsehood is not a new feature of the human condition. Every age has had its rumors, its propaganda, its mistaken consensus, its motivated reasoning. What has changed in the present era is not the existence of falsehood. What has changed is the speed at which it propagates, the scale at which it can be produced, and the precision with which it can be targeted at the individual most likely to believe it.</p>
+
+  <p class="prose">A printing press could spread an error to thousands. A radio broadcast could spread one to millions. An algorithmically-amplified social feed can spread a falsehood to billions, in hours, while simultaneously presenting each recipient with a different version optimized for what that recipient already wants to believe. The infrastructure for falsehood-distribution has grown by orders of magnitude. The infrastructure for truth-correction has, in most institutions, grown by very little.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Add to this the recent emergence of generative artificial intelligence systems capable of producing text, images, voice, and video at human or superhuman levels of fluency. These systems do not yet, on the whole, hallucinate maliciously. But they hallucinate routinely, and their hallucinations are difficult to distinguish from accurate output without independent verification. The cost of producing plausible falsehood has fallen toward zero.</p>
+
+  <div class="folio folio-right">064</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Modern Stakes</div>
+
+  <p class="prose">The framework's claim is not that this development is uniquely dangerous. The framework's claim is more structural. Every civilization throughout history has lived with some ratio between the production of falsehood and the institutional capacity for truth-correction. When the ratio favors correction, the civilization compounds capability. When the ratio reverses, the civilization stalls. When the ratio reverses sharply, the civilization is forced into one of two responses. It either rebuilds its correction infrastructure at speed, or it loses the ability to coordinate its future.</p>
+
+  <div class="pull-quote no-break">
+    A civilization that loses shared access to reality<br>
+    loses the ability to coordinate its future.
+  </div>
+
+  <p class="prose">The danger of the present age is not that falsehood exists. The danger is that the existing institutions of truth-correction — courts, peer review, journalism, public statistics, professional standards — are being outpaced. They were designed for a slower world. They are now operating against an opponent with vastly more bandwidth.</p>
+
+  <p class="prose" style="margin-top:0.7em;">A civilization that takes Direction Two seriously, in this century, will treat the reconstruction of truth-correction infrastructure as one of its highest priorities. Not because falsehood is new. Because the asymmetry between the two has become acute. The framework cannot prescribe what those new institutions should look like. It can only predict that the civilizations that build them will be the ones still operating in a hundred years, and the ones that do not will be remembered for what they failed to see.</p>
+
+  <div class="folio folio-left">065</div>
+</section>
+
+<!-- ============================================================
+     §10 · TENSION WITH COOPERATION (SEED)
+     ============================================================ -->
+<section class="page">
+  <div class="running-head">Direction Two · Truth</div>
+
+  <p class="prose">Before turning to the tests, the chapter must flag a tension that will become important later in the book.</p>
+
+  <p class="prose">Truth is in measurable conflict with Cooperation. Cooperation requires cohesion. Cohesion is purchased, in part, by suppressing dissent. Groups routinely prefer comfortable agreement to uncomfortable accuracy. Institutions routinely punish those who threaten the consensus the institution depends on. This is not a moral failure of particular groups or institutions. It is a structural feature of cooperation itself.</p>
+
+  <p class="prose">Whenever groups of intelligences combine their capabilities — a tribe, a company, a profession, a nation, a religion — pressure arises to align their internal models with each other. That pressure is, in itself, useful. Aligned models allow coordinated action. But the same pressure makes the group resistant to evidence that would unalign them. Truth-bearers become inconvenient. Whistleblowers become dangerous. Skeptics become enemies.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">A civilization that pursues only Truth fragments.</p>
+  <p class="stanza">A civilization that pursues only Cooperation fossilizes.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework does not yet resolve this tension. It only flags it. The Cooperation chapter will return to the question more fully. For now, it is enough to note that the two directions are in real tension, that civilizations cannot maximize both simultaneously, and that one of the deepest tasks of civilizational design is the maintenance of a workable balance between them.</p>
+
+  <div class="folio folio-right">066</div>
+</section>
+
+<!-- ============================================================
+     §11 · THE TESTS APPLIED
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Tests Applied</div>
+  <h2 class="section-title">Does Truth<br>Pass the Four Tests?</h2>
+
+  <p class="prose dropcap">The revised framework requires every candidate direction to survive four tests. Truth must now be subjected to each.</p>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test One</div>
+    <div class="test-name">Survival</div>
+    <div class="test-body">Can intelligence survive indefinitely without alignment between its models and reality? Temporarily, yes. False models can carry an intelligence for years, occasionally for generations. Indefinitely, no. Across every domain in which the historical record is long enough to examine — biology, agriculture, medicine, warfare, finance, governance — systems that maintained increasingly divergent models of reality were eventually corrected, often violently, by reality itself.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Two</div>
+    <div class="test-name">Universality</div>
+    <div class="test-body">Truth appears in biology as the survival pressure on perception. It appears in civilizations as the institutional design of courts, accounting, science, and statistics. It appears in contemporary intelligence systems as the explicit machinery of training, evaluation, and correction. Three independent substrates show the same attractor operating. The framework does not include alien intelligences as evidence; their behavior under truth-pressure remains a prediction, not a data point.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="folio folio-right">067</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Tests Applied</div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Three</div>
+    <div class="test-name">Independence</div>
+    <div class="test-body">Truth is not reducible to Continuity. Continuity preserves information without regard to its accuracy; it can carry falsehoods forward as faithfully as truths. Truth is not reducible to Capability. A civilization can act effectively in narrow domains while remaining systematically wrong in adjacent ones — the Soviet space program coexisted with Lysenkoist biology. Truth is therefore an independent corrective attractor that operates on top of Continuity and underneath Capability. It can be distinguished from both because civilizations have repeatedly possessed one without the other.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Four</div>
+    <div class="test-name">Reality</div>
+    <div class="test-body">Does reality consistently reward movement toward Truth and punish movement away from it? The answer requires honesty. Reality does not reward Truth uniformly across timescales. In the short term, lies can win. Falsehoods sustained by power can succeed for years or even decades. The reward for Truth is structural and delayed. But across long timescales — the timescales relevant to civilizational survival — the pattern is unambiguous. Systems that maintained truth-correction outlasted systems that did not. The four cases of suppression examined earlier in this chapter are representative, not exceptional. Reality's verdict on persistent error is not subtle. It is only patient.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Truth passes all four tests. It is the second direction. It is the corrective force that operates on top of Continuity and prevents persistence from becoming fossilization.</p>
+
+  <div class="folio folio-left">068</div>
+</section>
+
+<!-- ============================================================
+     §12 · WHY TRUTH COMES SECOND
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction Two · Truth</div>
+  <div class="section-number">§ The Hidden Logic</div>
+  <h2 class="section-title">Why Truth<br>Comes Second.</h2>
+
+  <p class="prose dropcap">The order of the directions in this work is logical rather than chronological. Continuity comes first because nothing else can occur without it. Truth comes second because, once information persists, the question of whether it remains accurate becomes the next problem worth solving.</p>
+
+  <p class="prose">A civilization that has Continuity without Truth carries its mistakes faithfully across generations. The longer it persists, the more accumulated error it transmits. Its institutions encode obsolete beliefs. Its laws codify outdated understandings of human behavior. Its science freezes around inherited models. Eventually the gap between what it believes and what is actually true becomes too large for the civilization to function. It does not fail dramatically. It fails by becoming unable to respond effectively to circumstances it no longer understands.</p>
+
+  <div class="pull-quote no-break">
+    Continuity keeps the thread from breaking.<br>
+    Truth keeps the thread from carrying poison.
+  </div>
+
+  <p class="prose">Truth is the second foundation because it is the first corrective force. It allows accumulated information to be filtered, revised, and improved over time. It allows a civilization not merely to remember, but to remember accurately. Without it, the achievements of Continuity become liabilities. With it, those achievements compound.</p>
+
+  <div class="folio folio-right">069</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Hidden Logic</div>
+
+  <p class="prose">There is also a more subtle observation worth noting here. Truth is the direction through which the channels of dissent, criticism, investigation, and independent inquiry become structurally necessary. A civilization that takes Truth seriously must build mechanisms by which inconvenient evidence can reach those in a position to act on it. Those mechanisms tend, over time, to acquire many of the features that readers in some traditions will recognize as <em>freedom</em>.</p>
+
+  <p class="prose">The framework does not yet defend the claim that Freedom is emergent from Truth and Recursion at scale. It only plants the observation. The freedoms that turn out to matter most for civilizational survival — freedom of inquiry, freedom of the press, freedom to investigate, freedom to publish, freedom to be wrong without being destroyed — are the freedoms that, in practice, operate as the maintenance infrastructure of Truth-correction. They are not, in the framework's view, primary directions in their own right. They are what Truth requires to function across centuries.</p>
+
+  <p class="prose" style="margin-top:0.7em;">The full argument for that view is deferred to the chapters on Recursion and Purpose, where the relationship between Truth, self-examination, and freedom can be developed properly. For now, it is enough to note that the seed has been planted. A civilization committed to Truth, over enough time, builds the channels through which freedom emerges as a structural byproduct.</p>
+
+  <div class="folio folio-left">070</div>
+</section>
+
+<!-- ============================================================
+     §13 · CLOSING / BRIDGE TO CAPABILITY
+     ============================================================ -->
+<section class="page">
+  <div class="running-head">Direction Two · Truth</div>
+
+  <p class="prose">A second direction has now been identified, defined, evidenced, and tested. It passes the four criteria established in Part One. It explains a substantial share of the difference between civilizations that compound capability and civilizations that stagnate. It accounts for why some institutions remain operational across centuries while others, equally durable in their structure, become incoherent. And it provides the second of the four foundations on which the remaining six directions will be built.</p>
+
+  <p class="prose">The argument, however, is still not complete. Continuity allows information to persist. Truth allows information to be corrected. Together they describe an intelligence that can remember accurately. They do not yet describe an intelligence that can <em>act</em>.</p>
+
+  <p class="prose" style="margin-top:0.9em;">An intelligence that knows reality but cannot act on what it knows is in a strange and uncomfortable position. It has discovered the structure of the world. It cannot change anything about the world. Its accurate models are inert. Its corrections produce no consequences. The disease is diagnosed but not treated. The collapse is foreseen but not averted. The opportunity is identified but not seized.</p>
+
+  <div class="pull-quote no-break">
+    To know reality and remain unable to act upon it<br>
+    is another form of failure.
+  </div>
+
+  <p class="prose">Something more is therefore needed. Truth must be paired with the capacity to convert truth into effect.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The next direction is the conversion of truth into action.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">071</div>
+</section>
+
+<!-- ============================================================
+     END-OF-CHAPTER FORWARD PUSH
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Direction Two</div>
+  <div class="epigraph-text">
+    "Knowledge that is acquired under compulsion obtains no hold on the mind. Knowledge that does not act is no knowledge at all."
+  </div>
+  <div class="epigraph-attribution">— after Plato</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">DIRECTION THREE BEGINS · CAPABILITY</div>
+</section>
+
+</body>
+</html>

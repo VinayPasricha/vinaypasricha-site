@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime Memory · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="runtime-memory.css">
+</head>
+<body class="rm-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◬</span>
+    <span class="st-name">Runtime Memory</span>
+    <span class="st-sub">— the concrete organ</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="../runtime/architecture.html">Architecture ↗</a>
+    <button class="st-link" id="rm-reset" type="button">Reset seed</button>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="rm-shell">
+
+  <!-- ROSTER RAIL -->
+  <aside class="rm-rail">
+    <div class="rm-rail-head">
+      <div class="crumbs"><a href="index.html">Studio</a> / Runtime Memory</div>
+      <h1>The <em>beings</em><br>in the field</h1>
+      <div class="sub">One unified memory per being, across every doctrine. Select a being to inspect all five layers, the pointer, open questions, and run The Hand live.</div>
+    </div>
+    <div class="rm-roster"><div id="rm-roster"></div></div>
+    <div class="rm-rail-foot">
+      Local-first demo. Edits, sent reach-outs, reactivations and erasures persist to this browser. <em>Reset seed</em> restores the authored narrative. Six beings are seeded to exercise every orchestrator path.
+    </div>
+  </aside>
+
+  <!-- RECORD -->
+  <main class="rm-record" id="rm-record"></main>
+
+</div>
+
+<script src="runtime-data.js"></script>
+<script src="runtime-engine.js"></script>
+<script src="runtime-memory.js"></script>
+
+</body>
+</html>

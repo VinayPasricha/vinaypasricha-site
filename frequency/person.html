@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person Discovery — Organizational Frequency</title>
+  <meta name="description" content="Understanding a person in isolation — with the same rigor used for organizations. Discovery, not assessment.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="mission.css">
+</head>
+
+<body>
+
+  <header class="of-top">
+    <div class="of-mark">
+      <span class="dot"></span>
+      Organizational Frequency
+    </div>
+    <div class="of-house">
+      <a href="../index.html">Vinay Pasricha</a> · Person Frequency · v0.1
+    </div>
+  </header>
+
+  <main class="of-stage" data-screen-label="OF · Person Discovery">
+
+    <!-- ===== Discovery column ===== -->
+    <section id="capture">
+      <div class="of-eyebrow">Aeon1 · <em>person discovery</em></div>
+      <p class="of-lede">Before any role, any match — <em>you.</em></p>
+      <p class="of-sub">
+        A person is understood on their own first — with the same care used for an
+        organization. This is discovery, not assessment. There are no right answers,
+        no score, and no personality type at the end.
+      </p>
+
+      <div class="of-ticks" id="ticks" aria-hidden="true">
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+        <span class="of-tick"></span>
+      </div>
+
+      <div class="of-stream" id="stream"></div>
+
+      <div class="of-composer" id="composer">
+        <div class="of-field">
+          <textarea class="of-input" id="input" rows="1" placeholder="Type your answer…" autofocus></textarea>
+          <button class="of-send" id="send" type="button">Send</button>
+        </div>
+        <div class="of-hint" id="hint">Return to send · Shift+Return for a new line</div>
+      </div>
+    </section>
+
+    <!-- ===== Understanding summary (after discovery) ===== -->
+    <section id="spine" class="of-spine hidden"></section>
+
+  </main>
+
+  <script src="of-model.js"></script>
+  <script src="of-frequency.js"></script>
+  <script src="of-person.js"></script>
+  <script src="person-discovery.js"></script>
+</body>
+</html>

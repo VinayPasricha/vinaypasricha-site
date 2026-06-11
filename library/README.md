@@ -9,6 +9,11 @@ library/
   manifest.json                 ← index of all books + where their text lives
   execution-doctrine/
     full-text.txt               ← cleaned manuscript, ~94k chars / 120 pages
+  civilization/                 ← Vol. I — "The Compass"
+    full-text.txt               ← cleaned manuscript, ~396k chars / 19 chapters
+    chapters.json               ← three-part structure + section titles
+    jacket.pdf                  ← cover / jacket
+    source/                     ← the 19 original typeset HTML chapters
   siv-method/                   ← (pending — upload the PDF)
   organizational-frequency/     ← (pending — upload the PDF)
   …

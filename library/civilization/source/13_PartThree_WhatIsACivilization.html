@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · What Is a Civilization?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .part-cover { justify-content: center; align-items: center; text-align: center; padding: 1.6in 0.9in; }
+  .part-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.5in; }
+  .part-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 44pt; letter-spacing: -0.03em; line-height: 0.95; color: var(--ink); margin: 0 0 0.4in 0; }
+  .part-epigraph { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 14pt; line-height: 1.45; color: var(--mute); max-width: 4.3in; margin: 0 auto; }
+  .part-attrib { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 9.5pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); margin-top: 0.3in; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- TITLE PAGE -->
+<section class="page part-cover">
+  <div class="part-tag">Part Three · Before the First Case</div>
+  <h1 class="part-title">What Is<br>a Civilization?</h1>
+  <p class="part-epigraph">"Civilization is, before anything else, the will to live in common."</p>
+  <div class="part-attrib">— José Ortega y Gasset</div>
+  <div style="margin-top: 0.7in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE QUESTION WE HAVE AVOIDED -->
+<section class="page opener">
+  <div class="running-head">Part Three · What Is a Civilization?</div>
+  <div class="section-number">§ The Question We Have Avoided</div>
+  <h2 class="section-title">A Word the Book<br>Has Not Defined.</h2>
+
+  <p class="prose dropcap">The framework has used the word <em>civilization</em> throughout this book without defining it. The omission was deliberate. While the framework was being built, a working sense of the term was sufficient, and any tighter definition risked closing off questions the framework had not yet earned the right to address. Now the framework is being applied. The working sense will no longer serve. Before the case studies begin, the question must be confronted directly. What is a civilization?</p>
+
+  <p class="prose">The question is harder than it looks. Suppose we say Rome was a civilization. Then ask: what fell when Rome fell? The Western Roman state ended in 476. The Eastern continuation ended in 1453. But the Roman legal tradition is still operative across much of the world. Latin remained the language of European scholarship for a thousand years after the political center collapsed. Roman engineering principles are still in use. The very word <em>civilization</em>, in most modern languages, is itself a Latin inheritance.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Did Rome fall, or did Rome change? Did Rome end, or did Rome migrate? The state ended. The civilization, on some honest definitions, did not. This is not pedantry. It is the question the framework cannot avoid before it begins reading civilizations seriously.</p>
+
+  <div class="folio folio-right">195</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Question We Have Avoided</div>
+
+  <p class="prose">The difficulty extends to every major case the framework will examine. China has been politically continuous through some dynasties and politically fractured through others, yet what we call Chinese civilization persists across both. Judaism has existed without a state for most of its history. Buddhism is older than any nation that currently practices it. The scientific community is, by some measures, the most consequential intellectual civilization currently operating, and it is not defined by geography, language, state, or religion. The internet, in roughly thirty years, has become a coordination structure rivaling any historical civilization in scale, and it has no territory at all.</p>
+
+  <p class="prose">If <em>civilization</em> were a single, clean concept, these cases would not be confusing. They are confusing because the word is doing several jobs at once.</p>
+
+  <div class="pull-quote no-break">
+    Did Rome fall, or did Rome change?<br>
+    The answer depends on what Rome was.
+  </div>
+
+  <div class="folio folio-left">196</div>
+</section>
+
+<!-- §2 · WHY EVERY DEFINITION FAILS (COMPRESSED) -->
+<section class="page opener">
+  <div class="running-head">Part Three · What Is a Civilization?</div>
+  <div class="section-number">§ Why Every Definition Fails</div>
+  <h2 class="section-title">Each Captures Part.<br>None Captures the Whole.</h2>
+
+  <p class="prose dropcap">Several definitions of <em>civilization</em> have been used seriously across the long history of the word. A state. A culture or language group. A religion. A territory. A knowledge network. A long-running cooperation structure. Each captures something. Each, examined against the historical record, fails in a specific way — and the failures, taken together, are more useful than the definitions.</p>
+
+  <p class="prose">The state definition fails because civilizations routinely outlast their states. Rome's polity ended in 476, then again in 1453. Roman law, Roman language, Roman engineering, and Roman political vocabulary continued operating in territories Rome no longer controlled.</p>
+
+  <p class="prose">The cultural definition fails because civilizations outlast their original cultures. Latin survived its native speakers by a thousand years. Sanskrit outlived the political orders it was developed within. Cultures evolve, fragment, and hybridize. The civilization persists across the fragmentation.</p>
+
+  <p class="prose">The religious definition fails because civilizations adopt and discard religions while continuing. Rome moved from polytheism to Christianity without ceasing to be Rome. China has cycled through multiple religious and philosophical traditions without ceasing to be China.</p>
+
+  <p class="prose">The geographic definition fails because civilizations migrate. The linguistic definition fails because language shifts. The political definition fails because polities collapse and the civilization continues. Each definition, examined honestly, ends up describing one part of what civilization does while missing what survives when that part disappears.</p>
+
+  <p class="prose" style="margin-top:0.7em;"><em>What survives the failures is more interesting than any of the definitions.</em></p>
+
+  <div class="folio folio-right">197</div>
+</section>
+
+<!-- §3 · WHAT SURVIVES WHAT -->
+<section class="page opener">
+  <div class="running-head">Part Three · What Is a Civilization?</div>
+  <div class="section-number">§ What Survives What</div>
+  <h2 class="section-title">The Question That<br>Reveals the Answer.</h2>
+
+  <p class="prose dropcap">A more useful question than "what is a civilization?" is "what survives what?" The question pushes the analysis past static definition into observation of behavior over time, which is where the framework was built to operate. The answers, when examined honestly, reveal something about civilizations the static definitions cannot.</p>
+
+  <p class="stanza" style="margin-top:0.7em;">Rome survives its empire.</p>
+  <p class="stanza">China survives its dynasties.</p>
+  <p class="stanza">Judaism survives its states.</p>
+  <p class="stanza">Buddhism survives its founding civilizations.</p>
+  <p class="stanza">Latin survived its native speakers.</p>
+  <p class="stanza">Science survives its practitioners.</p>
+  <p class="stanza">The internet, so far, survives its servers.</p>
+  <p class="stanza">Artificial intelligence may survive its creators.</p>
+
+  <p class="prose" style="margin-top:0.9em;">In every case, what persists is not the most visible structure. The state was visible. The state ended. The civilization continued. What continued was something more abstract — a network of transmitted information, a set of coordinated practices, a frame of meaning, a continuing project of cooperation that no individual structure exhausted.</p>
+
+  <p class="prose">This is the observation that allows the framework to be applied. Civilizations, examined at the level the framework operates on, are <em>not entities</em>. They are <em>processes</em>. They are ongoing acts of preservation, correction, action, coordination, expansion, creation, examination, and ends-selection. They are not things. They are doings.</p>
+
+  <div class="pull-quote no-break">
+    Civilizations are not entities.<br>
+    They are processes.
+  </div>
+
+  <div class="folio folio-right">198</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What Survives What</div>
+
+  <p class="prose">Reading civilizations as processes rather than as entities changes what the framework is operating on. The eight directions describe behaviors — preserving, correcting, acting, coordinating, expanding, creating, examining, choosing. Those behaviors appear in states. They also appear in religions, in scientific communities, in corporate enterprises, in the structures of the internet, and quite possibly in artificial intelligence systems. The framework's vocabulary describes all of them. The conventional definition of <em>civilization</em> captures only some.</p>
+
+  <p class="prose">The case studies that follow will test whether this matters. Rome is the most conventional case. China is also conventional. Modern civilizations stretch the conventional definition. Artificial intelligence is something the conventional definition was not built to cover at all. The framework will be applied to each. The question in every case is the same — does the framework illuminate the instance, regardless of whether the instance is what historians would have called a civilization?</p>
+
+  <p class="prose" style="margin-top:0.9em;">If the answer is yes across the cases, the framework is doing something the conventional definitions cannot. If the answer is no, the framework is doing less than it claims. The case studies are the test.</p>
+
+  <div class="folio folio-left">199</div>
+</section>
+
+<!-- §4 · A SUSPICION (SOFTENED) -->
+<section class="page opener">
+  <div class="running-head">Part Three · What Is a Civilization?</div>
+  <div class="section-number">§ A Suspicion</div>
+  <h2 class="section-title">Not Yet a Claim.<br>Worth Noticing Anyway.</h2>
+
+  <p class="prose dropcap">The reframe in the previous section — civilizations as processes — suggests something the framework has not yet earned the right to assert. If the eight directions describe what intelligence does when it operates at scale across time, and if those directions apply equally to states, religions, scientific communities, corporations, networks, and possibly artificial intelligence systems, then the framework may be studying something larger than the word <em>civilization</em> conventionally implies.</p>
+
+  <p class="prose">What might that larger object be? Several formulations are plausible. Intelligence under constraint. Coordinated cognition across time. The structural behavior of complex adaptive systems. The framework will not commit to any of them now. The case studies will accumulate evidence. By the time the reader has watched the framework operate on Rome, on China, on the modern world, and on artificial intelligence, the right name for what the framework is actually studying may have become obvious — or it may have become clear that no single name fits.</p>
+
+  <p class="prose" style="margin-top:0.7em;">For now, the modest claim is enough. Rome is the first case. Whatever the framework turns out to be studying, Rome is one of the most thoroughly documented examples of it.</p>
+
+  <p class="prose">A reader hoping for a tidy declaration here will be disappointed. The discipline of refusing to over-declare is part of how the framework keeps its authority. The case studies are where the framework demonstrates what it does. The naming of what it does is for the reader to arrive at, with the framework's vocabulary as their instrument.</p>
+
+  <div class="folio folio-right">200</div>
+</section>
+
+<!-- §5 · WHAT THE CASE STUDIES WILL TEST -->
+<section class="page">
+  <div class="running-head">Part Three · What Is a Civilization?</div>
+
+  <p class="prose">The chapter that follows is the first case. Rome was chosen first not because Rome is the most consequential civilization the framework will examine, but because Rome is the most thoroughly known. The reader will already have a settled picture of Rome from a lifetime of cultural exposure. That picture will not be supplemented by the framework. The picture itself will be examined through the framework — read as a position in the possibility space, analyzed for its tensions, diagnosed for the pressures its configuration generated.</p>
+
+  <p class="prose">The reading will not ask why Rome fell. That question is exhausted. The reading will ask what position Rome occupied in the eight-dimensional possibility space, and what pressures that position inevitably generated. The framework's value depends on whether the answer adds anything to the inherited picture.</p>
+
+  <p class="prose" style="margin-top:0.9em;">If the answer adds something, the framework has earned its existence. If not, the framework has not. Rome is, in this sense, the first real stress test. The reader is invited to read along with the procedure and to judge the result.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The first case begins.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-left">201</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page part-cover">
+  <div class="part-tag">Bridge to the First Case</div>
+  <p class="part-epigraph" style="font-size:16pt; max-width:4.5in;">
+    "Rome is not important because it was Rome.<br>
+    Rome is important because it is where the framework's<br>
+    eight directions will be asked to prove themselves."
+  </p>
+  <div class="part-attrib">— a thesis of this work</div>
+  <div style="margin-top: 0.9in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">FIRST CASE BEGINS · ROME IN EIGHT DIMENSIONS</div>
+</section>
+
+</body>
+</html>

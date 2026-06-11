@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mandates · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+
+  <style>
+    /* ---- Mandates admin · graphite, matches Outcomes / People ---- */
+    .md-body { background: #07080c; color: #ebe9e2; }
+    :root {
+      --md-gr1: #07080c; --md-gr2: #0c0d12; --md-gr3: #11131a; --md-gr4: #181b25;
+      --md-ink: #ebe9e2; --md-ink2: #b8b5ad; --md-ink3: #6e6c66; --md-ink4: #44433f;
+      --md-freq: #6f9bb5; --md-freq2: #4f7388; --md-freq3: #2c4150; --md-freq4: #13202a;
+      --md-pos: #6fae86; --md-pos3: #2f5b43;
+      --md-warm: #c0975e; --md-warm3: #5c4626;
+      --md-gold: #c2a25e; --md-gold3: #5c4c26;
+      --md-rule: #14161e; --md-edge: #1c2030;
+      --md-serif: "Newsreader", Georgia, serif;
+      --md-sans: "Inter", system-ui, sans-serif;
+      --md-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .md-shell { max-width: 1080px; margin: 0 auto; padding: 40px 32px 96px; position: relative; z-index: 1; }
+    .md-crumbs { font-family: var(--md-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--md-ink3); margin-bottom: 22px; text-transform: uppercase; }
+    .md-crumbs a { color: var(--md-ink2); text-decoration: none; }
+    .md-crumbs a:hover { color: var(--md-ink); }
+
+    .md-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--md-rule); padding-bottom: 26px; margin-bottom: 30px; }
+    .md-title { font-family: var(--md-serif); font-weight: 300; font-size: 34px; line-height: 1.2; color: var(--md-ink); letter-spacing: -0.01em; }
+    .md-title em { font-style: italic; }
+    .md-sub { font-family: var(--md-sans); font-weight: 300; font-size: 14px; line-height: 1.7; color: var(--md-ink3); margin-top: 10px; max-width: 64ch; text-wrap: pretty; }
+    .md-actions { display: flex; gap: 10px; flex: 0 0 auto; }
+    .md-btn { background: transparent; border: 1px solid var(--md-edge); border-radius: 2px; color: var(--md-ink2); font-family: var(--md-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 14px; cursor: pointer; transition: all .25s; white-space: nowrap; }
+    .md-btn:hover { border-color: var(--md-freq3); color: var(--md-ink); background: var(--md-freq4); }
+
+    .md-stats { display: flex; gap: 28px; font-family: var(--md-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-ink3); margin-bottom: 30px; flex-wrap: wrap; }
+    .md-stats b { color: var(--md-freq); font-weight: 500; }
+
+    /* ---- compose: choose a role, then a lane ---- */
+    .md-compose { border: 1px solid var(--md-edge); border-radius: 3px; background: var(--md-gr2); padding: 22px 24px; margin-bottom: 30px; }
+    .md-label { font-family: var(--md-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--md-freq); margin-bottom: 14px; }
+    .md-rolepick { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 6px; }
+    .md-field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 220px; }
+    .md-field label { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-ink4); }
+    .md-field select { background: var(--md-gr1); border: 1px solid var(--md-edge); border-radius: 2px; color: var(--md-ink); font-family: var(--md-sans); font-weight: 300; font-size: 13px; padding: 10px 12px; cursor: pointer; }
+    .md-field select:focus { outline: none; border-color: var(--md-freq3); }
+
+    /* Aeon1 two-journey explanation */
+    .md-aeon { border-left: 2px solid var(--md-freq3); padding: 4px 0 4px 14px; margin: 16px 0 18px; }
+    .md-aeon .who { font-family: var(--md-mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--md-freq); margin-bottom: 7px; }
+    .md-aeon .say { font-family: var(--md-sans); font-weight: 300; font-size: 14px; line-height: 1.65; color: var(--md-ink2); text-wrap: pretty; }
+    .md-aeon .say em { font-style: italic; color: var(--md-ink); }
+
+    .md-lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .md-lane { border: 1px solid var(--md-edge); border-radius: 3px; background: var(--md-gr3); padding: 18px 20px; display: flex; flex-direction: column; }
+    .md-lane.deep { border-color: var(--md-gold3); }
+    .md-lane-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+    .md-lane-name { font-family: var(--md-serif); font-weight: 300; font-size: 19px; color: var(--md-ink); white-space: nowrap; }
+    .md-lane-price { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; border: 1px solid var(--md-pos3); color: var(--md-pos); white-space: nowrap; }
+    .md-lane.deep .md-lane-price { border-color: var(--md-gold3); color: var(--md-gold); }
+    .md-lane-tag { font-family: var(--md-sans); font-weight: 300; font-style: italic; font-size: 13px; color: var(--md-ink3); margin: 0 0 10px; }
+    .md-lane-blurb { font-family: var(--md-sans); font-weight: 300; font-size: 12.5px; line-height: 1.6; color: var(--md-ink2); margin-bottom: 12px; text-wrap: pretty; }
+    .md-lane-flow { font-family: var(--md-mono); font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--md-ink4); line-height: 1.7; margin-bottom: 14px; }
+    .md-lane-flow b { color: var(--md-freq2); }
+    .md-lane-good { list-style: none; padding: 0; margin: 0 0 16px; }
+    .md-lane-good li { font-family: var(--md-sans); font-weight: 300; font-size: 12px; color: var(--md-ink3); padding: 2px 0 2px 14px; position: relative; }
+    .md-lane-good li::before { content: "—"; position: absolute; left: 0; color: var(--md-ink4); }
+    .md-lanebtn { margin-top: auto; background: var(--md-freq4); border: 1px solid var(--md-freq3); border-radius: 2px; color: var(--md-freq); font-family: var(--md-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 11px 14px; cursor: pointer; transition: all .25s; }
+    .md-lanebtn:hover { color: var(--md-ink); border-color: var(--md-freq2); }
+    .md-lane.deep .md-lanebtn { background: rgba(194,162,94,0.07); border-color: var(--md-gold3); color: var(--md-gold); }
+    .md-lane.deep .md-lanebtn:hover { color: var(--md-ink); border-color: var(--md-gold); }
+    .md-nopressure { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--md-ink4); margin-top: 14px; }
+
+    .md-empty { border: 1px dashed var(--md-edge); border-radius: 3px; padding: 40px 36px; text-align: center; color: var(--md-ink3); font-family: var(--md-sans); font-weight: 300; font-size: 14.5px; line-height: 1.75; }
+    .md-empty a { color: var(--md-freq); text-decoration: none; border-bottom: 1px solid var(--md-freq3); }
+
+    /* ---- mandate card ---- */
+    .md-mandate { border: 1px solid var(--md-rule); border-radius: 3px; background: var(--md-gr2); margin-bottom: 22px; overflow: hidden; }
+    .md-mandate.deep { border-color: var(--md-gold3); }
+    .md-mtop { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 22px 26px; border-bottom: 1px solid var(--md-rule); }
+    .md-mname { font-family: var(--md-serif); font-weight: 300; font-size: 22px; line-height: 1.35; color: var(--md-ink); }
+    .md-mid { font-family: var(--md-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--md-ink4); margin-top: 7px; }
+    .md-badges { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+    .md-badge { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 2px; padding: 3px 9px; border: 1px solid var(--md-edge); color: var(--md-ink3); }
+    .md-badge.lane-fast { color: var(--md-pos); border-color: var(--md-pos3); }
+    .md-badge.lane-deep { color: var(--md-gold); border-color: var(--md-gold3); }
+    .md-badge.st-draft { color: var(--md-ink3); }
+    .md-badge.st-active { color: var(--md-pos); border-color: var(--md-pos3); }
+    .md-badge.st-paused { color: var(--md-warm); border-color: var(--md-warm3); }
+    .md-badge.st-completed { color: var(--md-freq); border-color: var(--md-freq3); }
+    .md-badge.st-cancelled { color: var(--md-ink4); }
+    .md-cbadge { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; padding: 3px 9px; border: 1px solid var(--md-edge); }
+    .md-cbadge.high { color: var(--md-pos); border-color: var(--md-pos3); }
+    .md-cbadge.medium { color: var(--md-freq); border-color: var(--md-freq3); }
+    .md-cbadge.mixed { color: var(--md-warm); border-color: var(--md-warm3); }
+    .md-cbadge.low { color: var(--md-ink3); }
+    .md-cbadge.unknown { color: var(--md-ink4); }
+
+    /* convergence chain */
+    .md-chain { background: var(--md-gr3); border-bottom: 1px solid var(--md-rule); padding: 16px 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-family: var(--md-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-ink3); }
+    .md-chain b { color: var(--md-ink); font-weight: 500; }
+    .md-chain .arr { color: var(--md-freq); }
+    .md-chain .mandate-node { color: var(--md-freq); }
+
+    /* why-first banner (constitutional) */
+    .md-why { padding: 20px 26px; border-bottom: 1px solid var(--md-rule); }
+    .md-why .wl { font-family: var(--md-mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-freq2); margin-bottom: 8px; }
+    .md-why .wt { font-family: var(--md-serif); font-weight: 300; font-size: 17px; line-height: 1.5; color: var(--md-ink); text-wrap: pretty; }
+    .md-why .wt em { font-style: italic; }
+
+    .md-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--md-rule); }
+    .md-cell { background: var(--md-gr2); padding: 18px 24px; }
+    .md-cell.full { grid-column: 1 / -1; }
+    .md-clabel { font-family: var(--md-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-freq2); margin-bottom: 4px; }
+    .md-cq { font-family: var(--md-sans); font-weight: 300; font-style: italic; font-size: 11.5px; color: var(--md-ink4); margin-bottom: 12px; }
+    .md-kv { font-family: var(--md-sans); font-weight: 300; font-size: 13px; line-height: 1.6; color: var(--md-ink2); margin-bottom: 10px; text-wrap: pretty; }
+    .md-kv .k { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-ink4); display: block; margin-bottom: 3px; }
+    .md-kv em { font-style: italic; color: var(--md-ink); }
+    .md-list { list-style: none; padding: 0; margin: 0; }
+    .md-list li { font-family: var(--md-sans); font-weight: 300; font-size: 12.5px; line-height: 1.5; color: var(--md-ink2); border-left: 2px solid var(--md-freq3); padding: 4px 0 4px 12px; margin-bottom: 6px; text-wrap: pretty; }
+
+    /* deep discovery proposal placeholder */
+    .md-deep { background: rgba(194,162,94,0.05); border-top: 1px solid var(--md-gold3); padding: 20px 26px; }
+    .md-deep .dl { font-family: var(--md-mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--md-gold); margin-bottom: 8px; }
+    .md-deep .dn { font-family: var(--md-sans); font-weight: 300; font-size: 12.5px; line-height: 1.6; color: var(--md-ink3); margin-bottom: 12px; text-wrap: pretty; }
+    .md-interviews { display: flex; gap: 8px; flex-wrap: wrap; }
+    .md-interview { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px dashed var(--md-gold3); border-radius: 2px; padding: 6px 11px; color: var(--md-gold); }
+    .md-interview .s { color: var(--md-ink4); }
+
+    /* footer: status controls + delete */
+    .md-foot { background: var(--md-gr3); border-top: 1px solid var(--md-rule); padding: 18px 26px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .md-status-controls { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .md-status-controls .lbl { font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-ink4); margin-right: 4px; }
+    .md-sbtn { background: var(--md-gr1); border: 1px solid var(--md-edge); border-radius: 2px; color: var(--md-ink2); font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 11px; cursor: pointer; transition: all .2s; }
+    .md-sbtn:hover { color: var(--md-ink); border-color: var(--md-freq3); }
+    .md-sbtn.on { color: var(--md-ink); border-color: var(--md-freq2); background: var(--md-freq4); }
+    .md-delbtn { background: none; border: 1px solid var(--md-edge); border-radius: 2px; color: var(--md-ink4); font-family: var(--md-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 12px; cursor: pointer; }
+    .md-delbtn:hover { color: var(--md-warm); border-color: var(--md-warm3); }
+
+    .md-note { margin-top: 40px; border-top: 1px solid var(--md-rule); padding-top: 22px; font-family: var(--md-sans); font-weight: 300; font-size: 13px; line-height: 1.75; color: var(--md-ink3); }
+    .md-note em { font-style: italic; color: var(--md-ink2); }
+    .md-note a { color: var(--md-freq); text-decoration: none; border-bottom: 1px solid var(--md-freq3); }
+
+    @media (max-width: 760px) {
+      .md-grid, .md-lanes { grid-template-columns: 1fr; }
+      .md-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="md-body">
+
+<header class="studio-topbar">
+  <div class="st-brand">
+    <span class="st-mark">◇</span>
+    <span class="st-name">Mandates</span>
+    <span class="st-sub">— Mission-to-Mandate Runtime</span>
+  </div>
+  <div class="st-right">
+    <a class="st-link" href="missions.html">Missions ↗</a>
+    <a class="st-link" href="discovery.html">Discovery ↗</a>
+    <a class="st-link" href="hiring.html">Hiring ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="md-shell">
+  <div class="md-crumbs"><a href="index.html">Studio</a> / Mandates</div>
+
+  <div class="md-head">
+    <div>
+      <h1 class="md-title">Understanding, turned into <em>executable intent.</em></h1>
+      <p class="md-sub">
+        The Mission-to-Mandate Runtime. Organizations do not buy frequency — they buy outcomes. A mandate
+        converts <span style="font-family:var(--md-mono);font-size:12px">Mission → Gap → Role</span> into
+        something that can be acted on. Two journeys: a free <em>Fast Lane</em> to begin quickly, and a paid
+        <em>Deep Lane</em> to understand before acting. A mandate answers <em>why this role exists</em> before
+        <em>who should fill it</em> — that order is constitutional. No sourcing, no candidates, no matching.
+      </p>
+    </div>
+    <div class="md-actions">
+      <button class="md-btn" id="md-reset" type="button">Reset mandates</button>
+    </div>
+  </div>
+
+  <div class="md-stats" id="md-stats"></div>
+
+  <div class="md-compose" id="md-compose"></div>
+
+  <div id="md-list"></div>
+
+  <p class="md-note">
+    <em>The bridge from understanding to execution.</em> A mandate is generated from a defined role, its
+    purpose, the frequency gap it closes and the mission — never from a person. The Fast Lane rests on Tier-0
+    research and a basic frequency read; the Deep Lane proposes deep organizational discovery (founder,
+    hiring-manager, supervisor and skip-level interviews) whose runtime arrives in Build 1K — here it is only
+    a hook. Memory stays gated: this writes only Mandate, Success Definition, Mission Contribution and Lane
+    Selection — never Essence, Transformation, Resonance, or any Frequency.
+  </p>
+</div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-research.js"></script>
+<script src="../frequency/of-validation.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-required.js"></script>
+<script src="../frequency/of-role.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-outcome.js"></script>
+<script src="../frequency/of-mandate.js"></script>
+<script src="mandates-admin.js"></script>
+
+</body>
+</html>

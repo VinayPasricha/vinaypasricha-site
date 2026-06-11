@@ -1,0 +1,59 @@
+/* =============================================================
+   KAIROS·1 — Character of the Executor · interior
+   The deepest, quietest chamber. Vertical pillars.
+   ============================================================= */
+
+.ch-pillar .ch-pillar-body {
+  transition: fill var(--slow), stroke var(--slow), stroke-width var(--slow), filter var(--slow);
+}
+.ch-pillar.is-governing .ch-pillar-body {
+  filter: drop-shadow(0 0 14px rgba(217,148,102,0.45));
+  animation: ch-pillar-breath var(--rhythm-breath) ease-in-out infinite;
+}
+@keyframes ch-pillar-breath {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(217,148,102,0.36)); }
+  50%      { filter: drop-shadow(0 0 18px rgba(217,148,102,0.58)); }
+}
+.ch-pillar.is-focused .ch-pillar-body {
+  filter: drop-shadow(0 0 6px rgba(217,148,102,0.35));
+}
+
+.ch-pillar--leaning .ch-pillar-body { stroke: rgba(217,148,102,0.42); }
+.ch-pillar--cracked .ch-pillar-body { stroke: rgba(217,148,102,0.55); }
+.ch-pillar--buried  .ch-pillar-body { opacity: 0.62; }
+
+.ch-pillar-id {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.36em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+  writing-mode: vertical-rl;
+}
+.ch-pillar.is-governing .ch-pillar-id { fill: var(--heat); }
+
+.ch-pillar-label {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--ink-2);
+  pointer-events: none;
+}
+.ch-pillar.is-governing .ch-pillar-label { fill: var(--ink); }
+
+.ch-pillar-state {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--ink-4);
+  pointer-events: none;
+}
+.ch-pillar--leaning .ch-pillar-state,
+.ch-pillar--cracked .ch-pillar-state,
+.ch-pillar--buried  .ch-pillar-state { fill: rgba(217,148,102,0.55); }
+.ch-pillar.is-governing .ch-pillar-state { fill: var(--heat); }

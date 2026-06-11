@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · China: The Civilization That Survived Itself</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .case-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .case-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .case-mark { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .case-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 60pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .case-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .case-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 30pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.25in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .surprise-tag { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 8pt; }
+  .axis-row { display: grid; grid-template-columns: 110pt 80pt 1fr; gap: 10pt 14pt; padding: 5pt 0; border-bottom: 1px solid var(--paper-deep); align-items: baseline; }
+  .axis-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; color: var(--ink); }
+  .axis-score { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--cosmos); letter-spacing: 0.1em; }
+  .axis-note { font-family: "Source Serif 4", serif; font-size: 9pt; line-height: 1.4; color: var(--mute); font-style: italic; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- COVER -->
+<section class="page case-cover">
+  <div class="case-tag">Part Three · Second Case</div>
+
+  <div>
+    <div class="case-mark">CASE TWO</div>
+    <h1 class="case-title">China.</h1>
+    <p class="case-tagline">The civilization that survived itself — and what the framework must explain.</p>
+  </div>
+
+  <div class="case-illustration">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- A stylized cyclical pattern: nested circles with a horizontal axis representing dynastic cycles -->
+      <g stroke="#0f1115" stroke-width="1.5" fill="none">
+        <circle cx="140" cy="140" r="86"/>
+        <circle cx="140" cy="140" r="58"/>
+        <circle cx="140" cy="140" r="32"/>
+      </g>
+      <!-- Dynastic break-points around the cycle -->
+      <g fill="#b8954f">
+        <circle cx="226" cy="140" r="3"/>
+        <circle cx="54"  cy="140" r="3"/>
+        <circle cx="140" cy="54"  r="3"/>
+        <circle cx="140" cy="226" r="3"/>
+      </g>
+      <!-- Center: the persistent substrate -->
+      <circle cx="140" cy="140" r="8" fill="#0f1115"/>
+      <circle cx="140" cy="140" r="3" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="case-tag" style="color: var(--mute);">— The First Real Test —</div>
+</section>
+
+<!-- EPIGRAPH — CONFUCIUS -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Case Two · Opening</div>
+  <div class="epigraph-text">
+    "Study the past<br>
+    if you would define the future."
+  </div>
+  <div class="epigraph-attribution">— Confucius</div>
+  <div class="epigraph-source-note">Analects · c. 5th century BCE</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · A HARDER QUESTION -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ A Harder Question</div>
+  <h2 class="section-title">Why Did a Civilization<br>Repeatedly Survive?</h2>
+
+  <p class="prose dropcap">The previous chapter asked why Rome fell. The chapter answered, after some discipline, that Rome's Western state failed in 476 while the civilization continued in altered forms across the centuries that followed. The diagnosis was Continuity-Capability lock-in — a directional configuration in which the civilization became extraordinarily good at being itself and structurally unable to become anything else.</p>
+
+  <p class="prose">This chapter asks a different question, and a harder one. Why did a civilization with a similar configuration to Rome's, occupying a similar position in the possibility space for substantially longer, not fall? The Chinese state apparatus has collapsed not once but repeatedly — the Han in 220, the Tang in 907, the Song in 1279, the Ming in 1644, and the Qing in 1912. Each of these collapses was, in raw political terms, at least as disruptive as Rome's. None of them ended Chinese civilization. The civilization survived every dynasty that had ever ruled it.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework must now explain both. If Continuity-Capability lock-in caused Rome to fall, why didn't comparable lock-in cause China to fall? If the Recursion-Creation coupling is what produces scientific revolutions, why didn't Song China — which by every measure of accumulated capability and creative output was closer to a scientific revolution than Rome ever was — produce one? The case is harder because two outcomes must be addressed: similarity in configuration and difference in result.</p>
+
+  <div class="folio folio-right">220</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Harder Question</div>
+
+  <p class="prose">A framework that explains Rome but cannot explain China would be a framework of limited use. The chapter that follows is therefore the framework's first real test. The Rome chapter was a demonstration. This chapter is examination under conditions the framework was not specifically built to handle. Either the framework can absorb the Chinese case, refining itself in the process, or it cannot — in which case it has reached the edge of what the eight directions can do.</p>
+
+  <p class="prose">The chapter is organized around four observations that emerge from applying the framework to China with the same discipline as the Rome reading. Three of them parallel observations the Rome chapter produced. The fourth is new — generated by the Chinese case in a way the Rome case did not require. The fourth observation is, on examination, the chapter's most consequential contribution. It also extends the framework itself.</p>
+
+  <div class="pull-quote no-break">
+    Rome's framework explained why a civilization failed.<br>
+    China's framework must explain why one repeatedly survived.
+  </div>
+
+  <p class="prose">The four observations follow. Each is structurally generated. Each is testable against the historical record. Each, taken together with the others, builds toward the framework's verdict on the case.</p>
+
+  <div class="folio folio-left">221</div>
+</section>
+
+<!-- §2 · LOCATING CHINA -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ Locating China</div>
+  <h2 class="section-title">Five Phases, One<br>Persistent Substrate.</h2>
+
+  <p class="prose dropcap">China cannot be located on the eight axes as a single position any more than Rome could. The civilization passed through at least five major phases relevant to the framework's reading. Each occupied a somewhat different position in the possibility space, and the movements between phases are themselves part of what the framework must explain. The five phases the chapter will reference are listed below in compressed form.</p>
+
+  <div class="axis-row">
+    <div class="axis-name">Han China</div>
+    <div class="axis-score">c. 206 BCE — 220 CE</div>
+    <div class="axis-note">First sustained unification. Established the bureaucratic template and Confucian state ideology that subsequent dynasties inherited.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Tang China</div>
+    <div class="axis-score">618 — 907 CE</div>
+    <div class="axis-note">Cosmopolitan, expansive, culturally synthetic. The empire's outward-facing peak.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Song China</div>
+    <div class="axis-score">960 — 1279 CE</div>
+    <div class="axis-note">The technological and intellectual peak. The closest pre-modern civilization came to a scientific revolution.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Ming China</div>
+    <div class="axis-score">1368 — 1644</div>
+    <div class="axis-note">Restoration of Confucian orthodoxy after Mongol rule. The maritime withdrawal of 1433. Continuity-Capability dominance reasserted.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Qing China</div>
+    <div class="axis-score">1644 — 1912</div>
+    <div class="axis-note">Conservative consolidation. Manchu rulers who adopted the Chinese bureaucratic template wholesale. Final form of the imperial system before external rupture.</div>
+  </div>
+
+  <div class="folio folio-right">222</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating China</div>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 300 300" width="270" height="270" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="120" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <g stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.5">
+        <line x1="150" y1="150" x2="150" y2="30"/>
+        <line x1="150" y1="150" x2="234" y2="66"/>
+        <line x1="150" y1="150" x2="270" y2="150"/>
+        <line x1="150" y1="150" x2="234" y2="234"/>
+        <line x1="150" y1="150" x2="150" y2="270"/>
+        <line x1="150" y1="150" x2="66" y2="234"/>
+        <line x1="150" y1="150" x2="30" y2="150"/>
+        <line x1="150" y1="150" x2="66" y2="66"/>
+      </g>
+      <g fill="none" stroke="#1a2742" stroke-opacity="0.18" stroke-width="0.5">
+        <circle cx="150" cy="150" r="30"/>
+        <circle cx="150" cy="150" r="60"/>
+        <circle cx="150" cy="150" r="90"/>
+        <circle cx="150" cy="150" r="120"/>
+      </g>
+      <!-- Song China — high Creation, moderate Recursion, high Capability -->
+      <polygon points="150,45 230,75 265,150 225,225 215,255 75,225 80,150 100,80"
+               fill="#b8954f" fill-opacity="0.22" stroke="#b8954f" stroke-width="1.3"/>
+      <!-- Late Qing — Continuity dominant, Creation and Recursion collapsed -->
+      <polygon points="150,40 200,95 230,150 215,225 240,260 105,225 100,150 100,100"
+               fill="none" stroke="#1a2742" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.7"/>
+      <g font-family="JetBrains Mono, monospace" font-size="6.5" fill="#0f1115" letter-spacing="0.1em" text-anchor="middle">
+        <text x="150" y="22">CONTINUITY</text>
+        <text x="244" y="60">TRUTH</text>
+        <text x="284" y="153">CAPABILITY</text>
+        <text x="244" y="246">COOPERATION</text>
+        <text x="150" y="284">EXPANSION</text>
+        <text x="55" y="246">CREATION</text>
+        <text x="14" y="153">RECURSION</text>
+        <text x="55" y="60">PURPOSE</text>
+      </g>
+      <circle cx="150" cy="150" r="3" fill="#0f1115"/>
+    </svg>
+    <div class="caption">Fig. 10 — Song China (solid) and Late Qing (dashed). The civilization moved.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.1in;">The diagram shows the framework's reading at the two positions most relevant to the chapter's argument. The solid polygon is Song China — extraordinarily high on Continuity, Capability, Cooperation, with Creation near its maximum, Recursion at moderate levels, and Expansion declining as the dynasty consolidated. The dashed polygon is Late Qing — the same civilization, four centuries later, after Continuity-Capability dominance had asserted itself and Creation-Recursion had contracted. The civilization persisted across the movement. It is not a different civilization. It is the same civilization in a different position.</p>
+
+  <div class="folio folio-left">223</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating China</div>
+
+  <p class="prose">A few observations about the locating before the four surprises are examined.</p>
+
+  <p class="prose">First, China across its imperial centuries occupies, on average, a position similar to Rome's — strong Continuity, Capability, Cooperation; weaker Recursion-Creation through most of the imperial centuries. The chapter must therefore explain why a similar configuration produced a different outcome.</p>
+
+  <p class="prose">Second, the Continuity axis in China is, by any defensible measure, even stronger than in Rome. China has been politically continuous, with periods of fragmentation that were reliably reunified, across more than two thousand years. The bureaucratic template, the writing system, the classical canon, the examination apparatus, and the Confucian frame have all operated continuously across the dynastic transitions. China is not merely high on Continuity. China is the historical maximum of Continuity at large scale.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Third — and this is the observation the chapter will eventually elevate to its main contribution — China's Continuity operates at a level that Rome's did not. Rome's Continuity was largely tied to specific political institutions of the Roman state. When those institutions failed, the substrate of Roman civilization failed with them in the West. China's Continuity is somehow above the dynasty. The state can fall. The civilization persists.</p>
+
+  <p class="prose">Naming what allows this is the chapter's central work. The framework's reading produces a candidate answer, and the answer extends the framework's vocabulary. Before that work, three other observations the chapter generates are worth examining in turn.</p>
+
+  <div class="folio folio-right">224</div>
+</section>
+
+<!-- §3 · OBSERVATION ONE: SONG -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ Observation One</div>
+  <div class="surprise-tag">— The Song That Almost Was —</div>
+  <h2 class="section-title">A Scientific Revolution<br>That Did Not Quite Happen.</h2>
+
+  <p class="prose dropcap">Song China between 960 and 1279 is, by virtually every measure the framework cares about, the closest any pre-modern civilization came to producing a scientific revolution. The Rome chapter offered the structural claim that scientific revolutions require Recursion-Creation coupling at sufficient scale. The Song case is where that claim is most directly tested.</p>
+
+  <p class="prose">The list of Song innovations is striking enough to be worth setting down. Movable type printing, invented by Bi Sheng around 1040 — four centuries before Gutenberg. Gunpowder weapons, including the first true firearms. The magnetic compass adapted for ocean navigation. Paper currency at state-issued scale. Sophisticated mathematics including formulations equivalent to what Western mathematics would call the Chinese Remainder Theorem. Astronomical instruments of remarkable precision, including Su Song's water-powered astronomical clock of 1088. Advanced metallurgy producing high-quality steel through what would later be called the puddling process. Hydraulic engineering, urban planning, agricultural innovations that supported the largest pre-modern urban population on Earth. Neo-Confucian philosophy as a recursive elaboration of the classical canon, systematized by Zhu Xi. The civil service examination system in its mature form.</p>
+
+  <p class="prose" style="margin-top:0.9em;">By the framework's eight axes, Song China was extraordinary on Creation, very strong on Capability, deep on Continuity, and — significantly — operating at moderate-to-high levels of Recursion. The Recursion was visible in the elaboration of neo-Confucian metaphysics, in the institutionalization of the civil service examination as a structured procedure for evaluating intellectual work, and in the historiographical tradition that took Chinese civilization as its own systematic subject of study.</p>
+
+  <div class="folio folio-right">225</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Song That Almost Was</div>
+
+  <p class="prose">The framework's prediction, given this configuration, would be that something resembling a scientific revolution was structurally available to Song China. The Song polity had Recursion-Creation coupling at unusual scale, supported by enormous Capability and Continuity. The substrate was there. The institutional infrastructure was there. The cumulative output was already proceeding at a rate that approached, in important domains, the rate of seventeenth-century European scientific advance.</p>
+
+  <p class="prose">Why, then, did Song China not complete the trajectory that early modern Europe later completed? The framework's answer is, on examination, more conditional than the Rome chapter's reading might have led the reader to expect — and the conditionality is itself informative.</p>
+
+  <div class="pull-quote no-break">
+    Song China was on a Recursion-Creation trajectory.<br>
+    The trajectory did not complete.<br>
+    The reasons are partly contingent.
+  </div>
+
+  <p class="prose">Two factors operated together. The first was external — the Mongol conquest that ended the Song in 1279. The conquest interrupted the trajectory. The Yuan dynasty that followed maintained much of the Chinese administrative apparatus but did not preserve the specific intellectual and institutional configuration the Song had developed. The second factor was internal — the deliberate Ming restoration of Confucian orthodoxy after Mongol rule. The Ming did not merely return to pre-Song Chinese institutions. The Ming consciously moved the civilization back toward a more conservative configuration in which Continuity and Capability dominated and the recursive-creative elaboration of the Song was deprioritized.</p>
+
+  <div class="folio folio-left">226</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Song That Almost Was</div>
+
+  <p class="prose">This refines the framework's claim from the Rome chapter. The Rome reading suggested that civilizations occupying lock-in configurations cannot produce scientific revolutions. The Song case shows something more nuanced. Civilizations can move toward Recursion-Creation coupling. The coupling, given enough time, can produce something that resembles or becomes a scientific revolution. The movement can also be interrupted — by external shock, by deliberate political choice, or by both. The Song trajectory was not foreclosed by the framework's predictions. It was foreclosed by historical events that operated on top of the framework's predictions.</p>
+
+  <p class="prose">This is the framework working as it should. The Rome reading made a structural claim. The Song case adds the conditional clause the claim required. Civilizations occupying lock-in configurations <em>tend</em> not to produce scientific revolutions. Civilizations moving toward Recursion-Creation coupling <em>can</em> produce them, given time and the absence of disrupting forces. Whether the trajectory completes is partly contingent.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework is more useful with this refinement than without it. The unconditional version of the claim was too clean. The conditional version is testable against more cases and makes more accurate predictions. The Song case, in this reading, has improved the framework by forcing it to specify what it had previously left implicit.</p>
+
+  <p class="prose">A further observation worth marking: the Song's near-breakthrough also means that the inherited picture of Chinese civilization as "static" or "frozen in tradition" is wrong. The civilization moved through the possibility space. Song China was further along the Recursion-Creation axis than any pre-modern civilization had been. The later Ming-Qing configuration is a regression from that position, not a permanent Chinese condition.</p>
+
+  <div class="folio folio-right">227</div>
+</section>
+
+<!-- §4 · OBSERVATION TWO: MING PIVOT -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ Observation Two</div>
+  <div class="surprise-tag">— China's 117 CE Moment —</div>
+  <h2 class="section-title">The Ming Pivot<br>of 1433.</h2>
+
+  <p class="prose dropcap">Rome had its directional shift in 117 under Hadrian. China had its equivalent in 1433, under the Xuande Emperor of the Ming. Between 1405 and 1433, the Ming dynasty had conducted seven extraordinary maritime expeditions under the eunuch admiral Zheng He. The fleets — by some estimates the largest ocean-going force in the world at the time — reached the Persian Gulf, the east coast of Africa, and the southern shores of Arabia. The expeditions established tributary relationships across the Indian Ocean. China appeared, briefly, to be developing into the world's first oceanic civilizational power.</p>
+
+  <p class="prose">In 1433, the expeditions were halted. The shipyards were dismantled. The records of the voyages were partly suppressed. Maritime trade was restricted by imperial decree. Within a few decades, Chinese ocean-going technology had been deliberately allowed to atrophy. By the time European ships reached East Asia a century later, China — which had possessed the world's most advanced oceanic capability within living memory — had withdrawn from the seas.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The framework reads 1433 as China's directional pivot. As Hadrian's withdrawal in 117 CE marked the end of Roman expansion that the political collapse three and a half centuries later would eventually consummate, the Ming maritime withdrawal of 1433 marked the end of Chinese expansive engagement with domains beyond its existing borders. The civilization had occupied a high-Expansion position briefly. It chose to retreat from that position. The retreat shaped the next five centuries.</p>
+
+  <div class="folio folio-right">228</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Ming Pivot of 1433</div>
+
+  <p class="prose">The conventional historical literature has documented this withdrawal extensively. The framework's specific contribution is the parallel to the Rome reading. Two civilizations, eleven centuries apart, both occupying configurations that combined Continuity-Capability-Cooperation strengths, both reached maximum Expansion and then chose, through specific political acts, to retreat. The retreat in both cases preceded the long consequences by centuries. Rome's political collapse in 476. China's collision with industrialized Europe in the Opium Wars of 1839-42. The intervening centuries in both cases were what the previous chapter named: civilizations operating without one of their load-bearing axes, growing more institutionally sophisticated while losing the directional dynamism that had defined their expansive phases.</p>
+
+  <p class="prose">The framework's claim is that this pattern is structural. Civilizations whose configurations combine high Continuity, Capability, and Cooperation tend, at some point, to encounter an Expansion limit. The limit is sometimes geographic, sometimes political, sometimes ideological. When the limit is reached, the configuration that produced the strength does not, by itself, produce the means of transition to a different configuration. The civilization tends to consolidate. The consolidation tends to last for centuries. The eventual consequences arrive long after the moment of transition.</p>
+
+  <div class="pull-quote no-break">
+    Two civilizations. Eleven centuries apart.<br>
+    Both reached maximum Expansion.<br>
+    Both deliberately stepped back.
+  </div>
+
+  <p class="prose">This is the framework's second specific contribution to the Chinese case. The Ming pivot of 1433 is, structurally, China's 117 CE moment. The consequences took longer to arrive — the Opium Wars came four centuries later rather than three and a half — but the underlying pattern is the same. The framework predicts the lag. The historical record displays it.</p>
+
+  <div class="folio folio-left">229</div>
+</section>
+
+<!-- §5 · OBSERVATION THREE: NEEDHAM -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ Observation Three</div>
+  <div class="surprise-tag">— The Needham Question —</div>
+  <h2 class="section-title">Why China Did Not Have<br>a Scientific Revolution.</h2>
+
+  <p class="prose dropcap">The biochemist Joseph Needham spent forty years of his life — and produced twenty-seven dense volumes of <em>Science and Civilisation in China</em> — asking why China did not produce a scientific revolution despite Song-era technological precocity. He never definitively answered the question. The framework, with the Song reading already in hand, can now offer a structural account that the Rome chapter alone could not have produced.</p>
+
+  <p class="prose">Needham's question is, on examination, two questions. First: why did Song China, which appeared structurally close to a scientific revolution, not complete the trajectory? The answer, given in the previous section, is that Song China's trajectory was interrupted by external shock (the Mongol conquest) and deliberately reversed by political choice (the Ming restoration). Song China <em>was</em> on the relevant trajectory. The trajectory did not complete for reasons partly contingent.</p>
+
+  <p class="prose">Second: why did Ming-Qing China, with the Song's accumulated substrate still available, not resume the trajectory? The framework's answer here is the same as its reading of Rome's intellectual stagnation. Ming-Qing China occupied a Continuity-Capability lock-in configuration. The civilization became extraordinarily good at being itself — Confucian scholarship deepened, administrative practice refined, the examination system reached its institutional perfection — while structurally weakening the Recursion-Creation coupling that Song China had begun to develop. The lock-in operated. The framework's diagnosis from Rome applies to Ming-Qing China with substantial force.</p>
+
+  <div class="folio folio-right">230</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Needham Question</div>
+
+  <p class="prose">The framework's combined answer to Needham's question is therefore: Song China had the configuration that would have allowed it. The configuration was disrupted externally and then deliberately abandoned politically. The successor configurations of Ming and Qing China were Continuity-Capability lock-ins of the same general type that limited late Rome. The two together account for the historical pattern. Song China was the near-miss. Ming-Qing China was the configuration that could not have produced a scientific revolution.</p>
+
+  <p class="prose">The framework's reading of Song-Ming-Qing is therefore consistent with the framework's reading of Rome. The pattern generalizes. The scientific-revolution hypothesis from the Rome chapter survives the Chinese test, with the conditional clauses the Song case forced upon it. Civilizations in lock-in configurations tend not to produce scientific revolutions. Civilizations moving toward Recursion-Creation coupling can produce them, given time and the absence of disrupting forces.</p>
+
+  <div class="pull-quote no-break">
+    Song China was the configuration that almost did.<br>
+    Ming-Qing China was the configuration that could not.<br>
+    Both were the same civilization.
+  </div>
+
+  <p class="prose">This is the framework's third specific contribution. It is, in a sense, the most structurally satisfying of the four observations because it shows the framework's earlier claim being tested, partially refined, and ultimately preserved. The Rome chapter made a claim. The China chapter tested it. The claim survived with refinement. This is what framework testing should produce when the framework is real.</p>
+
+  <p class="prose" style="margin-top:0.7em;">There remains, however, the question this chapter opened with — the question that distinguishes the Chinese case from the Roman one. China did not fall. The lock-in configuration that proved fatal to the Western Roman state did not produce a comparable political collapse in China across two and a half millennia. The framework must explain this. The fourth observation is where the framework extends itself to do so.</p>
+
+  <div class="folio folio-left">231</div>
+</section>
+
+<!-- §6 · OBSERVATION FOUR: DECOUPLED CONTINUITY -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ Observation Four · The Chapter's Largest Claim</div>
+  <div class="surprise-tag">— Decoupled Continuity —</div>
+  <h2 class="section-title">Civilization Above<br>the State.</h2>
+
+  <p class="prose dropcap">The fourth observation is the framework's most consequential contribution to the Chinese case and, on examination, the extension to the framework's vocabulary that the China case forces. The Rome reading suggested that lock-in tends to produce eventual political collapse. The China reading shows that lock-in produced periodic political collapse — and that the civilization survived each one. What the framework must therefore identify is whatever it was about China that allowed civilizational survival across state collapse.</p>
+
+  <p class="prose">The answer, in compressed form, is that China achieved what the framework will here call <strong>decoupled continuity</strong>. The civilization's substrate of preservation, transmission, and identity was, by structural design or accident, operated at a level above the dynasty. When a particular Chinese state collapsed, that level continued operating. The next dynasty could re-instantiate state-level institutions on top of a civilizational substrate that had never failed. Rome, on the framework's reading, did not possess this kind of substrate at sufficient depth. Roman civilization was more tightly bound to the operations of the Roman state, especially in the West. When the Western state failed, much of the substrate failed with it.</p>
+
+  <p class="prose" style="margin-top:0.9em;">What constituted China's decoupled substrate? Several components, operating together. The Chinese writing system, persistent in essentially recognizable form for more than three thousand years. The classical canon — the Four Books and Five Classics — continuously transmitted, studied, and reinterpreted by every literate generation. The bureaucratic template, sufficiently formalized to be replicable by any state that wished to claim legitimacy. The civil service examination system, which operated continuously across more than thirteen centuries and across multiple dynasties. The Confucian conceptual frame, which both ruling classes and merchant classes carried independently of any particular polity.</p>
+
+  <div class="folio folio-right">232</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Decoupled Continuity</div>
+
+  <p class="prose">These together constituted what could be called a civilizational substrate operating at a level above any specific state. The substrate was not centralized. It was distributed across the literate class, the bureaucratic class, the merchant class, the village-level Confucian moral order. When the Mongols conquered China in the thirteenth century, they ruled by adopting the Chinese bureaucratic apparatus, the Chinese examination system, and the Chinese administrative template. When the Manchus conquered China in the seventeenth century, they did the same. The conquerors became, within a few generations, culturally Chinese while ruling the Chinese. The state changed hands. The civilization persisted because the substrate the civilization had built operated independently of which family currently ruled it.</p>
+
+  <div class="pull-quote no-break">
+    Rome's civilization was tied to Rome's state.<br>
+    China's civilization operated above any state.<br>
+    The difference is structural.
+  </div>
+
+  <p class="prose">This is the framework's extension. The Rome reading's Continuity axis was insufficiently differentiated. The China case forces the recognition that Continuity can operate at two levels — state-coupled Continuity (Rome's Western form) and decoupled Continuity (China's form, and the Eastern Roman continuation that became Byzantium). Civilizations possessing only state-coupled Continuity collapse when the state collapses. Civilizations possessing decoupled Continuity can survive state collapse. The mechanism that produces the difference is the construction, deliberate or accidental, of a substrate of identity and transmission that operates above the political institutions.</p>
+
+  <div class="folio folio-left">233</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Decoupled Continuity</div>
+
+  <p class="prose">The concept has further predictive value beyond its application to China. Decoupled Continuity, examined carefully, is exactly what allowed several other civilizations to survive what would otherwise have been terminal political failures. Jewish civilization survived nearly two thousand years without a state because the substrate — the Torah, the rabbinic tradition, the synagogue as portable institution, halakhic law — was decoupled from any particular polity. Christian civilization survived the collapse of the Western Roman state because the Church had developed, by the time of the collapse, a decoupled substrate of its own — the canonical scriptures, the liturgical tradition, the monastic network, the episcopal hierarchy as a parallel administrative structure. Hindu civilization persisted across centuries of foreign rule because the substrate — the Vedic literature, the ritual tradition, the caste-based social organization — operated below or above any particular political order. In each case, the civilization survived state-level failures that would have ended civilizations lacking decoupled Continuity.</p>
+
+  <p class="prose">This is the framework being extended by a case rather than imposed on a case. The Rome reading did not need decoupled Continuity as a category. The China reading required it. With the category added, the framework now reads other cases more clearly than it could before. This is how a framework grows when it is being honestly tested — by being forced to develop the conceptual machinery the cases require.</p>
+
+  <p class="prose" style="margin-top:0.9em;">A natural question follows. Why did Rome not develop decoupled Continuity at sufficient scale, while China did? The framework's answer is partly historical contingency and partly directional configuration. The Roman Republic had built civilizational substrate that operated above the political institutions — Roman law was already partly decoupled, Roman cultural identity transcended any particular emperor. But the Roman state grew so large, so administratively unified, and so culturally hegemonic that the substrate became increasingly hard to separate from the state itself. By the time the Western state collapsed, much of what had been distinguishable as "Roman civilization" had been institutionally absorbed into the state apparatus. The Eastern continuation preserved more, in part because it kept the state functional for another thousand years; in part because the Greek-Eastern substrate retained more cultural independence from imperial structure.</p>
+
+  <div class="folio folio-right">234</div>
+</section>
+
+<!-- §7 · WHAT CHINA REVEALS -->
+<section class="page opener">
+  <div class="running-head">Case Two · China</div>
+  <div class="section-number">§ What China Reveals About the Framework</div>
+  <h2 class="section-title">What Two Cases<br>Now Show.</h2>
+
+  <p class="prose dropcap">Two chapters of Part Three are now complete. The framework has been applied to Rome and to China. The reader is in a position to evaluate whether the framework has done what it was supposed to do.</p>
+
+  <p class="prose">Three claims from the Rome chapter were submitted to the Chinese case. Each can now be reported on.</p>
+
+  <p class="prose"><strong>Continuity-Capability lock-in.</strong> The pattern named in Rome's reading also operates in late imperial China. Ming-Qing China is, on examination, a Continuity-Capability lock-in of the same general type as late Rome, sustained for longer, with comparable structural pressures and comparable long-term consequences. The pattern survives the China test. It now generalizes across two civilizations whose specific contents differ significantly. This was the principal claim the chapter needed to test. The test succeeded.</p>
+
+  <p class="prose"><strong>The Recursion-Creation requirement for scientific revolutions.</strong> The Song case forced refinement. The unconditional version of the claim — civilizations in lock-in cannot produce scientific revolutions — was replaced with a conditional version. Civilizations <em>moving toward</em> Recursion-Creation coupling can produce something resembling scientific revolutions, given time and the absence of disrupting forces. Civilizations in stable lock-in configurations tend not to. The conditional version is testable against more cases. The refinement strengthens the framework rather than weakens it.</p>
+
+  <p class="prose"><strong>Decoupled Continuity as the framework's extension.</strong> The China case required this category. Without it, the framework could not explain why China survived state collapses that, on the Rome reading, should have produced civilizational collapse. With it, the framework now predicts which civilizations should survive state failure and which should not. The category was forced by the case rather than invented for it.</p>
+
+  <div class="folio folio-right">235</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What China Reveals About the Framework</div>
+
+  <p class="prose">The chapter that opened with a harder question can now answer it. China survived because it built decoupled Continuity. The state could fall. The substrate that constituted the civilization operated at a level above the state. Successive dynasties could re-instantiate state-level institutions on top of a civilizational substrate that had never failed. This is not a complete explanation of Chinese persistence. It is the framework's structural contribution to a question historians have been asking for centuries.</p>
+
+  <p class="prose">The chapter has done what it set out to do. It has applied the framework's procedure to a case the framework was not specifically designed to handle. It has produced three findings, one of which refined a prior claim and one of which extended the framework's conceptual vocabulary. Whether the findings illuminate the Chinese case more than the inherited histories already do is, again, for the reader to determine. The chapter has presented the evidence. The reader has the verdict.</p>
+
+  <div class="pull-quote no-break">
+    The framework was not designed to explain China.<br>
+    The China case extended the framework's vocabulary.
+  </div>
+
+  <p class="prose">A note before the chapter closes. The framework's reading of China has been deliberately structural. It has not addressed the moral, political, or ideological dimensions of the Chinese case. It has not evaluated Chinese civilization as good or bad, as desirable or undesirable, as preferable or inferior to any other civilization. It has located the civilization in the possibility space and read what the location reveals. The reader's evaluative judgments — if the reader wishes to make any — belong outside the framework's scope. The framework's restraint here is, again, its source of authority. The chapter has tried to maintain that restraint throughout.</p>
+
+  <div class="folio folio-left">236</div>
+</section>
+
+<!-- §8 · BRIDGE TO MODERNITY -->
+<section class="page">
+  <div class="running-head">Case Two · China</div>
+
+  <p class="prose">Two cases now sit behind the framework. Rome failed politically and persisted partially through what migrated of its substrate. China survived politically across all its dynastic collapses by virtue of substrate that operated above the dynasties. The framework's reading of both is consistent and extends the framework's vocabulary by one important concept. The pattern of Continuity-Capability lock-in operates across both. The Recursion-Creation requirement for scientific revolution survives both with conditional refinement. Decoupled Continuity emerges as the framework's account of which civilizations can survive state collapse.</p>
+
+  <p class="prose">The next case examines a different kind of intelligence under constraint. Modern liberal democracies have not, as a class, faced the test of state collapse that Rome and China both faced. They are younger. Their institutional configurations are still developing. The framework's reading of them is, in important ways, a reading of a partial case rather than a completed one. But several of the framework's diagnostic moves apply directly. Modern civilizations occupy specific positions in the eight-dimensional space. Those positions can be read. The tensions can be named. The trajectories can be indicated.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The third case is the one the reader inhabits.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The framework now turns to Modernity.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">237</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of the Second Case</div>
+  <div class="epigraph-text">
+    "Rome's civilization fell with Rome's state.<br>
+    China's civilization outlived every state that ever ruled it.<br>
+    Modernity has not yet faced the question."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">THIRD CASE BEGINS · MODERNITY</div>
+</section>
+
+</body>
+</html>

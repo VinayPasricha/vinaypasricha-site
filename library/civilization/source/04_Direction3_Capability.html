@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Direction Three: Capability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display  { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono     { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .direction-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .direction-cover-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .direction-cover-roman { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .direction-cover-name { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 72pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .direction-cover-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .direction-cover-sigil { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.3in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .case-block { border-left: 2px solid var(--gold); padding: 8pt 0 8pt 14pt; margin: 0.18in 0; }
+  .case-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4pt; }
+  .case-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 3pt 0; letter-spacing: -0.01em; }
+  .case-span { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.1em; margin-bottom: 6pt; }
+  .case-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .case-lesson { font-family: "Source Serif 4", serif; font-style: italic; font-size: 9.5pt; color: var(--cosmos); margin-top: 5pt; }
+  .test-block { background: var(--paper-deep); padding: 14pt 16pt; margin: 0.18in 0; border-left: 3px solid var(--cosmos); }
+  .test-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 6pt; }
+  .test-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 15pt; color: var(--ink); margin: 0 0 6pt 0; }
+  .test-verdict { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 10pt; color: var(--cosmos); letter-spacing: 0.05em; margin-top: 4pt; }
+  .test-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- DIRECTION THREE — COVER -->
+<section class="page direction-cover">
+  <div class="direction-cover-tag">Part Two · Foundation</div>
+
+  <div>
+    <div class="direction-cover-roman">DIRECTION  THREE</div>
+    <h1 class="direction-cover-name">Capability.</h1>
+    <p class="direction-cover-tagline">The conversion of truth into effect — what intelligence does when knowing is not enough.</p>
+  </div>
+
+  <div class="direction-cover-sigil">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <g stroke="#0f1115" stroke-width="2.4" stroke-linecap="round">
+        <line x1="140" y1="40"  x2="140" y2="92"/>
+        <line x1="140" y1="188" x2="140" y2="240"/>
+        <line x1="40"  y1="140" x2="92"  y2="140"/>
+        <line x1="188" y1="140" x2="240" y2="140"/>
+        <line x1="69"  y1="69"  x2="106" y2="106"/>
+        <line x1="174" y1="174" x2="211" y2="211"/>
+        <line x1="211" y1="69"  x2="174" y2="106"/>
+        <line x1="106" y1="174" x2="69"  y2="211"/>
+      </g>
+      <circle cx="140" cy="140" r="14" fill="#b8954f"/>
+      <circle cx="140" cy="140" r="4"  fill="#0f1115"/>
+    </svg>
+  </div>
+
+  <div class="direction-cover-tag" style="color: var(--mute);">Sigil III · Capability</div>
+</section>
+
+<!-- EPIGRAPH — ARCHIMEDES -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Direction Three · Opening</div>
+  <div class="epigraph-text">
+    "Give me a place to stand, and I shall move the world."
+  </div>
+  <div class="epigraph-attribution">— Archimedes</div>
+  <div class="epigraph-source-note">attrib. via Pappus of Alexandria · c. 4th c. CE</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · FROM KNOWING TO DOING -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ From Knowing to Doing</div>
+  <h2 class="section-title">Truth Alone<br>Is Not Enough.</h2>
+
+  <p class="prose dropcap">The previous chapter ended with a problem. An intelligence can preserve information faithfully. It can correct that information against reality. It can build truth-correction institutions powerful enough to overturn millennia of inherited error. And it can still fail — because between knowing the world and changing the world, there is a gap. The gap is not knowledge. The gap is the capacity to act on what is known.</p>
+
+  <p class="prose">A physician can diagnose a disease for which she cannot treat the patient. An astronomer can predict a flood she cannot avert. An economist can foresee a collapse he cannot prevent. The accurate model produces no consequence. The corrected belief produces no effect. The truth, however hard-won, sits inert.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">Continuity preserves.</p>
+  <p class="stanza">Truth corrects.</p>
+  <p class="stanza"><strong>Capability acts.</strong></p>
+
+  <p class="prose" style="margin-top:0.9em;">Capability is the third foundation. It is the direction that closes the loop between knowing reality and shaping it. Without it, the prior two directions have no consequence in the world. With it, what intelligence has discovered and corrected becomes the material from which the future is built.</p>
+
+  <div class="folio folio-right">072</div>
+</section>
+
+<section class="page">
+  <div class="running-head">From Knowing to Doing</div>
+
+  <p class="prose">There is a particular failure mode worth marking immediately. A civilization rich in Continuity and Truth, but poor in Capability, is in a paradoxical position. It knows the diagnosis and watches the patient die. It sees the threat and cannot avert it. Its archives are full. Its libraries are precise. Its scholars are admired. And its capacity to act on what it knows has atrophied.</p>
+
+  <p class="prose">This is not a hypothetical condition. It has been a recurring feature of declining civilizations — late imperial bureaucracies in which knowledge has accumulated faster than the institutional capacity to use it; modern political systems in which the analysis is sophisticated and the response is paralyzed; expert classes whose understanding of the problem exceeds their authority to do anything about it.</p>
+
+  <div class="pull-quote no-break">
+    To know reality and remain unable to act upon it<br>
+    is another form of failure.
+  </div>
+
+  <p class="prose">The framework therefore treats Capability not as a virtue and not as a kind of prowess, but as a foundational direction in the strict structural sense. Without it, the other foundations remain decorative. With it, they begin to compound.</p>
+
+  <div class="folio folio-left">073</div>
+</section>
+
+<!-- §2 · WORKING DEFINITION: CAPABILITY IS NOT POWER -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ The Working Definition</div>
+  <h2 class="section-title">Capability Is<br>Not Power.</h2>
+
+  <p class="prose dropcap">Capability, in this work, is the conversion of information into effective action. It is the capacity of an intelligence to take what it knows and produce a change in the world that corresponds to its intentions. It is constructive effectiveness — what an intelligence can <em>do</em>, not what it can <em>compel</em>.</p>
+
+  <p class="prose">This distinction matters and is easy to miss. Capability is not the same as Power. Power is the capacity to coerce — to force outcomes through control over others, over resources, over violence. Capability is the capacity to produce — to bring about results through skill, tool, technique, and accumulated method.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The two are often correlated. They are not the same. They can decouple sharply.</p>
+
+  <p class="prose">A small society with high capability can outperform a large empire on most measures that matter — life expectancy, technological output, scientific contribution, infrastructure quality, public health. Switzerland, contemporary Singapore, postwar Japan, the Netherlands at the height of its republican commerce — each was an instance of capability vastly disproportionate to power. None were militarily threatening to any of their major neighbors. Each shaped the world out of proportion to its size, because its capability per capita was extraordinary.</p>
+
+  <div class="folio folio-right">074</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Working Definition</div>
+
+  <p class="prose">The reverse case is equally instructive. A society can possess overwhelming power and modest capability. The late Soviet Union had thousands of nuclear weapons and could not reliably produce consumer goods. Many extractive regimes in the modern world have commanded armies and could not maintain the electrical grids of their own capitals. Power without capability is the capacity to threaten without the capacity to build. It is a position from which a society can persist, often violently, while losing ground steadily to societies that have done less threatening and more producing.</p>
+
+  <p class="prose">The framework's claim is that intelligence is pulled, across all known substrates, toward Capability rather than toward Power as such. Power is an instrument. Capability is an attractor. Civilizations that maximize Power at the expense of Capability eventually decline, sometimes spectacularly. Civilizations that maximize Capability often acquire Power as a byproduct without especially seeking it.</p>
+
+  <div class="pull-quote no-break">
+    Power coerces.<br>
+    Capability constructs.
+  </div>
+
+  <p class="prose">The remainder of this chapter examines Capability in the constructive sense — what intelligence does when it converts what it knows into what it can build, treat, predict, organize, transport, communicate, and ultimately reshape.</p>
+
+  <div class="folio folio-left">075</div>
+</section>
+
+<!-- §3 · EVIDENCE: BIOLOGY + CUMULATIVE CULTURE -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ Evidence · The Ratchet</div>
+  <h2 class="section-title">A Naked Animal,<br>An Inherited World.</h2>
+
+  <p class="prose dropcap">A solitary human, stripped of clothing, tools, fire, and the inherited knowledge of the species, is among the most helpless mammals of comparable size on Earth. Slower than nearly every predator. Weaker than nearly every competitor. Without claws, fur, fangs, speed, or scent. The naked biological human is, by the standards of biological capability, conspicuously unimpressive.</p>
+
+  <p class="prose">The same human, born instead into a civilization with ten thousand years of accumulated technique, is among the most capable beings ever to have existed. She inherits, without having to invent, the agricultural revolution, the wheel, fire-control, writing, metallurgy, navigation, medicine, electricity, computation, and the entire infrastructure of a built world that took unfathomable cumulative labor to produce. None of this is encoded in her genes. All of it is available to her at birth.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The difference between these two humans is not biological. It is what the developmental biologist Michael Tomasello has called the <em>ratchet effect</em> — the capacity of human culture to accumulate technique across generations without periodic losses. Other species use tools. A small number of species teach the use of tools to their young. No other known species accumulates technique across generations the way humans do.</p>
+
+  <p class="prose">The ratchet is the single feature most responsible for what we call human capability. It is not strength. It is not intelligence in the narrow sense. It is the capacity to begin each generation, not from zero, but from the cumulative achievements of every generation that preceded it.</p>
+
+  <div class="folio folio-right">076</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · The Ratchet</div>
+
+  <p class="prose">Consider what this implies. A child born today inherits, on average, more usable capability than a king inherited four centuries ago. The child has access to antibiotics, to sanitation, to literacy, to instant communication across continents, to a vast inherited library of mathematics, science, music, and craft. The king commanded armies and owned palaces. The modern child commands more capability than the king did, in any meaningful measure of what either could do or have done on their behalf.</p>
+
+  <p class="prose">This is not a moral observation. It is structural. The capability the child inherits is the result of compounded ratcheting across generations. Each generation produced incremental advances. Each advance was preserved by Continuity. Each was corrected by Truth-bearing institutions. Each was extended by the labor of those who came after. The aggregate is what we call modernity. Modernity is not an event. It is a level of cumulative capability accumulated by repeatedly applying the first three directions for a long time.</p>
+
+  <div class="pull-quote no-break">
+    Modernity is not an event.<br>
+    It is a level of accumulated capability.
+  </div>
+
+  <p class="prose">The same ratchet operates within science. Newton did not begin where Galileo began. Einstein did not begin where Newton began. No serious scientist today begins where any of them began. The standing of any given researcher is, in part, the standing-on-shoulders that the ratchet provides. The capability of any given scientist to make discoveries is a function not only of her intellect but of the depth of inheritance she has been handed.</p>
+
+  <div class="folio folio-left">077</div>
+</section>
+
+<!-- §4 · CUMULATIVE INHERITANCE -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ Evidence · Inheritance</div>
+  <h2 class="section-title">Civilizations as<br>Capability Stores.</h2>
+
+  <p class="prose dropcap">If the ratchet is the mechanism, the civilization is the storage system. A civilization is, in part, a structure that stores capability across generations in forms that can be accessed by those who did not produce them. Tools are stored capability. Methods are stored capability. Infrastructure is stored capability. Institutions are stored capability. Languages, alphabets, numeral systems, units of measurement — each is a layer of stored capability that subsequent generations inherit rather than reinvent.</p>
+
+  <p class="prose">The most capable civilizations have, almost without exception, been the ones with the deepest stores. Roman engineering allowed Roman commerce, Roman warfare, and Roman administration. Chinese agricultural technique allowed the demographic stability of every Chinese dynasty for two thousand years. European naval craft allowed the global European expansion of the early modern era. Modern computational infrastructure allows essentially every contemporary form of economic, scientific, and social capability now operating at scale.</p>
+
+  <p class="prose" style="margin-top:0.9em;">In each case the capability is stored not in any individual but in the inherited apparatus — the tools, the techniques, the trained classes of practitioners, the institutional knowledge of how to keep the apparatus operational. The individual capable of producing or maintaining this apparatus is rare. The civilization that has accumulated the apparatus is, for as long as it remains operational, capable beyond what any of its individual members would be alone.</p>
+
+  <p class="prose">This is also why Capability, at the civilizational scale, is more fragile than it appears. Stored capability can be lost. The next section examines what happens when it is.</p>
+
+  <div class="folio folio-right">078</div>
+</section>
+
+<!-- §5 · THE EFFICIENCY CONSTRAINT -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ The Efficiency Constraint</div>
+  <h2 class="section-title">The Pressure<br>Capability Cannot Escape.</h2>
+
+  <p class="prose dropcap">Efficiency was one of the original twelve candidate directions. It did not survive the independence test. The reason it did not survive is also the reason it deserves a section here, rather than a chapter of its own.</p>
+
+  <p class="prose">Efficiency is what Capability becomes when it operates against limits. Where resources are unlimited, capability can be lavish. Where resources are scarce — and at civilizational scale, they always eventually are — capability is selected for efficiency. The selection is not a moral choice. It is a structural pressure. A capable system that is profligate with its resources will be replaced, over time, by a capable system that achieves the same effects with less input.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The pattern is observable across every substrate. In biology, organisms that achieve the same outcomes with fewer calories tend to outcompete those that do not. In commerce, firms that produce the same goods at lower cost tend to displace those that produce them at higher cost. In computation, algorithms that achieve the same results in fewer operations tend to be selected over those that take more. In each case, efficiency is not an additional direction. It is the shape Capability takes when scarcity applies.</p>
+
+  <p class="prose">This is why Efficiency does not appear as a primary direction in the framework. It is not eliminated. It is relocated. It operates everywhere Capability operates, as an automatic gradient, requiring no separate explanation.</p>
+
+  <div class="pull-quote no-break">
+    Efficiency is not a direction.<br>
+    It is the gradient Capability climbs under scarcity.
+  </div>
+
+  <div class="folio folio-right">079</div>
+</section>
+
+<!-- §6 · CASE FROM FAILURE -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ The Case from Failure</div>
+  <h2 class="section-title">When Capability<br>Is Lost.</h2>
+
+  <p class="prose dropcap">Capability differs from Continuity in an important way. Continuity is, in a sense, binary — a tradition continues or it does not. Capability is graduated. It can be possessed, partially lost, partially recovered, lost again. A civilization can acquire a sophisticated technique, fail to transmit it across a single generation, and find itself unable to perform what its grandparents performed routinely. The historical record of such losses is more extensive than is usually appreciated.</p>
+
+  <div class="case-block">
+    <div class="case-label">Capability Lost</div>
+    <div class="case-name">Roman Concrete</div>
+    <div class="case-span">c. 200 BCE — c. 5th c. CE · lost for ~1,000 years</div>
+    <div class="case-body">The Romans used a particular concrete formulation, incorporating volcanic ash from specific quarries, that produced structures of extraordinary durability. Many Roman concrete structures — the Pantheon, harbor works at Pozzuoli, vast vaulted halls — are still standing after two thousand years, in many cases stronger than when they were built. With the political collapse of the Western Empire, the technique was lost. For roughly a millennium, no Western civilization could match it. The recipe was reconstructed, in significant detail, only in recent decades.</div>
+    <div class="case-lesson">A capability that has not been transmitted is a capability that has not been retained.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Capability Lost</div>
+    <div class="case-name">The Tasmanian Regression</div>
+    <div class="case-span">c. 10,000 BCE — c. 1800 CE</div>
+    <div class="case-body">When sea levels rose at the end of the last ice age, the population of Tasmania was cut off from the Australian mainland. The isolated population numbered roughly four thousand people. Across the following millennia, the Tasmanians lost the ability to make bone tools, to fish with hooks and lines, to produce cold-weather clothing, and possibly to make fire reliably. Recovery did not happen because the conditions for recovery — sufficient population, sufficient specialization, sufficient teachers — were no longer present. Capability requires a minimum population to maintain.</div>
+    <div class="case-lesson">Below a critical threshold, complex capability erodes faster than small populations can rebuild it.</div>
+  </div>
+
+  <div class="folio folio-right">080</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Failure</div>
+
+  <div class="case-block">
+    <div class="case-label">Capability Unpropagated</div>
+    <div class="case-name">The Antikythera Mechanism</div>
+    <div class="case-span">c. 100 BCE</div>
+    <div class="case-body">Recovered from a Greek shipwreck in 1901, the Antikythera Mechanism is an astronomical computer of bronze gears that modeled the motion of the sun, moon, and known planets with extraordinary precision. Its sophistication exceeds anything in the European mechanical record for the next thousand years. Whoever made it did not transmit the technique. The capability was real. The civilizational infrastructure for preserving it was not. By the time mechanical clocks of comparable complexity reappeared in medieval Europe, the Mechanism's design had been waiting on the sea floor for fifteen centuries.</div>
+    <div class="case-lesson">An individual capability that is not embedded in an institution is a capability that has not yet survived.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Three cases. The first shows a capability lost through institutional collapse. The second shows a capability lost through demographic contraction. The third shows a capability that may never have been fully transmitted in the first place. In each, the underlying pattern is the same. The capability existed. The conditions for its transmission did not. And without transmission, capability is functionally identical to capability that was never possessed.</p>
+
+  <p class="prose">This is the harder truth about Capability as a direction. It is not merely something a civilization accumulates. It is something a civilization can lose. The civilizations that hold their capability are those that take its transmission as seriously as its acquisition. The civilizations that lose it tend to lose it without noticing — until the capability is suddenly, conspicuously, needed and unavailable.</p>
+
+  <div class="folio folio-left">081</div>
+</section>
+
+<!-- §7 · CASE FROM SUCCESS -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ The Case from Success</div>
+  <h2 class="section-title">When Capability<br>Compounds.</h2>
+
+  <p class="prose dropcap">The mirror image of capability lost is capability compounded — the long stretches in human history when accumulated technique has not merely been preserved but has been built upon, with each generation handing forward more than it received. The most consequential of these stretches is the period beginning around the late eighteenth century and continuing to the present.</p>
+
+  <div class="case-block">
+    <div class="case-label">Capability Compounded</div>
+    <div class="case-name">The Industrial Revolution</div>
+    <div class="case-span">c. 1760 — present</div>
+    <div class="case-body">For most of human history, capability per capita rose slowly, sometimes regressed for centuries, and was bounded by the cycle of agricultural production. From the late 1700s onward, in a small set of locations and then increasingly globally, capability per capita began to compound. Energy use per person grew by orders of magnitude. Life expectancy doubled, then nearly doubled again. Material production grew at rates that pre-industrial economies would have considered impossible. The Industrial Revolution did not merely produce more goods. It produced the capacity to keep producing more goods — a capability of producing capability.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Capability Compounded</div>
+    <div class="case-name">Aviation</div>
+    <div class="case-span">1903 — 1969 · sixty-six years</div>
+    <div class="case-body">In 1903, the Wright brothers achieved a sustained powered flight of roughly twelve seconds, covering 120 feet. In 1969, three humans walked on the surface of the moon. The interval between the first powered flight and the first lunar landing is less than a human lifetime. The trajectory required the cumulative inheritance of metallurgy, aerodynamics, propulsion, navigation, control theory, materials science, and organizational management — none of which had existed at sufficient scale in 1903. Each generation handed forward more than it received. The ratchet ran fast.</div>
+  </div>
+
+  <div class="folio folio-right">082</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Success</div>
+
+  <div class="case-block">
+    <div class="case-label">Capability Compounded</div>
+    <div class="case-name">The Semiconductor Industry</div>
+    <div class="case-span">c. 1958 — present</div>
+    <div class="case-body">For roughly sixty years, the number of transistors that can be placed on a single integrated circuit has approximately doubled every two years. The pattern, known as Moore's Law, is not a law of physics. It is the result of relentless, institutionalized capability compounding — sustained engineering effort across an industry committed to the proposition that this year's capability could and would exceed last year's. The pattern eventually slows, as all such patterns must. The civilizational achievement is that it ran as long as it did.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Three cases. The common feature in all three is not merely that capability grew. It is that capability grew <em>as a system</em>. Each advance was preserved, transmitted, built upon, and incorporated into the next advance. The civilizations and industries in question had built — sometimes consciously, sometimes accidentally — the institutional infrastructure for compounding.</p>
+
+  <p class="prose">Compounding is the distinctive feature of a Capability-pursuing civilization at its strongest. Most civilizations through history have accumulated capability slowly, lost some of it periodically, and operated for centuries near a slow-rising plateau. The civilizations and periods that achieved sustained compounding are historically rare. They are also responsible for nearly everything in the modern world.</p>
+
+  <div class="pull-quote no-break">
+    Capability that compounds is the rarest, most consequential pattern in civilizational history.
+  </div>
+
+  <div class="folio folio-left">083</div>
+</section>
+
+<!-- §8 · MODERN STAKES -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ Modern Stakes</div>
+  <h2 class="section-title">Capability<br>Accelerating.</h2>
+
+  <p class="prose dropcap">The present age is one in which Capability is compounding faster than at any prior moment in the historical record. Computational capability has doubled repeatedly across the working lives of people now alive. Biological capability — the ability to read, edit, and design genetic material — has advanced from impossibility to commodity in a single generation. The ability to manipulate matter at the molecular scale, to model proteins, to generate language and image at scale, to build systems that themselves design systems — each of these has crossed thresholds within the past few decades that no previous era could have imagined.</p>
+
+  <p class="prose">The framework's claim is not that this acceleration is uniquely good or uniquely dangerous. The framework's claim is more structural. A civilization whose Capability compounds without corresponding investment in the other foundations — without strengthening Continuity, without sharpening Truth, without scaling Cooperation — becomes increasingly capable of effects it has decreasing ability to evaluate, correct, or coordinate.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This produces a particular and recognizable failure mode. The civilization continues to acquire new capabilities. It uses them without fully understanding what they will do. The errors that result are larger than the errors of previous eras, because the capabilities themselves are larger. The corrections, when they come, are also larger.</p>
+
+  <p class="prose">A civilization aligned with Direction Three is therefore not one that maximizes Capability indiscriminately. It is one that pairs the acquisition of new capabilities with the institutional, epistemic, and coordinative infrastructure to use them responsibly. The framework cannot prescribe what that infrastructure should look like. It can predict that the civilizations that build it will be the ones still operating in a century, and the ones that do not will become cautionary cases for those that come after.</p>
+
+  <div class="folio folio-right">084</div>
+</section>
+
+<!-- §9 · TENSIONS FLAGGED -->
+<section class="page">
+  <div class="running-head">Direction Three · Capability</div>
+
+  <p class="prose">Before turning to the tests, two tensions must be flagged. Each will be developed in later chapters.</p>
+
+  <p class="prose"><strong>Capability is in tension with Purpose.</strong> Highly capable systems can drift purposeless. The late Roman Empire was extraordinarily capable in administration, engineering, and military organization for centuries while becoming increasingly unsure of what it was for. Modern corporations of enormous capability routinely fail not because they cannot do anything but because they have lost a coherent reason to do any particular thing. Capability acquired faster than Purpose can be selected produces sophisticated drift. The chapter on Purpose will return to this.</p>
+
+  <p class="prose" style="margin-top:0.7em;"><strong>Capability is in tension with Recursion.</strong> Capable institutions are subject to a particular kind of self-protection. They generate institutional pride. They produce experts whose careers depend on the capability not being overturned. They develop blind spots about their own limitations. The result is that the most capable systems are often the most resistant to honest self-examination. This is one of the central problems Recursion is designed to address.</p>
+
+  <p class="prose" style="margin-top:0.7em;">A third tension is worth noting more briefly. Capability can also be in tension with Truth — capable systems sometimes construct narratives that protect their continued operation from inconvenient correction. The Cooperation chapter, which follows this one, will address the related but distinct problem of how capability gets pooled across multiple intelligences without losing the corrective force of Truth.</p>
+
+  <div class="pull-quote no-break">
+    Capability without Purpose drifts.<br>
+    Capability without Recursion ossifies.
+  </div>
+
+  <div class="folio folio-left">085</div>
+</section>
+
+<!-- §10 · TESTS APPLIED -->
+<section class="page opener">
+  <div class="running-head">Direction Three · Capability</div>
+  <div class="section-number">§ The Tests Applied</div>
+  <h2 class="section-title">Does Capability<br>Survive?</h2>
+
+  <p class="prose dropcap">Each candidate direction must survive four tests. Capability is subjected to each.</p>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test One</div>
+    <div class="test-name">Survival</div>
+    <div class="test-body">Can an intelligent civilization persist indefinitely without the capacity to convert information into action? The answer is no, in any meaningful sense. A civilization that cannot act on what it knows cannot respond to environmental change, technological challenge, demographic pressure, or external threat. It may persist briefly as a memorial of itself. It does not persist as a continuing civilizational subject.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Two</div>
+    <div class="test-name">Universality</div>
+    <div class="test-body">Capability appears across every observable substrate. In biology, as the differential ability of organisms to act effectively in their environment. In civilizations, as the cumulative accumulation of technique. In contemporary intelligence systems, as the explicit measure of what the system can do with the information it has been given. Three independent substrates show the same attractor operating. Alien intelligences remain outside the evidence base; the framework does not invoke them.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="folio folio-right">086</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Tests Applied</div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Three</div>
+    <div class="test-name">Independence</div>
+    <div class="test-body">Capability is not reducible to Continuity, which preserves information without using it. It is not reducible to Truth, which corrects models without acting on them. It is distinguishable from Power, which coerces without producing. Capability is the independent direction that converts what intelligence knows into what intelligence does. Civilizations have repeatedly possessed Continuity and Truth without strong Capability — late imperial systems with deep archives and weakening administrative effectiveness. Civilizations have also possessed Capability while losing the others — colonial enterprises with formidable technical capability and degraded institutional integrity. The direction is independently attested.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Four</div>
+    <div class="test-name">Reality</div>
+    <div class="test-body">Does reality reward movement toward Capability and punish movement away from it? Across long timescales, the verdict is unambiguous. Civilizations that compounded capability outlasted, on average, those that did not. Capabilities that were preserved became the substrate on which subsequent capabilities were built. Capabilities that were lost produced civilizational regressions whose effects lasted centuries. The Reality Test for Capability is the cleanest of any direction examined so far, with one important caveat: capability acquired without the corresponding development of Purpose or Recursion can produce its own catastrophes. The reward is real but not unconditional.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Capability passes all four tests. It is the third foundation. It is the direction that converts the prior two — preserved information and corrected models — into changes in the world.</p>
+
+  <div class="folio folio-left">087</div>
+</section>
+
+<!-- §11 · WHY CAPABILITY COMES THIRD / BRIDGE -->
+<section class="page">
+  <div class="running-head">Direction Three · Capability</div>
+
+  <p class="prose">The logic of the ordering is now visible. Continuity allows information to persist. Truth allows that information to be corrected against reality. Capability converts the corrected information into action. The progression moves from existence, to accuracy, to effect. Each direction is necessary for the next to be operative.</p>
+
+  <p class="prose">Together, these three foundations describe an intelligence that can remember, that can correct what it remembers, and that can act on what it has corrected. It is a substantial achievement. It is also still not complete.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The omission is this. An intelligence with all three foundations is still, on every example examined in this chapter, a single intelligence. The Roman builder, the Polynesian navigator, the Industrial Revolution engineer — each individual, in isolation, has limited capability. The most consequential capabilities in human history have not been the achievements of single intelligences. They have been the joint products of many intelligences working together over time.</p>
+
+  <div class="pull-quote no-break">
+    What a single intelligence can do is dwarfed<br>
+    by what many can do together.
+  </div>
+
+  <p class="prose">The cathedrals were built by generations. The sciences were built by communities. The cities were built by populations. The technologies that compound were never the work of any individual. Each was the result of multiple intelligences combining capabilities in ways that the individuals, alone, could not have produced.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Capability, then, is the third foundation but not the last. The fourth and final foundation is the multiplier — the direction through which intelligences combine their capabilities into something larger than any of them alone could be.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The next direction is the multiplier.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">088</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Direction Three</div>
+  <div class="epigraph-text">
+    "The whole is something besides the parts."
+  </div>
+  <div class="epigraph-attribution">— Aristotle</div>
+  <div class="epigraph-source-note">Metaphysics · Book VIII</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">DIRECTION FOUR BEGINS · COOPERATION</div>
+</section>
+
+</body>
+</html>

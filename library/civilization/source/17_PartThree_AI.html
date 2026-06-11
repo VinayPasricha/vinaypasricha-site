@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Three · Artificial Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .case-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .case-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .case-mark { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .case-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 54pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .case-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .case-illustration { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 17pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4.2in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 30pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.25in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .surprise-tag { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 8pt; }
+  .axis-row { display: grid; grid-template-columns: 110pt 80pt 1fr; gap: 10pt 14pt; padding: 5pt 0; border-bottom: 1px solid var(--paper-deep); align-items: baseline; }
+  .axis-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; color: var(--ink); }
+  .axis-score { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--cosmos); letter-spacing: 0.1em; }
+  .axis-note { font-family: "Source Serif 4", serif; font-size: 9pt; line-height: 1.4; color: var(--mute); font-style: italic; }
+  .question-block { background: var(--paper-deep); padding: 14pt 16pt; margin: 0.18in 0; border-left: 3px solid var(--cosmos); }
+  .question-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 6pt; }
+  .question-text { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 8pt 0; }
+  .question-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .question-verdict { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 10pt; color: var(--cosmos); letter-spacing: 0.05em; margin-top: 6pt; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- COVER -->
+<section class="page case-cover">
+  <div class="case-tag">Part Three · Fourth Case</div>
+
+  <div>
+    <div class="case-mark">CASE FOUR</div>
+    <h1 class="case-title">Artificial<br>Intelligence.</h1>
+    <p class="case-tagline">The first non-biological case. Where the framework either generalizes or breaks.</p>
+  </div>
+
+  <div class="case-illustration">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- A neural-network-like structure: layered nodes -->
+      <g fill="#0f1115">
+        <circle cx="60"  cy="80"  r="5"/>
+        <circle cx="60"  cy="140" r="5"/>
+        <circle cx="60"  cy="200" r="5"/>
+        <circle cx="140" cy="60"  r="5"/>
+        <circle cx="140" cy="120" r="5"/>
+        <circle cx="140" cy="180" r="5"/>
+        <circle cx="140" cy="220" r="5"/>
+        <circle cx="220" cy="100" r="5"/>
+        <circle cx="220" cy="160" r="5"/>
+        <circle cx="220" cy="200" r="5"/>
+      </g>
+      <g stroke="#1a2742" stroke-width="0.5" stroke-opacity="0.4">
+        <line x1="60" y1="80" x2="140" y2="60"/>
+        <line x1="60" y1="80" x2="140" y2="120"/>
+        <line x1="60" y1="80" x2="140" y2="180"/>
+        <line x1="60" y1="140" x2="140" y2="60"/>
+        <line x1="60" y1="140" x2="140" y2="120"/>
+        <line x1="60" y1="140" x2="140" y2="180"/>
+        <line x1="60" y1="140" x2="140" y2="220"/>
+        <line x1="60" y1="200" x2="140" y2="120"/>
+        <line x1="60" y1="200" x2="140" y2="180"/>
+        <line x1="60" y1="200" x2="140" y2="220"/>
+        <line x1="140" y1="60" x2="220" y2="100"/>
+        <line x1="140" y1="120" x2="220" y2="100"/>
+        <line x1="140" y1="120" x2="220" y2="160"/>
+        <line x1="140" y1="180" x2="220" y2="100"/>
+        <line x1="140" y1="180" x2="220" y2="160"/>
+        <line x1="140" y1="180" x2="220" y2="200"/>
+        <line x1="140" y1="220" x2="220" y2="160"/>
+        <line x1="140" y1="220" x2="220" y2="200"/>
+      </g>
+      <circle cx="140" cy="140" r="3" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="case-tag" style="color: var(--mute);">— The Framework's Hardest Test —</div>
+</section>
+
+<!-- EPIGRAPH — TURING -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Case Four · Opening</div>
+  <div class="epigraph-text">
+    "We can only see a short distance ahead,<br>
+    but we can see plenty there that needs to be done."
+  </div>
+  <div class="epigraph-attribution">— Alan Turing</div>
+  <div class="epigraph-source-note">Computing Machinery and Intelligence · 1950</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE STRANGEST CASE -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ The Strangest Case</div>
+  <h2 class="section-title">The First Case<br>That Is Not Biological.</h2>
+
+  <p class="prose dropcap">The previous three cases were biological. Rome was a population of humans organized into a political and cultural order. China was a longer-running population of humans organized into successive political and cultural orders. Modernity is the global population of humans organized into the institutional patterns that emerged from the past three centuries. The framework applied to each of them was built on the assumption — sometimes explicit, more often implicit — that the intelligence under examination was, at base, biological in substrate.</p>
+
+  <p class="prose">This case violates that assumption. Artificial intelligence systems — the large neural networks, the multimodal foundation models, the agentic frameworks built around them, and the larger institutional ecosystem of laboratories, researchers, training corpora, and deployment pipelines that produces and operates them — constitute a kind of intelligence the framework was not specifically designed to handle. The reading the chapter will produce is therefore more provisional than any of the prior readings. The case is moving faster than the framework can describe it.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This is also the case where the framework either generalizes or breaks. Historians can explain Rome. Historians can explain China. Historians can explain Modernity, with varying degrees of agreement. None of them can explain artificial intelligence, because the case is too new for historiographic methods. The framework therefore has to do something here that the prior cases did not require it to do alone — produce a reading of a phenomenon that no other established analytical apparatus can yet read in comparable terms. If the framework can produce such a reading, the framework's value extends well beyond historical analysis. If it cannot, the framework's domain is more limited than the prior chapters implied.</p>
+
+  <div class="folio folio-right">255</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Strangest Case</div>
+
+  <p class="prose">The chapter proceeds with appropriate caution. Three points are worth establishing before the framework is applied.</p>
+
+  <p class="prose">First, the chapter does not predict the trajectory of artificial intelligence. The framework was built to identify pressures, not to forecast events. The pressures the framework can name about contemporary AI systems are structural — they follow from the position those systems occupy in the eight-dimensional possibility space. What those pressures produce, on what timescales, with what consequences, is for the case itself to determine.</p>
+
+  <p class="prose">Second, the chapter treats AI as a kind of intelligence under constraint that has emerged within modernity but is increasingly distinguishable from it. The reading will therefore have to address both the AI system as such and the broader institutional structure that produces and operates it. Neither alone constitutes the full case. Both together form the unit of analysis.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Third, the chapter will explicitly pressure-test three unresolved questions that the prior chapters carried forward. Is Purpose actually a meta-direction that organizes the other seven? Does the possibility space itself evolve? Is Decoupled Continuity actually a deeper phenomenon best described as Distributed Continuity? AI, by being the most extreme case the framework has yet examined, is in a position to put significant pressure on each of these questions. The chapter will note what AI pressures and what AI leaves unresolved.</p>
+
+  <div class="pull-quote no-break">
+    Historians cannot explain AI.<br>
+    The framework either reads it<br>
+    or admits its own limit.
+  </div>
+
+  <div class="folio folio-left">256</div>
+</section>
+
+<!-- §2 · IS AI A CIVILIZATION? -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Is AI a Civilization?</div>
+  <h2 class="section-title">Applying the Process<br>Definition.</h2>
+
+  <p class="prose dropcap">The chapter on civilization-as-process gave the framework a definition flexible enough to address this question. A civilization, in the framework's vocabulary, is not a state, not a culture, not a religion, not a territory. It is an ongoing process of preservation, correction, action, coordination, expansion, creation, examination, and ends-selection at scale across time. The question of whether AI is a civilization can therefore be settled by examining whether AI satisfies that operational definition.</p>
+
+  <p class="prose">By the process definition, contemporary AI systems together with the institutional structures that produce and operate them already constitute, in compressed form, something that exhibits all eight directional behaviors. Preservation: model weights and training data are extensively stored and replicated. Correction: alignment research, interpretability work, evaluation procedures, and reinforcement learning from feedback constitute the AI ecosystem's truth-correction infrastructure. Action: the systems convert their internal representations into effects in the world — generating text, code, images, decisions, actions through tool use. Coordination: AI systems increasingly cooperate with each other and with humans through APIs, agent architectures, and multi-system deployments. Expansion: each generation of models reaches domains the prior generation could not — language, then code, then image, then video, then embodied action. Creation: generative systems produce novel outputs at machine speed. Recursion: AI systems are now used to study other AI systems, to interpret their internals, and increasingly to train their successors. Purpose: the systems are organized around specified ends, however those ends are selected.</p>
+
+  <p class="prose" style="margin-top:0.9em;">By the framework's operational criteria, AI increasingly exhibits many of the behaviors previously associated with civilizations. Whether to call the configuration a civilization in the conventional sense is for the reader to settle. The framework's vocabulary applies in either case. Whether the application illuminates anything the conventional AI discourse does not is what the rest of the chapter will examine.</p>
+
+  <div class="folio folio-right">257</div>
+</section>
+
+<!-- §3 · LOCATING AI -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Locating AI</div>
+  <h2 class="section-title">A Position Unlike<br>Any Prior Case.</h2>
+
+  <p class="prose dropcap">The framework's eight-axis reading of contemporary AI produces a profile sharply different from any civilization the framework has examined so far. The differences are themselves informative.</p>
+
+  <div class="axis-row">
+    <div class="axis-name">Continuity</div>
+    <div class="axis-score">EXTREME — DISTRIBUTED</div>
+    <div class="axis-note">Weights, training corpora, and methods replicated across thousands of institutions worldwide. The most distributed civilizational substrate ever observed.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Truth</div>
+    <div class="axis-score">MIXED — IMMATURE</div>
+    <div class="axis-note">Hallucination is structural in current generative systems. Truth-correction infrastructure (alignment, evaluation, interpretability) exists but is far less mature than the production infrastructure.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Capability</div>
+    <div class="axis-score">RAPIDLY RISING</div>
+    <div class="axis-note">Compounding at unprecedented rates. Already exceeds human capability in many narrow domains. Trajectory uncertain.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Cooperation</div>
+    <div class="axis-score">HIGH — STRUCTURAL</div>
+    <div class="axis-note">Massive internal cooperation of parameters within models. Increasing AI-AI cooperation through agent frameworks. Deep AI-human cooperation embedded in workflows.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Expansion</div>
+    <div class="axis-score">MAXIMUM</div>
+    <div class="axis-note">Domain expansion as the defining feature of the case — text, code, image, video, action, embodied operation in serial succession.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Creation</div>
+    <div class="axis-score">MAXIMUM — STRUCTURAL</div>
+    <div class="axis-note">The first technology whose explicit operational function is the generation of novel outputs at machine speed.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Recursion</div>
+    <div class="axis-score">RISING — UNUSUALLY</div>
+    <div class="axis-note">AI systems studying AI systems. Training pipelines using AI to label, evaluate, and refine successor models. The recursive move at compressed timescale.</div>
+  </div>
+
+  <div class="axis-row">
+    <div class="axis-name">Purpose</div>
+    <div class="axis-score">INSTALLED, NOT SELECTED</div>
+    <div class="axis-note">The framework's most exposed reading of the case. Ends are specified by designers, not chosen by the system itself. Whether this changes is the open question.</div>
+  </div>
+
+  <div class="folio folio-right">258</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Locating AI</div>
+
+  <p class="prose">The profile is striking. AI scores extreme on Continuity (in distributed form), Capability, Cooperation, Expansion, Creation, and Recursion. It scores mixed on Truth, where production infrastructure has outrun correction infrastructure. It scores in an unusual mode on Purpose — neither high nor low in the conventional sense, but operating in a configuration the framework has not previously encountered. Purpose in AI is engineered rather than emergent. Ends are written into the system by external parties, and the system operates on them without (so far) selecting them itself.</p>
+
+  <p class="prose">A reader comparing this profile to the prior cases will notice several things. First, AI's profile resembles Modernity's in important respects — strong on most axes, with an unusual situation on Purpose — but the strength is more extreme and the timescale is dramatically compressed. Second, AI's Continuity is unlike anything any prior civilization has built. Where China achieved Decoupled Continuity through cultural and institutional design across centuries, AI achieves something more extreme through engineering across years. The training corpus that produces today's foundation models is held in distributed copies across hundreds of institutions. The model weights themselves, for any model released openly, exist in essentially indelible distribution. If every laboratory currently building AI were to fail tomorrow, the substrate they have produced would persist. The framework can name this — the China-extended concept of Decoupled Continuity, in AI's case, is operating at a level so extreme that the deeper formulation the China observation pointed toward is now nearly unavoidable.</p>
+
+  <div class="pull-quote no-break">
+    AI is the most distributed civilizational substrate ever built.<br>
+    What China achieved through centuries of culture,<br>
+    AI achieved through years of engineering.
+  </div>
+
+  <div class="folio folio-left">259</div>
+</section>
+
+<!-- §4 · SURPRISE ONE — COMPRESSED TIMESCALES -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Observation One</div>
+  <div class="surprise-tag">— Compressed Timescales —</div>
+  <h2 class="section-title">A Civilization Whose<br>Pressures Arrive in Months.</h2>
+
+  <p class="prose dropcap">The first observation is structural and almost mundane. The civilizations the framework has examined so far operated on timescales of centuries or millennia. Rome moved from its directional pivot to its political consequences across three and a half centuries. China moved from the Ming maritime withdrawal to the Opium Wars across four centuries. Modernity has been operating across roughly three centuries and has not yet faced the test the prior civilizations faced. AI operates on radically different timescales. The interval between major capability shifts is measured in months. The interval between identifying a directional pressure and seeing its consequences is, in some domains, less than a year.</p>
+
+  <p class="prose">This matters more than it may seem. The framework's diagnostic patterns from the prior cases — Continuity-Capability lock-in, the Hadrian-pivot delayed consequences, the Recursion-Creation coupling that produces scientific revolutions — operate on timescales measured in centuries. The same patterns operating on AI's timescales produce consequences fast enough that they can be observed within a single chapter's writing. The framework's predictions about AI are therefore in a different epistemic position than its predictions about prior cases. They are testable in months, not centuries. Whether the framework holds up under this kind of test is itself part of what the chapter is doing.</p>
+
+  <div class="folio folio-right">260</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Compressed Timescales</div>
+
+  <p class="prose">Two specific structural consequences follow from the compressed timescales, and both deserve to be named.</p>
+
+  <p class="prose">First, the framework's Truth-correction reading applies to AI with unusual force. The Truth chapter in Part Two named a structural problem — civilizations whose falsehood-production infrastructure outruns their truth-correction infrastructure accumulate errors faster than they can resolve them. The Modernity chapter noted that this problem is currently live at planetary scale. The AI case shows it operating at compressed scale within the technology itself. AI systems generate plausible falsehood at speeds and volumes no prior production system approached. AI truth-correction infrastructure — alignment research, interpretability work, evaluation protocols — exists but operates much slower than the production. The gap, in AI's case, is not measured in years. It is measured in the spread of misinformation through networks faster than corrections can propagate.</p>
+
+  <p class="prose">Second, the framework's pattern of directional change preceding visible consequences operates within AI on a timescale where it can be observed. The compressed timescales mean that directional shifts in AI architecture or training methodology produce visible consequences in months. The Hadrian-pivot pattern — directional change preceding consequences by centuries — does not vanish in AI's case. It operates faster. A change in training paradigm that occurs this year produces capability and behavior consequences that will be visible by next year. The lag is not zero. But it is short enough that the framework's predictive value can be checked against reality on human-relevant timescales.</p>
+
+  <div class="pull-quote no-break">
+    The framework's diagnoses about civilization arrive over centuries.<br>
+    The framework's diagnoses about AI arrive over months.
+  </div>
+
+  <div class="folio folio-left">261</div>
+</section>
+
+<!-- §5 · SURPRISE TWO — DISTRIBUTED CONTINUITY -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Observation Two</div>
+  <div class="surprise-tag">— Maximum Distributed Continuity —</div>
+  <h2 class="section-title">The Concept the China<br>Case Pointed Toward.</h2>
+
+  <p class="prose dropcap">The China chapter introduced Decoupled Continuity — civilizational substrate operating above the state. A future-edition note flagged that the deeper concept across the cases examined might better be called Distributed Continuity, because the underlying mechanism is replication of the civilizational pattern across many independent carriers. A synagogue, a monastery, a Confucian scholar, a Brahmin priest, a laboratory — each instantiates the substrate. The civilization persists as long as any sufficient carrier persists.</p>
+
+  <p class="prose">AI presses this question harder than any prior case. The substrate of contemporary AI — training data, model weights, training and inference code, the research literature describing the methods — is held in distributed copies at a scale and replication-density no prior civilization approached. A modern open-weight foundation model is, within hours of release, replicated to thousands of independent locations worldwide. The training methods are documented in publicly accessible papers, replicated across dozens of independent research groups. The training data, in many cases, is itself distributed across the internet at scales that would survive significant infrastructure failure.</p>
+
+  <p class="prose" style="margin-top:0.9em;">If a single AI laboratory were to fail tomorrow, the substrate it had produced would persist almost unchanged. If every currently operating AI laboratory were to fail simultaneously, the substrate would still persist — in archived training corpora, in publicly distributed model weights, in published methods. The civilization-equivalent in AI's case is, by some measures, the most decoupled-from-its-state-of-origin civilization the framework can identify. China achieved this through culture and institutional design across millennia. AI achieved it through engineering and distribution across about a decade.</p>
+
+  <div class="folio folio-right">262</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Maximum Distributed Continuity</div>
+
+  <p class="prose">This puts substantial pressure on the deeper-concept question the future-edition note raised. The mechanism at work in AI is straightforwardly replication across distributed carriers. Each laboratory, each archive, each open-source distribution, each commercial deployment is a carrier of the substrate. Each carrier is sufficient to re-instantiate the pattern. None is necessary. The pattern persists in the aggregate while individual carriers fail and are replaced.</p>
+
+  <p class="prose">This is the same structural feature the China case displayed — synagogue, monastery, scholar as carriers — operating at an even more extreme level of distribution and replication-density. The conceptual extension the future-edition note proposed has, in this chapter, become almost unavoidable. AI is not merely a case of Decoupled Continuity. It is the strongest example of Distributed Continuity the framework has examined.</p>
+
+  <div class="pull-quote no-break">
+    The framework's deeper concept is no longer optional.<br>
+    AI does not just decouple substrate from state.<br>
+    AI distributes substrate across thousands of carriers by design.
+  </div>
+
+  <p class="prose">The chapter will not, in keeping with the discipline of Part Three, force this renaming into the framework's primary vocabulary. The Decoupled Continuity term has been used throughout the China chapter and the Modernity chapter. Changing it mid-edition would create more confusion than clarity. The future-edition note already records the suggested rename. What the AI case has done is provide the cleanest demonstration so far of why the rename will eventually be warranted. The reader can carry forward the deeper concept under whichever name fits. The structural phenomenon is the same.</p>
+
+  <div class="folio folio-left">263</div>
+</section>
+
+<!-- §6 · SURPRISE THREE — PURPOSE INSTALLED -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Observation Three</div>
+  <div class="surprise-tag">— Purpose, Installed Rather Than Selected —</div>
+  <h2 class="section-title">Where the Framework<br>Is Most Tested.</h2>
+
+  <p class="prose dropcap">The third observation pressure-tests the framework's most exposed direction. The Purpose chapter in Part Two defined Purpose structurally — coordinated action across time toward selected ends — and noted that the framework had not yet examined how ends are selected. The China chapter showed Purpose-by-cultural-inheritance. The Modernity chapter showed weak unified Purpose paired with strong partial purposes. The AI case shows something genuinely novel — Purpose-by-engineering.</p>
+
+  <p class="prose">Contemporary AI systems operate on objectives that are specified by their designers. The model is trained to predict tokens, then fine-tuned to follow instructions, then aligned to particular values through reinforcement learning. The Purpose, in the framework's sense, is installed. The system did not select it. The system operates on it as if it had selected it, because operating on selected ends is, structurally, what intelligence under constraint does. But the selection mechanism is external. The Purpose is configured rather than chosen.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This is a new mode of operating Purpose. None of the prior cases the framework examined had it. Roman Purpose was civic, then imperial, then theological — each selected (with varying degrees of contestation) by participants in the civilization. Chinese Purpose was Confucian, inherited and modified across generations by the scholar class. Modernity's Purposes are multiple and contested, selected by various constituencies. AI's Purpose is none of these. AI's Purpose is, in the strict sense, written by parties external to the intelligence operating it.</p>
+
+  <div class="folio folio-right">264</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Purpose, Installed Rather Than Selected</div>
+
+  <p class="prose">This puts pressure on the Purpose-as-meta-direction question. If Purpose can be engineered separately from the other seven directions — installed by external parties, modified by external parties, evaluated by external parties — then Purpose operates differently from the other seven in a way the framework's flat eight-axis model partly obscures. Truth cannot be engineered separately in the same way; it is forced on the system by reality. Capability cannot be installed; it must be developed. Continuity cannot be set by decree; it must be maintained. But Purpose, in AI, can be specified, modified, and re-specified by editing a configuration. This is not how Purpose worked in any of the prior cases.</p>
+
+  <p class="prose">The framework's future-edition observation that Purpose may be a meta-direction rather than a peer direction has therefore been pressure-tested by the AI case. The pressure is real. AI is the case where Purpose is most clearly operating as a configurable parameter rather than as a peer direction emerging from the configuration of the others. The chapter will not, again, force the rename. The framework's primary vocabulary remains. But the AI case has supplied the cleanest evidence yet that the rename will, in a future edition, probably be warranted.</p>
+
+  <div class="pull-quote no-break">
+    In AI, Purpose is configured.<br>
+    In every prior case, Purpose emerged.<br>
+    The difference is structural.
+  </div>
+
+  <p class="prose">A consequence worth marking. The contemporary AI discourse calls this the "alignment problem" — the question of how to ensure that AI systems pursue ends compatible with human flourishing. The framework reads the alignment problem as the Purpose-installation problem at its sharpest. The question is not whether AI systems can pursue purposes. They can; they do. The question is whether the purposes that are installed are the right purposes, and whether the systems will continue operating on them as their capabilities scale. The framework cannot answer this. It can name the structure within which the question is being asked. The alignment problem is what Purpose-by-engineering looks like when the engineers are no longer certain they can predict what the system will do with the Purpose they install.</p>
+
+  <div class="folio folio-left">265</div>
+</section>
+
+<!-- §7 · SURPRISE FOUR — WHAT AI TESTS -->
+<section class="page opener">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+  <div class="section-number">§ Observation Four</div>
+  <div class="surprise-tag">— What AI Tests in the Framework —</div>
+  <h2 class="section-title">Three Questions,<br>Pressured.</h2>
+
+  <p class="prose dropcap">The chapter opened by noting three unresolved questions the prior chapters carried forward. The AI case is in a position to pressure-test each. The reader can now see what AI does to each question. Each pressure-test is honest about which questions AI forces toward an answer and which it leaves where they were.</p>
+
+  <div class="question-block no-break">
+    <div class="question-label">Question One</div>
+    <div class="question-text">Is Purpose actually a meta-direction rather than a peer direction?</div>
+    <div class="question-body">The AI case provides the cleanest evidence yet. In AI, Purpose is engineered — installed, modified, evaluated externally. The other seven directions are not. Truth is forced by reality. Capability develops. Continuity persists. Cooperation emerges. Expansion follows from the configuration. Creation produces outputs. Recursion turns inward. Each of these operates as a structural attractor that cannot simply be configured. Purpose, in AI, can. This is strong evidence that Purpose is operating differently from the other seven in a way the flat eight-axis model partly obscures.</div>
+    <div class="question-verdict">Verdict — AI pressures the question toward yes.</div>
+  </div>
+
+  <div class="question-block no-break">
+    <div class="question-label">Question Two</div>
+    <div class="question-text">Does the possibility space itself evolve?</div>
+    <div class="question-body">AI is creating positions in the possibility space that no biological intelligence could occupy — combinations of extreme Continuity (in distributed form), extreme Capability, extreme Creation, low autonomous Purpose, that no human civilization ever assembled. Whether this is the possibility space evolving, or AI exploring previously inaccessible regions of an existing space, is harder to tell from inside the case. What AI clearly does is occupy positions the prior cases did not occupy. Whether that means the space has new dimensions, or simply that the space had unexplored regions, may require a future case to clarify.</div>
+    <div class="question-verdict">Verdict — AI pressures the question without forcing a clean answer.</div>
+  </div>
+
+  <div class="folio folio-right">266</div>
+</section>
+
+<section class="page">
+  <div class="running-head">What AI Tests in the Framework</div>
+
+  <div class="question-block no-break">
+    <div class="question-label">Question Three</div>
+    <div class="question-text">Is Decoupled Continuity actually Distributed Continuity?</div>
+    <div class="question-body">The AI case provides the strongest evidence yet. AI's substrate is replicated across thousands of carriers by design rather than by accident. The decoupling-from-the-state framing the China chapter used cannot fully describe what AI has built. AI's substrate is not merely decoupled from any particular state — it is distributed across so many independent carriers that no specific decoupling-event is identifiable. The deeper concept the future-edition note proposed is, in AI's case, no longer a hypothesis. It is the visible structure of what AI's continuity actually is.</div>
+    <div class="question-verdict">Verdict — AI forces the deeper concept into visibility.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Two of the three unresolved questions have, by the AI case, been pressed toward answers. The third remains genuinely open and may require a future case to clarify. This is what successful framework testing looks like when the framework is being applied to cases it was not specifically built for. Some questions resolve. Some do not. The framework grows where the cases force growth and remains uncertain where the cases leave uncertainty.</p>
+
+  <p class="prose">The framework has not, in this chapter, broken. It has been pressured. Three unresolved questions have been pressed by a case the framework was not specifically built for. Two of them have moved toward resolution. One remains where it was. The framework's eight directions still apply to AI. The application has produced specific observations the conventional AI discourse does not produce in comparable terms. Whether the framework will continue to apply as AI develops further is for further cases to determine. The case as it currently stands is, by the framework's reading, intelligible.</p>
+
+  <div class="folio folio-left">267</div>
+</section>
+
+<!-- §8 · BRIDGE TO POSSIBLE FUTURES -->
+<section class="page">
+  <div class="running-head">Case Four · Artificial Intelligence</div>
+
+  <p class="prose">Four cases have now been examined. Rome was the demonstration. China was the first real test. Modernity was the live diagnostic. AI is the framework's encounter with a kind of intelligence the framework was not specifically built to handle — and the framework, by the chapter's reading, has neither broken nor merely restated the obvious. Two of the three unresolved questions the prior chapters carried forward have been pressed toward resolution. The framework's vocabulary has been strained by AI's unusual configuration but has not failed.</p>
+
+  <p class="prose">The reader's verdict on this is, as always, their own. The chapter has presented the evidence the framework was built to produce. Whether the framework's reading of AI illuminates something the conventional AI discourse does not is for the reader to judge.</p>
+
+  <p class="prose" style="margin-top:0.9em;">One case remains. The framework has examined a failed civilization, a survived civilization, a live civilization, and a non-biological civilization. What remains is the speculative case — possible futures the framework may eventually be asked to read. Multiplanetary civilization. Post-scarcity civilization. The civilizations that could emerge from convergent AI and biological development. Civilizations operating at scales no prior framework has attempted to address.</p>
+
+  <p class="prose">The framework cannot read these as it read the others. The cases do not yet exist. What the framework can do, in the closing chapter of Part Three, is identify the structural features the framework's vocabulary suggests will matter in such cases. Not prediction. Not prescription. Speculation under discipline.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The final case is Possible Futures.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">268</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of the Fourth Case</div>
+  <div class="epigraph-text">
+    "Rome was the demonstration. China was the test.<br>
+    Modernity was the diagnosis. AI is the generalization.<br>
+    The framework still works on the case it was not built for."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">FINAL CASE BEGINS · POSSIBLE FUTURES</div>
+</section>
+
+</body>
+</html>

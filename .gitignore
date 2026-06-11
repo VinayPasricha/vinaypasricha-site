@@ -33,6 +33,12 @@ build/
 # Auto-generated screenshots / audit folders (kept out of repo)
 _audit/
 
+# Private material — never deploy
+_brief/
+_prompts/
+uploads/
+scraps/
+
 # Cloud configs
 .cloudflare/
 .wrangler/

@@ -539,6 +539,17 @@ ${new Date(state.startedAt || Date.now()).toLocaleDateString()}
    ============================================================ */
 async function callClaude() {
   try {
+    // Graceful notice while the AI backend is not yet wired up.
+    if (typeof window.claude === 'undefined' || typeof window.claude?.complete !== 'function') {
+      state.messages.push({
+        role: 'assistant',
+        content: 'The live SIV facilitator is not connected yet — it goes live very soon. Until then, the method itself is described on this page: Situation, Insight, Verdict. Read the book or return shortly to run a full session here.'
+      });
+      state.phase = 'conversation';
+      saveState();
+      render();
+      return;
+    }
     const response = await window.claude.complete({
       system: SIV_SYSTEM_PROMPT,
       messages: state.messages,

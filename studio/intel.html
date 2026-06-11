@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .iq-body { background: #07080c; color: #ebe9e2; }
+    :root {
+      --iq-gr1:#07080c; --iq-gr2:#0c0d12; --iq-gr3:#11131a; --iq-gr4:#181b25;
+      --iq-ink:#ebe9e2; --iq-ink2:#b8b5ad; --iq-ink3:#6e6c66; --iq-ink4:#44433f;
+      --iq-freq:#6f9bb5; --iq-freq2:#4f7388; --iq-freq3:#2c4150; --iq-freq4:#13202a;
+      --iq-pos:#6fae86; --iq-pos3:#2f5b43; --iq-warm:#c0975e; --iq-warm3:#5c4626;
+      --iq-neg:#c98170; --iq-neg3:#5c3329; --iq-gold:#c2a25e; --iq-gold3:#5c4c26;
+      --iq-rule:#14161e; --iq-edge:#1c2030;
+      --iq-serif:"Newsreader",Georgia,serif; --iq-sans:"Inter",system-ui,sans-serif; --iq-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .iq-shell { max-width:1120px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .iq-crumbs { font-family:var(--iq-mono); font-size:11px; letter-spacing:0.14em; color:var(--iq-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .iq-crumbs a { color:var(--iq-ink2); text-decoration:none; }
+    .iq-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:1px solid var(--iq-rule); padding-bottom:24px; margin-bottom:22px; flex-wrap:wrap; }
+    .iq-title { font-family:var(--iq-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--iq-ink); letter-spacing:-0.01em; }
+    .iq-title em { font-style:italic; }
+    .iq-sub { font-family:var(--iq-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--iq-ink3); margin-top:9px; max-width:66ch; text-wrap:pretty; }
+    .iq-btn { background:transparent; border:1px solid var(--iq-edge); border-radius:2px; color:var(--iq-ink2); font-family:var(--iq-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 13px; cursor:pointer; transition:all .25s; }
+    .iq-btn:hover { border-color:var(--iq-freq3); color:var(--iq-ink); background:var(--iq-freq4); }
+    .iq-pickrow { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-bottom:24px; }
+    .iq-field { display:flex; flex-direction:column; gap:6px; }
+    .iq-field label { font-family:var(--iq-mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--iq-ink4); }
+    .iq-field select, .iq-field input { background:var(--iq-gr1); border:1px solid var(--iq-edge); border-radius:2px; color:var(--iq-ink); font-family:var(--iq-sans); font-weight:300; font-size:13px; padding:10px 12px; min-width:200px; }
+    .iq-field select:focus, .iq-field input:focus { outline:none; border-color:var(--iq-freq3); }
+    .iq-go { background:var(--iq-freq4); border:1px solid var(--iq-freq3); border-radius:2px; color:var(--iq-freq); font-family:var(--iq-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 16px; cursor:pointer; }
+    .iq-go:hover { color:var(--iq-ink); border-color:var(--iq-freq2); }
+    .iq-empty { border:1px dashed var(--iq-edge); border-radius:3px; padding:40px 36px; text-align:center; color:var(--iq-ink3); font-family:var(--iq-sans); font-weight:300; font-size:14px; line-height:1.75; }
+    .iq-empty a { color:var(--iq-freq); text-decoration:none; border-bottom:1px solid var(--iq-freq3); }
+
+    .iq-panel { border:1px solid var(--iq-rule); border-radius:3px; background:var(--iq-gr2); margin-bottom:16px; overflow:hidden; }
+    .iq-ptop { padding:14px 20px; border-bottom:1px solid var(--iq-rule); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .iq-plabel { font-family:var(--iq-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--iq-freq); }
+    .iq-pbody { padding:16px 20px; }
+    .iq-cq { font-family:var(--iq-sans); font-weight:300; font-style:italic; font-size:12px; color:var(--iq-ink4); margin-top:3px; }
+
+    /* add source */
+    .iq-srcform { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+    .iq-srcform select, .iq-srcform input { background:var(--iq-gr1); border:1px solid var(--iq-edge); border-radius:2px; color:var(--iq-ink); font-family:var(--iq-sans); font-weight:300; font-size:12.5px; padding:8px 10px; }
+    .iq-srcform textarea { flex:1; min-width:100%; background:var(--iq-gr1); border:1px solid var(--iq-edge); border-radius:2px; color:var(--iq-ink); font-family:var(--iq-sans); font-weight:300; font-size:12.5px; line-height:1.5; padding:9px 11px; resize:vertical; min-height:80px; box-sizing:border-box; }
+    .iq-srcform textarea:focus, .iq-srcform select:focus, .iq-srcform input:focus { outline:none; border-color:var(--iq-freq3); }
+    .iq-act { background:var(--iq-gr1); border:1px solid var(--iq-edge); border-radius:2px; color:var(--iq-ink2); font-family:var(--iq-mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; cursor:pointer; transition:all .2s; }
+    .iq-act:hover { color:var(--iq-ink); border-color:var(--iq-freq3); }
+    .iq-act.primary { background:var(--iq-freq4); border-color:var(--iq-freq3); color:var(--iq-freq); }
+    .iq-act.primary:hover { color:var(--iq-ink); border-color:var(--iq-freq2); }
+
+    .iq-src { display:flex; justify-content:space-between; gap:10px; align-items:baseline; border-left:2px solid var(--iq-freq3); padding:7px 0 7px 12px; margin-bottom:7px; flex-wrap:wrap; }
+    .iq-src.observed { border-color:var(--iq-pos3); }
+    .iq-src .st { font-family:var(--iq-sans); font-weight:400; font-size:12.5px; color:var(--iq-ink); }
+    .iq-src .sm { font-family:var(--iq-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--iq-ink4); }
+    .iq-q { font-family:var(--iq-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--iq-edge); border-radius:2px; padding:2px 7px; color:var(--iq-ink3); }
+    .iq-q.high { color:var(--iq-pos); border-color:var(--iq-pos3); } .iq-q.medium { color:var(--iq-freq); border-color:var(--iq-freq3); } .iq-q.low { color:var(--iq-ink4); }
+
+    /* signals */
+    .iq-sig { border-left:2px solid var(--iq-edge); padding:6px 0 6px 12px; margin-bottom:6px; }
+    .iq-sig .sg { font-family:var(--iq-sans); font-weight:300; font-size:12.5px; color:var(--iq-ink2); }
+    .iq-sig .sgt { font-family:var(--iq-mono); font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--iq-freq2); }
+    .iq-sig .sge { font-family:var(--iq-sans); font-weight:300; font-style:italic; font-size:11.5px; color:var(--iq-ink4); margin-top:3px; line-height:1.45; text-wrap:pretty; }
+    .iq-sigcols { columns:2; column-gap:18px; }
+    @media (max-width:760px){ .iq-sigcols{ columns:1; } }
+
+    /* hypothesis cards */
+    .iq-hyp { border:1px solid var(--iq-rule); border-radius:2px; background:var(--iq-gr3); padding:14px 16px; margin-bottom:10px; }
+    .iq-hyp .hl { font-family:var(--iq-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--iq-freq); margin-bottom:6px; display:flex; gap:8px; align-items:center; }
+    .iq-hyp .ht { font-family:var(--iq-serif); font-weight:300; font-size:15px; line-height:1.5; color:var(--iq-ink); text-wrap:pretty; }
+    .iq-hyp .hr { font-family:var(--iq-mono); font-size:8.5px; letter-spacing:0.06em; color:var(--iq-ink4); margin-top:6px; }
+    .iq-hyp .hr b { color:var(--iq-freq2); }
+    .iq-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:760px){ .iq-grid2{ grid-template-columns:1fr; } }
+
+    .iq-ftable { border:1px solid var(--iq-rule); border-radius:2px; overflow:hidden; }
+    .iq-frow { display:grid; grid-template-columns:1.2fr 1fr 0.6fr 1.6fr; gap:10px; padding:8px 12px; border-top:1px solid var(--iq-rule); align-items:baseline; }
+    .iq-frow:first-child { border-top:none; background:var(--iq-gr1); font-family:var(--iq-mono); font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--iq-ink4); }
+    .iq-frow .fd { font-family:var(--iq-mono); font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--iq-ink3); }
+    .iq-frow .fe { font-family:var(--iq-sans); font-weight:300; font-size:12.5px; color:var(--iq-ink); }
+    .iq-frow .fe.none { color:var(--iq-ink4); }
+    .iq-frow .fr { font-family:var(--iq-sans); font-weight:300; font-size:11px; color:var(--iq-ink4); line-height:1.4; }
+
+    .iq-contra { border-left:2px solid var(--iq-neg3); padding:9px 0 9px 14px; margin-bottom:9px; }
+    .iq-contra.major { border-color:var(--iq-neg); }
+    .iq-contra .cd { font-family:var(--iq-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--iq-neg); margin-bottom:5px; }
+    .iq-contra .cs { font-family:var(--iq-sans); font-weight:300; font-size:12.5px; line-height:1.5; color:var(--iq-ink2); }
+    .iq-contra .cs b { color:var(--iq-ink); font-weight:400; }
+
+    .iq-vq { border-left:2px solid var(--iq-gold3); padding:7px 0 7px 13px; margin-bottom:7px; }
+    .iq-vq .vt { font-family:var(--iq-serif); font-weight:300; font-size:14px; line-height:1.5; color:var(--iq-ink); text-wrap:pretty; }
+    .iq-vq .vm { font-family:var(--iq-mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--iq-gold); margin-top:3px; }
+
+    .iq-conf { background:var(--iq-gr3); border:1px solid var(--iq-freq3); border-radius:3px; padding:14px 16px; margin-bottom:16px; }
+    .iq-conf .cl { font-family:var(--iq-mono); font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--iq-freq); margin-bottom:6px; }
+    .iq-conf .cb { font-family:var(--iq-serif); font-weight:300; font-size:18px; color:var(--iq-ink); }
+    .iq-conf .cr { font-family:var(--iq-sans); font-weight:300; font-size:12.5px; line-height:1.6; color:var(--iq-ink3); margin-top:5px; text-wrap:pretty; }
+
+    .iq-note { margin-top:40px; border-top:1px solid var(--iq-rule); padding-top:22px; font-family:var(--iq-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--iq-ink3); }
+    .iq-note em { font-style:italic; color:var(--iq-ink2); }
+    .iq-note a { color:var(--iq-freq); text-decoration:none; border-bottom:1px solid var(--iq-freq3); }
+  </style>
+</head>
+<body class="iq-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Intelligence</span><span class="st-sub">— Real Tier-0 Organizational Intelligence</span></div>
+  <div class="st-right">
+    <a class="st-link" href="missions.html">Missions ↗</a>
+    <a class="st-link" href="discovery.html">Discovery ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+
+<div class="iq-shell">
+  <div class="iq-crumbs"><a href="index.html">Studio</a> / Intelligence</div>
+  <div class="iq-head">
+    <div>
+      <h1 class="iq-title">Know the organization <em>before the first conversation.</em></h1>
+      <p class="iq-sub">
+        Real Tier-0 intelligence — built from <em>actual public material you supply</em> (website, about, leadership,
+        careers, job specs, LinkedIn, news, Glassdoor, AmbitionBox). Each source is parsed into traceable signals;
+        every hypothesis cites its signals; every confidence states its reasoning. Claim-vs-observed contradictions
+        are surfaced, not hidden. This produces <em>hypotheses</em> for Deep Discovery to validate — nothing is
+        promoted into the living frequency.
+      </p>
+    </div>
+    <button class="iq-btn" id="iq-reset" type="button">Reset intelligence</button>
+  </div>
+  <div class="iq-pickrow" id="iq-pick"></div>
+  <div id="iq-view"></div>
+  <p class="iq-note">
+    <em>Honest by construction.</em> The runtime does not fetch the web — it reasons over the real public text you
+    paste, so every signal quotes a source you can see. No hypothesis without evidence, no confidence without
+    reasoning, no contradiction hidden. Research produces hypotheses; <a href="discovery.html">Deep Discovery</a>
+    produces understanding; only then does frequency evolve. Intelligence only — no sourcing, recruiting, or representation.
+  </p>
+</div>
+
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-research.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-intel.js"></script>
+<script src="intel-admin.js"></script>
+</body>
+</html>

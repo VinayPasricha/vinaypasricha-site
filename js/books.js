@@ -164,6 +164,28 @@ const DEFAULT_BOOKS = [
     excerpt_path: null,
     notify: true,
   },
+  {
+    slug: 'civilization',
+    volume: 'VI',
+    title: 'Civilization',
+    subtitle: 'A framework for evaluating the direction of intelligent civilizations.',
+    cover: 'assets/images/civilization-cover-front.jpg',
+    year: '2026',
+    pages: null,
+    isbn: null,
+    status: 'published',
+    pitch: 'Intelligence does not evolve at random. Beneath the chaos of history runs a hidden order — eight directions every enduring civilization is pulled along. Civilization builds a compass, not a map: a reference frame for telling progress from mere motion, and for measuring any serious vision of the future.',
+    topics: [
+      'The four tests every candidate direction had to survive',
+      'Four Foundations and four Frontiers — the eight directions of intelligence',
+      'Why a compass outlasts every map of the future',
+      'Reading Rome, China, modernity, and AI through one framework',
+    ],
+    amazon: null,
+    excerpt_path: 'paths/civilization.html',
+    series: 'Civilization · Volume I',
+    publisher: 'The Meridian Press',
+  },
   // To add more upcoming books, copy a book object above and edit.
   // Example:
   // {
@@ -370,11 +392,13 @@ function renderFeaturedBook(book) {
           <div class="bf-actions">
             ${isUpcoming
               ? renderNotifyButton(book)
-              : `<a class="bf-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
+              : (book.amazon
+                ? `<a class="bf-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
                    <span class="bf-buy-main">Buy on Amazon</span>
                    <span class="bf-buy-lang">in ${langData.native}</span>
                    <span class="bf-buy-arrow">↗</span>
-                 </a>`}
+                 </a>`
+                : '')}
             ${book.try_it
               ? `<a class="bf-try" href="${book.try_it.url}">
                    ${escapeHTML(book.try_it.label)} <span class="arrow">→</span>
@@ -385,7 +409,7 @@ function renderFeaturedBook(book) {
                    </a>` : '')
             }
           </div>
-          ${!isUpcoming ? renderBookLangChip(book) : ''}
+          ${!isUpcoming && book.amazon ? renderBookLangChip(book) : ''}
         </div>
       </div>
     </article>
@@ -422,17 +446,19 @@ function renderBookCard(book) {
         <div class="bc-actions">
           ${isUpcoming
             ? renderNotifyButton(book)
-            : `<a class="bc-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
+            : (book.amazon
+              ? `<a class="bc-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
                  <span>Buy on Amazon</span>
                  <span class="bc-buy-lang">${langData.native}</span>
                  <span class="bc-buy-arrow">↗</span>
-               </a>`}
+               </a>`
+              : '')}
           ${book.excerpt_path && !isUpcoming
             ? `<a class="bc-excerpt" href="${book.excerpt_path}">Read about this book <span class="arrow">→</span></a>`
             : ''
           }
         </div>
-        ${!isUpcoming ? renderBookLangChip(book) : ''}
+        ${!isUpcoming && book.amazon ? renderBookLangChip(book) : ''}
       </div>
     </article>
   `;

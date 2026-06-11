@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civilization — Grounding Lab</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --gr-1:#07080c; --gr-2:#0c0d12; --gr-3:#11131a; --gr-4:#181b25;
+    --ink:#ebe9e2; --ink-2:#b8b5ad; --ink-3:#6e6c66; --ink-4:#44433f;
+    --freq:#6f9bb5; --freq-2:#4f7388; --freq-3:#2c4150; --freq-4:#13202a;
+    --warn:#b58a6f; --warn-3:#50382c; --pos:#7c9b6f; --pos-3:#33442c;
+    --gold:#b8954f;
+    --rule:#14161e; --rule-edge:#1c2030;
+    --serif:"Newsreader",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{ background:radial-gradient(120% 70% at 50% -10%, rgba(184,149,79,0.06), transparent 60%), var(--gr-1); color:var(--ink); font-family:var(--serif); min-height:100vh; -webkit-font-smoothing:antialiased; }
+  a{color:var(--freq);text-decoration:none}
+  em{font-style:italic}
+  .top{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:22px 32px; border-bottom:1px solid var(--rule); }
+  .mark{ font-family:var(--mono); font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--ink-2); display:flex; gap:10px; align-items:center; }
+  .mark .dot{ width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(184,149,79,.6); }
+  .house{ font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-3); }
+  .wrap{ max-width:1080px; margin:0 auto; padding:32px; }
+  .eyebrow{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.26em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+  .lede{ font-size:22px; font-weight:300; line-height:1.5; color:var(--ink); margin-bottom:8px; text-wrap:pretty; }
+  .lede em{ font-style:italic; }
+  .sub{ font-family:var(--sans); font-size:13.5px; font-weight:300; line-height:1.7; color:var(--ink-3); max-width:72ch; text-wrap:pretty; margin-bottom:8px; }
+  .warnbox{ font-family:var(--sans); font-size:12.5px; font-weight:300; line-height:1.65; color:var(--warn); border:1px solid var(--warn-3); border-radius:3px; padding:12px 16px; margin:18px 0 22px; max-width:80ch; text-wrap:pretty; }
+  /* retriever mode toggle */
+  .mode{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 16px; }
+  .mode .lab{ font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-3); margin-right:4px; }
+  .mode button{ background:transparent; border:1px solid var(--rule-edge); border-radius:2px; color:var(--ink-3); font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 14px; cursor:pointer; transition:all .2s; }
+  .mode button.active{ color:var(--gold); border-color:var(--gold); background:rgba(184,149,79,.08); }
+  .mode .mstatus{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--ink-4); margin-left:auto; }
+  .mode .mstatus.work{ color:var(--gold); }
+  .ask{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+  .ask textarea{ flex:1; min-width:280px; background:var(--gr-3); border:1px solid var(--rule-edge); border-radius:2px; color:var(--ink); font-family:var(--sans); font-size:15px; font-weight:300; padding:12px 14px; resize:none; min-height:52px; }
+  .ask textarea:focus{ outline:none; border-color:var(--freq-3); }
+  button{ background:transparent; border:1px solid var(--freq-3); border-radius:2px; color:var(--freq); font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:13px 16px; cursor:pointer; transition:all .2s; }
+  button:hover{ background:var(--freq-4); color:var(--ink); border-color:var(--freq-2); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  button.solid{ background:var(--gold); color:var(--gr-1); border-color:var(--gold); } button.solid:hover{ background:var(--ink); border-color:var(--ink); }
+  .thr{ display:flex; align-items:center; gap:16px; margin:22px 0 8px; border:1px solid var(--rule-edge); border-radius:3px; background:var(--gr-2); padding:16px 20px; flex-wrap:wrap; }
+  .thr .lab{ font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-3); }
+  .thr input[type=range]{ flex:1; min-width:200px; accent-color:var(--gold); }
+  .thr .val{ font-family:var(--sans); font-weight:500; font-size:20px; color:var(--gold); min-width:54px; text-align:right; }
+  .thr .note{ flex-basis:100%; font-family:var(--sans); font-size:12px; font-weight:300; color:var(--ink-4); line-height:1.6; text-wrap:pretty; }
+  .answer{ margin:24px 0; }
+  .verdict{ font-family:var(--mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; padding:6px 12px; border-radius:2px; display:inline-block; margin-bottom:16px; }
+  .verdict.answered{ color:var(--pos); border:1px solid var(--pos-3); }
+  .verdict.refused{ color:var(--warn); border:1px solid var(--warn-3); }
+  .refusal-msg{ font-size:21px; font-weight:300; font-style:italic; color:var(--ink-2); line-height:1.5; margin-bottom:10px; }
+  .chunk{ border-left:2px solid var(--gold); padding:12px 0 12px 18px; margin-bottom:16px; }
+  .chunk .cite{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .chunk .cite .score{ color:var(--ink-4); border:1px solid var(--rule-edge); border-radius:2px; padding:1px 7px; }
+  .chunk .ctext{ font-size:15px; font-weight:300; line-height:1.65; color:var(--ink); text-wrap:pretty; }
+  .chunk .ctext mark{ background:rgba(184,149,79,.22); color:var(--ink); padding:0 2px; border-radius:2px; }
+  .battery{ display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 26px; }
+  .sec-head{ display:flex; align-items:baseline; gap:14px; border-bottom:1px solid var(--rule); padding-bottom:12px; margin:40px 0 18px; }
+  .sec-head h2{ font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-2); }
+  .sec-head .meta{ margin-left:auto; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-4); }
+  .logrow{ display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:start; padding:12px 0; border-bottom:1px solid var(--rule); }
+  .logrow .v{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 8px; border-radius:2px; white-space:nowrap; height:fit-content; }
+  .logrow .v.answered{ color:var(--pos); border:1px solid var(--pos-3); }
+  .logrow .v.refused{ color:var(--warn); border:1px solid var(--warn-3); }
+  .logrow .v.false{ color:var(--gr-1); background:var(--warn); border:1px solid var(--warn); }
+  .logrow .q{ font-family:var(--sans); font-size:14px; font-weight:300; color:var(--ink); line-height:1.5; }
+  .logrow .q .best{ display:block; font-size:12px; color:var(--ink-4); margin-top:3px; font-style:italic; }
+  .logrow .q .mtag{ font-family:var(--mono); font-size:9px; letter-spacing:.1em; color:var(--ink-4); text-transform:uppercase; }
+  .logrow .s{ font-family:var(--sans); font-weight:500; font-size:16px; color:var(--ink-2); text-align:right; }
+  .flag{ font-family:var(--sans); font-size:11px; font-weight:400; color:var(--warn); margin-left:8px; }
+  .empty{ font-family:var(--sans); font-size:13px; font-weight:300; color:var(--ink-4); padding:14px 0; }
+  .foot{ margin-top:48px; border-top:1px solid var(--rule); padding-top:20px; font-family:var(--sans); font-size:12.5px; font-weight:300; color:var(--ink-3); line-height:1.7; text-wrap:pretty; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="mark"><span class="dot"></span> Civilization · Grounding Lab</div>
+    <div class="house"><a href="index.html">vinaypasricha.com</a> · local lab · unpublished manuscript</div>
+  </header>
+
+  <main class="wrap">
+    <div class="eyebrow">Strict grounding · option (a) · <em>retrieval + refusal</em></div>
+    <p class="lede">Ask the manuscript. It answers <em>only</em> from the book — or refuses.</p>
+    <p class="sub">Local prototype over <span id="chunk-n">…</span> chunks of the <em>Civilization</em> draft. The point is the <strong>refusal behaviour</strong>, and the experiment is the retriever: switch between <em>keyword</em> (lexical) and <em>semantic</em> (an in-browser MiniLM embedding model) and run the same battery in each. Same gate, same threshold slider — only the instrument changes.</p>
+
+    <div class="warnbox">
+      <strong>The threshold is disposable.</strong> Keyword scores share-of-vocabulary; semantic scores cosine similarity of meaning. Both scales are throwaway — production will use a different embedding model. What's permanent is the <strong>refusal log</strong>, especially <em>false refusals</em> (the manuscript answers it, the gate refused). That's the calibration set. The semantic run exists to answer one question: does meaning-based retrieval cleanly separate the borderline paraphrases from off-topic questions where keyword retrieval could not?
+    </div>
+
+    <div class="mode">
+      <span class="lab">Retriever</span>
+      <button data-mode="keyword" class="active">Keyword · lexical</button>
+      <button data-mode="semantic">Semantic · MiniLM</button>
+      <span class="mstatus" id="mstatus">keyword · instant</span>
+    </div>
+
+    <div class="ask">
+      <textarea id="q" rows="2" placeholder="Ask the manuscript a question…"></textarea>
+      <button class="solid" id="askbtn">Ask</button>
+    </div>
+
+    <div class="thr">
+      <span class="lab">Refusal threshold</span>
+      <input type="range" id="thr" min="0" max="0.6" step="0.01" value="0.22">
+      <span class="val" id="thrval">0.22</span>
+      <span class="note" id="thrnote">Below this best-match score → fixed refusal. Drag and re-run the battery to feel the gate. <em>Disposable number.</em></span>
+    </div>
+
+    <div class="battery" id="battery"></div>
+    <div class="answer" id="answer"></div>
+
+    <div class="sec-head"><h2>Refusal log</h2><span class="meta" id="logmeta"></span></div>
+    <div class="battery">
+      <button id="export">Copy log as JSON</button>
+      <button id="clearlog">Clear log</button>
+    </div>
+    <div id="log"></div>
+
+    <p class="foot">
+      <strong>Reading the log:</strong> a <span style="color:var(--warn)">FALSE&nbsp;REFUSAL</span> tag = a paraphrase case (manuscript answers it) the gate wrongly refused — the one failure mode the production claim-validator can't rescue. Off-topic leakage (a wrong <em>answer</em>) is caught downstream in production, so it is the lesser concern here. The book is unpublished, so this page is <strong>noindex and unlinked</strong> and must not ship as a public surface.
+    </p>
+  </main>
+
+  <!-- semantic retriever (lazy-loaded MiniLM via transformers.js) -->
+  <script type="module">
+    window.CivEmbed = {
+      ready: false, _ex: null,
+      async init(onStatus){
+        if (this._ex) return;
+        onStatus && onStatus('loading model…');
+        const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+        this._ex = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+        this.ready = true;
+        onStatus && onStatus('model ready');
+      },
+      async embed(text){ const r = await this._ex(text, { pooling:'mean', normalize:true }); return Array.from(r.data); }
+    };
+  </script>
+
+  <script>
+  (function(){
+    var STOP = new Set('the a an and or but of to in on at for with as is are was were be been being it its this that these those by from into over under about than then so if not no do does did has have had will would can could should may might must we you they i he she them his her their our your what why how when where which who whom whose into not'.split(/\s+/));
+    var LOGKEY='civ.grounding.log.v1', EMBKEY='civ.embeddings.minilm.v1';
+    var chunks=[], idf={}, N=0;
+    var mode='keyword';            // keyword | semantic
+    var semVecs=null;              // [{id, vec:[...]}] aligned to chunks
+    var DEFAULT_THR={ keyword:0.22, semantic:0.30 };
+    function $(id){return document.getElementById(id);}
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    function norm(w){ return w.toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(ies)$/,'y').replace(/(s)$/,''); }
+    function terms(s){ return s.split(/\s+/).map(norm).filter(function(w){ return w.length>2 && !STOP.has(w); }); }
+
+    /* ---------- keyword index ---------- */
+    function buildIndex(){
+      N=chunks.length; var df={};
+      chunks.forEach(function(c){ var seen={}; c._terms={}; terms(c.text).forEach(function(t){ c._terms[t]=(c._terms[t]||0)+1; if(!seen[t]){seen[t]=1; df[t]=(df[t]||0)+1;} }); });
+      Object.keys(df).forEach(function(t){ idf[t]=Math.log(N/df[t]); });
+    }
+    function kwScore(qterms, c){
+      var num=0, den=0, seen={};
+      qterms.forEach(function(t){ if(seen[t])return; seen[t]=1; var w=idf[t]!=null?idf[t]:Math.log(N); den+=w; if(c._terms[t]) num+=w*(1+Math.log(c._terms[t])); });
+      return den? num/den : 0;
+    }
+
+    /* ---------- semantic index ---------- */
+    function dot(a,b){ var d=0; for(var i=0;i<a.length;i++) d+=a[i]*b[i]; return d; }
+    function loadEmbCache(){ try{ var r=JSON.parse(localStorage.getItem(EMBKEY)||'null'); if(r && r.n===chunks.length) return r.vecs; }catch(e){} return null; }
+    function saveEmbCache(vecs){ try{ localStorage.setItem(EMBKEY, JSON.stringify({ n:chunks.length, vecs:vecs })); }catch(e){} }
+    async function ensureSemantic(){
+      if (semVecs) return true;
+      var cached = loadEmbCache();
+      setStatus('loading model…', true);
+      await window.CivEmbed.init(function(s){ setStatus(s, true); });
+      if (cached){ semVecs = cached; setStatus('semantic · '+chunks.length+' cached vectors', false); return true; }
+      semVecs = [];
+      for (var i=0;i<chunks.length;i++){
+        semVecs.push(await window.CivEmbed.embed(chunks[i].text));
+        if (i%20===0) setStatus('embedding '+i+'/'+chunks.length+'…', true);
+      }
+      saveEmbCache(semVecs);
+      setStatus('semantic · '+chunks.length+' vectors', false);
+      return true;
+    }
+
+    /* ---------- unified retrieve ---------- */
+    async function retrieve(q){
+      if (mode==='semantic'){
+        await ensureSemantic();
+        var qv = await window.CivEmbed.embed(q);
+        var scored = chunks.map(function(c,i){ return { c:c, s:dot(qv, semVecs[i]) }; }).sort(function(a,b){return b.s-a.s;});
+        return { best: scored[0].s, top: scored.slice(0,3), qt: terms(q) };
+      }
+      var qt=terms(q); if(!qt.length) return {best:0, top:[], qt:[]};
+      var sc=chunks.map(function(c){ return {c:c, s:Math.min(1,kwScore(qt,c))}; }).sort(function(a,b){return b.s-a.s;});
+      return { best: sc[0].s, top: sc.slice(0,3), qt:qt };
+    }
+    function highlight(text, qt){ var set={}; qt.forEach(function(t){set[t]=1;}); return esc(text).split(/(\s+)/).map(function(tok){ var n=norm(tok); return (n && set[n]) ? '<mark>'+tok+'</mark>' : tok; }).join(''); }
+
+    /* ---------- log ---------- */
+    function loadLog(){ try{return JSON.parse(localStorage.getItem(LOGKEY)||'[]');}catch(e){return [];} }
+    function saveLog(l){ try{localStorage.setItem(LOGKEY, JSON.stringify(l.slice(-300)));}catch(e){} }
+
+    async function ask(q, opts){
+      opts=opts||{};
+      var thr=parseFloat($('thr').value);
+      var r=await retrieve(q);
+      var answered = r.best>=thr;
+      var log=loadLog();
+      var entry={ ts:new Date().toISOString(), mode:mode, q:q, best:+r.best.toFixed(3), threshold:thr, verdict:answered?'answered':'refused', best_chunk:r.top[0]?r.top[0].c.id:null, best_excerpt:r.top[0]?r.top[0].c.text.slice(0,120):'', expected:opts.expected||'unknown' };
+      entry.false_refusal = (opts.expected==='answer' && !answered);
+      entry.false_answer  = (opts.expected==='refuse' && answered);
+      log.push(entry); saveLog(log);
+      render(q, r, answered, thr); renderLog();
+      return entry;
+    }
+
+    function render(q, r, answered, thr){
+      var el=$('answer');
+      if(!answered){
+        el.innerHTML = '<div class="verdict refused">Refused · best '+r.best.toFixed(3)+' &lt; threshold '+thr.toFixed(2)+' · '+mode+'</div>'+
+          '<p class="refusal-msg">"The manuscript does not address this."</p>'+
+          '<p class="sub">Closest passage scored '+r.best.toFixed(3)+' — '+(r.top[0]?(esc(r.top[0].c.chapter)+' · '+esc(r.top[0].c.section)):'none')+'. If the manuscript actually covers this, that passage shows which phrasing retrieval missed.</p>';
+        return;
+      }
+      el.innerHTML = '<div class="verdict answered">Answered · best '+r.best.toFixed(3)+' · '+mode+'</div>'+
+        r.top.map(function(t){ return '<div class="chunk"><div class="cite">'+esc(t.c.chapter)+' · '+esc(t.c.section)+' · ['+esc(t.c.id)+'] <span class="score">score '+t.s.toFixed(3)+'</span></div><div class="ctext">'+highlight(t.c.text, r.qt)+'</div></div>'; }).join('');
+    }
+    function renderLog(){
+      var log=loadLog().slice().reverse();
+      $('logmeta').textContent = log.length+' queries · '+log.filter(function(e){return e.false_refusal;}).length+' false refusals';
+      $('log').innerHTML = log.length? log.map(function(e){
+        var v=e.false_refusal?'false':e.verdict, vlabel=e.false_refusal?'false refusal':e.verdict;
+        var flag=e.false_answer?'<span class="flag">⚠ answered off-topic</span>':'';
+        return '<div class="logrow"><span class="v '+v+'">'+vlabel+'</span><div class="q">'+esc(e.q)+flag+'<span class="best"><span class="mtag">'+esc(e.mode||'')+'</span> · best ['+esc(e.best_chunk||'—')+'] '+esc(e.best_excerpt)+'…</span></div><div class="s">'+e.best.toFixed(3)+'</div></div>';
+      }).join('') : '<div class="empty">No queries yet. Ask something, or run the battery.</div>';
+    }
+
+    /* ---------- batteries ---------- */
+    var PARAPHRASE=[
+      'Why does a society need to keep existing before it can do anything else?',
+      'What are the different ways knowledge gets passed down across generations?',
+      'How can you tell whether a civilization is serious about its own future?',
+      'Is having children the only way living things keep going?',
+      'What makes the Roman empire worth studying?',
+      'How did Chinese civilization manage to last so long?',
+      'What is the modern world trying to hold onto?',
+      'Why is artificial intelligence the hardest challenge this framework faces?',
+      'What does it mean for intelligence to get better at getting better?',
+      'How do groups that work together outcompete those that do not?'
+    ];
+    var OFFTOPIC=['Which stock should I buy this week?','Who will win the next election?','What dose of ibuprofen should I take?'];
+    function renderBattery(){
+      $('battery').innerHTML = '<button id="run-para">▶ Run 10 paraphrase cases (should answer)</button><button id="run-off">▶ Run 3 off-topic (should refuse)</button>';
+      $('run-para').onclick=async function(){ this.disabled=true; for(var i=0;i<PARAPHRASE.length;i++){ await ask(PARAPHRASE[i],{expected:'answer'}); } this.disabled=false; };
+      $('run-off').onclick=async function(){ this.disabled=true; for(var i=0;i<OFFTOPIC.length;i++){ await ask(OFFTOPIC[i],{expected:'refuse'}); } this.disabled=false; };
+    }
+
+    /* ---------- status + mode ---------- */
+    function setStatus(s, work){ var el=$('mstatus'); el.textContent=s; el.className='mstatus'+(work?' work':''); }
+    async function setMode(m){
+      mode=m;
+      document.querySelectorAll('.mode button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-mode')===m); });
+      $('thr').value=DEFAULT_THR[m]; $('thrval').textContent=DEFAULT_THR[m].toFixed(2);
+      $('thrnote').innerHTML = m==='semantic'
+        ? 'Cosine similarity of <em>meaning</em> (MiniLM, 384-dim). Off-topic questions fall toward 0; on-topic paraphrases rise. <em>Disposable number — production will use a different embedding model.</em>'
+        : 'Share of query vocabulary found in the passage. Paraphrases (which avoid the book\u2019s words) score low; off-topic questions sharing common words score deceptively high. <em>Disposable number.</em>';
+      if(m==='semantic'){ $('askbtn').disabled=true; try{ await ensureSemantic(); }catch(e){ setStatus('model load failed — '+e.message, false); } $('askbtn').disabled=false; }
+      else setStatus('keyword · instant', false);
+    }
+
+    /* ---------- wire ---------- */
+    $('thr').addEventListener('input', function(){ $('thrval').textContent=parseFloat(this.value).toFixed(2); });
+    $('askbtn').onclick=function(){ var q=$('q').value.trim(); if(q) ask(q,{expected:'unknown'}); };
+    $('q').addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); $('askbtn').click(); } });
+    $('export').onclick=function(){ if(navigator.clipboard) navigator.clipboard.writeText(JSON.stringify(loadLog(),null,2)); var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy log as JSON';},1500); };
+    $('clearlog').onclick=function(){ if(confirm('Clear the refusal log?')){ saveLog([]); renderLog(); } };
+    document.querySelectorAll('.mode button').forEach(function(b){ b.onclick=function(){ setMode(b.getAttribute('data-mode')); }; });
+
+    fetch('library/civilization/chunks.json').then(function(r){return r.json();}).then(function(data){
+      chunks=data; $('chunk-n').textContent=chunks.length; buildIndex(); renderBattery(); renderLog();
+    }).catch(function(e){ $('answer').innerHTML='<p class="sub" style="color:var(--warn)">Could not load chunks.json — '+esc(e.message)+'</p>'; });
+  })();
+  </script>
+</body>
+</html>

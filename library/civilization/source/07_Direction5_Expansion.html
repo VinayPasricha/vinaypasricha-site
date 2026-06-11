@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Direction Five: Expansion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .direction-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .direction-cover-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .direction-cover-roman { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .direction-cover-name { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 72pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .direction-cover-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .direction-cover-sigil { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 18pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.3in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .case-block { border-left: 2px solid var(--gold); padding: 8pt 0 8pt 14pt; margin: 0.18in 0; }
+  .case-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4pt; }
+  .case-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 3pt 0; letter-spacing: -0.01em; }
+  .case-span { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.1em; margin-bottom: 6pt; }
+  .case-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .case-lesson { font-family: "Source Serif 4", serif; font-style: italic; font-size: 9.5pt; color: var(--cosmos); margin-top: 5pt; }
+  /* Domains grid */
+  .domains-list { display: grid; grid-template-columns: 90pt 1fr; gap: 10pt 14pt; margin: 0.15in 0; }
+  .domain-label { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; padding-top: 2pt; }
+  .domain-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.5; color: var(--ink); }
+  /* Atomic descent ladder */
+  .descent { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--cosmos); letter-spacing: 0.1em; line-height: 2.2; margin: 0.15in 0 0.15in 0.3in; }
+  .descent .year { color: var(--mute); margin-right: 12pt; }
+  .descent .layer { color: var(--ink); }
+  .test-block { background: var(--paper-deep); padding: 12pt 14pt; margin: 0.12in 0; border-left: 3px solid var(--cosmos); }
+  .test-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 4pt; }
+  .test-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 4pt 0; }
+  .test-body { font-family: "Source Serif 4", serif; font-size: 9.5pt; line-height: 1.5; color: var(--ink); }
+  .test-verdict { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 9pt; color: var(--cosmos); letter-spacing: 0.05em; margin-top: 4pt; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- DIRECTION FIVE — COVER -->
+<section class="page direction-cover">
+  <div class="direction-cover-tag">Part Two · Frontier</div>
+
+  <div>
+    <div class="direction-cover-roman">DIRECTION  FIVE</div>
+    <h1 class="direction-cover-name">Expansion.</h1>
+    <p class="direction-cover-tagline">What intelligence does when it reaches the edge of what it knows.</p>
+  </div>
+
+  <div class="direction-cover-sigil">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <!-- Concentric expanding rings — the Expansion sigil enlarged -->
+      <circle cx="140" cy="140" r="22" fill="none" stroke="#0f1115" stroke-width="2.4"/>
+      <circle cx="140" cy="140" r="48" fill="none" stroke="#0f1115" stroke-width="1.6" stroke-opacity="0.85"/>
+      <circle cx="140" cy="140" r="76" fill="none" stroke="#0f1115" stroke-width="1.2" stroke-opacity="0.65"/>
+      <circle cx="140" cy="140" r="104" fill="none" stroke="#0f1115" stroke-width="0.9" stroke-opacity="0.45"/>
+      <!-- Horizon line crossing through -->
+      <line x1="20" y1="140" x2="260" y2="140" stroke="#b8954f" stroke-width="0.6" stroke-dasharray="3 3" stroke-opacity="0.7"/>
+      <circle cx="140" cy="140" r="4" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="direction-cover-tag" style="color: var(--mute);">Sigil V · Expansion</div>
+</section>
+
+<!-- EPIGRAPH — SAGAN -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Direction Five · Opening</div>
+  <div class="epigraph-text">
+    "Somewhere, something incredible is waiting to be known."
+  </div>
+  <div class="epigraph-attribution">— Carl Sagan</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE HORIZON -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ The Horizon</div>
+  <h2 class="section-title">Every Intelligence<br>Eventually Encounters One.</h2>
+
+  <p class="prose dropcap">Imagine standing at the eastern edge of an island, three thousand years ago, at sunset. The land you know ends at your feet. The water that begins at your feet does not. No one in your village has crossed it. No one has any reliable knowledge of what lies beyond. You can stay. You can also build a boat.</p>
+
+  <p class="prose">The horizon is the place where what you know ends and what is possible begins. Every intelligence eventually arrives at one. Few of the intelligences we have records of have ever stopped at it.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The Polynesian wayfinders who reached the eastern Pacific looked out from each new island and saw, on the curve of the water, the next one. They were not driven by hunger; the islands they left were habitable. They were not pushed; they had no enemies to flee. They built better boats, refined their stellar navigation, and went. Within roughly two thousand years, they occupied an oceanic triangle larger than any contiguous land empire that has ever existed.</p>
+
+  <p class="prose">Centuries later, the European sailors who reached the western edge of the known world arrived at the same horizon. They had charts that ended somewhere short of where they were standing. Some sailed anyway. The cartographers who came after them filled in coastlines that no European had previously drawn. The maps grew. They never quite caught up.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Several centuries further on, a Florentine instrument-maker turned a new optical device toward the night sky. The moons he saw circling Jupiter had been invisible to every human eye that had ever turned upward, for fifty thousand years before him. The cosmos his contemporaries had inherited from antiquity ended where the unaided eye ended. His telescope did not. The horizon, in his case, lay through a glass.</p>
+
+  <div class="folio folio-right">113</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Horizon</div>
+
+  <p class="prose">In every age and in every domain we have looked at, the same pattern appears. An intelligence reaches the boundary of what it can currently see, model, or operate within. It looks across the boundary. It builds the means to cross it. The boundary moves. The intelligence follows.</p>
+
+  <p class="prose">The pattern does not require curiosity in the casual sense. It does not require ambition, courage, restlessness, or any of the qualities we usually attribute to explorers. The pattern operates at scales much larger than individual character. Civilizations that have never produced a single famous explorer have produced explorations — by accident, by trade, by religious mission, by accidents of war. The horizon is what intelligence does when it encounters an edge. It is not, in the framework's view, a personality trait. It is a structural feature of intelligent systems at scale.</p>
+
+  <div class="pull-quote no-break">
+    The horizon is the place where what you know ends<br>
+    and what is possible begins.
+  </div>
+
+  <p class="prose">This chapter examines that structural feature. It will argue that the pattern is not optional, that it operates in every domain in which intelligence can be observed to operate, and that — most consequentially — every horizon ever reached has turned out, on inspection, to contain another horizon beyond it. The reaching is not a sequence of arrivals at destinations. The reaching is a continuous encounter with new edges.</p>
+
+  <p class="prose">This is not a claim that every expansion succeeds. Many frontiers have killed the civilizations that pursued them. The bones of failed colonies, doomed expeditions, overextended empires, and speculative manias are scattered across the historical record. Reaching is dangerous. The framework's claim is not that Expansion is always rewarded. It is that intelligence keeps pursuing it anyway — and that the civilizations which have built mechanisms for surviving the pursuit have, on average, compounded faster than those that refused to attempt it at all.</p>
+
+  <p class="prose">Direction Five is the first of the Frontiers because it is the direction that produces the conditions under which the other Frontiers operate. Creation needs new domains to create in. Recursion needs accumulated reach to examine. Purpose needs distance to organize itself toward. Without Expansion, the other three Frontiers have nowhere to act.</p>
+
+  <div class="folio folio-left">114</div>
+</section>
+
+<!-- §2 · WHAT EXPANSION IS, AND IS NOT -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ Working Definition</div>
+  <h2 class="section-title">Expansion Is Not<br>Conquest.</h2>
+
+  <p class="prose dropcap">Before going further, the chapter must close off a misreading that the word <em>expansion</em> invites. The framework's claim is not that intelligence pursues territory. It is not that intelligence pursues conquest. It is certainly not that intelligence pursues the colonial accumulation of land at the expense of those who already live on it. The historical record contains civilizations that pursued all of those things, and they are not what this chapter is about.</p>
+
+  <p class="prose">Expansion, in this work, is operationally defined as <strong>the extension of intelligence into domains not yet reached.</strong> The domain may be physical. It may be informational. It may be computational. It may be conceptual. It may be temporal — extending the time horizons across which intelligence can think and act. It may be experiential — extending the kinds of perception and feeling intelligence can have.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Territory is one manifestation of Expansion, and not the most important one. The Polynesian crossing of the Pacific is Expansion. So is the European discovery of the microscope. So is the development of the calculus. So is the sequencing of the human genome. So is the construction of a particle accelerator. So is the writing of a long poem that takes a reader where no previous poem could take them.</p>
+
+  <p class="prose">The framework treats all of these as instances of the same underlying phenomenon. Intelligence extending into space it had not previously occupied.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This is the right place to distinguish Expansion from Capability, which it can easily be confused with. Capability is what intelligence can do within a given domain. Expansion is the entry into new domains. A civilization can possess high Capability and pursue no Expansion — refining what it already does without venturing into new spaces. A civilization can pursue Expansion with modest Capability — entering domains it is not yet competent in, and acquiring competence by being there. The two are independent.</p>
+
+  <div class="folio folio-right">115</div>
+</section>
+
+<!-- §3 · THE DOMAINS -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ The Domains</div>
+  <h2 class="section-title">Six Spaces<br>Intelligence Can Enter.</h2>
+
+  <p class="prose dropcap">The historical record reveals at least six distinct domains in which Expansion has occurred. The list is not exhaustive, and the boundaries between domains are imperfect. The point is the variety. Expansion is not one phenomenon repeated. It is one principle operating across very different terrains.</p>
+
+  <div class="domains-list">
+    <div class="domain-label">Physical</div>
+    <div class="domain-body">The extension of intelligence into new geographic, ecological, or cosmic spaces. From the human migration out of Africa to the lunar landings. From the colonization of new ecological niches by living organisms to the descent of submersibles into the deep ocean.</div>
+
+    <div class="domain-label">Informational</div>
+    <div class="domain-body">The extension of what intelligence can record, store, retrieve, and transmit. Writing systems. Libraries. Printing. Digital archives. The internet. Each layer extended what could be remembered, shared, and accessed at distances and timescales previously impossible.</div>
+
+    <div class="domain-label">Computational</div>
+    <div class="domain-body">The extension of what intelligence can calculate, simulate, model, and process. Mechanical computation. Electronic computation. Networked computation. Artificial neural systems. Each generation of computational capacity opens problems that the previous generation could not even formulate.</div>
+
+    <div class="domain-label">Conceptual</div>
+    <div class="domain-body">The extension of the ideas intelligence can think with. New mathematics. New scientific frameworks. New philosophical categories. The shift from counting numbers to algebra to calculus to topology was Expansion into spaces of thought that had no prior existence.</div>
+
+    <div class="domain-label">Temporal</div>
+    <div class="domain-body">The extension of the time horizons across which intelligence operates. Geological time. Evolutionary time. Cosmological time. Future-oriented institutions, multi-generational projects, the Long Now. Expansion is not only outward in space. It is also outward in the depths of time that intelligence can take seriously.</div>
+
+    <div class="domain-label">Experiential</div>
+    <div class="domain-body">The extension of what intelligence can perceive, feel, and undergo. New senses, instruments, drugs, virtual environments, neurological technologies. The growing range of human experience as the species develops capacities its ancestors did not possess.</div>
+  </div>
+
+  <div class="folio folio-right">116</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Domains</div>
+
+  <p class="prose">A pattern is visible even at this level of summary. Each domain operates on different terrain, but the structure of Expansion in each is the same. Intelligence reaches a current boundary. The boundary suggests something beyond it. New instruments, new methods, or new institutions are built. The boundary moves outward. New boundaries become visible.</p>
+
+  <p class="prose">It is also worth noting that the domains are not independent. Expansion in one domain typically requires Expansion in others. The physical exploration of the Pacific required the conceptual expansion of celestial navigation. The conceptual expansion into calculus required the informational expansion of the printing press, which carried Newton's <em>Principia</em> to thousands of mathematicians who used and refined it. The computational expansion of modern AI required the experiential expansion of vast labeled datasets that no prior era could have assembled. Each domain pulls on the others.</p>
+
+  <p class="prose" style="margin-top:0.9em;">This is why Expansion is most visible in periods when many domains expanded simultaneously. The classical Greek period. The Tang dynasty in China. The Islamic Golden Age. The European Renaissance and Scientific Revolution. The Industrial Revolution. The post-war scientific explosion. Each was a period in which several domains advanced together, each enabling the others.</p>
+
+  <div class="pull-quote no-break">
+    Intelligence extending into new spaces, in any direction,<br>
+    tends to pull every other direction along with it.
+  </div>
+
+  <p class="prose">The framework treats Expansion as a single direction precisely because of this cross-domain coupling. The civilizations that move outward in one space tend, with surprising regularity, to move outward in others. It is not always a deliberate strategy. It is a structural pattern that has reasserted itself in nearly every recorded period of civilizational compounding.</p>
+
+  <div class="folio folio-left">117</div>
+</section>
+
+<!-- §4 · THE RECURSIVE HORIZON -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ The Recursive Horizon</div>
+  <h2 class="section-title">Every Horizon Crossed<br>Reveals Another.</h2>
+
+  <p class="prose dropcap">This section contains the deepest observation in the chapter. It is the answer to the question the chapter has been circling — why does intelligence keep pushing beyond every boundary it reaches? The answer is not bravery, not curiosity, not ambition. The answer is structural. Every horizon crossed, on examination, reveals another horizon beyond it. Reaching is not arriving. Reaching is the discovery of more to reach.</p>
+
+  <p class="prose">The pattern can be made precise. Three mechanisms produce it. Each is observable across every domain in which Expansion has occurred.</p>
+
+  <p class="prose" style="margin-top:0.9em;"><strong>First. The act of mapping a domain reveals where the map ends.</strong> An intelligence that has not reached a boundary cannot perceive it as a boundary. From the inside of a known space, the unknown is invisible. Only when the boundary is reached does the existence of what lies beyond it become a real fact rather than a vague intuition. Each act of reaching, therefore, generates the awareness of new edges. The unknown is created, in the strict sense, by the encounter with the known's limits.</p>
+
+  <p class="prose"><strong>Second. The tool built to reach a horizon often becomes the substrate for the tool that reaches beyond it.</strong> Galileo's telescope was, in design and craftsmanship, the substrate for every subsequent optical instrument. The early steam engine was the substrate for industrial machinery, which became the substrate for electrical power generation, which became the substrate for electronic computation. Each instrument was built to address a specific horizon. Each became the foundation on which the next instrument was built. The history of Expansion is, in part, the history of instruments compounding into instruments.</p>
+
+  <div class="folio folio-right">118</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Recursive Horizon</div>
+
+  <p class="prose"><strong>Third. An intelligence that has perceived a gap cannot reliably ignore it.</strong> This is the most subtle of the three mechanisms. It says that curiosity is not a personality variable but a structural feature of intelligent systems. Once an intelligence has built a model of a domain, the gaps in that model become items in the model. They have a location. They have a name. They can be returned to. The unfilled cell on the periodic table waits to be filled in. The unexplored region on the map waits to be entered. The unsolved theorem waits to be proven. The framework does not claim that every gap is closed. It claims something narrower — gaps that are visible tend to attract attention, generation after generation, until something either fills them or convinces the intelligence that they cannot be filled.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Together these three mechanisms produce a consequence the chapter has been building toward. <em>Reaching is not a sequence of arrivals at destinations.</em> Reaching is a continuous encounter with new edges. Every frontier crossed in human history has turned out, on inspection, to be the discovery of another frontier beyond it. The discovery of the Americas was not the end of geographic exploration; it was the start of two centuries of further exploration that revealed the continents' actual extent. The discovery of the atom was not the end of physics; it was the start of a descent through electrons, nuclei, protons, neutrons, quarks, fields, and ongoing speculation about what lies further down. The development of writing did not complete information science; it generated the possibility space in which printing, archives, networks, and artificial intelligence eventually became real.</p>
+
+  <div class="pull-quote no-break">
+    Reaching is not arriving.<br>
+    Reaching is the discovery of more to reach.
+  </div>
+
+  <div class="folio folio-left">119</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Recursive Horizon</div>
+
+  <p class="prose">This is why the question the chapter began with — why does intelligence keep pushing beyond every boundary it reaches? — has a structural answer rather than a moral one. Intelligence does not push beyond boundaries because it is brave or because it is restless. Intelligence pushes beyond boundaries because reaching any boundary creates the conditions under which the next boundary becomes visible, addressable, and structurally hard to ignore.</p>
+
+  <p class="prose">The horizon is not a place. The horizon is a relation between an intelligence and its current limits. As long as the intelligence remains intelligence, the relation persists. As long as the relation persists, the horizon is replaced as fast as it is crossed.</p>
+
+  <p class="prose" style="margin-top:0.7em;">An intelligence that has decided, deliberately, to stop reaching is doing something quite specific. It is choosing to treat its current map as final.</p>
+
+  <div class="pull-quote no-break">
+    The opposite of Expansion is not contentment.<br>
+    The opposite of Expansion is the belief that the current map is final.
+  </div>
+
+  <p class="prose">The choice is rarely successful for long. Reality does not stop generating gaps just because an intelligence stops looking at them. The unmapped territories continue to exist whether they are mapped or not. The unsolved problems continue to be unsolved whether they are noticed or not. A civilization that abandons Expansion does not enter a stable equilibrium; it enters a kind of denial that holds, on average, until contact with whatever lay beyond the closed horizon forces the question open again.</p>
+
+  <p class="prose">This may explain why nearly every civilization that closed itself off to Expansion was eventually opened by something it had stopped paying attention to. Tokugawa Japan was opened by Perry's ships. Imperial China was opened by the trade fleets and military reach of powers that had not stopped looking outward. Closed civilizations do not stay closed indefinitely, because the horizons they refused to acknowledge continued to exist and continued to be crossed by others.</p>
+
+  <div class="folio folio-right">120</div>
+</section>
+
+<!-- §5 · THE DESCENT INTO THE ATOM -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ A Recursive Frontier</div>
+  <h2 class="section-title">The Descent<br>Into the Atom.</h2>
+
+  <p class="prose dropcap">A single extended case clarifies the recursive pattern more vividly than any argument. Consider the history of one particular Expansion: the descent into the structure of matter, conducted across roughly two centuries by an unbroken chain of intelligences, each of whom believed they had reached a kind of bottom, and each of whom was wrong.</p>
+
+  <div class="descent">
+    <div><span class="year">1808</span><span class="layer">The atom. Dalton. Indivisible.</span></div>
+    <div><span class="year">1897</span><span class="layer">The electron. Thomson. Divisible after all.</span></div>
+    <div><span class="year">1911</span><span class="layer">The nucleus. Rutherford. Most of the atom is empty.</span></div>
+    <div><span class="year">1913</span><span class="layer">Quantized orbits. Bohr. The atom obeys strange rules.</span></div>
+    <div><span class="year">1925–27</span><span class="layer">Quantum mechanics. Wave and particle at once.</span></div>
+    <div><span class="year">1932</span><span class="layer">The neutron. Chadwick. The nucleus is divisible too.</span></div>
+    <div><span class="year">1960s</span><span class="layer">Quarks. Gell-Mann, Zweig. Protons are not fundamental either.</span></div>
+    <div><span class="year">1970s</span><span class="layer">The Standard Model. Twelve fermions. Four forces. So far.</span></div>
+    <div><span class="year">today</span><span class="layer">Dark matter. Dark energy. Supersymmetry candidates. String theory.</span></div>
+  </div>
+
+  <p class="prose" style="margin-top:0.18in;">Each row in this list was, in its own time, the bottom of the descent. Dalton's atom was an explicit terminus — the word means <em>indivisible</em>. It was indivisible for about a century. Then Thomson found the electron. The new bottom held for fourteen years. Then Rutherford found the nucleus. Each subsequent answer was, in its own moment, the answer. Each turned out to be a substrate for the next question.</p>
+
+  <div class="folio folio-right">121</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Recursive Frontier</div>
+
+  <p class="prose">The pattern in this case is exceptionally clear because it occurs in a single domain, across a single chain of intellectual descent, with each step well-documented. But the pattern is not specific to physics. The same recursive horizon appears in every domain examined in this chapter.</p>
+
+  <p class="prose">The mathematical history of the number system shows the identical pattern. Counting numbers were complete — until negatives were needed to represent debts. Integers were complete — until fractions were needed for portions. Rationals were complete — until the diagonal of a unit square forced the irrationals. Real numbers were complete — until the square roots of negatives forced the imaginaries. Complex numbers were complete — until certain physical phenomena pulled in quaternions, octonions, and beyond. At each level, the system was considered closed. At each level, a problem from the next level pried it open.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The geographical history of human exploration shows the same shape. The Mediterranean was the known world for centuries — until the Atlantic was crossed. The Atlantic was the new known world — until the Pacific was reached. The Pacific was the last ocean — until aviation made every point on the surface reachable. The surface was the limit — until orbit was achieved. Orbit is now routine. The next horizon is interplanetary.</p>
+
+  <p class="prose">In every case, the moment of arrival is also the moment of revealing the next frontier. There is no record, in any well-documented domain, of an intelligence reaching a boundary and finding no further boundary beyond it. The horizon recedes as fast as it is approached. It may, on the strongest reading, recede <em>because</em> it is approached.</p>
+
+  <div class="pull-quote no-break">
+    There is no record, in any well-documented domain,<br>
+    of intelligence reaching a boundary and finding<br>
+    no further boundary beyond.
+  </div>
+
+  <div class="folio folio-left">122</div>
+</section>
+
+<!-- §6 · THE TENSIONS -->
+<section class="page">
+  <div class="running-head">Direction Five · Expansion</div>
+
+  <p class="prose">The chapter must now flag tensions that the next chapters will address. Expansion, like every direction in the framework, exists in real conflict with several others.</p>
+
+  <p class="prose"><strong>Expansion stresses Continuity.</strong> Pursuing new domains requires building new institutions, which in turn requires partially dismantling old ones or pulling resources from them. The same civilization cannot maintain its existing infrastructure with full intensity and also build the infrastructure of new domains at full intensity. Choices are forced. The civilizations that have pursued Expansion most aggressively have, in nearly every case, lost some part of what their Continuity had previously preserved. The trade-off is real.</p>
+
+  <p class="prose"><strong>Expansion pulls against Recursion.</strong> Reaching outward and looking inward draw on the same finite resources of attention. The civilizations at the peak of their expansive ambitions have rarely been the same civilizations conducting their deepest self-examinations. Imperial Britain at its zenith was not, on the whole, a philosophical period of British history. Britain in retreat was. The pattern is general. Expansion can become, in practice, a way of postponing the harder work of looking at oneself.</p>
+
+  <p class="prose"><strong>Expansion can also collapse Purpose.</strong> A civilization that pursues every visible horizon, in every direction, without coherent selection among them, eventually has more directions than energy. The choice of which horizons to pursue requires Purpose. Without it, Expansion produces sprawl rather than achievement. The Roman Empire's growth, at its furthest extent, was already exceeding the institutional capacity to govern what had been added. The expansion outpaced the purpose.</p>
+
+  <p class="prose" style="margin-top:0.9em;">These tensions are not arguments against Expansion. They are reminders that no direction can be maximized without cost. The Frontiers, even more than the Foundations, must be held in balance — with each other and with what they extend from.</p>
+
+  <div class="folio folio-right">123</div>
+</section>
+
+<!-- §7 · MODERN STAKES -->
+<section class="page opener">
+  <div class="running-head">Direction Five · Expansion</div>
+  <div class="section-number">§ Modern Stakes</div>
+  <h2 class="section-title">The Horizons<br>Open Now.</h2>
+
+  <p class="prose dropcap">The contemporary moment is unusual in the historical record for the number of simultaneously open horizons. In nearly every domain identified earlier in this chapter, an active frontier is currently being pushed. The framework does not have to take positions on which of these will produce the most consequential discoveries. It only has to observe that, viewed in aggregate, the present age is engaged in more concurrent Expansion than any prior period.</p>
+
+  <p class="prose">In the physical domain, robotic missions have visited every planet in the solar system, the heliopause has been crossed by Voyager 1, and active programs aim at returning humans to the Moon and putting them on Mars. In the informational domain, the data archive of human civilization has crossed thresholds at which it can be ingested only by machines, not by humans. In the computational domain, the capability of artificial systems to model, predict, and generate has crossed levels that the previous generation considered theoretical. In the conceptual domain, fields like complexity science, cognitive science, and theoretical physics are operating at distances from common intuition unprecedented in the history of those disciplines.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The temporal domain may be the most quietly important. Institutions have begun, for the first time at recognizable scale, to think in centuries again. The Long Now Foundation. Multi-generational climate planning. Existential-risk research. Civilizational projects whose payoff horizons exceed the lifespans of their architects. The recovery of long-time-horizon thinking is itself a frontier — one that earlier civilizations possessed and modernity, until recently, had lost.</p>
+
+  <p class="prose">In the experiential domain, neurological technologies, synthetic perception, and the early shapes of brain-computer interfaces suggest that the range of what intelligence can experience may be expanding in ways that no philosophical tradition has yet had time to map.</p>
+
+  <p class="prose" style="margin-top:0.7em;">The framework's prediction is simple. Civilizations that pursue these frontiers, while holding them in productive tension with the other directions, will compound capability at rates that closed civilizations cannot match. Whether they will do so wisely is a separate question — and one the Frontiers that follow this chapter will progressively make harder to ignore.</p>
+
+  <div class="folio folio-right">124</div>
+</section>
+
+<!-- §8 · TESTS APPLIED -->
+<section class="page">
+  <div class="running-head">Direction Five · Expansion</div>
+
+  <p class="prose"><strong>Tests applied.</strong> Briefly, because the bulk of the chapter has already made the case.</p>
+
+  <div class="test-block no-break">
+    <div class="test-label">Survival</div>
+    <div class="test-name">Necessary for compounding, not for existence.</div>
+    <div class="test-body">A civilization can persist without Expansion. The plateau civilizations described in the Interlude prove this directly. But persistence without Expansion is steady-state; compounding requires the active pursuit of new domains. The Survival test passes for the Frontier tier — not for existence in general, but for the kind of intelligence that continues to grow rather than merely to last.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Universality</div>
+    <div class="test-name">Observable across substrates.</div>
+    <div class="test-body">Expansion appears in biology, in civilization, and in contemporary intelligence systems. Life has repeatedly entered new ecological niches across deep time. Civilizations have repeatedly entered new domains. Artificial intelligence systems are already exhibiting the same pattern at compressed timescales. The cross-substrate evidence is unambiguous.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Independence</div>
+    <div class="test-name">Distinct from Capability and Creation.</div>
+    <div class="test-body">Expansion is not Capability applied at scale. A civilization can be highly capable within a known domain and still not enter new ones — this is exactly what the plateau civilizations did. Expansion is not Creation; reaching a new domain is not the same as producing new forms within it. The independence test passes because civilizations can have any combination of these directions, including possessing one without the others.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Reality</div>
+    <div class="test-name">Rewarded, with caveats.</div>
+    <div class="test-body">Reality rewards Expansion conditionally. Civilizations that overextend collapse. Civilizations that refuse to expand stagnate and are eventually opened by those that did not. The reward structure favors Expansion held in tension with the other directions — never maximized alone. Verdict: passed, with the asymmetry honestly flagged.</div>
+  </div>
+
+  <div class="folio folio-left">125</div>
+</section>
+
+<!-- §9 · BRIDGE TO CREATION -->
+<section class="page">
+  <div class="running-head">Direction Five · Expansion</div>
+
+  <p class="prose">A civilization that takes Expansion seriously reaches new domains. It then has a choice the chapter has not yet examined. It can occupy what it has reached, in the manner of a settler, replicating in the new domain what it already did in the old one. Or it can do something different. It can use the new domain as the substrate for forms that did not previously exist anywhere.</p>
+
+  <p class="prose">The Polynesians who reached new islands did not merely live on them. They built villages, developed local crafts, evolved distinct cultural forms suited to each island's resources. The physicists who reached subatomic scales did not merely catalog particles. They built theories, predictions, applications. The mathematicians who reached new number systems did not merely list their elements. They proved theorems, derived consequences, discovered structures.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Reaching is not making. The territory acquired is not the same as the things that come to exist within it. Expansion answers the question of how far intelligence can go. The next question is what intelligence does once it gets there.</p>
+
+  <div class="pull-quote no-break">
+    Reaching is not making.<br>
+    Every horizon crossed becomes a place to build.
+  </div>
+
+  <p class="prose">That is the direction that follows. It is the direction by which civilizations stop merely arriving at new spaces and begin producing in them. It is what intelligence does with the territory the previous chapter has shown it cannot help acquiring.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><em>The next direction is Creation.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">126</div>
+</section>
+
+<!-- END-OF-CHAPTER -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Direction Five</div>
+  <div class="epigraph-text">
+    "Every horizon crossed becomes a place to build.<br>
+    The reaching never ends. The building begins."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">DIRECTION SIX BEGINS · CREATION</div>
+</section>
+
+</body>
+</html>

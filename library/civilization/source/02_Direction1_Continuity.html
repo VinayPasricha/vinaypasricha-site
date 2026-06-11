@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Direction One: Continuity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0f1115;
+    --paper:      #faf8f4;
+    --paper-deep: #f3efe7;
+    --rule:       #1c1f26;
+    --cosmos:     #1a2742;
+    --indigo:     #2d3a6b;
+    --gold:       #b8954f;
+    --mute:       #6b6960;
+  }
+
+  @page { size: 6in 9in; margin: 0; }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: #2a2722; color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-optical-sizing: auto; font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 6in; min-height: 9in;
+    margin: 24px auto; padding: 0.75in 0.7in;
+    background: var(--paper); color: var(--ink);
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column;
+  }
+
+  .page::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%);
+    pointer-events: none;
+  }
+
+  .display  { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono     { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  p.lead { margin-bottom: 1em; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+
+  /* DIRECTION COVER — distinct from Part 1's cover */
+  .direction-cover {
+    justify-content: space-between; align-items: stretch;
+    padding: 0.9in 0.7in; text-align: center;
+  }
+  .direction-cover-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9pt; color: var(--gold);
+    letter-spacing: 0.4em; text-transform: uppercase;
+  }
+  .direction-cover-roman {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 200; font-size: 22pt;
+    letter-spacing: 0.4em; color: var(--cosmos);
+    margin: 0.15in 0;
+  }
+  .direction-cover-name {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 300; font-size: 72pt;
+    letter-spacing: -0.04em; line-height: 0.95;
+    margin: 0.1in 0; color: var(--ink);
+  }
+  .direction-cover-tagline {
+    font-family: "Source Serif 4", serif; font-style: italic;
+    font-weight: 300; font-size: 13pt; line-height: 1.5;
+    color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto;
+  }
+  .direction-cover-sigil {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    margin: 0.4in 0;
+  }
+
+  /* EPIGRAPH PAGE */
+  .epigraph-page {
+    justify-content: center; align-items: center;
+    text-align: center; padding: 1.4in 0.9in;
+  }
+  .epigraph-mark {
+    font-family: "JetBrains Mono", monospace; font-size: 8pt;
+    color: var(--gold); letter-spacing: 0.35em;
+    text-transform: uppercase; margin-bottom: 0.6in;
+  }
+  .epigraph-text {
+    font-family: "Source Serif 4", serif; font-style: italic;
+    font-weight: 300; font-size: 18pt; line-height: 1.4;
+    color: var(--ink); margin-bottom: 0.4in; max-width: 4in;
+  }
+  .epigraph-attribution {
+    font-family: "Space Grotesk", sans-serif; font-weight: 500;
+    font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--cosmos);
+  }
+  .epigraph-source-note {
+    font-family: "JetBrains Mono", monospace; font-size: 7.5pt;
+    color: var(--mute); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-top: 6pt;
+  }
+
+  /* SECTION OPENER */
+  .opener { padding-top: 1in; }
+  .section-number {
+    font-family: "JetBrains Mono", monospace; font-size: 8.5pt;
+    color: var(--gold); letter-spacing: 0.4em;
+    text-transform: uppercase; margin-bottom: 0.3in;
+  }
+  .section-title {
+    font-family: "Space Grotesk", sans-serif; font-weight: 300;
+    font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink); margin: 0 0 0.35in 0;
+  }
+
+  .dropcap::first-letter {
+    font-family: "Space Grotesk", sans-serif; font-weight: 300;
+    float: left; font-size: 48pt; line-height: 0.85;
+    padding: 4pt 8pt 0 0; color: var(--cosmos);
+  }
+
+  .illustration { margin: 0.3in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption {
+    font-family: "JetBrains Mono", monospace; font-size: 7.5pt;
+    color: var(--mute); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-top: 10pt;
+  }
+
+  .pull-quote {
+    font-family: "Space Grotesk", sans-serif; font-weight: 300;
+    font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em;
+    color: var(--cosmos); text-align: center;
+    margin: 0.4in 0.1in; padding: 0.2in 0;
+    border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
+    position: relative;
+  }
+  .pull-quote::before, .pull-quote::after {
+    content: "✦"; position: absolute; color: var(--gold);
+    font-size: 11pt; background: var(--paper); padding: 0 8pt;
+    left: 50%; transform: translateX(-50%);
+  }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+
+  .folio {
+    position: absolute; bottom: 0.4in;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8pt; color: var(--mute); letter-spacing: 0.15em;
+  }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+
+  .running-head {
+    position: absolute; top: 0.4in; right: 0.7in;
+    font-family: "Space Grotesk", sans-serif; font-size: 7.5pt;
+    color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase;
+  }
+
+  .center-line { text-align: center; margin: 0.8em 0; }
+
+  /* Case study card style for civilizational examples */
+  .case-block {
+    border-left: 2px solid var(--gold);
+    padding: 8pt 0 8pt 14pt;
+    margin: 0.18in 0;
+  }
+  .case-label {
+    font-family: "JetBrains Mono", monospace; font-size: 7.5pt;
+    color: var(--gold); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 4pt;
+  }
+  .case-name {
+    font-family: "Space Grotesk", sans-serif; font-weight: 500;
+    font-size: 13pt; color: var(--ink); margin: 0 0 3pt 0;
+    letter-spacing: -0.01em;
+  }
+  .case-span {
+    font-family: "JetBrains Mono", monospace; font-size: 7.5pt;
+    color: var(--mute); letter-spacing: 0.1em; margin-bottom: 6pt;
+  }
+  .case-body {
+    font-family: "Source Serif 4", serif; font-size: 10pt;
+    line-height: 1.55; color: var(--ink);
+  }
+
+  /* Test box for the three tests applied */
+  .test-block {
+    background: var(--paper-deep);
+    padding: 14pt 16pt; margin: 0.18in 0;
+    border-left: 3px solid var(--cosmos);
+  }
+  .test-label {
+    font-family: "JetBrains Mono", monospace; font-size: 7.5pt;
+    color: var(--gold); letter-spacing: 0.25em;
+    text-transform: uppercase; margin-bottom: 6pt;
+  }
+  .test-name {
+    font-family: "Space Grotesk", sans-serif; font-weight: 500;
+    font-size: 15pt; color: var(--ink); margin: 0 0 6pt 0;
+  }
+  .test-verdict {
+    font-family: "Space Grotesk", sans-serif; font-weight: 600;
+    font-size: 10pt; color: var(--cosmos); letter-spacing: 0.05em;
+    margin-top: 4pt;
+  }
+  .test-body {
+    font-family: "Source Serif 4", serif; font-size: 10pt;
+    line-height: 1.55; color: var(--ink);
+  }
+
+  .print-hint {
+    max-width: 6in; margin: 16px auto; padding: 12px 18px;
+    background: rgba(255,255,255,0.08); color: #d6cfb8;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    letter-spacing: 0.05em; border-left: 2px solid var(--gold);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- ============================================================
+     DIRECTION ONE — COVER
+     ============================================================ -->
+<section class="page direction-cover">
+  <div class="direction-cover-tag">Part Two</div>
+
+  <div>
+    <div class="direction-cover-roman">DIRECTION  ONE</div>
+    <h1 class="direction-cover-name">Continuity.</h1>
+    <p class="direction-cover-tagline">The deepest direction — without which no other direction can occur.</p>
+  </div>
+
+  <div class="direction-cover-sigil">
+    <!-- Large, elaborated Continuity sigil: a thread looping through time markers -->
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer ring -->
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.7" stroke-opacity="0.4"/>
+      <!-- Time markers around the ring -->
+      <g fill="#b8954f">
+        <circle cx="140" cy="20"  r="2.2"/>
+        <circle cx="226" cy="54"  r="1.8"/>
+        <circle cx="260" cy="140" r="2.2"/>
+        <circle cx="226" cy="226" r="1.8"/>
+        <circle cx="140" cy="260" r="2.2"/>
+        <circle cx="54"  cy="226" r="1.8"/>
+        <circle cx="20"  cy="140" r="2.2"/>
+        <circle cx="54"  cy="54"  r="1.8"/>
+      </g>
+      <!-- The continuity ring — the unbroken core -->
+      <circle cx="140" cy="140" r="70" fill="none" stroke="#0f1115" stroke-width="2.2"/>
+      <!-- Inner thread suggesting transmission -->
+      <path d="M 70 140 Q 105 90, 140 140 Q 175 190, 210 140" fill="none" stroke="#1a2742" stroke-width="1.2" stroke-opacity="0.6"/>
+      <!-- Center mark -->
+      <circle cx="140" cy="140" r="4" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="direction-cover-tag" style="color: var(--mute);">Sigil I · Continuity</div>
+</section>
+
+<!-- ============================================================
+     EPIGRAPH PAGE — FAULKNER
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Direction One · Opening</div>
+  <div class="epigraph-text">
+    "The past is never dead. It's not even past."
+  </div>
+  <div class="epigraph-attribution">— William Faulkner</div>
+  <div class="epigraph-source-note">Requiem for a Nun · 1951</div>
+  <div style="margin-top: 1in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================================
+     §1 · THE FOUNDATIONAL DIRECTION
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Foundational Direction</div>
+  <h2 class="section-title">Before Anything Else,<br>Intelligence Must Continue.</h2>
+
+  <p class="prose dropcap">Of the eight directions identified in this work, one stands apart from the others. It is not the most beautiful. It is not the most ambitious. It may not even be the most interesting. But it precedes them all. It is the first of the Four Foundations — the directions necessary for any intelligence to persist at all.</p>
+
+  <p class="prose">Before intelligence can pursue truth, it must continue long enough to pursue anything. Before it can expand its capabilities, it must survive long enough to expand. Before it can accumulate memory, it must persist long enough to remember. Before it can cooperate at scale, it must endure long enough to be present when cooperation becomes possible.</p>
+
+  <p class="stanza" style="margin-top:1em;">Every other direction in this book presupposes one fact.</p>
+  <p class="stanza"><strong>That intelligence is still here.</strong></p>
+
+  <p class="prose" style="margin-top:1em;">Continuity is therefore the foundational direction. Not because it is more important than the others in any moral sense, but because it is more basic. It is the precondition for the rest.</p>
+
+  <div class="folio folio-right">021</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Foundational Direction</div>
+
+  <p class="prose">There is a circular quality to this argument that deserves to be acknowledged rather than hidden.</p>
+
+  <p class="prose">Everything we observe about the evolution of intelligence — every pattern, every direction, every regularity — has been observed precisely because the intelligence in question continued long enough to be observable. What did not continue is not here to be observed. The intelligences that disappeared do not appear in our record. They left no inheritance for our analysis. They are not present in the data.</p>
+
+  <p class="prose">This is the survivor problem, raised earlier in Part One. It is not solved here. It is embraced.</p>
+
+  <p class="prose" style="margin-top:1em;">If intelligence's other directions are real, then they are the directions taken by the intelligences that lasted. The intelligences that did not last cannot tell us what direction they took. They are silent. And that silence is itself the evidence.</p>
+
+  <div class="pull-quote no-break">
+    What did not continue is not here to be observed.
+  </div>
+
+  <p class="prose">Continuity is not one direction among twelve. It is the direction that selects which other directions get to be discussed at all.</p>
+
+  <div class="folio folio-left">022</div>
+</section>
+
+<!-- ============================================================
+     §2 · THE THREE FORMS OF CONTINUITY
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Three Forms</div>
+  <h2 class="section-title">Continuity<br>Has Three Faces.</h2>
+
+  <p class="prose dropcap">Continuity is not a single phenomenon. It is one underlying imperative expressing itself through three distinct forms. Each form is observable. Each is independently necessary. None of the three, on its own, is sufficient.</p>
+
+  <div class="illustration no-break">
+    <svg viewBox="0 0 380 200" width="360" height="190" xmlns="http://www.w3.org/2000/svg">
+      <!-- Three overlapping circles representing the three forms -->
+      <g fill="none" stroke="#1a2742" stroke-width="1.2">
+        <circle cx="120" cy="100" r="58"/>
+        <circle cx="190" cy="100" r="58"/>
+        <circle cx="260" cy="100" r="58"/>
+      </g>
+      <g font-family="Space Grotesk, sans-serif" font-size="9" fill="#0f1115" text-anchor="middle" font-weight="500">
+        <text x="100"  y="60">BIOLOGICAL</text>
+        <text x="190" y="50">INFORMATIONAL</text>
+        <text x="280" y="60">INSTITUTIONAL</text>
+      </g>
+      <g font-family="JetBrains Mono, monospace" font-size="6" fill="#6b6960" text-anchor="middle" letter-spacing="0.1em">
+        <text x="100" y="160">GENE</text>
+        <text x="190" y="160">MEMORY</text>
+        <text x="280" y="160">STRUCTURE</text>
+      </g>
+      <!-- Central overlap dot -->
+      <circle cx="190" cy="100" r="3" fill="#b8954f"/>
+    </svg>
+    <div class="caption">Fig. 4 — The Three Forms of Continuity</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;"><strong>Biological continuity</strong> is the transmission of life itself — the chain of reproduction by which one generation gives rise to the next. It is the oldest form, predating intelligence by billions of years.</p>
+
+  <div class="folio folio-right">023</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Three Forms</div>
+
+  <p class="prose"><strong>Informational continuity</strong> is the transmission of what a generation has learned — language, knowledge, technique, story, ritual, instruction. It is the form unique to intelligence. Without it, every generation begins again from nothing.</p>
+
+  <p class="prose"><strong>Institutional continuity</strong> is the persistence of structures — laws, organizations, traditions, polities — through which biological and informational continuity become coordinated at scale. It is the most recent form, emerging only with settled civilizations, and the most fragile.</p>
+
+  <p class="stanza" style="margin-top:1em;">All three forms have been pursued, in various combinations, by every civilization that endured.</p>
+
+  <p class="prose" style="margin-top:1em;">No civilization has endured by accident. The civilizations that lasted developed deliberate, often elaborate, mechanisms for sustaining each of the three forms. Genealogies. Scriptures. Lawcodes. Universities. Priesthoods. Archives. Census records. Apprenticeships. Constitutional traditions. Each of these is a continuity technology.</p>
+
+  <p class="prose">A civilization's seriousness about its own future can be measured, with surprising accuracy, by the seriousness of its continuity technologies.</p>
+
+  <div class="folio folio-left">024</div>
+</section>
+
+<!-- ============================================================
+     §3 · EVIDENCE FROM BIOLOGY
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ Evidence · Biology</div>
+  <h2 class="section-title">3.8 Billion Years<br>Without a Break.</h2>
+
+  <p class="prose dropcap">Every living organism on Earth, without exception, is the result of an unbroken chain of reproduction stretching back approximately 3.8 billion years. If reproduction had failed even once across that span — not for a generation, but in the absolute sense of failing in every contemporaneous lineage simultaneously — there would be no life today.</p>
+
+  <p class="prose">This is not a poetic claim. It is a definitional one. Life is, in a real sense, the continuity of life. The chemistry that becomes biology is the chemistry that copies itself. The biology that becomes evolution is the biology that copies itself with variation. The variation that becomes intelligence is the variation that copies itself with variation and reaches a threshold of self-modeling.</p>
+
+  <p class="stanza" style="margin-top:1em;">At every stage, continuity is not one feature among many.</p>
+
+  <p class="stanza"><em>It is the substrate on which every other feature is built.</em></p>
+
+  <p class="prose" style="margin-top:1em;">The most successful biological strategies are, almost without exception, the strategies most committed to continuity. Bacteria persist through prodigious reproduction. Trees persist through extraordinary longevity. Mammals persist through intensive parental investment. Humans persist through all three, layered with informational and institutional continuity unique to our species.</p>
+
+  <div class="folio folio-right">025</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Biology</div>
+
+  <p class="prose">Evolution itself, properly understood, is a continuity-favoring process. Natural selection does not optimize for strength, beauty, complexity, or intelligence. It optimizes for the production of descendants. Strength, beauty, complexity, and intelligence appear only insofar as they serve that more fundamental end.</p>
+
+  <p class="prose">A more elegant species that fails to reproduce is replaced, over deep time, by a less elegant species that does. The verdict of evolution is unsentimental.</p>
+
+  <div class="pull-quote no-break">
+    Life is, in a real sense, the continuity of life.
+  </div>
+
+  <p class="prose">Intelligence is the first phenomenon in the biological record to discover that continuity can be pursued by means other than reproduction. A song remembered is a kind of continuity. A tool inherited is a kind of continuity. A name passed down is a kind of continuity. None of these were available to bacteria.</p>
+
+  <p class="prose">The moment intelligence acquired this capacity, the rules changed.</p>
+
+  <div class="folio folio-left">026</div>
+</section>
+
+<!-- ============================================================
+     §4 · EVIDENCE FROM CULTURE AND LANGUAGE
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ Evidence · Culture</div>
+  <h2 class="section-title">Voices That<br>Refused to Stop.</h2>
+
+  <p class="prose dropcap">Long before writing, intelligence had already invented mechanisms for transmitting information across generations. The earliest of these mechanisms are still in use. They have been refined and adapted for tens of thousands of years, but their underlying function is unchanged.</p>
+
+  <p class="prose">The aboriginal songlines of Australia encode geographic and ecological information in song forms transmitted orally across more than fifty thousand years. The Vedic literature of India has been preserved in oral memory, with phonetic and prosodic precision, for over three thousand years — predating the writing in which it eventually came to be recorded. The Iliad and Odyssey were performed for centuries before any version of them was written down.</p>
+
+  <p class="stanza" style="margin-top:1em;">These are not cultural curiosities.</p>
+
+  <p class="stanza">They are continuity technologies, refined to extraordinary precision, in societies that had no other way to keep what they knew.</p>
+
+  <p class="prose" style="margin-top:1em;">When writing arrives, continuity gets cheaper. A clay tablet, a papyrus scroll, a codex, a printed book — each represents a leap in the scale and fidelity of informational continuity. By the time of the printing press, ideas can travel across centuries without losing their precision. By the time of digital archives, the cost of preservation approaches zero.</p>
+
+  <div class="folio folio-right">027</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Culture</div>
+
+  <p class="prose">Yet the deeper pattern is older than any technology.</p>
+
+  <p class="prose">Languages still spoken today — Hebrew, Tamil, Greek, Chinese, Sanskrit — represent unbroken chains of speakers transmitting their tongues across millennia. Each is, in effect, a continuous performance with three thousand or more years of run time.</p>
+
+  <div class="case-block">
+    <div class="case-label">Continuity in Practice</div>
+    <div class="case-name">The Vedic Recitation Tradition</div>
+    <div class="case-span">c. 1500 BCE — present · ~3,500 years</div>
+    <div class="case-body">Brahmin priests preserved the Rigveda in oral memory for more than a thousand years before any written version existed. The text was transmitted with phonetic accuracy through redundant memorization systems — each syllable independently verified across multiple recitation patterns. The result is a textual continuity arguably more precise than printed transmission.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Continuity in Practice</div>
+    <div class="case-name">Hebrew, Resurrected</div>
+    <div class="case-span">c. 1000 BCE — present</div>
+    <div class="case-body">Hebrew survived as a liturgical language for nearly two thousand years after it ceased to be spoken in daily life. In the late nineteenth century, a community committed to continuity rebuilt it as a living tongue. A modern Israeli child today reads texts written three thousand years ago with no translator.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Cultures that fail to transmit themselves die — even when their people survive. The dispersal of a population is recoverable. The loss of its transmitted forms is not.</p>
+
+  <div class="folio folio-left">028</div>
+</section>
+
+<!-- ============================================================
+     §5 · EVIDENCE FROM INSTITUTIONS
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ Evidence · Institutions</div>
+  <h2 class="section-title">Structures That<br>Outlived Their Builders.</h2>
+
+  <p class="prose dropcap">Institutions are continuity technologies wearing the mask of organizations. They look like buildings and offices and titles and traditions. What they actually are is mechanisms by which a generation arranges for its priorities to persist after it is gone.</p>
+
+  <p class="prose">A particular institution may be designed to serve a religious purpose, a legal purpose, a political purpose, an educational purpose. But every institution, regardless of its surface purpose, is also performing the deeper function of carrying something forward across time.</p>
+
+  <p class="prose" style="margin-top:0.5em;">Three examples make the case.</p>
+
+  <div class="case-block">
+    <div class="case-label">Institutional Continuity</div>
+    <div class="case-name">The Catholic Church</div>
+    <div class="case-span">c. 30 CE — present · ~2,000 years</div>
+    <div class="case-body">An unbroken succession of leadership across two millennia, surviving the fall of the Roman Empire, the schism with Eastern Christianity, the Reformation, the rise and collapse of European colonial empires, two world wars, and the secularization of much of its original geography. Its structure has been modified continuously — but no part of it has restarted from zero since the first century.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Institutional Continuity</div>
+    <div class="case-name">The Imperial House of Japan</div>
+    <div class="case-span">c. 660 BCE (legendary) — present</div>
+    <div class="case-body">The oldest continuous hereditary monarchy in the world, surviving the rise and fall of multiple shogunates, civil wars, foreign occupation, total military defeat, and the postwar conversion of the institution itself from divine to symbolic. The throne is the constant. Everything else has changed around it.</div>
+  </div>
+
+  <div class="folio folio-right">029</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Evidence · Institutions</div>
+
+  <div class="case-block">
+    <div class="case-label">Institutional Continuity</div>
+    <div class="case-name">Roman Law</div>
+    <div class="case-span">c. 450 BCE — present · ~2,500 years</div>
+    <div class="case-body">The Roman legal tradition — through the Twelve Tables, the Justinian Code, medieval glossators, the Napoleonic Code, and the civil codes of modern continental Europe and Latin America — has shaped the legal reasoning of roughly half the world's population. Most people governed by it do not know they are. That is what successful institutional continuity looks like.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">These are not museum pieces. They are still operating. They still make decisions. They still allocate resources. The fact that they pre-date most of what is called the modern world is not their weakness. It is their proof.</p>
+
+  <p class="prose">A pattern emerges across all three cases. The institutions that endure tend to share a small number of features. They define their core purpose narrowly. They invest seriously in their transmission mechanisms. They tolerate substantial change in their surface forms while protecting their underlying continuity. And they prepare, often centuries in advance, for the conditions under which they will need to operate.</p>
+
+  <div class="pull-quote no-break">
+    Continuity is not the past. It is the past acting on the present.
+  </div>
+
+  <div class="folio folio-left">030</div>
+</section>
+
+<!-- ============================================================
+     §6 · THE CASE FROM DISAPPEARANCE
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Case from Disappearance</div>
+  <h2 class="section-title">What Happens<br>When Continuity Fails.</h2>
+
+  <p class="prose dropcap">A claim about the importance of continuity can be tested in two ways. We can examine what civilizations preserved continuity, and we can examine what happened to those that did not. The second test is, in some ways, the more revealing.</p>
+
+  <p class="prose">When a civilization loses its continuity, the buildings often remain. The graves remain. The bones remain. What disappears is the unbroken chain of transmission — and with it, almost everything that made the civilization what it was.</p>
+
+  <div class="case-block">
+    <div class="case-label">Discontinuity</div>
+    <div class="case-name">The Bronze Age Collapse</div>
+    <div class="case-span">c. 1200–1150 BCE · ~50 years</div>
+    <div class="case-body">Within a single human lifetime, the major civilizations of the eastern Mediterranean — Mycenaean Greece, the Hittite Empire, the New Kingdom of Egypt's regional dominance, the Levantine city-states — were destroyed or radically reduced. Writing was lost in Greece for approximately four centuries. When literacy returned, it returned in a different script. The line of transmission had snapped.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Discontinuity</div>
+    <div class="case-name">The Library of Alexandria</div>
+    <div class="case-span">3rd century BCE — c. 3rd–7th century CE</div>
+    <div class="case-body">The destruction of the Library is often described as a singular catastrophe. The truer description is slower and more painful. Across several centuries, the structures that indexed, preserved, and transmitted Hellenistic knowledge eroded. By the time the buildings were gone, much of the catalog had already been lost. The recovery, when it came, was partial and took a thousand years.</div>
+  </div>
+
+  <div class="folio folio-right">031</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Disappearance</div>
+
+  <div class="case-block">
+    <div class="case-label">Discontinuity</div>
+    <div class="case-name">The Classic Maya</div>
+    <div class="case-span">c. 250 — 900 CE · collapse over c. 100 years</div>
+    <div class="case-body">The cities of the southern Maya lowlands were among the most sophisticated urban societies in pre-Columbian America. Their writing system encoded astronomy, history, dynastic genealogy, and ritual at a level matched by few contemporaries. Within a century, most of those cities were abandoned. The Maya people continued — and continue — but the institutional and informational machinery that connected their classical period to its successors did not survive intact.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Discontinuity</div>
+    <div class="case-name">Easter Island</div>
+    <div class="case-span">c. 1200 — 1700 CE</div>
+    <div class="case-body">The island's earliest settlers arrived as expert transoceanic navigators in vessels capable of crossing thousands of miles of open water. By the time European ships arrived, the islanders had no vessels capable of leaving the island. The technology had not merely been forgotten — the conditions for rebuilding it had been undermined by ecological collapse. The discontinuity was not just intellectual. It was material.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Discontinuity</div>
+    <div class="case-name">The Soviet Union</div>
+    <div class="case-span">1922 — 1991 · dissolution in &lt; 5 years</div>
+    <div class="case-body">A modern, industrialized, nuclear-armed state with comprehensive institutions, an enormous archival apparatus, and ideological self-conception disintegrated within a few years. Many of its physical assets endure. Many of its successor states' citizens lived their lives inside it. But the political, economic, and informational continuity it represented was not preserved. Much of what it knew about itself is now actively contested.</div>
+  </div>
+
+  <div class="folio folio-left">032</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Disappearance</div>
+
+  <p class="prose">Five cases. Five different geographies. Five different centuries. Five different proximate causes.</p>
+
+  <p class="prose">And in every one, the deeper structure is the same. The continuity technologies — the writing system, the archives, the institutions, the trained class of transmitters, the prestige attached to preservation — collapsed faster than they could be rebuilt. What was lost was rarely a single artifact. What was lost was the conditions under which the next generation could pick up what the previous one had set down.</p>
+
+  <p class="stanza" style="margin-top:0.8em;">A library can be burned in a day.</p>
+  <p class="stanza">A culture of librarianship takes centuries to rebuild.</p>
+
+  <div class="pull-quote no-break">
+    What was lost was not buildings.<br>
+    What was lost was continuity.
+  </div>
+
+  <p class="prose">A civilization may absorb the loss of cities, the loss of populations, even the loss of its political independence, and still recover. What it cannot easily absorb is the loss of its transmission mechanisms. When those go, recovery does not mean returning. It means starting over.</p>
+
+  <div class="folio folio-right">033</div>
+</section>
+
+<!-- ============================================================
+     §7 · THE CASE FROM SURVIVAL
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Case from Survival</div>
+  <h2 class="section-title">What Happens<br>When Continuity Holds.</h2>
+
+  <p class="prose dropcap">The mirror image of disappearance is survival. The civilizations and cultural systems that have endured the longest tend to share, across enormous differences of geography, ideology, and form, a common feature. They defended their continuity technologies with extraordinary deliberateness.</p>
+
+  <div class="case-block">
+    <div class="case-label">Survival</div>
+    <div class="case-name">Continuous Chinese Civilization</div>
+    <div class="case-span">c. 1600 BCE — present · ~3,500 years</div>
+    <div class="case-body">The Chinese polity has been conquered, fractured, occupied, transformed, and ideologically remade more than once. Yet its written language, its bureaucratic traditions, its historiographic practice, and its sense of itself as a continuous civilizational subject have survived every disruption. Dynasties fell. The thread did not. The Chinese imperial examinations, before their abolition in 1905, had been administered in recognizable form for more than 1,300 years.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Survival</div>
+    <div class="case-name">Jewish Continuity Without Territory</div>
+    <div class="case-span">c. 1000 BCE — present</div>
+    <div class="case-body">For most of the past two thousand years, the Jewish people existed without a state. They preserved their continuity through textual transmission — the Tanakh, the Talmud, an evolving legal and interpretive tradition — and through institutional structures that traveled with them. The continuity was carried not by land but by text. When territory returned in the twentieth century, the textual continuity preceded it. The text survived the absence of the land.</div>
+  </div>
+
+  <div class="folio folio-left">034</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Survival</div>
+
+  <div class="case-block">
+    <div class="case-label">Survival</div>
+    <div class="case-name">The Vedic and Sanskritic Tradition</div>
+    <div class="case-span">c. 1500 BCE — present · ~3,500 years</div>
+    <div class="case-body">The Vedic corpus, the philosophical schools that grew out of it, the grammatical work of Pāṇini, and the layered traditions of Indian thought have been continuously transmitted, contested, and elaborated for more than three thousand years. The political form of the Indian subcontinent has changed many times. The textual and philosophical continuity has not.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Survival</div>
+    <div class="case-name">The University of Oxford</div>
+    <div class="case-span">c. 1096 CE — present · ~930 years</div>
+    <div class="case-body">An institution older than most of the nation-states that now exist. It has trained generations of clerics, lawyers, scientists, philosophers, and policymakers without interruption. Its forms have evolved — its colleges, its disciplines, its admissions criteria — but its core function of preserving and transmitting accumulated knowledge has run continuously since the eleventh century.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">These survivors are not curiosities. They are demonstrations.</p>
+
+  <p class="prose">A civilization, a religious tradition, an institution, a language — any of these — can endure for many millennia, provided that the continuity technologies are kept intact. The mechanisms are mundane. Schools. Archives. Trained transmitters. Stable forms. Modest acceptance that some things should not be torn down simply because they are old.</p>
+
+  <div class="folio folio-right">035</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Case from Survival</div>
+
+  <div class="pull-quote no-break">
+    What endures is not what was strongest.<br>
+    It is what was most carefully transmitted.
+  </div>
+
+  <p class="prose">The comparison between the disappeared and the survived is unflattering to certain modern assumptions. It is often supposed that the past is what we have moved beyond — that the institutions of the eleventh or fifteenth or eighteenth century are, by virtue of their age, less relevant than the institutions of the twenty-first.</p>
+
+  <p class="prose">The evidence suggests something different. The institutions of the eleventh century that are still operating in the twenty-first have already passed a test that most twenty-first century institutions will fail. They have demonstrated the capacity to traverse a thousand years of change without dissolving. Whatever else can be said about them, that capacity is rare and is worth understanding.</p>
+
+  <p class="prose">A new institution can be more efficient, more innovative, more responsive, more egalitarian, and more fashionable than an old one. None of these compensates for the fact that it has not yet shown it can survive.</p>
+
+  <div class="folio folio-left">036</div>
+</section>
+
+<!-- ============================================================
+     §8 · MODERN STAKES
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ Modern Stakes</div>
+  <h2 class="section-title">Continuity in<br>an Accelerating Age.</h2>
+
+  <p class="prose dropcap">The conditions facing intelligence today are not the conditions under which Roman law was preserved or the Vedas were memorized. The rate of technological change has compressed. The lifespan of institutions has shortened. The average tenure of a member of the S&amp;P 500 index, once thirty-three years, is now closer to fifteen. The half-life of professional knowledge in many fields is now less than a decade.</p>
+
+  <p class="prose">In these conditions, continuity is harder to defend than at any prior moment in human history. Not because the threats are greater. Because the rate of change has outpaced the rate at which most continuity technologies were designed to operate.</p>
+
+  <p class="stanza" style="margin-top:1em;">The paradox is sharper than it first appears.</p>
+
+  <p class="prose" style="margin-top:0.5em;">We now possess the most advanced preservation technologies in history. Digital storage allows the cheapest, most precise, most replicable archive ever created. By raw capacity, every literate human alive can carry the equivalent of the Library of Alexandria in their pocket.</p>
+
+  <p class="prose">Yet by the deeper measure — what a generation actually carries forward, attends to, edits, defends — the modern relationship with the past is less robust than that of many of its predecessors.</p>
+
+  <div class="folio folio-right">037</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Modern Stakes</div>
+
+  <p class="prose">Preservation is not the same as transmission. A file that is saved but never read is closer to a grave than to a library. A tradition that is recorded but no longer enacted is closer to a fossil than to a continuity. The mechanisms that count are the ones that connect the past to a living user of the past — not the ones that simply record it.</p>
+
+  <p class="prose">An age that records everything and curates nothing is, in continuity terms, a more fragile age than an age that recorded little and curated obsessively. The danger is not loss of data. The danger is loss of the institutional and cultural habit of considering the data worth using.</p>
+
+  <div class="pull-quote no-break">
+    A file that is saved but never read is closer to a grave than to a library.
+  </div>
+
+  <p class="prose">The civilizations that survived their crises did so because they had communities of people whose explicit job was to know what had been done before and why. Those communities are not yet absent in our era. But they are thinner than they were. And the institutions in which they used to be embedded are weakening at exactly the moment when the rate of consequential decision-making is accelerating.</p>
+
+  <p class="prose">This is the modern continuity problem. It does not have the form of a single catastrophe. It has the form of slow drift.</p>
+
+  <div class="folio folio-left">038</div>
+</section>
+
+<!-- ============================================================
+     §9 · CONTINUITY vs. STASIS
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ A Crucial Distinction</div>
+  <h2 class="section-title">Continuity Is<br>Not Stasis.</h2>
+
+  <p class="prose dropcap">The argument of this chapter is liable to a particular kind of misreading. A reader sympathetic to old institutions may take the argument to mean that change should be resisted. A reader hostile to old institutions may take the argument to mean that the book is reactionary. Both readings are wrong, and the distinction between them is worth marking explicitly.</p>
+
+  <p class="prose">Continuity is not the absence of change. It is the survival of identity through change.</p>
+
+  <p class="stanza" style="margin-top:1em;">A river is continuous precisely because the water flows.</p>
+
+  <p class="prose" style="margin-top:1em;">Every civilization that endured for centuries did so by undergoing repeated, profound transformations. Christianity in the twenty-first century is not Christianity in the second. The Chinese state today is not the Han or the Tang. Hebrew speakers in modern Tel Aviv are not interchangeable with the contemporaries of David. Each of these continuities is the continuity of a tradition undergoing constant reinterpretation — not the continuity of a fossil.</p>
+
+  <p class="prose">The continuity-favoring institutions are precisely the institutions that have learned to absorb change without breaking. The ones that broke were often the ones that refused to change at all.</p>
+
+  <div class="folio folio-right">039</div>
+</section>
+
+<section class="page">
+  <div class="running-head">A Crucial Distinction</div>
+
+  <p class="prose">The opposite of continuity is not change. The opposite of continuity is discontinuity — a break so total that what comes after cannot meaningfully be said to be the same thing as what came before.</p>
+
+  <p class="prose">A reformed religion can continue. A defeated nation can continue. A conquered people can continue. A radically restructured institution can continue. What cannot continue is what loses its capacity to recognize itself as the same subject across time.</p>
+
+  <p class="stanza" style="margin-top:1em;">This is why mere preservation is not the same as continuity.</p>
+  <p class="stanza">A museum is not a tradition.</p>
+  <p class="stanza">An archive is not a memory.</p>
+  <p class="stanza">A re-enactment is not an inheritance.</p>
+
+  <p class="prose" style="margin-top:1em;">Continuity is alive. It is the living use of the past by the present, in a form that the past would recognize as legitimate even if it would not recognize the surface details.</p>
+
+  <p class="prose">A civilization committed to continuity is therefore committed to two things at once: to changing whatever needs to change, and to not changing what makes the civilization recognizably itself. The art of distinguishing the two is the deepest political problem of any long-lived society.</p>
+
+  <div class="folio folio-left">040</div>
+</section>
+
+<!-- ============================================================
+     §10 · THE TESTS APPLIED
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Tests Applied</div>
+  <h2 class="section-title">Does Continuity<br>Survive the Tests?</h2>
+
+  <p class="prose dropcap">Part One established three tests that any candidate direction must pass. A direction must be observable. It must be persistent across cultures and eras. And it must be consequential — civilizations that move with it should tend to endure, while those that move against it should tend to weaken or disappear.</p>
+
+  <p class="prose">Continuity will now be subjected, in turn, to each of these tests.</p>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test One</div>
+    <div class="test-name">Observable</div>
+    <div class="test-body">Continuity is observable across every scale at which intelligence has been studied. It is observable in the unbroken chain of biological reproduction stretching back 3.8 billion years. It is observable in oral and written transmission across human cultures. It is observable in the institutional records of religious, political, legal, and educational structures that span centuries or millennia. It is not a theoretical construct. It is something the historical record makes visible at every level of resolution.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="folio folio-right">041</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Tests Applied</div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Two</div>
+    <div class="test-name">Persistent</div>
+    <div class="test-body">Continuity appears as a deliberate priority across every continent, every era, and every form of civilization that has left a record. Hunter-gatherer oral traditions, agricultural priesthoods, imperial bureaucracies, mercantile republics, modern nation-states, religious orders, scientific academies, professional guilds — each independently developed mechanisms for sustaining themselves across generational gaps. The independent emergence of continuity technologies in unrelated civilizations is itself the strongest evidence of its persistence. A direction that emerges everywhere, repeatedly, without coordination, is a direction.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <div class="test-block no-break">
+    <div class="test-label">Test Three</div>
+    <div class="test-name">Consequential</div>
+    <div class="test-body">The historical pattern is sharp. Civilizations that defended their continuity technologies tended to endure. Civilizations that lost them — through internal neglect, external destruction, or both — disappeared within historically short windows. The five cases of disappearance examined in this chapter, and the five cases of survival, are representative rather than exceptional. The verdict of history is not subtle. Continuity does not merely correlate with endurance. It enables it.</div>
+    <div class="test-verdict">Verdict — Passed.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.2in;">Continuity passes all three tests. It is not the only direction that does. But it is the first that does, and it is the one without which the others cannot be examined.</p>
+
+  <div class="folio folio-left">042</div>
+</section>
+
+<!-- ============================================================
+     §11 · WHY CONTINUITY COMES FIRST
+     ============================================================ -->
+<section class="page opener">
+  <div class="running-head">Direction One · Continuity</div>
+  <div class="section-number">§ The Hidden Logic</div>
+  <h2 class="section-title">Why Continuity<br>Comes First.</h2>
+
+  <p class="prose dropcap">There is an order to the twelve directions that has not yet been explained. It is not alphabetical. It is not chronological. It is not arranged by importance, since each direction will be argued to be necessary on its own terms. The order is logical. Each direction is more fundamental than the one that follows it, in the sense that the one that follows it cannot occur without it.</p>
+
+  <p class="prose">Continuity comes first because every other direction in this book presupposes it.</p>
+
+  <p class="stanza" style="margin-top:1em;">Without continuity, no pursuit of <strong>Truth</strong> is possible. Truth-seeking requires a continuous community willing to remain in conversation across generations.</p>
+
+  <p class="stanza">Without continuity, no growth of <strong>Capability</strong> is possible. Capability is the result of refinement over time, and refinement requires that the refiner persist.</p>
+
+  <p class="stanza">Without continuity, no <strong>Cooperation</strong> at scale is possible. Trust at scale requires the predictability of repeated interaction over time.</p>
+
+  <p class="stanza">Without continuity, no <strong>Expansion</strong> is possible. An expanding system must remain coherent enough to recognize what it has expanded into.</p>
+
+  <p class="stanza">Without continuity, no <strong>Creation</strong> can accumulate. Novelty without continuity is noise — it produces nothing that persists long enough to build upon.</p>
+
+  <p class="stanza">Without continuity, no <strong>Recursion</strong> can deepen. A system cannot study itself across time if it does not survive across time.</p>
+
+  <p class="stanza">Without continuity, no <strong>Purpose</strong> can be coordinated. The selection of long-horizon ends presupposes a subject coherent enough to hold those ends across centuries.</p>
+
+  <div class="folio folio-right">043</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Hidden Logic</div>
+
+  <p class="prose">Each of the remaining seven directions is, in its own way, a capacity that intelligence can only afford once it has secured its own continuation. A civilization that has not solved continuity does not get to pursue the other seven. Or, more precisely: it gets to pursue them only briefly, and only at the cost of pursuing them inadequately.</p>
+
+  <p class="prose">This is the hidden logic of the order. The twelve directions form a hierarchy of preconditions, beginning with the most basic. The book will examine them in that order not for narrative reasons but for analytical ones. Each direction will assume that the directions before it have been secured. Each will explain what becomes possible once it, too, is secured.</p>
+
+  <div class="pull-quote no-break">
+    Continuity is the precondition for every other direction this book will examine.
+  </div>
+
+  <p class="prose">It is therefore not surprising that the civilizations and traditions most committed to continuity have also tended, over time, to be the most successful at the other eleven directions as well. They had the gift of time. The others did not.</p>
+
+  <div class="folio folio-left">044</div>
+</section>
+
+<!-- ============================================================
+     §12 · CLOSING
+     ============================================================ -->
+<section class="page">
+  <div class="running-head">Direction One · Continuity</div>
+
+  <p class="prose">A first direction has now been identified, defined, evidenced, and tested. It satisfies the three criteria established in Part One. It accounts for a substantial portion of the difference between the civilizations that endured and those that did not. It explains why some institutions remain operational after a thousand years and others fail within a generation. And it provides the foundation on which the next eleven directions will be examined.</p>
+
+  <p class="prose">The argument is not yet complete. Continuity, on its own, is necessary but not sufficient. A civilization can continue and still be deeply wrong about the world it inhabits. A tradition can be transmitted faithfully and still be transmitting falsehoods. A system can perpetuate itself for centuries and still be perpetuating a steadily worsening misunderstanding.</p>
+
+  <p class="prose">Something more is needed. Continuity must be paired with something that corrects the errors continuity itself would otherwise preserve.</p>
+
+  <div class="pull-quote no-break">
+    Continue, but continue toward what?
+  </div>
+
+  <p class="prose">That question is the bridge to the second direction.</p>
+
+  <p class="stanza" style="margin-top:0.6em;"><em>The next direction is what makes continuity worth pursuing.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-right">045</div>
+</section>
+
+<!-- ============================================================
+     END-OF-CHAPTER FORWARD PUSH
+     ============================================================ -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Direction One</div>
+  <div class="epigraph-text">
+    "Continue, but continue toward what is true. To continue toward what is false is to perfect the wrong civilization."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">DIRECTION TWO BEGINS · TRUTH</div>
+</section>
+
+</body>
+</html>

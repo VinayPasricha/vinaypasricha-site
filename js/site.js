@@ -116,6 +116,21 @@ const ANALYTICS = {
     });
   }
 
+  // ---------- Site-root resolver ----------
+  // Returns the relative prefix ('', '../', '../../', …) from the current
+  // page back to the site root, based on the known first-level directories.
+  // Works from /paths/, /signal/, /studio/, /frequency/, /library/ and
+  // nested dirs like /runtime/sequence/.
+  function siteRootPrefix() {
+    const KNOWN = ['paths', 'signal', 'studio', 'frequency', 'runtime', 'library'];
+    const dir = window.location.pathname.replace(/[^/]*$/, '');
+    const segs = dir.split('/').filter(Boolean);
+    for (let i = 0; i < segs.length; i++) {
+      if (KNOWN.includes(segs[i])) return '../'.repeat(segs.length - i);
+    }
+    return '';
+  }
+
   // ---------- "Now" rotator ----------
   // Cycles through Vinay's current preoccupations on a slow loop.
   // Items load from assets/data/now.json (Studio → Now editor); the
@@ -130,7 +145,6 @@ const ANALYTICS = {
     const items = await loadNowItems();
     if (items && items.length) {
       // Replace inline items with the loaded ones
-      const inPaths = /\/paths\//.test(window.location.pathname) || /\/signal\//.test(window.location.pathname) || /\/studio\//.test(window.location.pathname);
       rotator.innerHTML = items.map(it => {
         const verb = String(it.verb || '').trim();
         const subject = String(it.subject || '').trim();
@@ -164,8 +178,7 @@ const ANALYTICS = {
     } catch (e) {}
     try {
       // Path-resolve assets/data/now.json from any depth
-      const inPaths = /\/paths\//.test(window.location.pathname) || /\/signal\//.test(window.location.pathname) || /\/studio\//.test(window.location.pathname);
-      const url = (inPaths ? '../' : '') + 'assets/data/now.json';
+      const url = siteRootPrefix() + 'assets/data/now.json';
       const res = await fetch(url, { cache: 'no-cache' });
       if (res.ok) {
         const d = await res.json();
@@ -201,9 +214,8 @@ const ANALYTICS = {
 
   function injectIndexOverlay() {
     if (document.querySelector('.index-overlay')) return; // already present
-    // Pages under /paths/ need '../' to reach root; everything else uses './'.
-    const inPaths = /\/paths\//.test(window.location.pathname);
-    const root = inPaths ? '../' : '';
+    // Resolve the relative prefix back to the site root from any depth.
+    const root = siteRootPrefix();
     const html = `
       <div class="index-overlay">
         <div class="ix-top">
@@ -216,20 +228,35 @@ const ANALYTICS = {
           <div>
             <h5>The books</h5>
             <ul>
-              <li><a href="${root}books.html"><em>All books</em> &middot; 13 languages</a></li>
+              <li><a href="${root}books.html"><em>All books</em> &middot; the shelf</a></li>
               <li><a href="${root}paths/ai-for-business.html">AI for <em>Business Leaders</em></a></li>
               <li><a href="${root}paths/decisions.html">The <em>SIV Method</em></a></li>
               <li><a href="${root}paths/execute.html">The <em>Execution Doctrine</em></a></li>
               <li><a href="${root}paths/hire.html"><em>Organizational Frequency</em></a></li>
               <li><a href="${root}paths/evolve.html">The <em>Signal</em> &middot; upcoming</a></li>
+              <li><a href="${root}paths/civilization.html"><em>Civilization</em></a></li>
             </ul>
           </div>
           <div>
-            <h5>Watch &middot; Read &middot; Try</h5>
+            <h5>The runtimes</h5>
+            <ul>
+              <li><a href="${root}frequency/index.html"><em>Organizational Frequency</em> &middot; capture a mission</a></li>
+              <li><a href="${root}frequency/company.html"><em>Company Frequency</em> &middot; public profile</a></li>
+              <li><a href="${root}frequency/person.html"><em>Discover a person</em></a></li>
+              <li><a href="${root}runtime/index.html"><em>KAIROS</em> &middot; the runtime</a></li>
+              <li><a href="${root}runtime/architecture.html">KAIROS <em>architecture</em></a></li>
+              <li><a href="${root}signal/index.html">The <em>Signal</em> field</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Read &middot; Watch &middot; Try</h5>
             <ul>
               <li><a href="${root}paths/watch.html"><em>Watch</em> &middot; videos &amp; talks</a></li>
               <li><a href="${root}paths/decisions.html#begin">Try <em>SIV</em> on a decision</a></li>
-              <li><a href="${root}books.html"><em>The bookshelf</em></a></li>
+              <li><a href="${root}paths/blog.html">Monthly <em>notebook</em></a></li>
+              <li><a href="${root}paths/essay.html">The <em>essay</em></a></li>
+              <li><a href="${root}paths/fiction.html"><em>Fiction</em></a></li>
+              <li><a href="${root}paths/faq.html"><em>FAQ</em></a></li>
             </ul>
           </div>
           <div>
@@ -238,17 +265,35 @@ const ANALYTICS = {
               <li><a href="${root}paths/story.html">The <em>story</em></a></li>
               <li><a href="${root}paths/connect.html">Connect <em>directly</em></a></li>
               <li><a href="${root}paths/course.html">AI Leadership <em>Course</em></a></li>
-              <li><a href="${root}paths/blog.html">Monthly <em>notebook</em></a></li>
               <li><a href="${root}paths/career.html">Career <em>inflection</em></a></li>
               <li><a href="${root}paths/find-work.html">Find <em>work</em></a></li>
               <li><a href="${root}paths/now.html"><em>Now</em> &middot; what I'm doing</a></li>
-              <li><a href="${root}paths/faq.html"><em>FAQ</em></a></li>
+            </ul>
+            <h5 style="margin-top:36px">Private</h5>
+            <ul>
+              <li><a href="${root}studio/index.html" class="ix-studio"><em>Studio</em> &middot; operator backend &middot; 🔒</a></li>
             </ul>
           </div>
         </div>
       </div>
     `;
     document.body.insertAdjacentHTML('beforeend', html);
+
+    // Studio link is password-gated (vik123). Prompt, then pass the key
+    // through so the Studio's own gate auto-authenticates.
+    const studioLink = document.querySelector('.ix-studio');
+    if (studioLink) {
+      studioLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pass = window.prompt('Studio is private. Enter the passphrase:');
+        if (pass === null) return; // cancelled
+        if (pass === 'vik123') {
+          window.location.href = studioLink.getAttribute('href') + '?key=vik123';
+        } else {
+          alert('Incorrect passphrase.');
+        }
+      });
+    }
   }
 
   // Esc closes whatever is open

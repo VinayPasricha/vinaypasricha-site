@@ -194,6 +194,8 @@ function Engineering() {
   // chambers. The body attribute drives the atmospheric CSS.
   eUseEffect(() => {
     document.body.setAttribute('data-chamber', 'structural');
+    const s = window.kairos.state.load();
+    window.kairos.state.markChamberVisit(s, 'structural');
     return () => document.body.removeAttribute('data-chamber');
   }, []);
 
@@ -338,7 +340,7 @@ function Engineering() {
   })[st.phase || 'observe'];
 
   return (
-    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '')} data-screen-label="06 Structural Constraint Chamber">
+    <main className={'chamber' + (resting ? ' is-resting' : '') + (isFresh ? ' is-fresh-entry' : '') + (st.phase === 'settled' ? ' is-settled' : '')} data-screen-label="06 Structural Constraint Chamber">
 
       <header className="c-top">
         <div className="c-breadcrumb">

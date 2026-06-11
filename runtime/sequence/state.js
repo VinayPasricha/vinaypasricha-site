@@ -24,6 +24,9 @@
         first_visit: now,
         last_visit: now,
         sessions_count: 0,
+        last_chamber: null,    // slug of last chamber the reader was in
+        last_chamber_at: null, // ms timestamp
+        return_count: 0,       // times the reader has returned from dormancy >= tier 1
       },
       // The slice the Sequence Chamber writes
       current_sequence: null,
@@ -31,6 +34,12 @@
       current_constraint: null,
       // The slice the Structural Constraint Chamber writes
       current_structural: null,
+      // The slice the Capacity Expansion Chamber writes
+      current_capacity: null,
+      // The slice the Multi-Scale Systems Chamber writes
+      current_multiscale: null,
+      // The slice the Character of the Executor Chamber writes
+      current_character: null,
       history: [],
       // Reserved for future chambers — kept here so the schema
       // is visible at the top of the file rather than discovered
@@ -102,6 +111,45 @@
       state.current_sequence.last_modified = Date.now();
     }
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  // Refinement 09: dormancy tiers.
+  function dormancyTier(state) {
+    if (!state || !state.identity) return 0;
+    const last = state.identity.last_visit || 0;
+    if (!last) return 0;
+    const days = (Date.now() - last) / 86400000;
+    if (days < 1) return 0;
+    if (days < 14) return 1;
+    if (days < 60) return 2;
+    return 3;
+  }
+
+  function totalVisits(state) {
+    return (state && state.identity && state.identity.sessions_count) || 0;
+  }
+
+  // Refinement 10: mark which chamber the reader is currently in,
+  // so the threshold can carry residue of their last descent.
+  function markChamberVisit(state, slug) {
+    if (!state || !state.identity) return;
+    state.identity.last_chamber = slug;
+    state.identity.last_chamber_at = Date.now();
+    save(state);
+  }
+
+  // Refinement 10: on returning from dormancy >= 1, mark the return.
+  // The first page load after absence carries return phenomenology.
+  function consumeReturnEvent(state) {
+    if (!state || !state.identity) return null;
+    const tier = dormancyTier(state);
+    if (tier === 0) return null;
+    // Has this return already been consumed in this session?
+    if (state.identity._return_consumed) return null;
+    state.identity._return_consumed = true;
+    state.identity.return_count = (state.identity.return_count || 0) + 1;
+    save(state);
+    return { tier, return_count: state.identity.return_count, last_chamber: state.identity.last_chamber };
   }
 
   function ensureSequence(state) {
@@ -393,6 +441,318 @@
     deltas.forEach(d => applyStructuralDelta(st, d));
   }
 
+  // =============================================================
+  // CAPACITY EXPANSION CHAMBER — concentric-field ontology
+  // =============================================================
+  // Each "load" is a kind of complexity / responsibility / ambiguity
+  // the executor carries. State: stabilized (inside the field, calm)
+  // or active (orbiting; strain 0..1 → distance from center).
+  // The carrying-field radius itself expands as loads stabilize.
+  function emptyCapacitySession() {
+    const now = Date.now();
+    return {
+      id: 'cap_' + now.toString(36),
+      loads: [],                // [{ id, label, state: 'stabilized'|'active'|'overload', strain (0..1), since, evidence_for, evidence_against }]
+      field_radius_tier: 1,     // 1..5 — coarse scale of current carrying field
+      one_stabilization: '',    // the single widening intervention
+      inquiry_log: [],
+      phase: 'observe',         // observe → stabilize → widen → settled
+      started_at: now,
+      last_modified: now,
+    };
+  }
+  function ensureCapacitySession(state) {
+    if (!state.current_capacity) state.current_capacity = emptyCapacitySession();
+    return state.current_capacity;
+  }
+  function nextLoadId(cap) {
+    const used = new Set((cap.loads || []).map(l => l.id));
+    let n = (cap.loads || []).length + 1;
+    while (used.has('L' + n)) n++;
+    return 'L' + n;
+  }
+  function applyCapacityDelta(cap, d) {
+    if (!d || !d.op) return;
+    const VALID_STATES = ['stabilized','active','overload'];
+    switch (d.op) {
+      case 'add_load': {
+        const id = d.id || nextLoadId(cap);
+        if (cap.loads.find(l => l.id === id)) break;
+        cap.loads.push({
+          id,
+          label: (d.label || '').trim(),
+          state: VALID_STATES.includes(d.state) ? d.state : 'active',
+          strain: typeof d.strain === 'number' ? clamp01(d.strain) : 0.5,
+          since: Date.now(),
+          evidence_for: (d.evidence_for || '').trim(),
+          evidence_against: (d.evidence_against || '').trim(),
+        });
+        break;
+      }
+      case 'update_load': {
+        const l = cap.loads.find(x => x.id === d.id);
+        if (!l) break;
+        if (typeof d.label === 'string') l.label = d.label.trim();
+        if (VALID_STATES.includes(d.state)) l.state = d.state;
+        if (typeof d.strain === 'number') l.strain = clamp01(d.strain);
+        if (typeof d.evidence_for === 'string') l.evidence_for = d.evidence_for.trim();
+        if (typeof d.evidence_against === 'string') l.evidence_against = d.evidence_against.trim();
+        break;
+      }
+      case 'remove_load': {
+        cap.loads = cap.loads.filter(l => l.id !== d.id);
+        break;
+      }
+      case 'mark_stabilized': {
+        const l = cap.loads.find(x => x.id === d.id);
+        if (!l) break;
+        l.state = 'stabilized';
+        l.strain = 0;
+        break;
+      }
+      case 'set_field_tier': {
+        const t = Math.max(1, Math.min(5, parseInt(d.tier, 10) || 1));
+        cap.field_radius_tier = t;
+        break;
+      }
+      case 'set_one_stabilization': {
+        if (typeof d.text === 'string') cap.one_stabilization = d.text.trim();
+        break;
+      }
+      case 'set_phase': {
+        if (['observe','stabilize','widen','settled'].includes(d.phase)) cap.phase = d.phase;
+        break;
+      }
+    }
+  }
+  function applyCapacityDeltas(cap, deltas) {
+    if (!Array.isArray(deltas)) return;
+    deltas.forEach(d => applyCapacityDelta(cap, d));
+  }
+  function summarizeCapacity(cap) {
+    const lines = [];
+    lines.push('PHASE: ' + cap.phase);
+    lines.push('FIELD TIER: ' + cap.field_radius_tier);
+    if (cap.one_stabilization) lines.push('ONE STABILIZATION: ' + cap.one_stabilization);
+    lines.push('LOADS (' + cap.loads.length + '):');
+    cap.loads.forEach(l => {
+      const flags = [l.state, 'strain=' + (l.strain || 0).toFixed(2)];
+      lines.push('  - ' + l.id + ': ' + (l.label || '(unnamed)') + ' [' + flags.join(', ') + ']');
+      if (l.evidence_for) lines.push('      for: ' + l.evidence_for);
+      if (l.evidence_against) lines.push('      against: ' + l.evidence_against);
+    });
+    return lines.join('\n');
+  }
+
+  // =============================================================
+  // MULTI-SCALE SYSTEMS CHAMBER — nested scale layers ontology
+  // =============================================================
+  function emptyMultiscaleSession() {
+    const now = Date.now();
+    return {
+      id: 'ms_' + now.toString(36),
+      forces: [],
+      links: [],
+      governing_id: null,
+      dominant_scale: null,
+      one_intervention: '',
+      inquiry_log: [],
+      phase: 'observe',
+      started_at: now,
+      last_modified: now,
+    };
+  }
+  function ensureMultiscaleSession(state) {
+    if (!state.current_multiscale) state.current_multiscale = emptyMultiscaleSession();
+    return state.current_multiscale;
+  }
+  function nextForceId(ms) {
+    const used = new Set((ms.forces || []).map(f => f.id));
+    let n = (ms.forces || []).length + 1;
+    while (used.has('f' + n)) n++;
+    return 'f' + n;
+  }
+  function nextLinkId(ms) {
+    const used = new Set((ms.links || []).map(l => l.id));
+    let n = (ms.links || []).length + 1;
+    while (used.has('k' + n)) n++;
+    return 'k' + n;
+  }
+  function applyMultiscaleDelta(ms, d) {
+    if (!d || !d.op) return;
+    const VALID_SCALES = ['individual','team','organization','mission'];
+    switch (d.op) {
+      case 'add_force': {
+        const id = d.id || nextForceId(ms);
+        if (ms.forces.find(f => f.id === id)) break;
+        ms.forces.push({
+          id,
+          label: (d.label || '').trim(),
+          scale: VALID_SCALES.includes(d.scale) ? d.scale : 'individual',
+          strain: typeof d.strain === 'number' ? clamp01(d.strain) : 0.4,
+          governs: !!d.governs,
+        });
+        break;
+      }
+      case 'update_force': {
+        const f = ms.forces.find(x => x.id === d.id);
+        if (!f) break;
+        if (typeof d.label === 'string') f.label = d.label.trim();
+        if (VALID_SCALES.includes(d.scale)) f.scale = d.scale;
+        if (typeof d.strain === 'number') f.strain = clamp01(d.strain);
+        break;
+      }
+      case 'remove_force': {
+        ms.forces = ms.forces.filter(f => f.id !== d.id);
+        ms.links = ms.links.filter(l => l.from_id !== d.id && l.to_id !== d.id);
+        if (ms.governing_id === d.id) ms.governing_id = null;
+        break;
+      }
+      case 'add_link': {
+        if (!d.from_id || !d.to_id) break;
+        if (!ms.forces.find(f => f.id === d.from_id)) break;
+        if (!ms.forces.find(f => f.id === d.to_id)) break;
+        if (ms.links.find(l => l.from_id === d.from_id && l.to_id === d.to_id)) break;
+        ms.links.push({
+          id: nextLinkId(ms),
+          from_id: d.from_id,
+          to_id: d.to_id,
+          friction: typeof d.friction === 'number' ? clamp01(d.friction) : 0.5,
+        });
+        break;
+      }
+      case 'mark_governing': {
+        if (!d.force_id) break;
+        ms.governing_id = d.force_id;
+        ms.forces.forEach(f => { f.governs = (f.id === d.force_id); });
+        break;
+      }
+      case 'set_dominant_scale': {
+        if (VALID_SCALES.includes(d.scale)) ms.dominant_scale = d.scale;
+        break;
+      }
+      case 'set_one_intervention': {
+        if (typeof d.text === 'string') ms.one_intervention = d.text.trim();
+        break;
+      }
+      case 'set_phase': {
+        if (['observe','link','surface','settled'].includes(d.phase)) ms.phase = d.phase;
+        break;
+      }
+    }
+  }
+  function applyMultiscaleDeltas(ms, deltas) {
+    if (!Array.isArray(deltas)) return;
+    deltas.forEach(d => applyMultiscaleDelta(ms, d));
+  }
+  function summarizeMultiscale(ms) {
+    if (!ms) return '(no multiscale session yet)';
+    const lines = [];
+    lines.push('PHASE: ' + ms.phase);
+    lines.push('DOMINANT SCALE: ' + (ms.dominant_scale || '(undefined)'));
+    if (ms.one_intervention) lines.push('ONE INTERVENTION: ' + ms.one_intervention);
+    lines.push('FORCES (' + ms.forces.length + '):');
+    ms.forces.forEach(f => {
+      const flags = [f.scale, 'strain=' + (f.strain || 0).toFixed(2)];
+      if (f.governs) flags.unshift('GOVERNING');
+      lines.push('  - ' + f.id + ': ' + (f.label || '(unnamed)') + ' [' + flags.join(', ') + ']');
+    });
+    lines.push('CROSS-SCALE LINKS (' + ms.links.length + '):');
+    ms.links.forEach(l => {
+      lines.push('  - ' + l.from_id + ' → ' + l.to_id + ' [friction=' + (l.friction || 0).toFixed(2) + ']');
+    });
+    return lines.join('\n');
+  }
+
+  // =============================================================
+  // CHARACTER OF THE EXECUTOR — vertical alignment pillars
+  // =============================================================
+  function emptyCharacterSession() {
+    const now = Date.now();
+    return {
+      id: 'ch_' + now.toString(36),
+      pillars: [],          // [{ id, label, state: 'aligned'|'leaning'|'cracked'|'buried', tilt (0..1), governs }]
+      governing_id: null,
+      one_realignment: '',
+      inquiry_log: [],
+      phase: 'observe',     // observe → examine → settled
+      started_at: now,
+      last_modified: now,
+    };
+  }
+  function ensureCharacterSession(state) {
+    if (!state.current_character) state.current_character = emptyCharacterSession();
+    return state.current_character;
+  }
+  function nextPillarId(ch) {
+    const used = new Set((ch.pillars || []).map(p => p.id));
+    let n = (ch.pillars || []).length + 1;
+    while (used.has('p' + n)) n++;
+    return 'p' + n;
+  }
+  function applyCharacterDelta(ch, d) {
+    if (!d || !d.op) return;
+    const VALID_STATES = ['aligned','leaning','cracked','buried'];
+    switch (d.op) {
+      case 'add_pillar': {
+        const id = d.id || nextPillarId(ch);
+        if (ch.pillars.find(p => p.id === id)) break;
+        ch.pillars.push({
+          id,
+          label: (d.label || '').trim(),
+          state: VALID_STATES.includes(d.state) ? d.state : 'aligned',
+          tilt: typeof d.tilt === 'number' ? clamp01(d.tilt) : 0,
+          governs: !!d.governs,
+        });
+        break;
+      }
+      case 'update_pillar': {
+        const p = ch.pillars.find(x => x.id === d.id);
+        if (!p) break;
+        if (typeof d.label === 'string') p.label = d.label.trim();
+        if (VALID_STATES.includes(d.state)) p.state = d.state;
+        if (typeof d.tilt === 'number') p.tilt = clamp01(d.tilt);
+        break;
+      }
+      case 'remove_pillar': {
+        ch.pillars = ch.pillars.filter(p => p.id !== d.id);
+        if (ch.governing_id === d.id) ch.governing_id = null;
+        break;
+      }
+      case 'mark_governing': {
+        if (!d.pillar_id) break;
+        ch.governing_id = d.pillar_id;
+        ch.pillars.forEach(p => { p.governs = (p.id === d.pillar_id); });
+        break;
+      }
+      case 'set_one_realignment': {
+        if (typeof d.text === 'string') ch.one_realignment = d.text.trim();
+        break;
+      }
+      case 'set_phase': {
+        if (['observe','examine','settled'].includes(d.phase)) ch.phase = d.phase;
+        break;
+      }
+    }
+  }
+  function applyCharacterDeltas(ch, deltas) {
+    if (!Array.isArray(deltas)) return;
+    deltas.forEach(d => applyCharacterDelta(ch, d));
+  }
+  function summarizeCharacter(ch) {
+    if (!ch) return '(no character session yet)';
+    const lines = [];
+    lines.push('PHASE: ' + ch.phase);
+    if (ch.one_realignment) lines.push('ONE REALIGNMENT: ' + ch.one_realignment);
+    lines.push('PILLARS (' + ch.pillars.length + '):');
+    ch.pillars.forEach(p => {
+      const flags = [p.state, 'tilt=' + (p.tilt || 0).toFixed(2)];
+      if (p.governs) flags.unshift('GOVERNING');
+      lines.push('  - ' + p.id + ': ' + (p.label || '(unnamed)') + ' [' + flags.join(', ') + ']');
+    });
+    return lines.join('\n');
+  }
+
   function summarizeStructural(st) {
     if (!st) return '(no structural session yet)';
     const lines = [];
@@ -501,17 +861,33 @@
     ensureSequence,
     ensureConstraintSession,
     ensureStructuralSession,
+    ensureCapacitySession,
+    ensureMultiscaleSession,
+    ensureCharacterSession,
     emptySequence,
     emptyConstraintSession,
     emptyStructuralSession,
+    emptyCapacitySession,
+    emptyMultiscaleSession,
+    emptyCharacterSession,
     applyDelta, applyDeltas,
     applyConstraintDelta, applyConstraintDeltas,
     applyStructuralDelta, applyStructuralDeltas,
+    applyCapacityDelta, applyCapacityDeltas,
+    applyMultiscaleDelta, applyMultiscaleDeltas,
+    applyCharacterDelta, applyCharacterDeltas,
     logEntry,
     summarize,
     summarizeConstraint,
     summarizeStructural,
+    summarizeCapacity,
+    summarizeMultiscale,
+    summarizeCharacter,
     transcript,
     clamp01,
+    dormancyTier,
+    totalVisits,
+    markChamberVisit,
+    consumeReturnEvent,
   };
 })();

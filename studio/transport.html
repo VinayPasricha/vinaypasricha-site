@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transport · Studio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <style>
+    .tr-body { background:#07080c; color:#ebe9e2; }
+    :root {
+      --tr-gr1:#07080c; --tr-gr2:#0c0d12; --tr-gr3:#11131a; --tr-gr4:#181b25;
+      --tr-ink:#ebe9e2; --tr-ink2:#b8b5ad; --tr-ink3:#6e6c66; --tr-ink4:#44433f;
+      --tr-freq:#6f9bb5; --tr-freq2:#4f7388; --tr-freq3:#2c4150; --tr-freq4:#13202a;
+      --tr-pos:#6fae86; --tr-pos3:#2f5b43; --tr-warm:#c0975e; --tr-warm3:#5c4626;
+      --tr-neg:#c98170; --tr-neg3:#5c3329; --tr-gold:#c2a25e; --tr-gold3:#5c4c26;
+      --tr-rule:#14161e; --tr-edge:#1c2030;
+      --tr-serif:"Newsreader",Georgia,serif; --tr-sans:"Inter",system-ui,sans-serif; --tr-mono:"JetBrains Mono",ui-monospace,monospace;
+    }
+    .tr-shell { max-width:1160px; margin:0 auto; padding:40px 32px 96px; position:relative; z-index:1; }
+    .tr-crumbs { font-family:var(--tr-mono); font-size:11px; letter-spacing:0.14em; color:var(--tr-ink3); margin-bottom:22px; text-transform:uppercase; }
+    .tr-crumbs a { color:var(--tr-ink2); text-decoration:none; }
+    .tr-head { border-bottom:1px solid var(--tr-rule); padding-bottom:22px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+    .tr-title { font-family:var(--tr-serif); font-weight:300; font-size:32px; line-height:1.2; color:var(--tr-ink); letter-spacing:-0.01em; }
+    .tr-title em { font-style:italic; }
+    .tr-sub { font-family:var(--tr-sans); font-weight:300; font-size:13.5px; line-height:1.7; color:var(--tr-ink3); margin-top:9px; max-width:64ch; text-wrap:pretty; }
+    .tr-btn { background:transparent; border:1px solid var(--tr-edge); border-radius:2px; color:var(--tr-ink2); font-family:var(--tr-mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 12px; cursor:pointer; }
+    .tr-btn:hover { border-color:var(--tr-freq3); color:var(--tr-ink); background:var(--tr-freq4); }
+    .tr-tiles { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--tr-rule); border:1px solid var(--tr-rule); border-radius:3px; overflow:hidden; margin-bottom:24px; }
+    .tr-tile { background:var(--tr-gr2); padding:14px 16px; }
+    .tr-tile .tn { font-family:var(--tr-serif); font-weight:300; font-size:24px; line-height:1; color:var(--tr-ink2); }
+    .tr-tile.sent .tn { color:var(--tr-pos); } .tr-tile.responded .tn { color:var(--tr-freq); } .tr-tile.failed .tn { color:var(--tr-neg); } .tr-tile.blocked .tn { color:var(--tr-warm); }
+    .tr-tile .tl { font-family:var(--tr-mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--tr-ink3); margin-top:7px; }
+    .tr-section { font-family:var(--tr-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--tr-freq); margin:22px 0 12px; }
+    .tr-panel { border:1px solid var(--tr-rule); border-radius:3px; background:var(--tr-gr2); overflow:hidden; }
+    .tr-pbody { padding:6px 0; }
+    .tr-empty { font-family:var(--tr-sans); font-weight:300; font-size:12.5px; color:var(--tr-ink4); padding:14px 18px; }
+
+    .tr-prov { display:grid; grid-template-columns:1.1fr 1fr 1fr auto; gap:12px; padding:12px 18px; border-top:1px solid var(--tr-rule); align-items:center; }
+    .tr-prov:first-child { border-top:none; }
+    .tr-prov .pn { font-family:var(--tr-sans); font-weight:400; font-size:13.5px; color:var(--tr-ink); }
+    .tr-prov .pd { font-family:var(--tr-mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--tr-ink4); margin-top:2px; }
+    .tr-prov select { background:var(--tr-gr1); border:1px solid var(--tr-edge); border-radius:2px; color:var(--tr-ink2); font-family:var(--tr-mono); font-size:9.5px; padding:6px 8px; cursor:pointer; }
+    .tr-st { font-family:var(--tr-mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--tr-edge); border-radius:2px; padding:3px 8px; justify-self:start; }
+    .tr-st.configured { color:var(--tr-pos); border-color:var(--tr-pos3); } .tr-st.not_configured { color:var(--tr-warm); border-color:var(--tr-warm3); } .tr-st.failed { color:var(--tr-neg); border-color:var(--tr-neg3); } .tr-st.paused { color:var(--tr-ink3); }
+    .tr-mini { background:var(--tr-gr1); border:1px solid var(--tr-edge); border-radius:2px; color:var(--tr-ink3); font-family:var(--tr-mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; padding:5px 8px; cursor:pointer; justify-self:end; }
+    .tr-mini:hover { color:var(--tr-ink); border-color:var(--tr-freq3); }
+    .tr-mini.warn { color:var(--tr-warm); border-color:var(--tr-warm3); }
+
+    .tr-msg { padding:11px 18px; border-top:1px solid var(--tr-rule); }
+    .tr-msg:first-child { border-top:none; }
+    .tr-msg .ms { font-family:var(--tr-sans); font-weight:400; font-size:12.5px; color:var(--tr-ink); }
+    .tr-msg .mm { font-family:var(--tr-mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--tr-ink4); margin-top:3px; }
+    .tr-msg .mtok { color:var(--tr-freq2); }
+    .tr-mst { font-family:var(--tr-mono); font-size:8px; letter-spacing:0.06em; text-transform:uppercase; border:1px solid var(--tr-edge); border-radius:2px; padding:2px 6px; }
+    .tr-mst.sent, .tr-mst.delivered, .tr-mst.opened { color:var(--tr-pos); border-color:var(--tr-pos3); }
+    .tr-mst.responded { color:var(--tr-freq); border-color:var(--tr-freq3); }
+    .tr-mst.failed { color:var(--tr-neg); border-color:var(--tr-neg3); }
+    .tr-mst.blocked, .tr-mst.queued { color:var(--tr-warm); border-color:var(--tr-warm3); }
+    .tr-evts { display:flex; gap:5px; flex-wrap:wrap; margin-top:7px; }
+    .tr-evt { font-family:var(--tr-mono); font-size:7.5px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--tr-edge); border-radius:2px; padding:2px 6px; color:var(--tr-ink3); cursor:pointer; }
+    .tr-evt:hover { color:var(--tr-ink); border-color:var(--tr-freq3); }
+
+    .tr-form { padding:12px 18px; display:flex; flex-direction:column; gap:7px; }
+    .tr-form textarea, .tr-form input, .tr-form select { background:var(--tr-gr1); border:1px solid var(--tr-edge); border-radius:2px; color:var(--tr-ink); font-family:var(--tr-sans); font-weight:300; font-size:12px; padding:8px 10px; }
+    .tr-form textarea { resize:vertical; min-height:60px; }
+    .tr-form textarea:focus, .tr-form input:focus, .tr-form select:focus { outline:none; border-color:var(--tr-freq3); }
+    .tr-act { background:var(--tr-freq4); border:1px solid var(--tr-freq3); border-radius:2px; color:var(--tr-freq); font-family:var(--tr-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; cursor:pointer; align-self:flex-start; }
+    .tr-act:hover { color:var(--tr-ink); border-color:var(--tr-freq2); }
+    .tr-note { margin-top:30px; border-top:1px solid var(--tr-rule); padding-top:22px; font-family:var(--tr-sans); font-weight:300; font-size:13px; line-height:1.75; color:var(--tr-ink3); }
+    .tr-note em { font-style:italic; color:var(--tr-ink2); } .tr-note a { color:var(--tr-freq); text-decoration:none; border-bottom:1px solid var(--tr-freq3); }
+    @media (max-width:820px){ .tr-tiles{ grid-template-columns:repeat(3,1fr);} .tr-prov{ grid-template-columns:1fr; gap:5px;} }
+  </style>
+</head>
+<body class="tr-body">
+<header class="studio-topbar">
+  <div class="st-brand"><span class="st-mark">◇</span><span class="st-name">Transport</span><span class="st-sub">— communication providers · the first real send</span></div>
+  <div class="st-right">
+    <a class="st-link" href="capabilities.html">Capabilities ↗</a>
+    <a class="st-link" href="agents.html">Agents ↗</a>
+    <a class="st-link" href="index.html">Studio</a>
+  </div>
+</header>
+<div class="tr-shell">
+  <div class="tr-crumbs"><a href="index.html">Studio</a> / Transport</div>
+  <div class="tr-head">
+    <div>
+      <h1 class="tr-title">The layer where a message <em>actually leaves.</em></h1>
+      <p class="tr-sub">
+        Communication transport beneath the capability layer. Email-first (SMTP / SendGrid / SES / Gmail adapters);
+        WhatsApp / SMS / LinkedIn are honest <em>not_configured</em> placeholders. Every outbound carries a thread
+        token so replies route back automatically; delivery is tracked as events; threads and the audit trail update
+        on every event. No real provider wired → blocks honestly. A <em>simulate</em> adapter exercises the full
+        flow for testing, always labelled as simulated.
+      </p>
+    </div>
+    <button class="tr-btn" id="tr-reset" type="button">Reset</button>
+  </div>
+  <div class="tr-tiles" id="tr-tiles"></div>
+  <div class="tr-section">Providers · configuration &amp; health</div>
+  <div class="tr-panel"><div class="tr-pbody" id="tr-providers"></div></div>
+  <div class="tr-section">Simulate an inbound reply (routes by thread token)</div>
+  <div class="tr-panel"><div class="tr-form" id="tr-replyform"></div></div>
+  <div class="tr-section">Transport messages · delivery tracking</div>
+  <div class="tr-panel"><div class="tr-pbody" id="tr-messages"></div></div>
+  <p class="tr-note">
+    <em>Honest by construction.</em> Configuring an adapter flips the matching capability to <em>configured</em> so
+    agents proceed; "not configured" reverts to honest blocking. The <em>simulate</em> email adapter records a real
+    TransportMessage + events but never claims an external delivery. Inbound replies parse the <span style="font-family:var(--tr-mono);font-size:11px">OFREQ-…</span>
+    token and route into the existing <a href="hiring.html">Candidate</a> / Stakeholder / Reference threads — never dropped.
+    <a href="capabilities.html">Capabilities</a> and <a href="agents.html">Agents</a> sit above this layer.
+  </p>
+</div>
+<script src="../frequency/of-model.js"></script>
+<script src="../frequency/of-frequency.js"></script>
+<script src="../frequency/of-person.js"></script>
+<script src="../frequency/of-hiring.js"></script>
+<script src="../frequency/of-capabilities.js"></script>
+<script src="../frequency/of-transport.js"></script>
+<script src="transport-admin.js"></script>
+</body>
+</html>

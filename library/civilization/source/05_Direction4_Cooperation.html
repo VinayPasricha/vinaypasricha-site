@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civilization — Part Two · Direction Four: Cooperation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f1115; --paper:#faf8f4; --paper-deep:#f3efe7; --rule:#1c1f26; --cosmos:#1a2742; --indigo:#2d3a6b; --gold:#b8954f; --mute:#6b6960; }
+  @page { size: 6in 9in; margin: 0; }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { page-break-after: always; break-after: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .print-hint { display: none; }
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2722; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-optical-sizing: auto; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { width: 6in; min-height: 9in; margin: 24px auto; padding: 0.75in 0.7in; background: var(--paper); color: var(--ink); position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+  .page::before { content:""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 10%, rgba(184,149,79,0.025), transparent 40%), radial-gradient(circle at 80% 90%, rgba(26,39,66,0.02), transparent 40%); pointer-events: none; }
+  .display { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+  .mono    { font-family: "JetBrains Mono", "Courier New", monospace; font-weight: 400; letter-spacing: 0.02em; }
+  p { margin: 0 0 0.6em 0; font-size: 11pt; line-height: 1.65; }
+  .stanza { margin: 0.5em 0; font-size: 11pt; line-height: 1.65; }
+  .prose p { font-size: 11pt; line-height: 1.65; }
+  .direction-cover { justify-content: space-between; align-items: stretch; padding: 0.9in 0.7in; text-align: center; }
+  .direction-cover-tag { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; }
+  .direction-cover-roman { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 22pt; letter-spacing: 0.4em; color: var(--cosmos); margin: 0.15in 0; }
+  .direction-cover-name { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 72pt; letter-spacing: -0.04em; line-height: 0.95; margin: 0.1in 0; color: var(--ink); }
+  .direction-cover-tagline { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 13pt; line-height: 1.5; color: var(--mute); max-width: 4in; margin: 0.2in auto 0 auto; }
+  .direction-cover-sigil { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0.4in 0; }
+  .epigraph-page { justify-content: center; align-items: center; text-align: center; padding: 1.4in 0.9in; }
+  .epigraph-mark { font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--gold); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.6in; }
+  .epigraph-text { font-family: "Source Serif 4", serif; font-style: italic; font-weight: 300; font-size: 16pt; line-height: 1.4; color: var(--ink); margin-bottom: 0.4in; max-width: 4.2in; }
+  .epigraph-attribution { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 10pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cosmos); }
+  .epigraph-source-note { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6pt; }
+  .opener { padding-top: 1in; }
+  .section-number { font-family: "JetBrains Mono", monospace; font-size: 8.5pt; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.3in; }
+  .section-title { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 32pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 0.35in 0; }
+  .dropcap::first-letter { font-family: "Space Grotesk", sans-serif; font-weight: 300; float: left; font-size: 48pt; line-height: 0.85; padding: 4pt 8pt 0 0; color: var(--cosmos); }
+  .illustration { margin: 0.3in auto; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+  .caption { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 10pt; }
+  .pull-quote { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 20pt; line-height: 1.25; letter-spacing: -0.01em; color: var(--cosmos); text-align: center; margin: 0.4in 0.1in; padding: 0.2in 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; }
+  .pull-quote::before, .pull-quote::after { content: "✦"; position: absolute; color: var(--gold); font-size: 11pt; background: var(--paper); padding: 0 8pt; left: 50%; transform: translateX(-50%); }
+  .pull-quote::before { top: -7pt; }
+  .pull-quote::after  { bottom: -7pt; }
+  .closer { text-align: center; margin: 0.4in 0 0 0; }
+  .closer svg { margin: 0 auto; display: block; }
+  .folio { position: absolute; bottom: 0.4in; font-family: "JetBrains Mono", monospace; font-size: 8pt; color: var(--mute); letter-spacing: 0.15em; }
+  .folio-left  { left: 0.7in; }
+  .folio-right { right: 0.7in; }
+  .running-head { position: absolute; top: 0.4in; right: 0.7in; font-family: "Space Grotesk", sans-serif; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.25em; text-transform: uppercase; }
+  .center-line { text-align: center; margin: 0.8em 0; }
+  .case-block { border-left: 2px solid var(--gold); padding: 8pt 0 8pt 14pt; margin: 0.18in 0; }
+  .case-label { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4pt; }
+  .case-name { font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 13pt; color: var(--ink); margin: 0 0 3pt 0; letter-spacing: -0.01em; }
+  .case-span { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--mute); letter-spacing: 0.1em; margin-bottom: 6pt; }
+  .case-body { font-family: "Source Serif 4", serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  .case-lesson { font-family: "Source Serif 4", serif; font-style: italic; font-size: 9.5pt; color: var(--cosmos); margin-top: 5pt; }
+  /* Cooperation Threshold table */
+  .threshold-table { width: 100%; border-collapse: collapse; margin: 0.2in 0; font-family: "Source Serif 4", serif; }
+  .threshold-table th { font-family: "JetBrains Mono", monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; text-align: left; padding: 6pt 8pt; border-bottom: 1px solid var(--gold); }
+  .threshold-table td { font-size: 10pt; padding: 6pt 8pt; border-bottom: 1px solid var(--paper-deep); }
+  .threshold-table td.achievement { font-family: "Space Grotesk", sans-serif; font-weight: 500; color: var(--ink); }
+  .threshold-table td.scale      { font-family: "JetBrains Mono", monospace; font-size: 9pt; color: var(--cosmos); letter-spacing: 0.08em; text-align: right; }
+  .print-hint { max-width: 6in; margin: 16px auto; padding: 12px 18px; background: rgba(255,255,255,0.08); color: #d6cfb8; font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; border-left: 2px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  TO EXPORT: Press Cmd+P (Mac) or Ctrl+P (Windows) → Destination: Save as PDF → Paper: 6×9 → Margins: None → Background graphics: ON.
+</div>
+
+<!-- DIRECTION FOUR — COVER -->
+<section class="page direction-cover">
+  <div class="direction-cover-tag">Part Two · Foundation</div>
+
+  <div>
+    <div class="direction-cover-roman">DIRECTION  FOUR</div>
+    <h1 class="direction-cover-name">Cooperation.</h1>
+    <p class="direction-cover-tagline">The architecture by which intelligence scales beyond single bodies.</p>
+  </div>
+
+  <div class="direction-cover-sigil">
+    <svg viewBox="0 0 280 280" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#1a2742" stroke-width="0.6" stroke-opacity="0.4"/>
+      <!-- Inner pair of interlocked rings (the basic sigil) -->
+      <circle cx="115" cy="140" r="32" fill="none" stroke="#0f1115" stroke-width="2.2"/>
+      <circle cx="165" cy="140" r="32" fill="none" stroke="#0f1115" stroke-width="2.2"/>
+      <!-- Outer ring of smaller paired rings, suggesting scaling -->
+      <g stroke="#1a2742" stroke-width="1.2" fill="none">
+        <circle cx="50"  cy="140" r="14"/>
+        <circle cx="68"  cy="140" r="14"/>
+        <circle cx="212" cy="140" r="14"/>
+        <circle cx="230" cy="140" r="14"/>
+        <circle cx="140" cy="50"  r="14"/>
+        <circle cx="140" cy="68"  r="14"/>
+        <circle cx="140" cy="212" r="14"/>
+        <circle cx="140" cy="230" r="14"/>
+      </g>
+      <circle cx="140" cy="140" r="3.5" fill="#b8954f"/>
+    </svg>
+  </div>
+
+  <div class="direction-cover-tag" style="color: var(--mute);">Sigil IV · Cooperation</div>
+</section>
+
+<!-- EPIGRAPH — ADAM SMITH -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">Direction Four · Opening</div>
+  <div class="epigraph-text">
+    "It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own interest."
+  </div>
+  <div class="epigraph-attribution">— Adam Smith</div>
+  <div class="epigraph-source-note">The Wealth of Nations · 1776</div>
+  <div style="margin-top: 0.9in;">
+    <svg width="44" height="14" viewBox="0 0 44 14">
+      <circle cx="8"  cy="7" r="1.5" fill="#b8954f"/>
+      <circle cx="22" cy="7" r="2.5" fill="#b8954f"/>
+      <circle cx="36" cy="7" r="1.5" fill="#b8954f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- §1 · THE QUESTION -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ The Question</div>
+  <h2 class="section-title">How Many Humans<br>Can Work Together?</h2>
+
+  <p class="prose dropcap">Start not with a definition, but with a question. How many humans can work together — and what happens when they do? The question sounds simple. It is not. The answer to it explains more about the shape of human civilization than any other single question one could ask.</p>
+
+  <p class="prose">One human, alone, in the wilderness, can survive only at the edge of subsistence. A small band of ten can hunt, gather, raise children, and tell stories — but cannot maintain agriculture, cannot defend territory against a larger band, cannot accumulate stored capability beyond what a few minds can hold. A village of a hundred can farm, can specialize, can produce craft objects that one person alone could never master. A town of a thousand can support a temple, a marketplace, a literate class. A city of a hundred thousand can sustain writing systems, currency, formal law, and the beginnings of complex administration. A nation of millions can produce industrial output, public health systems, standing armies, modern science.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">Same biology.</p>
+  <p class="stanza">Same species.</p>
+  <p class="stanza">Vastly different capability.</p>
+
+  <p class="prose" style="margin-top:0.9em;">The variable doing all the work is not intelligence, not technology, not access to resources. The variable doing all the work is the scale at which humans can cooperate. Every increase in the scale of human civilization, from the savanna to the present, has been an increase in the scale of cooperation. Without exception.</p>
+
+  <div class="folio folio-right">089</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Question</div>
+
+  <p class="prose">This observation is so familiar that it tends to be invisible. It can be made visible by reversing it. Imagine taking any specific human achievement and asking how many people, working together, were required to produce it. Not in raw count, but in the sustained coordinated effort of a network of contributors over time.</p>
+
+  <p class="prose">The Apollo Program, by direct count, employed roughly four hundred thousand people across NASA and its contractors at peak. The full network of suppliers, researchers, and institutional supporters that the program depended on was larger by an order of magnitude. The semiconductor industry that put smartphones in every pocket on Earth is the cooperative product of tens of millions of workers across more than fifty countries. The body of modern medicine is the cumulative cooperation of millions of physicians, researchers, manufacturers, and patients across two centuries.</p>
+
+  <p class="prose">No genius, working alone, could have produced any of these. Not because individual genius is unimportant. Because the achievements in question exist <em>only</em> above certain scales of cooperation. Below those scales, the achievements do not exist as difficult problems waiting to be solved. They do not exist at all.</p>
+
+  <div class="pull-quote no-break">
+    Same biology. Same species. Vastly different capability.<br>
+    The variable doing all the work is cooperation.
+  </div>
+
+  <p class="prose">The chapter begins from this observation and refuses to set it aside. Cooperation is not a feature of civilizations. The remainder of this chapter will argue that it is something larger — and stranger — than that.</p>
+
+  <div class="folio folio-left">090</div>
+</section>
+
+<!-- §2 · THE SCALING DISCOVERY + COOPERATION THRESHOLD -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ The Cooperation Threshold</div>
+  <h2 class="section-title">Some Capabilities<br>Have a Minimum Scale.</h2>
+
+  <p class="prose dropcap">Consider what changes when the cooperating group passes certain thresholds. At each threshold, new capabilities become possible — capabilities that did not exist below the threshold, no matter how skilled the participants. The list is more striking than the casual reader expects.</p>
+
+  <table class="threshold-table">
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th style="text-align:right;">Minimum cooperation scale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="achievement">Storytelling tradition</td><td class="scale">dozens</td></tr>
+      <tr><td class="achievement">Settled agriculture</td><td class="scale">hundreds</td></tr>
+      <tr><td class="achievement">Cities</td><td class="scale">thousands</td></tr>
+      <tr><td class="achievement">Writing systems</td><td class="scale">tens of thousands</td></tr>
+      <tr><td class="achievement">Universities</td><td class="scale">hundreds of thousands</td></tr>
+      <tr><td class="achievement">Modern science</td><td class="scale">millions</td></tr>
+      <tr><td class="achievement">Lunar exploration</td><td class="scale">hundreds of thousands</td></tr>
+      <tr><td class="achievement">The Internet</td><td class="scale">hundreds of millions</td></tr>
+      <tr><td class="achievement">Global AI infrastructure</td><td class="scale">billions</td></tr>
+    </tbody>
+  </table>
+
+  <p class="prose" style="margin-top:0.1in;">The numbers are illustrative rather than precise. The point is the pattern. Each row marks a threshold below which the capability in the left column does not exist. Not "is harder." <em>Does not exist.</em></p>
+
+  <div class="folio folio-right">091</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Cooperation Threshold</div>
+
+  <p class="prose">A village of fifty people can have stories. It cannot have a university. The university is not a village made larger. It is a different kind of cooperative entity, with formal roles, dedicated infrastructure, multi-generational continuity of curriculum, and the standing capacity to take in students who do not know each other personally and train them across years. Below a certain scale of cooperative organization, the university is impossible — not difficult, impossible, in the same sense that a sand grain cannot be a beach.</p>
+
+  <p class="prose">The same logic applies at every level of the threshold table. Modern science is not a workshop made larger. It is a distributed cooperative apparatus involving millions of researchers, hundreds of thousands of laboratories, tens of thousands of journals, an entire economy of peer review, and a global infrastructure of communication and replication. Beneath a certain cooperative scale, science as it currently operates is not possible. There is no smaller version of it that does the same job.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This is the chapter's first major surprise. Capability is often limited less by intelligence than by cooperation scale. Two civilizations of identical talent, identical resources, and identical knowledge can produce wildly different capabilities depending only on the scale at which they can coordinate.</p>
+
+  <div class="pull-quote no-break">
+    Capability is often limited<br>
+    less by intelligence<br>
+    than by cooperation scale.
+  </div>
+
+  <p class="prose">The Greeks of the classical age were as intelligent, on any biological measure, as any contemporary population. They could not build the Antikythera Mechanism at industrial scale. They could not produce antibiotics. They could not put a person on the moon. The capabilities they lacked were not capabilities they were too stupid to manage. They were capabilities that required cooperation at scales the ancient world could not assemble.</p>
+
+  <div class="folio folio-left">092</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Cooperation Threshold</div>
+
+  <p class="prose">The reverse case is just as instructive. Modern civilizations, with billions of cooperating participants, routinely produce capabilities that no ancient civilization, no matter how skilled, could have produced. This is not because moderns are smarter. It is because moderns cooperate at scales the ancients could not.</p>
+
+  <p class="prose">There is a second observation worth marking here. Each successive threshold required not just more people, but new <em>kinds</em> of cooperation. Storytelling traditions require oral tradition and the trust of intimate communities. Cities require markets, written records, and law. Modern science requires peer review, replication infrastructure, and institutional permanence. The cooperation that supports each level is qualitatively different from the cooperation at the level below.</p>
+
+  <p class="prose" style="margin-top:0.7em;">This is why simply adding more people does not automatically unlock the next threshold. A billion people who cannot trust each other, or who cannot communicate at speed, or who lack institutions for coordinating across distance, are not a global civilization. They are a billion humans. Crossing each threshold has required not just population, but the invention of new cooperative technologies — language, writing, currency, law, scientific method, computational networks, and many more.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">Population is necessary.</p>
+  <p class="stanza"><em>Cooperative technology is what turns population into civilization.</em></p>
+
+  <div class="folio folio-right">093</div>
+</section>
+
+<!-- §3 · THE RECURSIVE PATTERN -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ The Recursive Pattern</div>
+  <h2 class="section-title">Cooperation Is<br>How Intelligence Scales.</h2>
+
+  <p class="prose dropcap">There is a deeper observation lurking beneath the scaling argument, and the chapter must now address it directly. The pattern by which humans cooperate to make civilizations is the same pattern by which intelligence at smaller scales builds itself. Cooperation is not something only humans do. Cooperation is how every level of intelligence we have ever observed gets larger than its components.</p>
+
+  <p class="prose">Trace the pattern downward, all the way to molecules. Atoms cooperate, through chemical bonds, to form molecules. Molecules cooperate, through metabolic and informational pathways, to form cells. Cells cooperate, through specialization and signaling, to form multicellular organisms. Neurons — themselves cells — cooperate, through synapses and circuits, to form minds. Minds cooperate, through language and institutions, to form civilizations.</p>
+
+  <p class="prose" style="margin-top:0.7em;">At each level, what emerges from the cooperation is something the components alone could not be. A brain is not a list of neurons. A body is not a list of cells. A civilization is not a list of humans. Each level produces a new kind of entity, with new behaviors, new capabilities, and new failure modes that did not exist below.</p>
+
+  <p class="prose">This is the chapter's central claim, stated as plainly as possible. Cooperation is the recursive mechanism by which intelligence assembles itself at successive scales. It is not one feature among many. It is the architecture of every emergence from molecules upward.</p>
+
+  <div class="pull-quote no-break">
+    Cooperation is not what civilizations do.<br>
+    Cooperation is what civilizations are made of.
+  </div>
+
+  <div class="folio folio-right">094</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Recursive Pattern</div>
+
+  <p class="prose">There is a strange consequence of this pattern that the careful reader will already have noticed. At every level of the ladder, the components do not understand the entity they participate in.</p>
+
+  <p class="prose">A cell does not understand the organism it is part of. The cell does not perceive the body. It cannot. The body's behavior is invisible at the scale at which the cell operates. The cell responds to local chemical gradients and signaling molecules. It does not perceive that it is digesting food, or running a marathon, or thinking a thought. Yet the body exists, and the cell participates in it, and the body's behavior is real.</p>
+
+  <p class="prose">A neuron does not understand the mind. The neuron fires in response to inputs from its neighbors and modulates its connections according to local rules. It does not perceive that it is contemplating a poem, or solving a problem, or feeling regret. Yet the mind exists, and the neuron participates in it, and the mind's behavior is real.</p>
+
+  <p class="prose" style="margin-top:0.9em;">An individual human does not understand the civilization. Not fully. Not in the sense in which the civilization, considered as a single coordinated entity, can be said to act. The human responds to immediate incentives, local relationships, the institutions of his place and time. He does not perceive the civilization as a thing whose behavior he is constituting. Yet the civilization exists, and the human participates in it, and the civilization's behavior is real.</p>
+
+  <div class="pull-quote no-break">
+    A neuron does not understand the mind.<br>
+    A human may not understand the civilization.
+  </div>
+
+  <p class="prose">The pattern is exact. It also raises a question that the framework cannot yet answer. If the components at every level cannot perceive the entity they constitute — and yet that entity is real, and behaves, and has properties of its own — then we should ask ourselves a question we have no immediate way to verify. Are civilizations themselves components of something larger? Something that, from our scale, we are no more equipped to perceive than a neuron is equipped to perceive the mind?</p>
+
+  <p class="prose" style="margin-top:0.7em;">The chapter does not assert this. The chapter only notices that the recursion has worked at every level it can be checked, and that there is no immediate reason to assume it stops at ours.</p>
+
+  <div class="folio folio-left">095</div>
+</section>
+
+<!-- §4 · WHY REALITY REWARDS IT -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ Why Reality Rewards It</div>
+  <h2 class="section-title">Five Mechanisms,<br>One Pattern.</h2>
+
+  <p class="prose dropcap">The chapter has so far described what cooperation does. It must also explain, briefly, why reality rewards it. Five mechanisms account for most of the pattern. None is mysterious. Together they produce the staggering gap between solo capability and cooperative capability.</p>
+
+  <p class="prose"><strong>Specialization.</strong> Cooperation allows division of labor. A society in which every person produces food, clothing, shelter, and tools at modest skill produces less, in aggregate, than a society of the same size in which some specialize in food, some in clothing, some in shelter, and each becomes proficient at one thing. Specialization compounds. Each specialist becomes a teacher of the next generation, and proficiency increases over time.</p>
+
+  <p class="prose"><strong>Pooling.</strong> Cooperation allows knowledge and risk to be pooled. An individual's death erases their knowledge. A community's death does not, because the knowledge has been shared. An individual's catastrophic loss is unrecoverable. A cooperative group's loss is shared and absorbed.</p>
+
+  <p class="prose"><strong>Scaling problems.</strong> Some problems can only be solved by groups above a certain size. A city's sanitation system. A continent's power grid. A civilization's defense. A planet's response to a pandemic. These are not problems with hard solo solutions. They are problems with no solo solutions at all.</p>
+
+  <p class="prose"><strong>Network effects.</strong> Communication networks become more valuable as more participants join them. A telephone with one user is useless. A telephone with a billion users is civilizational infrastructure. The marginal value of a participant rises with scale, not falls.</p>
+
+  <p class="prose"><strong>Recursion.</strong> Cooperative structures themselves enable larger cooperative structures. The institution is what allows the meta-institution. Roman law enabled the universal church enabled the modern state enabled the international order. Each layer of cooperation became the substrate on which the next was built.</p>
+
+  <p class="prose" style="margin-top:0.7em;">None of these mechanisms is exotic. Together they explain the observed pattern. Reality rewards cooperation because cooperation, by these five mechanisms, produces effects that single agents cannot.</p>
+
+  <div class="folio folio-right">096</div>
+</section>
+
+<!-- §5 · THE TENSION WITH TRUTH (CENTRAL MOVEMENT) -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ The Tension with Truth</div>
+  <h2 class="section-title">Cooperation's<br>Dangerous Twin.</h2>
+
+  <p class="prose dropcap">The chapter has so far made cooperation sound straightforwardly beneficial. It is not. Cooperation is in direct, measurable tension with the second direction in this work — Truth. The tension is not incidental. It is structural. And the way civilizations have responded to it may be the deepest single achievement of human history.</p>
+
+  <p class="prose">Truth requires the willingness to disagree. A truth-seeking community must be able to surface inconvenient evidence, dissent from received opinion, criticize the work of its most senior members, and revise its consensus when reality demands it. Cooperation requires the opposite. A cooperating community must be able to align around shared narratives, maintain trust, suppress destabilizing dissent, and act coherently even when not all members are certain of the action's wisdom.</p>
+
+  <p class="prose">Truth fragments. Cooperation binds. Pursued to their extremes, the two are incompatible. A civilization that pursued only Truth would dissolve into endless argument, with no aligned action ever possible. A civilization that pursued only Cooperation would fossilize into shared delusion, with no error ever surfaced.</p>
+
+  <div class="pull-quote no-break">
+    Truth fragments. Cooperation binds.<br>
+    Civilizations need both.
+  </div>
+
+  <p class="prose">Most civilizations through history have managed this tension badly. Most leaned heavily toward Cooperation, suppressing inconvenient truths in the service of group cohesion. The result was civilizations that were durable but accumulated error — preserving false models of agriculture, medicine, economics, or warfare for centuries before reality forced correction. The Lysenko case, examined in the Truth chapter, is one of countless instances of cooperation winning so completely that truth could not be heard.</p>
+
+  <div class="folio folio-right">097</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Tension with Truth</div>
+
+  <p class="prose">A handful of civilizations, beginning roughly in the early modern period, did something different. They invented forms of cooperation that contained truth-correction within them. This is not a small thing. It is, in the framework's view, the most important civilizational invention of the modern era.</p>
+
+  <p class="prose">Consider what such structures look like, examined carefully. Peer review is a cooperative procedure in which scholars trust each other enough to share work, while also trusting that work to be scrutinized harshly by others who will not be punished for criticism. An adversarial court is a cooperative procedure in which the state recognizes its own claims must be tested by an opposing party with the standing to oppose them. A parliament with formal opposition is a cooperative procedure in which the government accepts the legitimacy of being criticized by people whose job is to find its mistakes. A free press is a cooperative procedure in which a society sustains, at its own collective expense, a class of professional critics with the right to report things the powerful would rather suppress.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Each of these is a cooperative achievement. Each is also a truth-correction mechanism. The genius of the design is that they are not in tension with cooperation, even though they preserve dissent. They are <em>cooperative structures that include their own critics.</em></p>
+
+  <p class="prose">This is the synthesis the chapter has been building toward. The deepest civilizations did not choose between Truth and Cooperation. They invented forms of cooperation that held truth-correction inside them, structurally, where the cooperation could not crush the truth.</p>
+
+  <div class="pull-quote no-break">
+    The deepest civilizations did not choose<br>
+    between Truth and Cooperation.<br>
+    They invented Cooperation that held its own critics.
+  </div>
+
+  <div class="folio folio-left">098</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Tension with Truth</div>
+
+  <p class="prose">This synthesis is also, on examination, what most of the institutions that distinguish the modern world from the ancient one actually are. Science. Independent journalism. Constitutional government. Adversarial law. The audit function in a publicly traded corporation. The Inspector General within a department of state. The peer review within a profession. In each case, the structural innovation is the same. A cooperative entity has been built with formal channels through which its own conclusions can be challenged, embarrassed, and overturned without dissolving the entity.</p>
+
+  <p class="prose">The civilizations that have built these structures have, over the past few centuries, compounded capability at rates that earlier eras could not match. Not because their members were smarter. Because their cooperation could hold its own corrections, and therefore their accumulated capability did not drift indefinitely from reality.</p>
+
+  <p class="prose" style="margin-top:0.7em;">The framework's strongest single claim may be this. Successful civilizations are not characterized by maximization of any direction. They are characterized by the design of structures that hold multiple directions in productive tension — Truth and Cooperation together, Continuity and Creation together, Capability and Purpose together. The directions are not pursued in isolation. They are pursued in arrangements that allow them to constrain each other without destroying each other.</p>
+
+  <p class="prose">This insight is bigger than this chapter. It is, arguably, the framework's deepest claim about the structure of advanced civilization. The chapter on Cooperation is where the insight first becomes explicit, but it will recur, in different forms, in every direction that follows.</p>
+
+  <div class="folio folio-right">099</div>
+</section>
+
+<!-- §6 · THE INTEGRATION FOLD -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ The Integration Fold</div>
+  <h2 class="section-title">When Cooperation<br>Becomes Coherence.</h2>
+
+  <p class="prose dropcap">Integration was one of the twelve original candidate directions, and it did not survive the independence test. The reason it did not survive is that integration appears only where prolonged cooperation and sustained expansion are both already operating. It is the structural coherence that emerges when cooperative systems extend far enough, and last long enough, that the components must be coordinated formally rather than informally.</p>
+
+  <p class="prose">A village does not need to be integrated. Everyone knows everyone. Coordination happens through direct relationships. A nation cannot be coordinated this way. Most citizens will never meet most other citizens. The coordination must happen through shared institutions, shared standards, shared procedures, shared expectations. The institutions become, in effect, the connective tissue of an entity that has grown too large for direct cooperation to suffice.</p>
+
+  <p class="prose" style="margin-top:0.7em;">Roman law was an integration mechanism. It allowed cooperative behavior across an empire whose citizens did not know each other. The protocols of the internet are an integration mechanism. They allow cooperation across a network whose participants have no relationship. The standards that govern global commerce — units of measurement, financial settlement, container shipping, intellectual property — are integration mechanisms. They allow cooperation at scales where personal trust is impossible.</p>
+
+  <p class="prose">Integration is therefore not a separate direction. It is what cooperation becomes when it must scale beyond the range of personal relationship. It reappears in the framework not as a primary attractor but as the predictable structural form that Cooperation takes once Expansion has carried it far enough.</p>
+
+  <div class="folio folio-right">100</div>
+</section>
+
+<section class="page">
+  <div class="running-head">The Integration Fold</div>
+
+  <p class="prose">An illustration is worth pausing on. Integration is most visible when cooperation must extend not only across space but across time.</p>
+
+  <div class="case-block">
+    <div class="case-label">Integration Across Time</div>
+    <div class="case-name">Cologne Cathedral</div>
+    <div class="case-span">1248 — 1880 · 632 years · paused for 300 of them</div>
+    <div class="case-body">Construction began in 1248. The original architects, masons, and donors never saw the building completed; nor did their children, grandchildren, or any human being for the next twenty-five generations. The work was paused entirely in the sixteenth century and resumed in the nineteenth, three centuries later, by builders who could still follow the original plans because the plans had been preserved by an institution that outlasted the people who drew them. The final spire was placed in 1880. The cathedral is, by one honest measure, the longest single cooperative act in European history — the work of an entity that existed across more than six centuries and that no individual participant ever experienced as a whole.</div>
+    <div class="case-lesson">A cathedral is a cooperative entity that outlives its members. Its members participated in something they could never see.</div>
+  </div>
+
+  <p class="prose" style="margin-top:0.18in;">The cathedral is not a metaphor. It is what cooperation looks like when integration carries it across time as well as space. The stonemason who set the first foundation stones contributed to a building whose finished form would not exist for two dozen generations. He did not see what he was helping to build. He participated in it anyway. The recursive pattern named earlier in this chapter is, in his case, not theoretical. It is six centuries of carved evidence.</p>
+
+  <div class="folio folio-left">101</div>
+</section>
+
+<!-- §7 · FAILURE MODES -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ When Cooperation Fails</div>
+  <h2 class="section-title">The Reverse<br>of the Ratchet.</h2>
+
+  <p class="prose dropcap">Cooperation, having scaled, can also collapse. When it does, the collapse is rarely gradual. Once trust unravels at scale, the unraveling tends to accelerate, because each defection makes the next defection more rational. A society of vast cooperation that begins to fracture is a society falling faster than it can recover. The historical record contains several instructive cases.</p>
+
+  <div class="case-block">
+    <div class="case-label">Cooperation Reversed</div>
+    <div class="case-name">The Late Roman Republic</div>
+    <div class="case-span">c. 133 BCE — 27 BCE</div>
+    <div class="case-body">For roughly four centuries, the Roman Republic had sustained a remarkable cooperative order — the SPQR, an arrangement in which competing factions accepted limits on the use of force in pursuit of political advantage. Beginning with the assassination of the Gracchi, the limits began to fail. Each successive generation of leaders found that violence had been used by the previous generation and could therefore be used again. By the time of Marius and Sulla, civil war had become normal. By the time of Caesar and Augustus, the Republic was a memory. The cooperative norms that had distinguished Rome from its monarchical neighbors did not collapse all at once. They collapsed faster each time they were violated.</div>
+    <div class="case-lesson">A cooperative norm that is violated and not restored is no longer a norm. It is a memory of one.</div>
+  </div>
+
+  <div class="case-block">
+    <div class="case-label">Cooperation Imposed</div>
+    <div class="case-name">Soviet Collectivization</div>
+    <div class="case-span">1929 — 1933</div>
+    <div class="case-body">The Soviet effort to collectivize agriculture is a different failure mode — coordination failure imposed from above, on populations that did not consent and did not have the local information the central plan required. Forced cooperation produced the appearance of large-scale coordination. The reality was localized resistance, falsified reporting, destroyed livestock, and famine. The Soviet state could compel certain forms of cooperation. It could not compel the conditions under which cooperation actually produces capability.</div>
+    <div class="case-lesson">Cooperation that is not voluntary is, at scale, often not cooperation at all.</div>
+  </div>
+
+  <div class="folio folio-right">102</div>
+</section>
+
+<section class="page">
+  <div class="running-head">When Cooperation Fails</div>
+
+  <p class="prose">A briefer case is worth noting because it speaks to a modern fragility. In the early months of the 2020 pandemic, global supply chains — the largest cooperative apparatus ever assembled — proved unexpectedly vulnerable to small perturbations. The cooperative network that produces, transports, and delivers essential goods across all continents had been optimized for efficiency at the expense of resilience. When a small fraction of the cooperative nodes were forced offline, the whole network experienced shortages of items that, in calmer times, were so reliably available that their existence was invisible.</p>
+
+  <p class="prose">The lesson is not that the system failed. It largely recovered. The lesson is that the cooperative structures the modern world depends on are not as robust as their everyday performance suggests. They have been optimized for normal conditions, not for the conditions under which they are most needed. The fragility is invisible until the moment it is not.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Three patterns emerge from these cases. Cooperation can collapse from within when trust erodes. Cooperation can fail when it is imposed without voluntary participation. Cooperation can fragility unnoticed when its everyday robustness disguises its vulnerability to non-routine shocks.</p>
+
+  <p class="prose">In each case, the deeper pattern is the same. Cooperation is harder to maintain than to build, and harder to repair than to preserve. The civilizations that have endured longest have, almost without exception, been the ones that took maintenance and repair of their cooperative structures as seriously as they took their construction.</p>
+
+  <div class="pull-quote no-break">
+    The cooperative structures the modern world depends on<br>
+    are not as robust as their everyday performance suggests.
+  </div>
+
+  <div class="folio folio-left">103</div>
+</section>
+
+<!-- §8 · MODERN STAKES -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ Modern Stakes</div>
+  <h2 class="section-title">The Largest<br>Cooperative System.</h2>
+
+  <p class="prose dropcap">The contemporary world is the largest cooperative system ever assembled. Global supply chains, scientific publication, financial settlement, the internet, the apparatus of modern medicine, the systems that train and deploy large artificial intelligence models, the infrastructure of energy and water and waste — each of these is a cooperative achievement at scales that earlier centuries would have considered impossible. By any honest measure, the daily life of a citizen of any developed country today depends on the coordinated effort of more humans than any pharaoh or emperor ever commanded.</p>
+
+  <p class="prose">This is also the moment at which the chapter must flag, without being topical or political, a recognizable pattern. Cooperation at this scale requires, structurally, the synthesis described above — cooperative structures that contain their own truth-correction infrastructure. When that synthesis erodes — when the cooperative entities that sustain modern civilization lose the ability to surface and correct their own errors — the cooperative entity becomes increasingly brittle. It may continue to function. It loses the ability to adapt.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Several long-running trends suggest that the synthesis is currently under stress in many parts of the world. Truth-correction institutions are being defunded, captured, politicized, or overwhelmed by the speed and scale of new forms of falsehood. Cooperative entities are fragmenting along political, ideological, and tribal lines that override their previous commitments to shared standards of evidence. The cooperative achievements of the past century — the international scientific order, the postwar economic framework, the institutions of liberal-democratic government — are not, in the framework's view, eternal. They are recent, fragile, and currently being tested.</p>
+
+  <p class="prose">The framework's prediction is straightforward. Civilizations that maintain large-scale cooperation while preserving truth-correction will outcompete those that do not. The civilizations that abandon either half of the synthesis — that pursue cooperation by suppressing truth, or that pursue truth at the cost of cooperative cohesion — will weaken, and the historical record suggests they will weaken faster than they expect.</p>
+
+  <div class="folio folio-right">104</div>
+</section>
+
+<!-- §9 · CLOSING THE FOUNDATIONS + THE MYSTERY -->
+<section class="page opener">
+  <div class="running-head">Direction Four · Cooperation</div>
+  <div class="section-number">§ Closing the Foundations</div>
+  <h2 class="section-title">Four Directions<br>Complete.</h2>
+
+  <p class="prose dropcap">Four directions have now been examined. They form a coherent whole, and their coherence deserves a moment of recognition before the chapter ends. The framework treats them as the Four Foundations because each is necessary, and together they are sufficient, for intelligence that persists at civilizational scale.</p>
+
+  <p class="stanza" style="margin-top:0.7em;"><strong>Continuity</strong> preserves information through time.</p>
+  <p class="stanza"><strong>Truth</strong> corrects that information against reality.</p>
+  <p class="stanza"><strong>Capability</strong> converts corrected information into effective action.</p>
+  <p class="stanza"><strong>Cooperation</strong> combines the capabilities of many intelligences into something none could be alone.</p>
+
+  <p class="prose" style="margin-top:0.9em;">Each direction passes the four tests. Each is observably distinct from the others. Each has been examined in concrete cases drawn from biology, civilization, and contemporary intelligence systems. Together, they describe what intelligence must do to exist at all, at scale, across time. A civilization that has all four can be said to be present, in the structural sense — capable of remembering itself, correcting itself, acting upon itself, and multiplying itself through collective effort.</p>
+
+  <p class="prose">A civilization that has all four is not yet, by the framework's standard, an advanced civilization. The Foundations make a civilization possible. What turns persistence into flourishing — what distinguishes a civilization that merely lasts from one that compounds toward something larger — is the Four Frontiers that follow. The Interlude after this chapter introduces them.</p>
+
+  <div class="folio folio-right">105</div>
+</section>
+
+<section class="page">
+  <div class="running-head">Closing the Foundations</div>
+
+  <p class="prose">One observation, however, will not leave the chapter quietly. It has been raised once already and is worth surfacing again before the Foundations close.</p>
+
+  <p class="prose">At every level of the recursion examined in this chapter, the components of a cooperating system do not perceive the system they are part of. Cells do not perceive bodies. Neurons do not perceive minds. Humans, by every honest measure, do not perceive civilizations as the coordinated entities they appear to constitute when seen from a sufficient remove.</p>
+
+  <p class="prose">Every level of intelligence we can observe appears to be composed of cooperating entities that cannot fully perceive the whole they create. We have no evidence that the pattern stops with us.</p>
+
+  <p class="stanza" style="margin-top:0.9em;">The framework does not assert this.</p>
+  <p class="stanza">The framework only notices the symmetry.</p>
+
+  <div class="pull-quote no-break">
+    Civilizations may be cooperating components<br>
+    inside something we are not yet equipped to perceive.
+  </div>
+
+  <p class="prose">The Frontiers that follow will not answer this question. They will examine what civilizations do when they have the time, capability, and cooperation to begin asking questions of this kind.</p>
+
+  <p class="stanza" style="margin-top:0.8em;"><em>With Cooperation, intelligence escapes the limits of the individual.</em></p>
+  <p class="stanza"><em>The first four directions explain how intelligence survives.</em></p>
+  <p class="stanza"><em>The next four explore what intelligence does once survival is no longer the primary problem.</em></p>
+
+  <div class="closer">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+
+  <div class="folio folio-left">106</div>
+</section>
+
+<!-- END-OF-CHAPTER / END-OF-FOUNDATIONS -->
+<section class="page epigraph-page">
+  <div class="epigraph-mark">End of Direction Four · End of the Four Foundations</div>
+  <div class="epigraph-text">
+    "With these four, intelligence becomes civilizational.<br>
+    What follows is what civilizations do when they have time to think."
+  </div>
+  <div class="epigraph-attribution">— a thesis of this work</div>
+  <div style="margin-top: 0.6in;">
+    <svg width="60" height="16" viewBox="0 0 60 16">
+      <line x1="0"  y1="8" x2="22" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="2.5" fill="none" stroke="#b8954f" stroke-width="0.7"/>
+      <circle cx="30" cy="8" r="0.8" fill="#b8954f"/>
+      <line x1="38" y1="8" x2="60" y2="8" stroke="#b8954f" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div style="margin-top: 0.6in;" class="mono">INTERLUDE NEXT · WHEN FOUNDATIONS MEET THEIR LIMITS · THEN THE FOUR FRONTIERS</div>
+</section>
+
+</body>
+</html>

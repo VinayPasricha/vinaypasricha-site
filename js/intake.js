@@ -240,6 +240,17 @@ Before the JSON, ONE line: "Here's what I'll send to Vinay. Edit anything that i
           content: '(The visitor has just arrived. Greet them in one short sentence and ask what brings them today.)'
         }];
       }
+      // Graceful notice while the AI backend is not yet wired up.
+      if (typeof window.claude === 'undefined' || typeof window.claude?.complete !== 'function') {
+        hideThinking();
+        state.messages.push({
+          role: 'assistant',
+          content: "I am AION1 — and I am not fully awake yet. This conversation goes live very soon. Until then, write to Vinay directly at " + VINAY_EMAIL + " and he will reply personally."
+        });
+        saveState();
+        renderThread();
+        return;
+      }
       const reply = await window.claude.complete({
         system: SYSTEM_PROMPT,
         messages,
