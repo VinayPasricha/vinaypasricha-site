@@ -356,6 +356,8 @@
         '<textarea data-pi="' + esc(o.organization_id) + '" placeholder="Optional: paste public text — careers page, about page, a founder post, news. Findings will be grounded in it. Leave empty to infer from the mission only."></textarea>' +
         '<button class="mx-runbtn" data-run="' + esc(o.organization_id) + '" data-mis="' + esc(m.mission_id) + '" type="button">' +
           (rr.research ? 'Re-run Tier-0' : 'Run Tier-0 research') + '</button>' +
+        (rr.research ? '<button class="mx-run1btn" data-run1="' + esc(o.organization_id) + '" data-mis="' + esc(m.mission_id) + '" type="button">' +
+          (o.research_status === 'tier1' ? 'Re-run Tier-1 (guided)' : 'Run Tier-1 (deeper)') + '</button>' : '') +
       '</div>';
 
     if (!rr.research) {
@@ -574,6 +576,25 @@
     }).catch(function () {
       btn.disabled = false;
       btn.textContent = 'Run Tier-0 research';
+    });
+  });
+
+  // Run / re-run Tier-1 guided research (delegated)
+  listEl.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.mx-run1btn');
+    if (!btn) return;
+    var orgId = btn.getAttribute('data-run1');
+    var misId = btn.getAttribute('data-mis');
+    var ta = listEl.querySelector('textarea[data-pi="' + orgId + '"]');
+    var publicInfo = ta ? ta.value : '';
+    btn.disabled = true;
+    btn.textContent = 'Researching deeper…';
+    OF.research.runTier1(orgId, misId, { publicInfo: publicInfo }).then(function () {
+      render();
+    }).catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = 'Run Tier-1 (deeper)';
+      alert('Tier-1 research could not complete: ' + (err && err.message ? err.message : 'unknown error'));
     });
   });
 

@@ -156,6 +156,8 @@
   function assemble() {
     var th = thinking();
     function finish(fields) {
+      // Use the name the visitor gave at the lead gate if the chat didn't state one.
+      if (!fields.name && window.OF_LEAD && window.OF_LEAD.name) fields.name = window.OF_LEAD.name;
       var result = OF.commitCapture(buildCapture(fields, raw));
       th.remove();
       aeonTurn('That’s enough to hold the mission. Here is what the runtime now knows.');
@@ -428,7 +430,7 @@
 
         // Organization
         card('Organization', org.organization_id, esc(org.organization_name), [
-          row('Research', '<span class="of-pill">' + esc(org.research_status) + '</span>'),
+          row('Research', '<span class="of-pill" id="of-research-pill">' + esc(org.research_status) + '</span>'),
           row('Frequency', '<span class="of-pill">placeholder · not computed</span>'),
           org.industry ? row('Industry', esc(org.industry)) : '',
           org.size ? row('Size', esc(org.size)) : ''
@@ -530,6 +532,12 @@
       '<div class="of-rp-aeon"><div class="of-who2">Aeon1</div><div class="of-rp-say">Thank you. Based on what you’ve shared, I’d like to develop an initial understanding of your organization before going further — only from public signal, and only as a hypothesis.</div></div>' +
       '<div class="of-thinking" style="padding-left:2px"><span></span><span></span><span></span></div>';
     OF.research.runTier0(org.organization_id, mis.mission_id, { ai: true }).then(function (r) {
+      // Research has run — update the Organization card's Research pill.
+      var pill = document.getElementById('of-research-pill');
+      if (pill) {
+        var o = (OF.load().organizations || []).filter(function (x) { return x.organization_id === org.organization_id; })[0];
+        pill.textContent = (o && o.research_status) || 'tier0';
+      }
       renderHypothesis(slot, org, mis, r);
     }).catch(function () {
       slot.innerHTML += '<div class="of-rp-say" style="color:var(--ink-3)">A preliminary view could not be formed right now.</div>';
