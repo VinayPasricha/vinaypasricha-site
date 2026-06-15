@@ -1,26 +1,22 @@
 {
-  "name": "vinay-runtime-backend",
-  "version": "0.1.0",
+  "name": "vinay-site-backend",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Backend for vinaypasricha.com runtimes — Google login + MongoDB chat storage. Phase 1: SIV Method runtime.",
+  "description": "Backend for vinaypasricha.com — serves the static site + stores chats/leads in Firestore (GCP).",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
-    "simulate": "node test/simulate.mjs"
+    "dev": "node --watch src/server.js"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^7.10.0",
+    "@google-cloud/vertexai": "^1.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "google-auth-library": "^9.14.1",
-    "mongoose": "^8.6.0"
-  },
-  "devDependencies": {
-    "mongodb-memory-server": "^10.0.0"
+    "express": "^4.19.2"
   }
 }

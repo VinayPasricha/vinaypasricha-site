@@ -1,16 +1,7 @@
-// Central place that reads environment variables once and validates them.
+// Central config, read once from the environment.
+// Firestore needs no connection string or secret — on Cloud Run the project and
+// credentials are detected automatically. So there is very little to configure.
 import 'dotenv/config';
-
-function required(name) {
-  const v = process.env[name];
-  if (!v || !v.trim()) {
-    throw new Error(
-      `Missing required environment variable: ${name}. ` +
-      `Copy backend/.env.example to backend/.env and fill it in.`
-    );
-  }
-  return v.trim();
-}
 
 function optional(name, fallback) {
   const v = process.env[name];
@@ -18,22 +9,17 @@ function optional(name, fallback) {
 }
 
 export const config = {
-  // We don't call required() at import time so the test simulation can run
-  // with an in-memory database when MONGODB_URI is absent.
-  mongoUri: optional('MONGODB_URI', ''),
-  mongoDb: optional('MONGODB_DB', 'vinay'),
-  googleClientId: optional('GOOGLE_CLIENT_ID', ''),
-  port: parseInt(optional('PORT', '4000'), 10),
-  allowedOrigins: optional('ALLOWED_ORIGINS', 'http://localhost:4000')
+  // Cloud Run sets PORT (usually 8080). Default 8080 for local parity.
+  port: parseInt(optional('PORT', '8080'), 10),
+
+  // Comma-separated website origins allowed to call this API. Same-origin
+  // (the deployed site) needs no entry; this is for local/dev cross-origin.
+  allowedOrigins: optional('ALLOWED_ORIGINS', '')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),
+
+  // How long a conversation is kept. A Firestore TTL policy on `expiresAt`
+  // does the actual deleting (configured once on the database).
   conversationTtlDays: parseInt(optional('CONVERSATION_TTL_DAYS', '30'), 10),
 };
-
-// Helper used by the live server (not the test) to fail loudly if real
-// credentials are missing.
-export function assertProductionConfig() {
-  if (!config.mongoUri) required('MONGODB_URI');
-  if (!config.googleClientId) required('GOOGLE_CLIENT_ID');
-}

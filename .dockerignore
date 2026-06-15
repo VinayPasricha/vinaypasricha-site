@@ -1,0 +1,23 @@
+# Never ship these into the container image.
+.git
+node_modules
+**/node_modules
+*.env
+.env
+backend/.env
+
+# Private / internal material — must not be hosted (matches README + app.js blocks).
+uploads/
+_brief/
+_prompts/
+scraps/
+_audit/
+_explorations/
+screenshots/
+
+# Local cruft
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

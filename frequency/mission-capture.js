@@ -67,17 +67,23 @@
   function esc(s) {
     return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+  // Persist a turn to the backend transcript (best-effort, anonymous).
+  function record(role, text) {
+    if (window.OFChatStore) window.OFChatStore.addTurn(role, text);
+  }
   function aeonTurn(text) {
     var t = el('div', 'of-turn aeon');
     t.appendChild(el('div', 'of-who', 'Aeon1'));
     t.appendChild(el('div', 'of-said', text));
     stream.appendChild(t);
+    record('assistant', text);
   }
   function readerTurn(text) {
     var t = el('div', 'of-turn reader');
     t.appendChild(el('div', 'of-who', 'You'));
     t.appendChild(el('div', 'of-said', esc(text)));
     stream.appendChild(t);
+    record('user', text);
   }
   function thinking() {
     var t = el('div', 'of-turn aeon');
@@ -128,6 +134,9 @@
 
     stepIndex += 1;
 
+    // Persist progress after every answer so a partial intake is never lost.
+    if (window.OFChatStore) window.OFChatStore.save({ status: 'active' });
+
     if (stepIndex < STEPS.length) {
       // brief receipt, then next question
       composer.classList.add('is-held');
@@ -146,17 +155,34 @@
 
   function assemble() {
     var th = thinking();
-    extract(raw).then(function (fields) {
+    function finish(fields) {
       var result = OF.commitCapture(buildCapture(fields, raw));
       th.remove();
       aeonTurn('That’s enough to hold the mission. Here is what the runtime now knows.');
+      persistComplete(fields, result);
       setTimeout(function () { renderSpine(result); }, 900);
-    }).catch(function () {
-      // hard fallback — local extraction, never fail
-      var result = OF.commitCapture(buildCapture(localExtract(raw), raw));
-      th.remove();
-      aeonTurn('That’s enough to hold the mission. Here is what the runtime now knows.');
-      setTimeout(function () { renderSpine(result); }, 900);
+    }
+    extract(raw)
+      .then(finish)
+      .catch(function () { finish(localExtract(raw)); }); // never fail
+  }
+
+  // Save the finished chat + assembled Mission Spine to the backend (MongoDB).
+  function persistComplete(fields, result) {
+    if (!window.OFChatStore) return;
+    window.OFChatStore.setLead({
+      name: fields.name || '',
+      organizationName: fields.organization_name || '',
+    });
+    window.OFChatStore.save({
+      status: 'complete',
+      artefact: {
+        organization: result.organization,
+        mission: result.mission,
+        user: result.user,
+        seeds: result.seeds,
+        raw: raw,
+      },
     });
   }
 
@@ -503,7 +529,7 @@
       '<div class="of-spine-head" style="margin-top:32px">Outside-in · Tier-0</div>' +
       '<div class="of-rp-aeon"><div class="of-who2">Aeon1</div><div class="of-rp-say">Thank you. Based on what you’ve shared, I’d like to develop an initial understanding of your organization before going further — only from public signal, and only as a hypothesis.</div></div>' +
       '<div class="of-thinking" style="padding-left:2px"><span></span><span></span><span></span></div>';
-    OF.research.runTier0(org.organization_id, mis.mission_id, { ai: false }).then(function (r) {
+    OF.research.runTier0(org.organization_id, mis.mission_id, { ai: true }).then(function (r) {
       renderHypothesis(slot, org, mis, r);
     }).catch(function () {
       slot.innerHTML += '<div class="of-rp-say" style="color:var(--ink-3)">A preliminary view could not be formed right now.</div>';

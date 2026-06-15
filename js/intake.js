@@ -396,6 +396,11 @@ Before the JSON, ONE line: "Here's what I'll send to Vinay. Edit anything that i
       return;
     }
 
+    // Store the lead (name + email + role) in Firestore.
+    if (window.captureLead) {
+      window.captureLead(payload.email, { name: payload.name, organizationName: payload.role, source: 'aion1-intake' });
+    }
+
     elDraftSend.disabled = true;
     elDraftSend.textContent = 'Sending…';
 
