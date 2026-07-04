@@ -191,6 +191,28 @@
   }
 
   // Invitations back into the main site so the participant can keep exploring.
+  var CALENDLY_URL = 'https://calendly.com/vinay-goodspace/30min';
+  function bookingHTML() {
+    return '<div class="booking">' +
+      '<div class="booking-h">Book your 1:1 with Vinay</div>' +
+      '<p class="booking-sub">Pick a time that suits you — your summary will be waiting for him when you meet.</p>' +
+      '<div id="calendly-embed" style="min-width:320px;height:660px"></div>' +
+      '<a class="link-btn" href="' + CALENDLY_URL + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;text-decoration:none">Or open the scheduler in a new tab →</a>' +
+      '</div>';
+  }
+  // The page renders its content dynamically, so Calendly's auto-scan has usually
+  // already run by the time the embed exists — initialise it by hand once the
+  // widget script has loaded (poll briefly, since it loads async).
+  function initCalendly() {
+    var el = document.getElementById('calendly-embed');
+    if (!el || el.getAttribute('data-inited')) return;
+    (function go(tries) {
+      if (window.Calendly && window.Calendly.initInlineWidget) {
+        el.setAttribute('data-inited', '1');
+        window.Calendly.initInlineWidget({ url: CALENDLY_URL + '?hide_gdpr_banner=1', parentElement: el });
+      } else if (tries < 50) { setTimeout(function () { go(tries + 1); }, 200); }
+    })(0);
+  }
   function exploreHTML() {
     var cards = [
       { href: '/books', kicker: 'The bookshelf', title: 'The Books', desc: 'Six books on decisions, AI, execution, and the direction of civilizations.', cta: 'Browse the books', feat: true },
@@ -305,6 +327,7 @@
     if (S.view === 'done') {
       html += '<h1 class="abl-title" style="margin-top:28px">Thank you.</h1>' +
         '<p class="abl-copy">Your summary has been shared with Vinay, and your session is saved. He’ll use it to make your one-on-one as useful as possible.</p>' +
+        bookingHTML() +
         (S.reward ? '<a class="link-btn" style="display:inline-block;margin-top:16px;text-decoration:none" href="/ai-business-leaders/pdf/' + encodeURIComponent(S.reward.id) + '" target="_blank" rel="noopener">Download your ' + esc(REWARD_TITLES[S.reward.type] || 'document') + ' (PDF) ↓</a>' : '') +
         feedbackHTML() +
         exploreHTML() +
@@ -346,6 +369,7 @@
       ta.selectionStart = ta.value.length;
     }
     var sb = document.getElementById('sendBtn'); if (sb) sb.onclick = function () { send(); };
+    if (document.getElementById('calendly-embed')) initCalendly();
     var fn = document.getElementById('finish'); if (fn) fn.onclick = finish;
     var rf = document.getElementById('retryFinish'); if (rf) rf.onclick = finish;
     var rr = document.getElementById('rerun'); if (rr) rr.onclick = function () { send(S.pendingText, true); };
