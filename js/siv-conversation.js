@@ -198,7 +198,6 @@ function renderIntro() {
           <textarea
             id="siv-threshold-input"
             placeholder="The decision is…"
-            autofocus
             aria-label="Describe the decision in your own words"
           ></textarea>
           <div class="siv-helper">

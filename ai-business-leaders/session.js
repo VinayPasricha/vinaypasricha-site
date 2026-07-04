@@ -87,7 +87,9 @@
     S.busy = false;
     // Returning to a session with prior answers → welcome them back.
     if (S.view === 'chat' && d.messages.filter(function (m) { return m.role === 'user'; }).length > 0) S.resumed = true;
-    if (S.view === 'chat') S.scrollToEnd = true; // land on the newest message when the chat loads
+    // On load we land at the TOP of the page (title, progress, greeting / welcome-back
+    // first) — NOT at the bottom. Auto-scrolling to the newest message happens only
+    // when a message is actually sent during the session (see send()).
     render();
   }
 
