@@ -92,6 +92,27 @@
     .fb-comment:focus { outline: none; border-color: var(--accent); }
     .contact { margin-top: 30px; border-top: 1px solid var(--rule); padding-top: 16px; font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
     .contact a { color: var(--accent); }
+
+    /* ---- Phones (≤560px) ---------------------------------------------------
+       This session link is shared directly with participants, so it has to
+       feel native on a phone: no iOS zoom-on-focus, thumb-sized controls,
+       and no long word / wide table can break the layout. */
+    @media (max-width: 560px) {
+      .abl { padding: 30px 16px 88px; }
+      .abl-title { font-size: 24px; }
+      /* font-size >=16px is what stops mobile Safari from zooming on focus */
+      .composer textarea, .review-ta, .review-note, .fb-comment { font-size: 16px; }
+      /* comfortable tap targets (>=44px) */
+      .btn { padding: 13px 20px; }
+      .link-btn { min-height: 44px; padding: 6px 2px; }
+      .composer-row { flex-wrap: wrap; gap: 10px 12px; }
+      .composer-row .btn { flex-shrink: 0; }
+      .depths, .explore-grid { grid-template-columns: 1fr; }
+      /* keep long URLs and wide brief tables from forcing horizontal scroll */
+      .bubble, .doc { overflow-wrap: anywhere; }
+      .doc { overflow-x: auto; }
+      .mdt { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
