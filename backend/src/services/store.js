@@ -159,3 +159,9 @@ export async function saveLead({ email, name, phone, organizationName, source, s
   const ref = await db.collection(COLLECTIONS.leads).add(doc);
   return { id: ref.id, ...doc };
 }
+
+// Delete a single captured lead by id (admin cleanup).
+export async function deleteLead(id) {
+  await db.collection(COLLECTIONS.leads).doc(String(id)).delete();
+  return { deleted: true };
+}

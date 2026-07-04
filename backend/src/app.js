@@ -11,6 +11,7 @@ import {
   appendExchange,
   saveLead,
   listLeads,
+  deleteLead,
 } from './services/store.js';
 import { complete as aiComplete } from './services/ai.js';
 import {
@@ -266,6 +267,15 @@ export function createApp() {
   app.get('/api/leads', requireAdmin, async (req, res) => {
     try {
       res.json({ leads: await listLeads({ limit: 300 }) });
+    } catch (err) {
+      res.status(500).json({ error: 'server_error', detail: err.message });
+    }
+  });
+
+  // Delete a captured lead by id (admin cleanup).
+  app.delete('/api/leads/:id', requireAdmin, async (req, res) => {
+    try {
+      res.json({ ok: true, ...(await deleteLead(req.params.id)) });
     } catch (err) {
       res.status(500).json({ error: 'server_error', detail: err.message });
     }
