@@ -20,17 +20,43 @@ function gcfg(model, base) {
 // message shown to the participant; `options` are up to 3 detailed, tailored
 // answers they can click instead of typing. Falls back gracefully to plain text.
 async function converse(system, messages) {
-  const raw = await completeModel({
-    system, messages, model: CHAT_MODEL,
-    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 1400, temperature: 0.6 }),
+  const parse = (raw) => {
+    const j = extractJson(raw) || {};
+    const say = (typeof j.say === 'string' ? j.say : '').trim();
+    const options = Array.isArray(j.options)
+      ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, 3)
+      : [];
+    return { say, options, raw };
+  };
+  const call = (msgs) => completeModel({
+    system, messages: msgs, model: CHAT_MODEL,
+    // Headroom so a longer reply + 3 detailed options can't truncate the JSON
+    // mid-array (which would drop the options entirely).
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 2000, temperature: 0.6 }),
   });
-  const j = extractJson(raw) || {};
-  let say = (typeof j.say === 'string' ? j.say : '').trim();
-  const options = Array.isArray(j.options)
-    ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, 3)
-    : [];
-  if (!say) { say = String(raw || '').replace(/```json|```/g, '').trim(); return { say, options: [] }; }
-  return { say, options };
+
+  let out = parse(await call(messages));
+
+  // The participant UI always shows three clickable options. Retry once whenever
+  // the first pass yielded fewer than 3 — this covers BOTH "valid JSON but a short
+  // options array" AND "the model slipped into plain prose with no options at all"
+  // (in which case `say` parsed empty). Bounded to a single retry so a stubborn
+  // turn can't stall the conversation.
+  if (out.options.length < 3) {
+    const nudge = messages.concat([{
+      role: 'user',
+      content: 'Reply again as STRICT JSON only — {"say":"...","options":["...","...","..."]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly 3 distinct, first-person answers this participant might click, even for a confirmation question (e.g. an affirmation, a partial correction, and a fuller correction).',
+    }]);
+    const retry = parse(await call(nudge));
+    if (retry.options.length > out.options.length || (!out.say && retry.say)) {
+      out = { say: retry.say || out.say, options: retry.options.length ? retry.options : out.options, raw: retry.raw };
+    }
+  }
+
+  // Last-resort: if we still never got a JSON `say`, show the raw prose reply
+  // rather than nothing — with whatever options (if any) we recovered.
+  const say = out.say || String(out.raw || '').replace(/```json|```/g, '').trim();
+  return { say, options: out.options };
 }
 
 export { rewardTypeForDepth };
@@ -155,7 +181,7 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
 export async function openingTurn({ participant, session }) {
   const research = await repo.getResearch(participant.id);
   const system = buildConversationSystem({ participant, research, session });
-  const { say, options } = await converse(system, [{ role: 'user', content: 'The participant has just opened the session and will see your reply as the very first message. Greet them warmly by first name, briefly confirm their company and role from the preliminary research and invite corrections, then ask your first question. Provide 3 options they might click to answer that first question.' }]);
+  const { say, options } = await converse(system, [{ role: 'user', content: 'The participant has just opened the session and will see your reply as the very first message. Greet them warmly by first name, briefly confirm their company and role from the preliminary research and invite corrections, then ask your first question. Provide exactly 3 options they might click to answer that first question — even though it is a confirmation, still give 3 (an affirmation, a partial correction, and a fuller correction).' }]);
   if (say) await repo.addMessage({ session_id: session.id, participant_id: participant.id, role: 'assistant', content: say, metadata: { options } });
   return { say, options };
 }

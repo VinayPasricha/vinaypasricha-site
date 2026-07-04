@@ -59,7 +59,7 @@ Return ONLY a JSON object (no prose, no code fences) in exactly this shape:
   "say": "your message to the participant — specific to them, a few sentences, ending in ONE clear question",
   "options": ["a detailed answer THEY might give", "a different detailed answer", "a third distinct detailed answer"]
 }
-Rules for "options": exactly 3 realistic, DETAILED answers this specific participant might give to your question — written in the first person ("We…", "I…"), grounded in their company/industry/role, each one or two sentences and meaningfully different from the others (not three phrasings of the same thing). They are clickable shortcuts so the participant doesn't have to type. Do NOT add an "other"/"custom" option — the interface adds that itself. If a question genuinely has no sensible pre-filled answers (e.g. asking them to confirm their name), return an empty options array.
+Rules for "options": ALWAYS return exactly 3 — never two, never zero — realistic, DETAILED answers this specific participant might give to your question, written in the first person ("We…", "I…"), grounded in their company/industry/role, each one or two sentences and meaningfully different from the others (not three phrasings of the same thing). They are clickable shortcuts so the participant doesn't have to type. Do NOT add an "other"/"custom" option — the interface adds that itself. Even for a confirmation question (e.g. confirming their role or company), still give exactly 3 — typically an affirmation, a partial correction, and a fuller/different correction they might realistically pick.
 
 ## The conversation
 The participant has chosen the ${depth ?? '(not yet chosen)'}-minute journey.
