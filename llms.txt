@@ -27,7 +27,7 @@ listed here.
   — the book *AI for Business Leaders* and frameworks for AI-ready
   organisations.
 - [I have a difficult decision in front of me](https://vinaypasricha.com/paths/decisions.html)
-  — *The SIV Method* (Situation, Insight, Verdict) — a framework for
+  — *The SIV Method* (Socratic · Iterative · Vinay) — a framework for
   thinking under pressure.
 - [I know what to do. I'm struggling to execute](https://vinaypasricha.com/paths/execute.html)
   — *The Execution Doctrine* — patterns from three decades of building.
@@ -58,7 +58,7 @@ listed here.
   building your company brain. Frameworks for the AI-ready organisation.
 - **The Execution Doctrine** (published) — the grammar of getting things
   done, built from three decades of trying.
-- **The SIV Method** (published) — Situation, Insight, Verdict. A small
+- **The SIV Method** (published) — Socratic · Iterative · Vinay. A small
   instrument for thinking under pressure.
 - **The Signal** (in progress · non-fiction) — on growing through
   meaningful conversations with AI.

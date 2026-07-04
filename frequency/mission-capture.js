@@ -47,6 +47,9 @@
   // ---- State -------------------------------------------------
   var raw = {};
   var stepIndex = 0;
+  var validationsGiven = 0;   // how many validation answers the visitor has given
+  var publishStarted = false; // guard so the page is generated only once
+  var waitTimer = null;       // live elapsed-time ticker shown while research runs
 
   // ---- DOM ---------------------------------------------------
   var stream   = document.getElementById('stream');
@@ -71,12 +74,20 @@
   function record(role, text) {
     if (window.OFChatStore) window.OFChatStore.addTurn(role, text);
   }
+  // Keep the latest message in view as the conversation grows.
+  function scrollToBottom() {
+    requestAnimationFrame(function () {
+      try { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+      catch (e) { window.scrollTo(0, document.body.scrollHeight); }
+    });
+  }
   function aeonTurn(text) {
     var t = el('div', 'of-turn aeon');
     t.appendChild(el('div', 'of-who', 'Aeon1'));
     t.appendChild(el('div', 'of-said', text));
     stream.appendChild(t);
     record('assistant', text);
+    scrollToBottom();
   }
   function readerTurn(text) {
     var t = el('div', 'of-turn reader');
@@ -84,6 +95,7 @@
     t.appendChild(el('div', 'of-said', esc(text)));
     stream.appendChild(t);
     record('user', text);
+    scrollToBottom();
   }
   function thinking() {
     var t = el('div', 'of-turn aeon');
@@ -92,6 +104,7 @@
     d.appendChild(el('span')); d.appendChild(el('span')); d.appendChild(el('span'));
     t.appendChild(d);
     stream.appendChild(t);
+    scrollToBottom();
     return t;
   }
   function holdComposer(ms) {
@@ -118,6 +131,7 @@
   function askStep() {
     setTicks();
     var step = STEPS[stepIndex];
+    if (!step) return; // all questions asked — nothing to do (guards a timing race)
     aeonTurn(step.q);
     input.placeholder = step.placeholder;
     holdComposer(800);
@@ -473,10 +487,12 @@
       '<p class="of-foot-note">' +
         'Recorded. The runtime is now mission-centric — it holds a mission, the organization that owns it, ' +
         'and the person who described it. Next, the organization’s <em>frequency</em> would be researched ' +
-        'before any talk of resonance or candidates. ' +
-        '<a href="../studio/missions.html">Open the Mission admin →</a>' +
+        'before any talk of resonance or candidates.' +
       '</p>' +
-      '<button class="of-restart" id="restart" type="button">Describe another mission</button>';
+      // Public frequency page — generated automatically AFTER all validation feedback.
+      '<div id="of-publish-out" style="margin-top:8px"></div>' +
+
+      '<button class="of-restart" id="restart" type="button" style="margin-top:20px">Describe another mission</button>';
 
     spineEl.innerHTML = html;
     spineEl.classList.remove('hidden');
@@ -616,6 +632,7 @@
         var r = b.getAttribute('data-r');
         var res = OF.validation.recordValidation(v.validation_id, r, 'mission_owner');
         done.push({ statement: v.statement, response: r, understanding: res && res.understanding });
+        validationsGiven += 1;
         renderValidationStep(box, org, mis, queue, i + 1, done);
       });
     });
@@ -663,6 +680,7 @@
     Array.prototype.forEach.call(box.querySelectorAll('.of-cbtn'), function (b) {
       b.addEventListener('click', function () {
         OF.requiredValidation.recordRequired(v.required_validation_id, b.getAttribute('data-r'), 'mission_owner');
+        validationsGiven += 1;
         renderRequiredStep(org, mis, rfid, asked + 1, maxAsk);
       });
     });
@@ -670,12 +688,19 @@
 
   // Aeon1 explains mission → required → current → gap (tentative).
   function explainFrequency(org, mis) {
+    // All validation feedback has now been given — generate the public page once.
+    // A profile the owner has validated from inside is deeper than Tier-0: if any
+    // validation was given it lands at stage 3 (Deep discovery), else stage 2.
+    if (!publishStarted) {
+      publishStarted = true;
+      publishProfile({ organization: org, mission: mis }, { stage: validationsGiven > 0 ? 3 : 2 });
+    }
     var box = document.getElementById('of-freq');
     if (!box || !OF.frequency) return;
     if (!OF.frequency.hasUnderstanding(org.organization_id)) {
       box.innerHTML =
         '<div class="of-rp-aeon"><div class="of-who2">Aeon1</div><div class="of-rp-say">Once a few of these are validated, I can compare what the mission <em>requires</em> against what your organization currently <em>appears to be</em>. We are not there yet — nothing was confirmed strongly enough.</div></div>' +
-        '<p class="of-foot-note" style="border:none;padding-top:8px">Continue validating in the <a href="../studio/missions.html">Mission admin</a>.</p>';
+        '<p class="of-foot-note" style="border:none;padding-top:8px">Continue validating with your own people to sharpen this.</p>';
       return;
     }
     var r = OF.frequency.recompute(org.organization_id, mis.mission_id);
@@ -697,7 +722,7 @@
           '<div class="of-rp-narr">' + esc(uniqAreas.join(', ')) + ' — possibilities to explore, not recommendations. No score, no ranking.</div></div>'
         : '') +
       '<div id="of-roles"></div>' +
-      '<p class="of-foot-note" style="border:none;padding-top:8px">The full required / current / gap table is in the <a href="../studio/missions.html">Mission admin</a>.</p>';
+      '<p class="of-foot-note" style="border:none;padding-top:8px">The full required / current / gap picture sharpens as more is validated with your people.</p>';
     explainRoles(org, mis);
   }
 
@@ -720,7 +745,7 @@
         'We currently believe ' + esc(dim.toLowerCase()) + ' may be limiting this mission. One possible intervention is creating or strengthening a role whose <em>purpose</em> is to raise it — to build the capability between where the organization is and where the mission needs it to be. ' +
         'The title is secondary. Possible shapes: ' + esc(titles.join(', ')) + '. Each is a hypothesis, not a requisition.' +
       '</div></div>' +
-      '<p class="of-foot-note" style="border:none;padding-top:6px">Define a role from these in the <a href="../studio/missions.html">Mission admin</a> — purpose is written before the title. Once a role is defined, two journeys open: a free <em>Fast Lane</em> to begin quickly, or a paid <em>Deep Lane</em> to understand first — generate a <a href="../studio/mandates.html">mandate</a> from either.</p>';
+      '<p class="of-foot-note" style="border:none;padding-top:6px">Each role is named by its <em>purpose</em> before any title — and only appears when a gap is best closed by a person.</p>';
   }
 
   function summarizeValidation(done) {
@@ -735,6 +760,132 @@
     if (!s) return '';
     var m = String(s).match(/^[^.]+\./);
     return m ? m[0] : s;
+  }
+
+  // The live research call can take ~60s — longer than Firebase Hosting's fixed
+  // 60s proxy timeout. On the live site we therefore call Cloud Run DIRECTLY
+  // (300s limit) for this one heavy request; everything else stays on the domain.
+  function researchApiBase() {
+    if (typeof window.OF_RESEARCH_API === 'string') return window.OF_RESEARCH_API;
+    var h = location.hostname;
+    if (h === 'vinaypasricha.com' || h.indexOf('.web.app') >= 0 || h.indexOf('.firebaseapp.com') >= 0) {
+      return 'https://vinay-site-349140108061.asia-south1.run.app';
+    }
+    return ''; // local / same-origin
+  }
+
+  // Build the research lead from what the visitor actually typed.
+  function buildContext(result) {
+    var m = (result && result.mission) || {}, o = (result && result.organization) || {};
+    return [
+      o.industry ? 'Industry: ' + o.industry : '',
+      o.location ? 'Location: ' + o.location : '',
+      m.desired_outcome ? 'Stated current goal: ' + m.desired_outcome : '',
+      (m.obstacles && m.obstacles[0]) ? 'Stated obstacle: ' + m.obstacles[0] : '',
+      raw.q2 ? 'What they are trying to achieve: ' + raw.q2 : '',
+      raw.q3 ? 'Why it matters: ' + raw.q3 : '',
+      raw.q4 ? 'What is blocking them: ' + raw.q4 : '',
+      raw.q5 ? 'Role of people / talent: ' + raw.q5 : ''
+    ].filter(Boolean).join('\n');
+  }
+
+  // ---- Publish a shareable, live-researched public page -------
+  // Calls the backend, which runs LIVE web research (Gemini + Google Search)
+  // for this company, builds the 12-dimension profile, persists it, and returns
+  // a /frequency/company/<slug> URL.
+  function publishProfile(result, opts) {
+    opts = opts || {};
+    var org = result.organization || {};
+    var out = document.getElementById('of-publish-out');
+    if (!org.organization_name || !out) return;
+    out.innerHTML =
+      '<div class="of-spine-head" style="margin-top:32px">Public frequency page</div>' +
+      '<div class="of-rp-aeon"><div class="of-who2">Aeon1</div><div class="of-rp-say">Researching ' + esc(org.organization_name) +
+      ' live with deep web research (Gemini 2.5 Pro) — searching multiple sources and assembling the shareable 12-dimension page. This can take up to ~3 minutes.</div></div>' +
+      '<div class="of-wait">' +
+        '<div class="of-wait-top">' +
+          '<div class="of-wait-side"><span class="of-pulse"></span><span class="of-pulse"></span><span class="of-pulse"></span>' +
+            '<span class="of-wait-label">elapsed</span></div>' +
+          '<div class="of-wait-clock" id="of-clock">00:00</div>' +
+          '<div class="of-wait-side"><span class="of-wait-label">researching</span>' +
+            '<span class="of-pulse"></span><span class="of-pulse"></span><span class="of-pulse"></span></div>' +
+        '</div>' +
+        '<div class="of-bar"></div>' +
+        '<div class="of-wait-status" id="of-wait-status">Searching the web…</div>' +
+      '</div>';
+    scrollToBottom();
+
+    // live elapsed clock + cycling status while the research runs
+    (function () {
+      var startedAt = Date.now();
+      var steps = ['Searching the web…', 'Reading the company site & careers page…',
+        'Checking LinkedIn & company databases…', 'Looking up employee reviews…',
+        'Cross-checking headcount & funding…', 'Reading founder interviews…',
+        'Mapping the 12 dimensions…', 'Assembling the report…'];
+      var stepIdx = 0;
+      if (waitTimer) clearInterval(waitTimer);
+      waitTimer = setInterval(function () {
+        var clk = document.getElementById('of-clock');
+        if (!clk) { clearInterval(waitTimer); waitTimer = null; return; }
+        var s = Math.floor((Date.now() - startedAt) / 1000);
+        clk.textContent = ('0' + Math.floor(s / 60)).slice(-2) + ':' + ('0' + (s % 60)).slice(-2);
+        if (s > 0 && s % 12 === 0 && stepIdx < steps.length - 1) {
+          stepIdx += 1;
+          var st = document.getElementById('of-wait-status');
+          if (st) st.textContent = steps[stepIdx];
+        }
+      }, 1000);
+    })();
+
+    var sid = '';
+    try { if (window.OFChatStore && typeof OFChatStore.sessionId === 'function') sid = OFChatStore.sessionId(); } catch (e) {}
+
+    function failCard(msg) {
+      out.innerHTML =
+        '<div class="of-rp-aeon"><div class="of-who2">Aeon1</div><div class="of-rp-say">' + msg + '</div></div>' +
+        '<button class="of-restart" type="button" id="of-republish" style="margin-top:14px">Try again →</button>';
+      var rb = document.getElementById('of-republish');
+      if (rb) rb.addEventListener('click', function () { publishProfile(result, opts); });
+    }
+
+    // Never let the visitor stare at an endless spinner.
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var killer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 270000) : null;
+
+    fetch(researchApiBase() + '/api/company-profiles', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: org.organization_name, url: org.website || '', context: buildContext(result), stage: opts.stage || 2, sessionId: sid }),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) { if (killer) clearTimeout(killer); return r.json(); }).then(function (d) {
+      if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
+      if (d && d.ok && d.url) {
+        var full = window.location.origin + d.url;
+        // Auto-open in a new tab (popup blockers may stop this — the card's button is the reliable path).
+        try { window.open(d.url, '_blank', 'noopener'); } catch (e) {}
+        var ess = d.essence ? esc(String(d.essence).slice(0, 150)) + (String(d.essence).length > 150 ? '…' : '') : '';
+        var meta = d.stageLabel ? 'Stage ' + d.stage + ' · ' + esc(d.stageLabel) + (d.accuracy ? ' · ' + d.accuracy + '% confidence' : '') : '';
+        out.innerHTML =
+          '<div style="border:1px solid #243044;border-radius:8px;background:linear-gradient(180deg,#101822,#0c0e13);padding:30px 30px 28px;margin-top:26px;box-shadow:0 18px 60px rgba(0,0,0,.45)">' +
+            '<div style="font-family:var(--mono,monospace);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#6f9bb5;margin-bottom:14px">✦&nbsp; Organizational Frequency · ready</div>' +
+            '<div style="font-size:27px;font-weight:300;line-height:1.15;color:#ebe9e2;letter-spacing:-.01em">' + esc(org.organization_name) + '’s frequency is ready.</div>' +
+            (meta ? '<div style="font-family:var(--mono,monospace);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a9bb0;margin-top:14px">' + meta + '</div>' : '') +
+            (ess ? '<div style="font-size:15px;font-weight:300;line-height:1.6;color:#b8b5ad;margin-top:16px;max-width:54ch">' + ess + '</div>' : '') +
+            '<a href="' + d.url + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:24px;background:#6f9bb5;color:#08131c;font-family:var(--mono,monospace);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:14px 24px;border-radius:4px;text-decoration:none">Open the full profile →</a>' +
+            '<div style="font-size:12px;color:#6e6c66;margin-top:16px">Opened in a new tab · or share <span style="color:#8a9bb0">' + esc(full) + '</span></div>' +
+          '</div>';
+        scrollToBottom();
+      } else {
+        failCard(esc((d && d.detail) || ('Could not assemble ' + org.organization_name + '’s profile right now.')));
+      }
+    }).catch(function (e) {
+      if (killer) clearTimeout(killer);
+      if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
+      var aborted = e && e.name === 'AbortError';
+      failCard(aborted
+        ? ('Researching ' + esc(org.organization_name) + ' is taking unusually long — it may be a very large or ambiguous name. Try again, ideally with the exact company name and its website.')
+        : 'Network error while publishing. Please try again.');
+    });
   }
 
   // ---- Go ----------------------------------------------------

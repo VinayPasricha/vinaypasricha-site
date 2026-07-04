@@ -126,6 +126,12 @@ export async function appendExchange({ sessionId, runtime, page, userText, compl
   return { ok: true, count: data.messages.length };
 }
 
+// List recent leads (for the admin/studio view).
+export async function listLeads({ limit = 300 } = {}) {
+  const snap = await db.collection(COLLECTIONS.leads).orderBy('updatedAt', 'desc').limit(limit).get();
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
 // Save a captured lead (email/contact). De-dupes on email when one is given.
 export async function saveLead({ email, name, phone, organizationName, source, sessionId }) {
   const now = new Date();

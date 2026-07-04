@@ -235,6 +235,33 @@ body::before {
   50%      { opacity: 0.9;  transform: translateY(-2px); }
 }
 
+/* ---- research wait panel (live clock + activity while researching) ---- */
+.of-wait {
+  border: 1px solid var(--rule-edge);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(20,32,42,0.45), rgba(11,13,18,0.35));
+  padding: 24px 26px; margin-top: 22px;
+}
+.of-wait-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.of-wait-clock {
+  font-family: var(--mono); font-size: 30px; font-weight: 500; color: var(--ink);
+  letter-spacing: 0.04em; font-variant-numeric: tabular-nums;
+}
+.of-wait-side { display: flex; align-items: center; gap: 8px; }
+.of-wait-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--freq); }
+.of-pulse { width: 9px; height: 9px; border-radius: 50%; background: var(--freq); animation: ofPulse 1200ms ease-in-out infinite; }
+.of-pulse:nth-child(2) { animation-delay: 200ms; }
+.of-pulse:nth-child(3) { animation-delay: 400ms; }
+@keyframes ofPulse { 0%,100% { opacity: 0.2; transform: scale(0.75); } 50% { opacity: 1; transform: scale(1.15); } }
+.of-bar { height: 3px; background: var(--rule-edge); border-radius: 2px; overflow: hidden; margin-top: 18px; position: relative; }
+.of-bar::after {
+  content: ""; position: absolute; top: 0; left: -40%; height: 100%; width: 40%;
+  background: linear-gradient(90deg, transparent, var(--freq), transparent);
+  animation: ofBar 1400ms linear infinite;
+}
+@keyframes ofBar { 0% { left: -40%; } 100% { left: 100%; } }
+.of-wait-status { font-family: var(--sans); font-size: 13px; font-weight: 300; color: var(--ink-3); margin-top: 14px; min-height: 18px; }
+
 /* ========================= COMPOSER ========================= */
 .of-composer {
   position: relative;

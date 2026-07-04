@@ -50,7 +50,8 @@ function InquirySurface({
   }, [draft]);
 
   function handleKey(e) {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    // Enter submits; Shift+Enter inserts a new line.
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       submit();
     }
@@ -160,7 +161,7 @@ function InquirySurface({
                   aria-label="Rest with this"
                   title="Sit with what has surfaced (Alt+R)"
                 >rest with this · ⌥R</button>
-                <span className="pacing">{composerHint || 'Cmd/Ctrl + Enter to submit'}</span>
+                <span className="pacing">{composerHint || 'Enter to submit · Shift+Enter for a new line'}</span>
               </span>
             </div>
             <div className="c-composer-wrap">

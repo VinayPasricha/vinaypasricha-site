@@ -1201,7 +1201,16 @@ function renderPendingQuestion(beat, animated) {
   stage.appendChild(el);
   if (animated) {
     setTimeout(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Only pull the question to the top when there is prior content above it
+      // (i.e. not the first beat). Add JUST enough scroll room below so it can
+      // reach the top — a constant large pad would leave the early screens empty.
+      const hasPrior = [...stage.querySelectorAll('.s-exchange')].some((x) => x !== el);
+      if (hasPrior) {
+        const h = Math.round(el.getBoundingClientRect().height);
+        stage.style.paddingBottom = Math.max(200, window.innerHeight - h - 90) + 'px';
+        el.style.scrollMarginTop = '90px';
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       textarea.focus();
     }, 800);
   } else {
@@ -1756,7 +1765,8 @@ function boot() {
   // Wire input
   textarea.addEventListener('input', autosize);
   textarea.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    // Enter submits; Shift+Enter inserts a new line.
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Archive — The Signal</title>
-  <meta name="description" content="The longitudinal home of every Resonance Record, Interruption Trace, Field Contact Record, Decision Trace, Place Signal Map, Timing Signal Map, and Signal Authority Map a reader has produced inside The Signal.">
+  <meta name="description" content="The longitudinal home of every record produced inside The Signal — Resonance Records, Interruption Traces, Decision Traces, and more.">
   <meta name="robots" content="noindex, follow">
 
   <link rel="icon" href="../favicon.png">
@@ -271,7 +271,7 @@
 <main data-screen-label="07 The Archive">
 
   <header class="a-top">
-    <div class="s-mark"><a href="index.html"><em>The Signal</em></a></div>
+    <div class="s-mark"><a href="./"><em>The Signal</em></a></div>
     <div class="s-meta">The Archive · <em id="archive-count">0 records</em></div>
   </header>
 
@@ -294,10 +294,10 @@
     <div class="a-foot">
       The Archive is honest. It shows only what has been done.
       <div class="nav">
-        <a href="index.html">Threshold</a>
-        <a href="begin.html">Where to Begin</a>
-        <a href="sessions.html">Architecture</a>
-        <a href="field.html">The Field</a>
+        <a href="./">Threshold</a>
+        <a href="begin">Where to Begin</a>
+        <a href="sessions">Architecture</a>
+        <a href="field">The Field</a>
       </div>
     </div>
 
@@ -398,7 +398,7 @@
           The Archive is empty. The first record materializes once Session 0 —
           the Split — has been completed and the Resonance Record generated.
         </div>
-        <a href="session.html?session=0">Enter Session 0 →</a>
+        <a href="session?session=0">Enter Session 0 →</a>
       </div>
     `;
     if (countEl) countEl.textContent = 'no records yet';
@@ -421,7 +421,7 @@
           <div class="a-record-title"><em>${escapeHTML(titleLine)}</em></div>
           <div class="a-record-body">${body}</div>
           <div class="a-record-actions">
-            <a href="session.html?session=${r.sessionId}">Return to the session →</a>
+            <a href="session?session=${r.sessionId}">Return to the session →</a>
           </div>
         </div>
       `);

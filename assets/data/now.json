@@ -5,22 +5,22 @@
   "items": [
     { "verb": "Writing",  "subject": "The Signal" },
     { "verb": "Building", "subject": "GoodSpace AI" },
-    { "verb": "Running",  "subject": "Cohort III" }
+    { "verb": "Running",  "subject": "a live cohort" }
   ],
   "page": {
     "lede": "What I am *currently* doing, thinking, reading. Updated when something actually changes — not on a schedule. Inspired by [Derek Sivers' /now page](https://nownownow.com/about).",
     "sections": [
       {
         "label": "Writing",
-        "body": "*The Signal* is the slow piece. Late 2026 target. It is the most personal of the books and is being written recursively — each pass produces a deeper version of the same chapters. The companion field — the AI-mediated developmental experience — is now live at [/signal](../signal/index.html) and is being used to pressure-test the architecture as the manuscript matures.\n\n*Organizational Frequency* is in final edits. Print edition arrives in Q3 2026."
+        "body": "*The Signal* is the slow piece, now published. It is the most personal of the books and is being written recursively — each pass produces a deeper version of the same chapters. The companion field — the AI-mediated developmental experience — is now live at [/signal](../signal/) and is being used to pressure-test the architecture as the manuscript matures.\n\n*Organizational Frequency* is published, with a print edition to follow."
       },
       {
         "label": "Building",
-        "body": "*GoodSpace AI* — the platform that lives at the heart of the *Organizational Frequency* doctrine. Currently scaling the product around intelligent discovery rather than resume-matching. Half a million matches and counting.\n\nQuietly: the backend that will eventually power the Studio. A small one. The plan is in [/_brief/backend-plan.md](../_brief/backend-plan.md)."
+        "body": "*GoodSpace AI* — the platform that lives at the heart of the *Organizational Frequency* doctrine. Currently scaling the product around intelligent discovery rather than resume-matching. Half a million matches and counting.\n\nQuietly: the backend that will eventually power the Studio. A small one, built deliberately."
       },
       {
         "label": "Running",
-        "body": "*Cohort III* of the AI Leadership Course is underway — a small group of senior operators working through AI strategy in their own businesses, week by week. Cohort IV begins Q3."
+        "body": "A cohort of the AI Leadership Course is currently underway — a small group of senior operators working through AI strategy in their own businesses, week by week. Applications for the next cohort are open."
       },
       {
         "label": "Reading",
@@ -32,7 +32,7 @@
       },
       {
         "label": "Recent",
-        "body": "*The Signal* field shipped this month. The Studio editing room is now operational across six surfaces — videos, notebook, books, prompts, the rotating *Now* line, and a progress dashboard. The site is now an instrument I can update myself, weekly, without rebuilding from scratch.\n\nThe Notebook stays empty until June 7. The first essay is being written this weekend."
+        "body": "*The Signal* field shipped this month. The Studio editing room is now operational across six surfaces — videos, notebook, books, prompts, the rotating *Now* line, and a progress dashboard. The site is now an instrument I can update myself, weekly, without rebuilding from scratch.\n\nThe Notebook is beginning to fill — the first essays are being written now."
       },
       {
         "label": "Not doing",

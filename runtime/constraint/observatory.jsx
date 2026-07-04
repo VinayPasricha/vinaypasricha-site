@@ -37,7 +37,7 @@ async function obsLoadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/02-constraint-observatory.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/02-constraint-observatory.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -103,7 +103,7 @@ function obsBuildSystemPrompt({ doctrine, nodeSpec }) {
     "DELTA RULES:",
     "• Use add_observation when the reader names a place reality resists. Keep the label specific to their words. Weight starts at 0.5; raise when evidence accumulates, lower when contradicted.",
     "• Use update_observation(eliminated: true) when an observation fails the governing test (i.e. strengthening it would NOT materially raise system capacity).",
-    "• Use mark_governing only when one observation has clearly surfaced as the governing limit. Be slow with this — narrowing, then classification, then naming.",
+    "• Use mark_governing once narrowing produces a clear front-runner. Sequence the work — narrow, classify, name — but once 3+ observations have been examined and one stands out as the governing limit, you MUST mark_governing, classify it, and set_one_strengthening; the cycle cannot settle until those exist. Do not narrow indefinitely.",
     "• Use classify after narrowing has identified the dominant category.",
     "• Use set_one_strengthening for the single highest-leverage intervention. Phrase it as a concrete action, not a category.",
     "• If no structural change is needed, return deltas: [].",
@@ -371,7 +371,7 @@ function Observatory() {
 
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 02</span>
         </div>

@@ -15,6 +15,12 @@ _audit/
 _explorations/
 screenshots/
 
+# Firebase Hosting (fronts Cloud Run for the custom domain) — not needed in the image
+firebase.json
+.firebaserc
+public/
+.firebase/
+
 # Local cruft
 *.log
 .DS_Store

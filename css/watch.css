@@ -53,7 +53,7 @@
 
 /* ----------------- FEATURED VIDEO ----------------- */
 .featured-video-section {
-  padding: 64px var(--gutter) 80px;
+  padding: 100px var(--gutter) 100px;
   max-width: 1280px;
   margin: 0 auto;
 }
@@ -281,7 +281,7 @@
 
 /* ----------------- VIDEO GRID ----------------- */
 .video-grid-section {
-  padding: 32px var(--gutter) 120px;
+  padding: 100px var(--gutter) 100px;
   max-width: 1280px;
   margin: 0 auto;
 }
@@ -561,7 +561,7 @@
 
 /* ----------------- SUBSCRIBE ----------------- */
 .subscribe-section {
-  padding: 96px var(--gutter);
+  padding: 100px var(--gutter);
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);

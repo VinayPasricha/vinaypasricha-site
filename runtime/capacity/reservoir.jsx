@@ -29,7 +29,7 @@ async function capLoadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/07-capacity-expansion-chamber.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/07-capacity-expansion-chamber.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -96,7 +96,7 @@ function capBuildSystemPrompt({ doctrine, nodeSpec }) {
     "• Use mark_stabilized when an active or overload load is reported as having moved to calm carrying.",
     "• Use set_field_tier rarely — only when the executor has visibly described their carrying capacity having widened a tier (1 small ... 5 wide). Default 1.",
     "• Use set_one_stabilization to name the single widening intervention. Concrete, structural, not motivational. NOT 'work on calm'. Rather: 'Delegate weekly reporting so capacity to think long-term is reclaimed.'",
-    "• Settle only when at least one stabilization is named and field tier is named.",
+    "• Once 3+ loads exist and the overloads have been examined in 'widen', you MUST name the single widening intervention via set_one_stabilization and set the field tier (default 1) — the cycle cannot settle without a stabilization named. Then issue 'settle'. Do not keep probing once a stabilization is named.",
     "",
     "kind: 'inquiry' (next question), 'observation' (pattern surfaced — italic), 'settle' (structural stillness observed).",
   ].join('\n');
@@ -296,7 +296,7 @@ function Reservoir() {
 
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 07</span>
         </div>

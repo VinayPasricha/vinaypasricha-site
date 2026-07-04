@@ -9,7 +9,6 @@
     "translate:dry": "node scripts/translate-pack.mjs --dry-run"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.30.0",
     "jsdom": "^25.0.1"
   }
 }

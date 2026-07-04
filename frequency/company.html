@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Helio Robotics — Organizational Frequency (Public Profile)</title>
-  <meta name="description" content="What public signals suggest about how Helio Robotics leads, communicates, executes and grows — a probabilistic, evidence-based Organizational Frequency profile that sharpens as the organization moves through the runtime.">
+  <meta name="description" content="What public signals suggest about how Helio Robotics leads, communicates, executes, and grows — an evidence-based Organizational Frequency profile.">
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <link rel="canonical" href="https://vinaypasricha.com/frequency/company.html">
+  <link rel="canonical" href="https://vinaypasricha.com/frequency/company">
 
   <meta property="og:title" content="Helio Robotics — Organizational Frequency (Public Profile)">
   <meta property="og:description" content="An outside-in read of how an organization operates — built from public signal, sharpened by the runtime.">
@@ -116,6 +116,25 @@
   .dial-side .dl{ font-family:var(--sans); font-size:13px; font-weight:300; line-height:1.6; color:var(--ink-2); text-wrap:pretty; }
   .dial-side .dl b{ color:var(--ink); font-weight:500; }
   .dial-note{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-4); margin-top:14px; }
+
+  /* ===== people & culture signals ===== */
+  .sig-grid{ display:flex; flex-wrap:wrap; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden; }
+  .sig{ flex:1 1 160px; min-width:160px; background:var(--gr-2); padding:16px 18px; display:flex; flex-direction:column; gap:7px; }
+  .sig-v{ font-size:23px; font-weight:300; color:var(--ink); line-height:1; letter-spacing:-0.01em; }
+  .sig-v em{ font-style:normal; color:var(--freq); }
+  .sig-nf{ font-size:15px; font-weight:300; font-style:italic; color:var(--ink-4); }
+  .sig-k{ font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-4); }
+  .sig-sub{ font-family:var(--sans); font-size:11px; font-weight:300; line-height:1.4; color:var(--ink-3); }
+  .sig-voices{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); border-top:0; overflow:hidden; margin-top:1px; }
+  .sig-col{ background:var(--gr-2); padding:18px 20px; }
+  .sig-col h4{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--freq); margin-bottom:13px; }
+  .sig-col.cons h4{ color:var(--warn); }
+  .sig-col ul{ list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .sig-col li{ font-family:var(--sans); font-size:13px; font-weight:300; line-height:1.55; color:var(--ink-2); padding-left:16px; position:relative; text-wrap:pretty; }
+  .sig-col li::before{ content:""; position:absolute; left:0; top:8px; width:5px; height:5px; border-radius:50%; background:var(--freq-2); }
+  .sig-col.cons li::before{ background:var(--warn-3); }
+  .sig-col li.sig-none{ color:var(--ink-4); font-style:italic; }
+  .sig-col li.sig-none::before{ background:var(--ink-4); }
 
   /* ===== stage rail ===== */
   .stage-sec{ margin:52px 0 8px; }
@@ -229,7 +248,7 @@
 
   <header class="of-top">
     <div class="of-mark"><span class="dot"></span> Organizational Frequency</div>
-    <div class="of-house"><a href="../index.html">Vinay Pasricha</a> · Company Profile · v0.1</div>
+    <div class="of-house"><a href="../">Vinay Pasricha</a> · Company Profile · v0.1</div>
   </header>
 
   <main class="wrap" data-screen-label="OF · Company Frequency">
@@ -263,6 +282,16 @@
           </div>
         </div>
       </aside>
+    </section>
+
+    <!-- ============ PEOPLE & CULTURE SIGNALS ============ -->
+    <section class="sec" id="sig-sec" style="display:none;margin-top:48px">
+      <div class="sec-head">
+        <h2>People &amp; culture signals</h2>
+        <span class="sh-meta" id="sig-meta"></span>
+      </div>
+      <div class="sig-grid" id="sig-grid"></div>
+      <div class="sig-voices" id="sig-voices"></div>
     </section>
 
     <!-- ============ STAGE RAIL ============ -->
@@ -318,8 +347,8 @@
         Accuracy climbs with every stage.
       </p>
       <div class="claim-btns">
-        <a class="cbtn primary" href="index.html">Claim this profile · capture your mission →</a>
-        <a class="cbtn ghost" href="../paths/hire.html">Read the doctrine</a>
+        <a class="cbtn primary" href="./">Claim this profile · capture your mission →</a>
+        <a class="cbtn ghost" href="../paths/hire">Read the doctrine</a>
       </div>
     </section>
 
@@ -331,9 +360,9 @@
         truth until validated by the organization itself.
       </p>
       <nav class="fnav">
-        <a href="index.html">Capture a mission</a>
-        <a href="person.html">Discover a person</a>
-        <a href="../index.html">Index</a>
+        <a href="./">Capture a mission</a>
+        <a href="person">Discover a person</a>
+        <a href="../">Index</a>
       </nav>
     </footer>
 

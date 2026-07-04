@@ -342,7 +342,7 @@ function renderSubscribe() {
     </a>
     <a class="sub-channel" href="${CHANNELS.linkedin}" target="_blank" rel="noopener">
       <span class="sc-platform">LinkedIn</span>
-      <span class="sc-handle"><em>linkedin.com/in/vinay-pasricha</em></span>
+      <span class="sc-handle"><em>linkedin.com/in/vinay-pasricha-a264186</em></span>
       <span class="sc-arrow">↗</span>
     </a>
     <a class="sub-channel" href="${CHANNELS.x}" target="_blank" rel="noopener">

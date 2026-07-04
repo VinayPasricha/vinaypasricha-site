@@ -26,7 +26,12 @@
   // Walk up from the current page to find the site root (the folder
   // that contains library/manifest.json). Cap at 4 hops.
   function rootPrefix() {
-    const depth = window.location.pathname.split('/').filter(Boolean).length - 1;
+    // Count directory levels deep from the site root. Clean URLs can be either
+    // a file (/paths/decisions) or a directory (/runtime/sequence/), so the last
+    // path segment only counts as a "directory" when the path ends in a slash.
+    const path = window.location.pathname;
+    const segs = path.split('/').filter(Boolean);
+    const depth = path.endsWith('/') ? segs.length : Math.max(0, segs.length - 1);
     if (depth <= 0) return '';
     return '../'.repeat(Math.min(depth, 4));
   }

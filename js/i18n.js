@@ -90,6 +90,12 @@ async function i18nInit() {
 
   if (i18nCurrentLang === 'en') return; // nothing to do
 
+  // If the server already rendered this page in this language (SEO SSR), the
+  // DOM is translated — skip the client pass to avoid wasted re-translation.
+  try {
+    if (document.documentElement.getAttribute('data-i18n-ssr') === i18nCurrentLang) return;
+  } catch (e) {}
+
   // Load LOCAL cache (per-browser, populated by past Claude calls)
   i18nCache = i18nLoadCache(i18nCurrentLang);
   i18nLoadSources(i18nCurrentLang);

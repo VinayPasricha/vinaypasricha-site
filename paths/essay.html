@@ -7,7 +7,7 @@
   <meta name="description" content="An essay from The Monthly Notebook by Vinay Pasricha.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 
-  <link rel="canonical" id="link-canonical" href="https://vinaypasricha.com/paths/essay.html">
+  <link rel="canonical" id="link-canonical" href="https://vinaypasricha.com/paths/essay">
 
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="vinaypasricha.com">
@@ -192,7 +192,7 @@
 <body>
 
 <header class="topbar">
-  <a href="../index.html" class="brand">
+  <a href="../" class="brand">
     <span class="name">Vinay <em>Pasricha</em></span>
     <span class="subtitle">Explorer of Emergence</span>
   </a>
@@ -201,7 +201,7 @@
     <span class="now-rotator">
       <span class="item">Writing <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">The Signal</em></span>
       <span class="item">Building <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">GoodSpace AI</em></span>
-      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">Cohort III</em></span>
+      <span class="item">Running <em style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px">a live cohort</em></span>
     </span>
   </div>
   <div class="right">
@@ -240,7 +240,7 @@
     <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
   </div>
   <div class="foot-right">
-    © 2026 · <a href="../index.html">Index</a><a href="../books.html">Books</a><a href="watch.html">Watch</a><a href="blog.html">Notebook</a><a href="connect.html">Connect</a>
+    © 2026 · <a href="../">Index</a><a href="../books">Books</a><a href="watch">Watch</a><a href="blog">Notebook</a><a href="connect">Connect</a>
   </div>
 </footer>
 
@@ -278,7 +278,7 @@
   if (!slug) {
     host.innerHTML = `<div class="essay-missing">
       <h2>No essay selected.</h2>
-      <p>Return to the <a href="blog.html" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+      <p>Return to the <a href="blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
     </div>`;
     return;
   }
@@ -287,7 +287,7 @@
   if (!essay) {
     host.innerHTML = `<div class="essay-missing">
       <h2>That essay isn't here.</h2>
-      <p>It may not have published yet. Return to the <a href="blog.html" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+      <p>It may not have published yet. Return to the <a href="blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
     </div>`;
     return;
   }
@@ -295,7 +295,7 @@
   // Update canonical + SEO from the essay
   document.title = stripHTML(essay.title) + ' · The Monthly Notebook';
   const canonical = document.getElementById('link-canonical');
-  if (canonical) canonical.href = `https://vinaypasricha.com/paths/essay.html?slug=${encodeURIComponent(essay.slug)}`;
+  if (canonical) canonical.href = `https://vinaypasricha.com/paths/essay?slug=${encodeURIComponent(essay.slug)}`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.content = stripHTML(essay.dek || essay.title);
 
@@ -309,9 +309,9 @@
   host.innerHTML = `
     <article class="essay-page" data-screen-label="Essay">
       <div class="essay-crumbs">
-        <a href="../index.html">Index</a>
+        <a href="../">Index</a>
         <span class="sep">/</span>
-        <a href="blog.html">Notebook</a>
+        <a href="blog">Notebook</a>
         <span class="sep">/</span>
         <span class="num">${escapeHTML(essay.monthLabel || essay.date || '')}</span>
       </div>
@@ -332,7 +332,7 @@
 
     <nav class="essay-nav">
       ${older ? `
-        <a href="essay.html?slug=${encodeURIComponent(older.slug)}">
+        <a href="essay?slug=${encodeURIComponent(older.slug)}">
           <div class="label">← Older</div>
           <div class="title">${older.title}</div>
         </a>
@@ -343,7 +343,7 @@
         </div>
       `}
       ${newer ? `
-        <a href="essay.html?slug=${encodeURIComponent(newer.slug)}" class="next-card">
+        <a href="essay?slug=${encodeURIComponent(newer.slug)}" class="next-card">
           <div class="label">Newer →</div>
           <div class="title">${newer.title}</div>
         </a>

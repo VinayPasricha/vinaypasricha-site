@@ -7,8 +7,9 @@ name: Translate
 #   - on a weekly schedule (catches any drift)
 #   - on manual dispatch
 #
-# Requires the secret ANTHROPIC_API_KEY to be set in
-# Repository → Settings → Secrets and variables → Actions.
+# Translation runs on Google Cloud (Gemini via Vertex AI), reached through the
+# live site's own public AI endpoint — so no API key / secret is required.
+# Override the endpoint with the AI_ENDPOINT repo variable if the URL changes.
 
 on:
   push:
@@ -44,7 +45,11 @@ jobs:
 
       - name: Run translation
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Google Cloud Gemini via the site's public AI endpoint (no key needed).
+          # Set the AI_ENDPOINT repo variable to override the default URL.
+          AI_ENDPOINT: ${{ vars.AI_ENDPOINT }}
+          # Lets the bulk run bypass the endpoint's per-IP rate limit.
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: node scripts/translate-pack.mjs
 
       - name: Commit updated packs

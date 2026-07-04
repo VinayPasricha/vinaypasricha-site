@@ -601,7 +601,7 @@
         '\n\nPUBLIC TEXT (may be empty):\n' + (publicInfo || '(none provided)');
 
       var done = false;
-      var guard = setTimeout(function () { if (!done) { done = true; reject(new Error('timeout')); } }, 20000);
+      var guard = setTimeout(function () { if (!done) { done = true; reject(new Error('timeout')); } }, 60000);
       window.claude.complete({ system: sys, messages: [{ role: 'user', content: user }] })
         .then(function (reply) {
           if (done) return; done = true; clearTimeout(guard);

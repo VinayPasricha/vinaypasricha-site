@@ -34,7 +34,7 @@ async function engLoadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/06-structural-constraint-chamber.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/06-structural-constraint-chamber.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -101,8 +101,8 @@ function engBuildSystemPrompt({ doctrine, nodeSpec }) {
     "DELTA RULES:",
     "• Use add_element when the reader names a structural element (a process step, a decision pattern, an information gap, a resource constraint). Pick the right layer.",
     "• Use add_dependency when two elements visibly depend on each other (process step requires decision; decision waits on information).",
-    "• Use mark_governing only when one element has clearly surfaced as the structural governing limit.",
-    "• Issue 'settle' only when governing + classification + one_strengthening are all defined.",
+    "• Use mark_governing once one element has surfaced as the structural governing limit. Once 2-4 elements exist and one clearly suppresses output most, you MUST mark_governing, classify the layer, and set_one_strengthening — do not keep adding elements indefinitely.",
+    "• Issue 'settle' as soon as governing + classification + one_strengthening are all defined; do not keep probing past that point.",
     "",
     "kind: 'inquiry' (next question), 'observation' (pattern surfaced — italic), 'settle' (stillness observed — never declarative).",
   ].join('\n');
@@ -344,7 +344,7 @@ function Engineering() {
 
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 06</span>
         </div>

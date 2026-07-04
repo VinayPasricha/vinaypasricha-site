@@ -63,17 +63,26 @@
   function esc(s) {
     return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+  // Keep the latest message in view as the conversation grows.
+  function scrollToBottom() {
+    requestAnimationFrame(function () {
+      try { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+      catch (e) { window.scrollTo(0, document.body.scrollHeight); }
+    });
+  }
   function aeonTurn(text) {
     var t = el('div', 'of-turn aeon');
     t.appendChild(el('div', 'of-who', 'Aeon1'));
     t.appendChild(el('div', 'of-said', text));
     stream.appendChild(t);
+    scrollToBottom();
   }
   function readerTurn(text) {
     var t = el('div', 'of-turn reader');
     t.appendChild(el('div', 'of-who', 'You'));
     t.appendChild(el('div', 'of-said', esc(text)));
     stream.appendChild(t);
+    scrollToBottom();
   }
   function thinking() {
     var t = el('div', 'of-turn aeon');
@@ -81,6 +90,7 @@
     d.appendChild(el('span')); d.appendChild(el('span')); d.appendChild(el('span'));
     t.appendChild(d);
     stream.appendChild(t);
+    scrollToBottom();
     return t;
   }
   function holdComposer(ms) {
@@ -169,14 +179,76 @@
 
   function assemble() {
     var th = thinking();
-    // Evidence → Hypotheses (per dimension). No frequency yet.
-    P.syncHypotheses(person.person_id);
-    setTimeout(function () {
-      th.remove();
-      aeonTurn('Thank you — that’s enough to begin. From what you’ve told me I’ve formed a few <em>reads</em> about how you work. None of them are conclusions. Let me reflect each one back and you tell me how true it feels.');
-      composer.classList.add('hidden');
-      setTimeout(renderUnderstanding, 900);
-    }, 1100);
+    // Live AI forms a read per dimension from the answers; deterministic fallback never fails.
+    aiReads().then(function (reads) {
+      if (!applyAIReads(reads)) P.syncHypotheses(person.person_id);
+      finishAssemble(th);
+    }).catch(function () {
+      P.syncHypotheses(person.person_id);
+      finishAssemble(th);
+    });
+  }
+
+  function finishAssemble(th) {
+    if (th) th.remove();
+    aeonTurn('Thank you — that’s enough to begin. From what you’ve told me I’ve formed a few <em>reads</em> about how you work. None of them are conclusions. Let me reflect each one back and you tell me how true it feels.');
+    composer.classList.add('hidden');
+    setTimeout(renderUnderstanding, 900);
+  }
+
+  // ---- Live AI: turn the reflective answers into a read per dimension ----
+  function aiReads() {
+    return new Promise(function (resolve, reject) {
+      if (!(window.claude && typeof window.claude.complete === 'function')) return reject(new Error('no ai'));
+      var dims = P.DIMENSIONS;
+      var sys = [
+        'You are Aeon1, a reflective analyst forming an outside-in read of how ONE person works, from their own words.',
+        'You are given a short self-description and answers to reflective questions. For EACH of these dimensions, infer a read:',
+        dims.join(', ') + '.',
+        'For every dimension return: "level" (one of: low | moderate | high | very_high), a one-sentence reflective "statement" written to complete the phrase "We currently believe: <statement>" (e.g. "you do your best work at a fast, urgent pace"), and a "confidence" 0..1.',
+        'Be humble and specific to what they actually said. If a dimension is thinly supported, lower the confidence (<= 0.4) but still give your best read. Never invent facts about their employer.',
+        'Return STRICT JSON only — no prose, no code fences:',
+        '{ "reads": [ { "dimension": "<exact dimension name>", "level": "...", "statement": "...", "confidence": 0.0 } ] }'
+      ].join('\n');
+      var user = 'PERSON: ' + (raw.identity || '') + '\n\nREFLECTIVE ANSWERS:\n' +
+        P.DISCOVERY.map(function (d, i) { return (i + 1) + '. ' + d.q + '\n' + (raw[d.key] || '(no answer)'); }).join('\n\n');
+      var done = false;
+      var guard = setTimeout(function () { if (!done) { done = true; reject(new Error('timeout')); } }, 18000);
+      window.claude.complete({ system: sys, messages: [{ role: 'user', content: user }] }).then(function (reply) {
+        if (done) return; done = true; clearTimeout(guard);
+        try {
+          var m = String(reply).match(/\{[\s\S]*\}/);
+          var json = m ? JSON.parse(m[0]) : null;
+          resolve((json && json.reads) || []);
+        } catch (e) { reject(e); }
+      }).catch(function (e) { if (!done) { done = true; clearTimeout(guard); reject(e); } });
+    });
+  }
+
+  // Create one hypothesis per dimension from the AI reads. Returns count created.
+  function applyAIReads(reads) {
+    if (!reads || !reads.length) return 0;
+    var store = P.ensure(OF.load());
+    var dimsLower = {};
+    P.DIMENSIONS.forEach(function (d) { dimsLower[d.toLowerCase()] = d; });
+    var existing = {};
+    store.person_hypotheses.forEach(function (h) { if (h.person_id === person.person_id) existing[h.dimension] = true; });
+    var n = 0;
+    reads.forEach(function (r) {
+      if (!r || !r.dimension) return;
+      var dim = dimsLower[String(r.dimension).toLowerCase().trim()];
+      if (!dim || existing[dim]) return;
+      var h = P.newPersonHypothesis({
+        person_id: person.person_id,
+        dimension: dim,
+        level: r.level,
+        statement: String(r.statement || '').trim() || ('a particular pattern in ' + dim.toLowerCase()),
+        confidence: typeof r.confidence === 'number' ? r.confidence : 0.45
+      });
+      store.person_hypotheses.push(h); existing[dim] = true; n++;
+    });
+    if (n) OF.save(store);
+    return n;
   }
 
   // Render the discovery summary shell, then run validation.
@@ -207,7 +279,7 @@
 
   function startValidation() {
     var box = document.getElementById('of-validate');
-    var queue = P.nextToValidate(person.person_id, 5);
+    var queue = P.nextToValidate(person.person_id, 12);
     renderValidationStep(box, queue, 0, []);
   }
 
@@ -274,8 +346,7 @@
       '<p class="of-foot-note">' +
         'Recorded. The runtime now understands a person the same way it understands an organization — and still ' +
         'performs no matching. Resonance, where a validated person frequency meets a validated role frequency, ' +
-        'belongs to a later build. ' +
-        '<a href="../studio/people.html">Open the People admin →</a>' +
+        'belongs to a later build.' +
       '</p>' +
       '<button class="of-restart" id="restart" type="button">Discover another person</button>';
 

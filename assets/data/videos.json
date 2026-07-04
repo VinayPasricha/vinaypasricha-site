@@ -3,18 +3,6 @@
   "updated_at": "2026-05-23",
   "videos": [
     {
-      "id": "yt-I0FDttzhxWI",
-      "title": "New long-form talk",
-      "blurb": "A new long-form video on AI, decisions, and execution.",
-      "platform": "youtube",
-      "platform_id": "I0FDttzhxWI",
-      "duration": "—",
-      "date": "2026-05-22",
-      "topic": "general",
-      "featured": true,
-      "hashtags": []
-    },
-    {
       "id": "yt-FWknG4jZDUE",
       "title": "The Learning Trap",
       "blurb": "You don't have a learning problem. You have a thinking problem. Most ambitious people believe the next book, the next course, the next framework will finally unlock things. It won't.",

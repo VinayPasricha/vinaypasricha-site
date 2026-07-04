@@ -331,7 +331,7 @@ a{color:inherit;text-decoration:none}
    Lots of white space. The page opens calm.
    ============================================================ */
 .hero{
-  padding: 140px var(--gutter) 96px;
+  padding: 140px var(--gutter) 100px;
   position: relative;
   max-width: 1180px;
   margin: 0 auto;
@@ -435,7 +435,7 @@ a{color:inherit;text-decoration:none}
    followed by where it takes them.
    ============================================================ */
 .triage{
-  padding: 0 var(--gutter) 140px;
+  padding: 100px var(--gutter) 100px;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -589,7 +589,7 @@ a{color:inherit;text-decoration:none}
    Small portrait + a quiet note. Not "about me" — about the work.
    ============================================================ */
 .aside-presence{
-  padding: 80px var(--gutter) 80px;
+  padding: 100px var(--gutter) 100px;
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);
@@ -650,7 +650,7 @@ a{color:inherit;text-decoration:none}
    Lots of white space. The note that lingers.
    ============================================================ */
 .closing{
-  padding: 160px var(--gutter) 200px;
+  padding: 100px var(--gutter) 200px;
   text-align: center;
 }
 .closing-inner{
@@ -691,7 +691,7 @@ a{color:inherit;text-decoration:none}
    Different from the homepage hero. Quieter, more "chapter-opening."
    ============================================================ */
 .page-hero{
-  padding: 96px var(--gutter) 80px;
+  padding: 96px var(--gutter) 100px;
   max-width: 1180px;
   margin: 0 auto;
   border-bottom: 1px solid var(--rule-soft);
@@ -763,7 +763,7 @@ a{color:inherit;text-decoration:none}
    THE THREE PILLARS — Socratic · Iterative · Vinay
    ============================================================ */
 .pillars{
-  padding: 96px var(--gutter);
+  padding: 100px var(--gutter);
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -814,7 +814,7 @@ a{color:inherit;text-decoration:none}
    THE DOORWAY — quiet, central invitation into the conversation
    ============================================================ */
 .doorway{
-  padding: 120px var(--gutter);
+  padding: 100px var(--gutter);
   text-align: center;
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
@@ -917,7 +917,7 @@ a{color:inherit;text-decoration:none}
    THE METHOD — eight steps, restrained
    ============================================================ */
 .method{
-  padding: 120px var(--gutter);
+  padding: 100px var(--gutter);
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -1007,7 +1007,7 @@ a{color:inherit;text-decoration:none}
    WHAT IT IS NOT — discipline by negation
    ============================================================ */
 .is-not{
-  padding: 96px var(--gutter);
+  padding: 100px var(--gutter);
   background: var(--ink);
   color: var(--paper);
 }
@@ -1061,7 +1061,7 @@ a{color:inherit;text-decoration:none}
    A SHORT DEFENSE — Vinay's voice
    ============================================================ */
 .defense{
-  padding: 120px var(--gutter);
+  padding: 100px var(--gutter);
   max-width: 920px;
   margin: 0 auto;
 }
@@ -1111,7 +1111,7 @@ a{color:inherit;text-decoration:none}
    THE BOOK — small bookshelf element for the SIV book
    ============================================================ */
 .book-card{
-  padding: 96px var(--gutter);
+  padding: 100px var(--gutter);
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);
@@ -1222,7 +1222,7 @@ a{color:inherit;text-decoration:none}
    CONTINUATIONS — two quiet next-step links
    ============================================================ */
 .continuations{
-  padding: 120px var(--gutter);
+  padding: 100px var(--gutter);
 }
 .continuations-inner{
   max-width: 1180px;
@@ -1381,7 +1381,7 @@ a{color:inherit;text-decoration:none}
    No images. Editorial. Reads like a journal contents page.
    ============================================================ */
 .field-notes{
-  padding: 128px var(--gutter) 120px;
+  padding: 100px var(--gutter) 100px;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -1517,7 +1517,7 @@ a{color:inherit;text-decoration:none}
    THE BOOKSHELF — five deposits of thinking, as physical objects
    ============================================================ */
 .bookshelf{
-  padding: 128px var(--gutter) 120px;
+  padding: 100px var(--gutter) 100px;
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);

@@ -13,6 +13,15 @@ export const db = new Firestore({ ignoreUndefinedProperties: true });
 
 // Collection names — the two "folders" the whole site writes to.
 export const COLLECTIONS = {
-  conversations: 'conversations', // every AI chat + its result, tagged by runtime
-  leads: 'leads',                 // emails / contacts captured anywhere on the site
+  conversations: 'conversations',   // every AI chat + its result, tagged by runtime
+  leads: 'leads',                   // emails / contacts captured anywhere on the site
+  companyProfiles: 'companyProfiles', // published Organizational Frequency pages, keyed by slug
+  // AI for Business Leaders (ABL) — its own set of collections, kept separate
+  // from the site's general chat data.
+  ablParticipants: 'abl_participants',
+  ablResearch: 'abl_research',
+  ablSessions: 'abl_sessions',
+  ablMessages: 'abl_messages',
+  ablOutputs: 'abl_outputs',
+  ablQa: 'abl_qa',
 };

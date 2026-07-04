@@ -22,4 +22,10 @@ export const config = {
   // How long a conversation is kept. A Firestore TTL policy on `expiresAt`
   // does the actual deleting (configured once on the database).
   conversationTtlDays: parseInt(optional('CONVERSATION_TTL_DAYS', '30'), 10),
+
+  // Secret guarding the admin read endpoints (listing/reading stored
+  // conversations, which contain visitor PII). Sent as the `x-admin-token`
+  // header or `?token=`. If empty, those endpoints are CLOSED (fail-safe),
+  // never open. Set ADMIN_TOKEN on Cloud Run.
+  adminToken: optional('ADMIN_TOKEN', ''),
 };

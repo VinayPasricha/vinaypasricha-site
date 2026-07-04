@@ -6,7 +6,7 @@
    ============================================================= */
 
 .civ-ask {
-  padding: 110px var(--gutter);
+  padding: 100px var(--gutter);
   background: var(--paper-2);
   border-top: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);

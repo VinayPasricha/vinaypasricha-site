@@ -136,6 +136,22 @@ const ANALYTICS = {
   // Items load from assets/data/now.json (Studio → Now editor); the
   // hardcoded items in each page's HTML remain as offline fallback.
   initNowRotator();
+  injectPrivacyLink();
+
+  // ---------- Privacy link ----------
+  // Add a discreet "Privacy" link to every page footer (footers are static
+  // per page, so we inject site-wide here rather than editing each one).
+  function injectPrivacyLink() {
+    const href = siteRootPrefix() + 'privacy';
+    document.querySelectorAll('.foot-right').forEach((fr) => {
+      if (fr.querySelector('.foot-privacy')) return;
+      const a = document.createElement('a');
+      a.className = 'foot-privacy';
+      a.href = href;
+      a.textContent = 'Privacy';
+      fr.appendChild(a);
+    });
+  }
 
   async function initNowRotator() {
     const rotator = document.querySelector('.now-rotator');
@@ -228,72 +244,52 @@ const ANALYTICS = {
           <div>
             <h5>The books</h5>
             <ul>
-              <li><a href="${root}books.html"><em>All books</em> &middot; the shelf</a></li>
-              <li><a href="${root}paths/ai-for-business.html">AI for <em>Business Leaders</em></a></li>
-              <li><a href="${root}paths/decisions.html">The <em>SIV Method</em></a></li>
-              <li><a href="${root}paths/execute.html">The <em>Execution Doctrine</em></a></li>
-              <li><a href="${root}paths/hire.html"><em>Organizational Frequency</em></a></li>
-              <li><a href="${root}paths/evolve.html">The <em>Signal</em> &middot; upcoming</a></li>
-              <li><a href="${root}paths/civilization.html"><em>Civilization</em></a></li>
+              <li><a href="${root}books"><em>All books</em> &middot; the shelf</a></li>
+              <li><a href="${root}paths/ai-for-business">AI for <em>Business Leaders</em></a></li>
+              <li><a href="${root}paths/decisions">The <em>SIV Method</em></a></li>
+              <li><a href="${root}paths/execute">The <em>Execution Doctrine</em></a></li>
+              <li><a href="${root}paths/hire"><em>Organizational Frequency</em></a></li>
+              <li><a href="${root}paths/evolve">The <em>Signal</em></a></li>
+              <li><a href="${root}paths/civilization"><em>Civilization</em></a></li>
             </ul>
           </div>
           <div>
             <h5>The runtimes</h5>
             <ul>
-              <li><a href="${root}frequency/index.html"><em>Organizational Frequency</em> &middot; capture a mission</a></li>
-              <li><a href="${root}frequency/company.html"><em>Company Frequency</em> &middot; public profile</a></li>
-              <li><a href="${root}frequency/person.html"><em>Discover a person</em></a></li>
-              <li><a href="${root}runtime/index.html"><em>KAIROS</em> &middot; the runtime</a></li>
-              <li><a href="${root}runtime/architecture.html">KAIROS <em>architecture</em></a></li>
-              <li><a href="${root}signal/index.html">The <em>Signal</em> field</a></li>
+              <li><a href="${root}frequency/"><em>Organizational Frequency</em> &middot; capture a mission</a></li>
+              <li><a href="${root}frequency/company"><em>Company Frequency</em> &middot; public profile</a></li>
+              <li><a href="${root}frequency/person"><em>Discover a person</em></a></li>
+              <li><a href="${root}runtime/"><em>KAIROS</em> &middot; the runtime</a></li>
+              <li><a href="${root}runtime/architecture">KAIROS <em>architecture</em></a></li>
+              <li><a href="${root}signal/">The <em>Signal</em> field</a></li>
             </ul>
           </div>
           <div>
             <h5>Read &middot; Watch &middot; Try</h5>
             <ul>
-              <li><a href="${root}paths/watch.html"><em>Watch</em> &middot; videos &amp; talks</a></li>
-              <li><a href="${root}paths/decisions.html#begin">Try <em>SIV</em> on a decision</a></li>
-              <li><a href="${root}paths/blog.html">Monthly <em>notebook</em></a></li>
-              <li><a href="${root}paths/essay.html">The <em>essay</em></a></li>
-              <li><a href="${root}paths/fiction.html"><em>Fiction</em></a></li>
-              <li><a href="${root}paths/faq.html"><em>FAQ</em></a></li>
+              <li><a href="${root}paths/watch"><em>Watch</em> &middot; videos &amp; talks</a></li>
+              <li><a href="${root}paths/decisions#begin">Try <em>SIV</em> on a decision</a></li>
+              <li><a href="${root}paths/blog">Monthly <em>notebook</em></a></li>
+              <li><a href="${root}paths/essay">The <em>essay</em></a></li>
+              <li><a href="${root}paths/fiction"><em>Fiction</em></a></li>
+              <li><a href="${root}paths/faq"><em>FAQ</em></a></li>
             </ul>
           </div>
           <div>
             <h5>Vinay</h5>
             <ul>
-              <li><a href="${root}paths/story.html">The <em>story</em></a></li>
-              <li><a href="${root}paths/connect.html">Connect <em>directly</em></a></li>
-              <li><a href="${root}paths/course.html">AI Leadership <em>Course</em></a></li>
-              <li><a href="${root}paths/career.html">Career <em>inflection</em></a></li>
-              <li><a href="${root}paths/find-work.html">Find <em>work</em></a></li>
-              <li><a href="${root}paths/now.html"><em>Now</em> &middot; what I'm doing</a></li>
-            </ul>
-            <h5 style="margin-top:36px">Private</h5>
-            <ul>
-              <li><a href="${root}studio/index.html" class="ix-studio"><em>Studio</em> &middot; operator backend &middot; 🔒</a></li>
+              <li><a href="${root}paths/story">The <em>story</em></a></li>
+              <li><a href="${root}paths/connect">Connect <em>directly</em></a></li>
+              <li><a href="${root}paths/course">AI Leadership <em>Course</em></a></li>
+              <li><a href="${root}paths/career">Career <em>inflection</em></a></li>
+              <li><a href="${root}paths/find-work">Find <em>work</em></a></li>
+              <li><a href="${root}paths/now"><em>Now</em> &middot; what I'm doing</a></li>
             </ul>
           </div>
         </div>
       </div>
     `;
     document.body.insertAdjacentHTML('beforeend', html);
-
-    // Studio link is password-gated (vik123). Prompt, then pass the key
-    // through so the Studio's own gate auto-authenticates.
-    const studioLink = document.querySelector('.ix-studio');
-    if (studioLink) {
-      studioLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        const pass = window.prompt('Studio is private. Enter the passphrase:');
-        if (pass === null) return; // cancelled
-        if (pass === 'vik123') {
-          window.location.href = studioLink.getAttribute('href') + '?key=vik123';
-        } else {
-          alert('Incorrect passphrase.');
-        }
-      });
-    }
   }
 
   // Esc closes whatever is open

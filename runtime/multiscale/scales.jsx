@@ -23,7 +23,7 @@ async function msLoadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/08-multi-scale-systems-chamber.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/08-multi-scale-systems-chamber.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -80,7 +80,7 @@ function msBuildSystemPrompt({ doctrine, nodeSpec }) {
     "DELTA RULES:",
     "• add_force: pick the scale the reader's language places it at.",
     "• add_link: when the reader describes friction at scale A producing friction at scale B.",
-    "• mark_governing + set_dominant_scale + set_one_intervention before settling.",
+    "• Once 3+ forces exist and cross-scale links are drawn, you MUST surface the structure: mark_governing on the force that most destabilizes the system, set_dominant_scale, and set_one_intervention — the cycle cannot settle until all three exist. Do not keep naming forces indefinitely; surface, then settle.",
   ].join('\n');
 }
 
@@ -276,7 +276,7 @@ function MultiScale() {
 
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 08</span>
         </div>

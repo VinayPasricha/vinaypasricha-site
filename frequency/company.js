@@ -139,7 +139,9 @@
      ============================================================= */
   function loadStore() {
     try {
-      var raw = localStorage.getItem('of.runtime.v1');
+      // Standalone company pages bake their data into window.__OF_COMPANY_DATA__;
+      // the normal Studio-driven page falls back to the localStorage runtime store.
+      var raw = (typeof window.__OF_COMPANY_DATA__ === 'string' && window.__OF_COMPANY_DATA__) || localStorage.getItem('of.runtime.v1');
       if (!raw) return null;
       var s = JSON.parse(raw);
       return {
@@ -219,6 +221,7 @@
       essence: (est.confidence_reasoning || '').replace(/\s+/g, ' ').trim(),
       stage: stg, accuracy: accuracy,
       dims: dims, contradictions: contras,
+      metrics: est.people_metrics || null,
       needs: (est.needs_validation || []).map(function (k) { return DIM_LABELS[k] || k; }),
       unvalidated: est.unvalidated_claims || []
     };
@@ -285,6 +288,67 @@
     return 'public read';
   }
 
+  /* People & culture signals panel (from public reviews / listings). */
+  function renderSignals(m) {
+    var sec = el('sig-sec'); if (!sec) return;
+    if (MODE !== 'live') { sec.style.display = 'none'; return; }
+    m = m || {};
+    var pct = function (v) { v = String(v == null ? '' : v).trim().replace(/%$/, ''); return v ? v + '%' : ''; };
+    var lead = function (s) {
+      s = String(s || '').split(/[—:,(]|\s-\s/)[0].trim();      // text before a dash-phrase/punctuation
+      var w = s.split(/\s+/), out = w[0] || '';
+      if (out.length <= 4 && w[1]) out += ' ' + w[1];           // keep 2 words only if first is tiny
+      return out.charAt(0).toUpperCase() + out.slice(1);
+    };
+    var NF = '<span class="sig-nf">Not found</span>';            // shown instead of hiding a missing metric
+
+    var chips = [];
+    function chip(label, value, sub) {
+      var has = value != null && value !== '';
+      chips.push('<div class="sig"><div class="sig-v">' + (has ? value : NF) + '</div><div class="sig-k">' + label + '</div>' +
+        (has && sub ? '<div class="sig-sub">' + esc(sub) + '</div>' : '') + '</div>');
+    }
+
+    var rating = m.glassdoor_rating || m.ambitionbox_rating;
+    chip('Employee rating', rating ? '★ ' + esc(rating) : '', m.glassdoor_reviews ? esc(m.glassdoor_reviews) + ' reviews' : '');
+    chip('Recommend to a friend', pct(m.recommend_pct) ? '<em>' + pct(m.recommend_pct) + '</em>' : '', '');
+    chip('CEO approval', pct(m.ceo_approval_pct) ? '<em>' + pct(m.ceo_approval_pct) + '</em>' : '', '');
+    // Headcount: a number or band only, never a sentence.
+    var hc = String(m.headcount || '').trim();
+    var hcRange = hc.match(/\d[\d,]*\s*(?:[-–]|to)\s*\d[\d,]*/i);
+    var hcOne = hc.match(/\d[\d,]*\+?/);
+    var hcVal = hcRange ? hcRange[0].replace(/\s*to\s*/i, '–').replace(/\s+/g, '') : (hcOne ? hcOne[0] : (hc && hc.length <= 14 ? hc : ''));
+    chip('Headcount', hcVal ? esc(hcVal) : '', '');
+    // Headcount growth: a percent or one short word, never a sentence.
+    var g = String(m.headcount_growth || '').trim();
+    var gp = g.match(/[+\-]?\d[\d.]*%\s*(?:\/?\s*(?:yr|year|yoy))?/i);
+    var gWord = g.replace(/\(.*$/, '').trim().split(/\s+/)[0];
+    var gVal = gp ? gp[0] : (gWord ? gWord.charAt(0).toUpperCase() + gWord.slice(1) : '');
+    chip('Headcount growth', gVal ? esc(gVal) : '', '');
+    // Open roles: show the COUNT only — never a list of role titles.
+    var rolesNum = (String(m.open_roles == null ? '' : m.open_roles).match(/\d[\d,]*/) || [])[0];
+    chip('Open roles', rolesNum ? esc(rolesNum) : '', '');
+    // Attrition: directional word ("Elevated"/"Low"/"Unclear"), or Not found if absent.
+    var attr = String(m.attrition_signal || '').trim();
+    chip('Attrition signal', attr ? '<em>' + esc(lead(attr)) + '</em>' : '', (attr && !/unclear|no (public )?data|unknown|n\/a/i.test(attr)) ? esc(attr) : '');
+
+    sec.style.display = '';
+    el('sig-meta').textContent = 'from public reviews & listings · directional';
+    el('sig-grid').innerHTML = chips.join('');
+    el('sig-grid').style.display = '';
+
+    // Pros / cons — always show both columns; say so plainly when none were found.
+    var pros = (m.top_pros || []).filter(Boolean).slice(0, 4);
+    var cons = (m.top_cons || []).filter(Boolean).slice(0, 4);
+    var none = '<li class="sig-none">None found in public reviews</li>';
+    el('sig-voices').style.display = '';
+    el('sig-voices').innerHTML =
+      '<div class="sig-col"><h4>What employees praise</h4><ul>' +
+        (pros.length ? pros.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') : none) + '</ul></div>' +
+      '<div class="sig-col cons"><h4>Common gripes</h4><ul>' +
+        (cons.length ? cons.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') : none) + '</ul></div>';
+  }
+
   /* =============================================================
      RENDER
      ============================================================= */
@@ -318,7 +382,7 @@
     // mode / source line in eyebrow
     el('mode-tag').innerHTML = MODE === 'live'
       ? 'Live · from this device’s runtime' + (live.length > 1 ? ' · ' + companySwitcher() : '')
-      : 'Demonstration profile · <a class="lk" href="../studio/index.html">research a real company in the Studio</a>';
+      : 'Demonstration profile · <a class="lk" href="../studio/">research a real company in the Studio</a>';
 
     // accuracy dial
     var C = 2 * Math.PI * 47;
@@ -349,6 +413,9 @@
       el('advance').disabled = s >= 4;
       el('advance').textContent = s >= 4 ? 'Fully validated' : 'Advance one stage →';
     }
+
+    // people & culture signals (live only)
+    renderSignals(MODE === 'live' ? profile.metrics : null);
 
     // dimensions
     el('dims-meta').textContent = 'Stage ' + s + ' · ' + STAGES[s].label;

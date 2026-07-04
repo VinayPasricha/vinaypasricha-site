@@ -6,7 +6,7 @@
 
 /* Container — restrained header on the ivory page */
 .intake {
-  padding: 64px var(--gutter) 96px;
+  padding: 100px var(--gutter) 100px;
   max-width: 900px;
   margin: 0 auto;
 }

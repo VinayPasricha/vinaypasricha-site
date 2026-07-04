@@ -68,56 +68,23 @@ function showAuth() {
 }
 
 (function initAuth() {
-  // URL ?key= bypass
-  try {
-    const url = new URL(window.location);
-    const key = url.searchParams.get('key');
-    if (key === DEV_KEY) {
-      setAuthed();
-      url.searchParams.delete('key');
-      window.history.replaceState({}, '', url);
-    }
-  } catch (e) {}
-
-  if (isAuthed()) {
-    // Defer to allow DOM to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', showStudio);
-    } else {
-      showStudio();
-    }
-  }
+  // Access is now controlled by the SERVER-side studio gate (admin login → secure
+  // cookie). The legacy client-side passphrase is redundant, so reveal the studio
+  // directly. The login page (and the inner #auth form) are no longer used.
+  setAuthed();
+  const reveal = () => showStudio();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal);
+  else reveal();
 
   const wire = () => {
-    const form = document.getElementById('auth-form');
-    const input = document.getElementById('auth-input');
-    const err = document.getElementById('auth-error');
     const signout = document.getElementById('studio-signout');
-
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        err.style.display = 'none';
-        const ok = await checkPassphrase(input.value);
-        if (ok) {
-          setAuthed();
-          showStudio();
-        } else {
-          err.style.display = '';
-          input.value = '';
-          input.focus();
-        }
-      });
-    }
     if (signout) {
       signout.addEventListener('click', () => {
         clearAuthed();
-        // If on a sub-page, route back to index
-        if (!window.location.pathname.endsWith('/studio/') && !window.location.pathname.endsWith('/studio/index.html')) {
-          window.location.href = 'index.html';
-        } else {
-          showAuth();
-        }
+        // Clear the server gate cookie, then return to the login page.
+        fetch('/api/studio/logout', { method: 'POST' })
+          .catch(() => {})
+          .then(() => { window.location.href = '/studio/login'; });
       });
     }
   };

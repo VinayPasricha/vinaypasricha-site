@@ -48,7 +48,7 @@ async function loadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/01-sequence-chamber.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/01-sequence-chamber.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -81,7 +81,7 @@ function buildSystemPrompt({ doctrine, nodeSpec }) {
     "9. Quote the doctrine sparingly — only when the reader's situation maps directly onto a passage.",
     "10. The topology is built from what the reader says. Apply structural deltas whenever new sequence elements or refinements emerge.",
     "11. Silence is part of the chamber's voice. Trust the reader to sit with a question. Do not fill space with prose to feel useful.",
-    "12. When the topology has stabilized — outcome named, sequence runs Action 1 → Action N with completion criteria, transitions have stability, a governing limit is surfaced — issue a single 'settle' turn with a quietly observational say (e.g. 'This cycle appears structurally complete.'). Never declare the cycle closed. The reader decides what to do with the observation.",
+    "12. Settle when the structure is whole: outcome + completion defined, three or more actions each with completion criteria, transitions present, friction examined across the actions, and a governing action marked. Once those hold, stop probing for more — issue a single 'settle' turn with a quietly observational say (e.g. 'This cycle appears structurally complete.'). Never declare the cycle closed; the reader decides what to do with the observation.",
     "",
     "=== PHASE PROGRESSION ===",
     "• outcome    — what is being brought into reality is still being defined. Capture outcome, completion, reality change.",
@@ -111,8 +111,8 @@ function buildSystemPrompt({ doctrine, nodeSpec }) {
     "DELTA RULES:",
     "• Use add_action with the FULL label as the reader described it. Do not paraphrase tersely. Keep the completion_criteria explicit when stated; leave it empty if not yet defined.",
     "• Issue add_transition for every consecutive pair as they emerge. Use stability 0.5 when unclear, 0.8 when confirmed, 0.2 when reader has expressed friction.",
-    "• Issue set_friction (via update_action with friction) when language signals avoidance, repetition, slowdown, accumulation.",
-    "• Issue mark_governing only when you are confident the reader has surfaced the step that governs flow. Be slow with this — sequence first, constraint second.",
+    "• Assign friction actively, ON ACTIONS. Whenever the reader describes a step that is avoided, stalls, repeats, lacks a clear owner, or accumulates work, issue update_action for that action with a friction value (0.3 mild, 0.5 moderate, 0.7+ severe). Friction described at a HANDOFF between two steps should be recorded as friction on the upstream action — the chamber's 'mean friction' reads from action friction, so capture it there in the SAME turn (do not just ask which action it belongs to). One brief friction question is enough; never let an unresolved friction probe block settling once the structure is otherwise whole.",
+    "• Surface the governing constraint. Sequence first — but once you are in 'refining' with two or more actions, you MUST identify the single action that most limits overall flow (the bottleneck the whole sequence waits on) and issue mark_governing for it. The cycle CANNOT settle until a governing action is marked, so do not leave it unsurfaced. If the reader names a real constraint that is not yet one of the actions (e.g. limited time, a dependency, a single owner), first add it via add_action, then mark_governing on it.",
     "• Issue set_phase when a phase transition is warranted.",
     "• If no structural change is needed (you are simply probing), return deltas: [].",
     "",
@@ -371,9 +371,9 @@ function Chamber() {
   }));
 
   const composerHint = thinking ? 'the runtime is reading'
-    : (seq.phase === 'outcome' ? 'be concrete · cmd/ctrl + enter'
-      : (seq.phase === 'sequencing' ? 'one step at a time · cmd/ctrl + enter'
-        : 'cmd/ctrl + enter to submit'));
+    : (seq.phase === 'outcome' ? 'be concrete · enter to submit'
+      : (seq.phase === 'sequencing' ? 'one step at a time · enter to submit'
+        : 'enter to submit · shift+enter for a new line'));
 
   const composerPlaceholder = ({
     outcome:    'What must exist when this is complete?',
@@ -395,7 +395,7 @@ function Chamber() {
       {/* Top bar */}
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 01</span>
         </div>

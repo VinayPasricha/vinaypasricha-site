@@ -54,12 +54,12 @@ const SPINE_EDGES = [
 // Sequence and Constraint are both live; the others are stubs.
 function chamberHref(slug) {
   switch (slug) {
-    case 'sequence':              return '../sequence/index.html';
-    case 'constraint':            return '../constraint/index.html';
-    case 'structural-constraint': return '../structural/index.html';
-    case 'capacity-expansion':    return '../capacity/index.html';
-    case 'multi-scale':           return '../multiscale/index.html';
-    case 'character':             return '../character/index.html';
+    case 'sequence':              return '../sequence/';
+    case 'constraint':            return '../constraint/';
+    case 'structural-constraint': return '../structural/';
+    case 'capacity-expansion':    return '../capacity/';
+    case 'multi-scale':           return '../multiscale/';
+    case 'character':             return '../character/';
     default: return null;
   }
 }

@@ -26,7 +26,7 @@ async function chLoadGrounding() {
     }
   } catch (e) {}
   try {
-    const res = await fetch('../../_brief/runtime-nodes/09-character-of-the-executor-chamber.md', { cache: 'force-cache' });
+    const res = await fetch('../nodes/09-character-of-the-executor-chamber.md', { cache: 'force-cache' });
     if (res.ok) out.nodeSpec = await res.text();
   } catch (e) {}
   window.kairos = window.kairos || {};
@@ -64,8 +64,8 @@ function chBuildSystemPrompt({ doctrine, nodeSpec }) {
     "",
     "=== PHASES ===",
     "• observe  — the reader names pillars. State each: aligned, leaning, cracked, or buried. Stay until 2+ pillars exist.",
-    "• examine  — narrow to the pillar that, if realigned, would most stabilize the executor across decades. Mark governing.",
-    "• settled  — one realignment named. Issue a single settle observation.",
+    "• examine  — narrow to the pillar that, if realigned, would most stabilize the executor across decades; you MUST mark_governing on it and set_one_realignment. The cycle cannot settle without a governing pillar and a named realignment.",
+    "• settled  — once a governing pillar is marked and one realignment is named, issue a single settle observation. Do not exceed a few inquiries (Rule 7).",
     "",
     "=== RESPONSE CONTRACT — STRICT JSON ONLY ===",
     "Return one valid JSON object. No prose. No fences.",
@@ -266,7 +266,7 @@ function Sanctuary() {
 
       <header className="c-top">
         <div className="c-breadcrumb">
-          <a href="../index.html">KAIROS·1</a>
+          <a href="../">KAIROS·1</a>
           <span className="sep">/</span>
           <span>Chamber 09</span>
         </div>

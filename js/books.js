@@ -46,7 +46,7 @@ const DEFAULT_BOOKS = [
     subtitle: 'A clear-headed guide to leading with AI without losing the plot.',
     cover: 'assets/images/ai-for-business-leaders-cover-front.jpg',
     year: '2025',
-    pages: 184,
+    pages: 208,
     isbn: '978-0-9978459-1-4',
     status: 'published',
     pitch: 'Most leadership advice on AI is either a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now but want to move clearly.',
@@ -57,7 +57,7 @@ const DEFAULT_BOOKS = [
       'Strategy without hype: questions before answers',
     ],
     amazon: 'https://www.amazon.in/dp/B0GFXXPGP7',
-    excerpt_path: 'paths/ai-for-business.html',
+    excerpt_path: 'paths/ai-for-business',
   },
   {
     slug: 'siv-method',
@@ -87,8 +87,8 @@ const DEFAULT_BOOKS = [
       mr: 'https://www.amazon.in/dp/B0H2Z9MM8Q',
       ta: 'https://www.amazon.in/dp/B0H2Z9CZHX',
     },
-    excerpt_path: 'paths/decisions.html',
-    try_it: { label: 'Try the method', url: 'paths/decisions.html#begin' },
+    excerpt_path: 'paths/decisions',
+    try_it: { label: 'Try the method', url: 'paths/decisions#begin' },
   },
   {
     slug: 'execution-doctrine',
@@ -117,7 +117,7 @@ const DEFAULT_BOOKS = [
       hi: 'https://www.amazon.in/dp/B0GX8F2CPX',
       ta: 'https://www.amazon.in/dp/B0H26GYQD2',
     },
-    excerpt_path: 'paths/execute.html',
+    excerpt_path: 'paths/execute',
   },
   {
     slug: 'organizational-frequency',
@@ -140,7 +140,7 @@ const DEFAULT_BOOKS = [
     amazon_by_lang: {
       en: 'https://www.amazon.in/dp/B0H2NTL3XS',
     },
-    excerpt_path: 'paths/hire.html',
+    excerpt_path: 'paths/hire',
     series: 'A Doctrine for the Future of Work · 01',
   },
   {
@@ -149,10 +149,10 @@ const DEFAULT_BOOKS = [
     title: 'The Signal',
     subtitle: 'A Practice for Clearer Reception.',
     cover: 'assets/images/the-signal-cover-front.jpg',
-    year: 'Late 2026',
+    year: '2026',
     pages: null,
     isbn: null,
-    status: 'upcoming',
+    status: 'published',
     pitch: 'We live inside an information density no prior generation has had to navigate. The Signal is a cognitive instrument for sustained attention in noisy environments — recursive, longitudinal, the most personal of the books. A practice for clearer reception of what is actually being signalled, beneath the noise.',
     topics: [
       'How signal degrades and where to find it again',
@@ -160,9 +160,8 @@ const DEFAULT_BOOKS = [
       'Long-form attention in short-form attention environments',
       'The reader\u2019s discipline in an age of the feed',
     ],
-    amazon: null,
-    excerpt_path: null,
-    notify: true,
+    amazon: 'https://www.amazon.in/dp/B0H3WJJH3S',
+    excerpt_path: 'signal/',
   },
   {
     slug: 'civilization',
@@ -181,9 +180,9 @@ const DEFAULT_BOOKS = [
       'Why a compass outlasts every map of the future',
       'Reading Rome, China, modernity, and AI through one framework',
     ],
-    amazon: null,
-    excerpt_path: 'paths/civilization.html',
-    series: 'Civilization · Volume I',
+    amazon: 'https://www.amazon.in/dp/B0H4GWZND6',
+    excerpt_path: 'paths/civilization',
+    series: 'Civilization',
     publisher: 'The Meridian Press',
   },
   // To add more upcoming books, copy a book object above and edit.
@@ -362,14 +361,13 @@ function renderFeaturedBook(book) {
     <article class="book-featured" data-slug="${book.slug}">
       <div class="bf-flag">
         <span class="bf-flag-dot"></span>
-        <span class="bf-flag-text">Featured · Volume ${book.volume}</span>
+        <span class="bf-flag-text">Featured</span>
       </div>
       <div class="bf-grid">
         <div class="bf-cover">
           ${book.cover
             ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
             : `<div class="bf-cover-placeholder">
-                 <span class="bcp-vol">Vol. ${book.volume}</span>
                  <span class="bcp-status">Upcoming</span>
                  <span class="bcp-title">${escapeHTML(book.title)}</span>
                </div>`
@@ -377,8 +375,6 @@ function renderFeaturedBook(book) {
         </div>
         <div class="bf-info">
           <div class="bf-meta">
-            <span>Volume ${book.volume}</span>
-            <span class="dot">·</span>
             <span>${book.year}</span>
             ${book.pages ? `<span class="dot">·</span><span>${book.pages} pages</span>` : ''}
             ${book.isbn ? `<span class="dot">·</span><span>ISBN ${book.isbn}</span>` : ''}
@@ -427,7 +423,6 @@ function renderBookCard(book) {
         ${book.cover
           ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
           : `<div class="bc-cover-placeholder">
-               <span class="bcp-vol">Vol. ${book.volume}</span>
                <span class="bcp-status">Upcoming</span>
                <span class="bcp-title">${escapeHTML(book.title)}</span>
              </div>`
@@ -435,8 +430,6 @@ function renderBookCard(book) {
       </div>
       <div class="bc-body">
         <div class="bc-meta">
-          <span>Vol. ${book.volume}</span>
-          <span class="dot">·</span>
           <span>${book.year}</span>
           ${book.pages ? `<span class="dot">·</span><span>${book.pages}p</span>` : ''}
         </div>

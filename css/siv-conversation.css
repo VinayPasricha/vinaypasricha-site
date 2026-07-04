@@ -5,7 +5,7 @@
    ============================================================= */
 
 .siv-conversation{
-  padding: 96px var(--gutter);
+  padding: 100px var(--gutter);
   background: var(--paper);
   border-top: 1px solid var(--rule);
 }
