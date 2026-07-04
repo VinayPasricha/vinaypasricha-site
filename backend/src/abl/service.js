@@ -118,7 +118,7 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
   "competitors": "a few notable competitors",
   "pressures": "current business pressures or challenges they likely face",
   "ai_relevance": "where AI could POSSIBLY be relevant for them (not a plan)",
-  "ai_exposure": "any known current AI usage or exposure, if discoverable",
+  "ai_exposure": "any KNOWN current AI usage/exposure found in public sources. Do NOT guess. If nothing concrete is discoverable, set this to exactly: No public evidence of current AI adoption found — worth confirming with the participant.",
   "dossier": "a 4-8 sentence narrative brief a course instructor could skim",
   "sources_notes": "one line on what this is based on / confidence"
 }`;
