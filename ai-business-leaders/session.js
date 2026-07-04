@@ -25,7 +25,7 @@
 
   // ---- state ----
   var S = { view: 'loading', err: '', genErr: '', chatErr: '', pendingText: '', consent: false, data: null, messages: [], input: '', busy: false,
-    count: 0, max: 200, reward: null, shareId: null, shareText: '', note: '', scrollToEnd: false,
+    count: 0, max: 200, reward: null, shareId: null, shareText: '', note: '', scrollToEnd: false, scrollTop: false,
     resumed: false, fbRating: 0, fbComment: '', fbDone: false };
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -98,7 +98,7 @@
     if (!S.consent) return;
     S.busy = true; render();
     var r = await apiFetch('/session/' + encodeURIComponent(SLUG), { method: 'POST', body: JSON.stringify({ depth: depth, consent: true }) });
-    if (r.ok) { await load(); }  // re-load so the agent's opening greeting is fetched
+    if (r.ok) { S.scrollTop = true; await load(); }  // re-load so the agent's opening greeting is fetched (land at top)
     else { S.busy = false; S.err = r.error || 'Could not start.'; render(); }
   }
   // send(); pass a string to send that text (option click); pass nothing to send the textarea.
@@ -120,18 +120,18 @@
     render();
   }
   async function finish() {
-    S.view = 'generating'; S.busy = true; S.genErr = ''; render();
+    S.view = 'generating'; S.busy = true; S.genErr = ''; S.scrollTop = true; render();
     var r = await apiFetch('/session/' + encodeURIComponent(SLUG) + '/reward', { method: 'POST' });
     if (r.ok && r.data) {
       S.reward = r.data.reward; S.shareId = r.data.share.id; S.shareText = r.data.share.markdown;
-      S.busy = false; S.view = 'review'; return render();
+      S.busy = false; S.view = 'review'; S.scrollTop = true; return render();
     }
     // The document can still be generating server-side (a slow turn can outlast the
     // 60s hosting proxy limit). Rather than make the participant refresh, keep the
     // "Preparing…" view and poll the session until the summary appears on its own.
     if (r.status === 0 || r.status >= 500) {
       var got = await pollForReward();
-      if (got) { S.busy = false; S.view = 'review'; return render(); }
+      if (got) { S.busy = false; S.view = 'review'; S.scrollTop = true; return render(); }
     }
     S.busy = false;
     S.genErr = r.error || 'Could not prepare your summary. Please try again.';
@@ -153,7 +153,7 @@
     S.busy = true; render();
     var r = await apiFetch('/session/' + encodeURIComponent(SLUG) + '/review', { method: 'POST', body: JSON.stringify({ reviewed_markdown: S.shareText, approved: approved, note: S.note }) });
     S.busy = false;
-    if (r.ok && approved) S.view = 'done';
+    if (r.ok && approved) { S.view = 'done'; S.scrollTop = true; }
     render();
   }
   async function submitFeedback() {
@@ -352,6 +352,11 @@
         window.scrollTo(0, document.documentElement.scrollHeight);
         requestAnimationFrame(function () { window.scrollTo(0, document.documentElement.scrollHeight); });
       });
+    } else if (S.scrollTop) {
+      // A major view change (generating / review / done): start at the TOP of the
+      // new screen — never leave the user wherever they'd scrolled to before.
+      S.scrollTop = false;
+      window.scrollTo(0, 0);
     } else {
       window.scrollTo(0, prevY);
     }
