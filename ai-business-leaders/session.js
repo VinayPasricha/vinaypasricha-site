@@ -120,10 +120,32 @@
   async function finish() {
     S.view = 'generating'; S.busy = true; S.genErr = ''; render();
     var r = await apiFetch('/session/' + encodeURIComponent(SLUG) + '/reward', { method: 'POST' });
+    if (r.ok && r.data) {
+      S.reward = r.data.reward; S.shareId = r.data.share.id; S.shareText = r.data.share.markdown;
+      S.busy = false; S.view = 'review'; return render();
+    }
+    // The document can still be generating server-side (a slow turn can outlast the
+    // 60s hosting proxy limit). Rather than make the participant refresh, keep the
+    // "Preparing…" view and poll the session until the summary appears on its own.
+    if (r.status === 0 || r.status >= 500) {
+      var got = await pollForReward();
+      if (got) { S.busy = false; S.view = 'review'; return render(); }
+    }
     S.busy = false;
-    if (r.ok && r.data) { S.reward = r.data.reward; S.shareId = r.data.share.id; S.shareText = r.data.share.markdown; S.view = 'review'; }
-    else { S.genErr = r.error || 'Could not prepare your summary. Please try again.'; S.view = 'chat'; }
+    S.genErr = r.error || 'Could not prepare your summary. Please try again.';
+    S.view = 'chat';
     render();
+  }
+  async function pollForReward() {
+    for (var i = 0; i < 24; i++) {                 // ~24 × 5s ≈ 2 minutes
+      await new Promise(function (done) { setTimeout(done, 5000); });
+      var r = await apiFetch('/session/' + encodeURIComponent(SLUG));
+      if (r.ok && r.data && r.data.reward && r.data.share) {
+        S.reward = r.data.reward; S.shareId = r.data.share.id; S.shareText = r.data.share.markdown;
+        return true;
+      }
+    }
+    return false;
   }
   async function review(approved) {
     S.busy = true; render();
@@ -170,15 +192,18 @@
 
   // Invitations back into the main site so the participant can keep exploring.
   function exploreHTML() {
-    var links = [
-      ['/books', 'The Books', 'Vinay’s books on business, AI, and life'],
-      ['/paths/essay', 'Essays', 'Writing on decisions, strategy, and thought'],
-      ['/paths/watch', 'Watch', 'Talks, films, and conversations'],
-      ['/', 'Explore the site', 'Everything Vinay is building']
+    var cards = [
+      { href: '/books', kicker: 'The bookshelf', title: 'The Books', desc: 'Six books on decisions, AI, execution, and the direction of civilizations.', cta: 'Browse the books', feat: true },
+      { href: '/', kicker: 'The full site', title: 'vinaypasricha.com', desc: 'Essays, talks, the Signal, and everything else Vinay is building.', cta: 'Explore the site', feat: false }
     ];
-    return '<div class="explore"><div class="explore-h">While you’re here — explore more from Vinay</div>' +
-      '<div class="explore-grid">' + links.map(function (l) {
-        return '<a class="ex-card" href="' + l[0] + '"><div class="ex-t">' + esc(l[1]) + ' →</div><div class="ex-d">' + esc(l[2]) + '</div></a>';
+    return '<div class="explore"><div class="explore-h">Where to next</div>' +
+      '<div class="explore-grid">' + cards.map(function (c) {
+        return '<a class="ex-card' + (c.feat ? ' feat' : '') + '" href="' + c.href + '">' +
+          '<div class="ex-k">' + esc(c.kicker) + '</div>' +
+          '<div class="ex-t">' + esc(c.title) + '</div>' +
+          '<div class="ex-d">' + esc(c.desc) + '</div>' +
+          '<div class="ex-cta">' + esc(c.cta) + '<span class="ex-arrow">→</span></div>' +
+          '</a>';
       }).join('') + '</div></div>';
   }
 
@@ -224,7 +249,7 @@
       var rname = d === '45' ? 'AI Strategy Note' : d === '30' ? 'AI Opportunity & Use-Case Map' : 'Course Preparation Brief';
       html += '<div style="margin-top:64px;text-align:center">' +
         '<div class="thinking" style="font-size:16px;color:var(--ink-2)">Preparing your <em>' + esc(rname) + '</em> and summary…</div>' +
-        '<p class="count" style="margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6">This usually takes 20–40 seconds — the runtime is writing your document from the whole conversation. Please keep this tab open.</p>' +
+        '<p class="count" style="margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6">This usually takes 15–30 seconds — the runtime is writing your document from the whole conversation. Please keep this tab open.</p>' +
         '<div style="margin-top:18px;font-family:var(--mono);letter-spacing:.3em;color:var(--accent)">● ● ●</div></div>';
     }
 
@@ -252,9 +277,13 @@
       var userMsgs = S.messages.filter(function (m) { return m.role === 'user'; }).length;
       html += (S.count >= 180 && S.count < S.max ? '<p class="warn">You’re nearing this session’s message limit (' + S.count + '/' + S.max + '). You can finish and generate your summary at any time.</p>' : '') +
         '<div class="composer"><textarea id="input" rows="3" placeholder="Type your own reply…  (Enter to send, Shift+Enter for a new line)"' + (S.busy || S.count >= S.max ? ' disabled' : '') + '>' + esc(S.input) + '</textarea>' +
-        '<div class="composer-row"><button class="link-btn" id="finish"' + (S.busy || userMsgs < 5 ? ' disabled' : '') + ' title="' + (userMsgs < 5 ? 'Answer a few more questions first (' + userMsgs + '/5)' : '') + '">I’m ready — prepare my summary &amp; what I’ll get →</button>' +
-        '<button class="btn" id="sendBtn"' + (S.busy || S.count >= S.max ? ' disabled' : '') + '>Send</button></div>' +
-        '<div class="count">' + S.count + '/' + S.max + ' messages' + (userMsgs < 5 ? ' · answer ' + (5 - userMsgs) + ' more to finish' : '') + '</div></div>';
+        '<div class="composer-row" style="justify-content:flex-end"><button class="btn" id="sendBtn"' + (S.busy || S.count >= S.max ? ' disabled' : '') + '>Send</button></div>' +
+        '<div class="count">' + S.count + '/' + S.max + ' messages' + (userMsgs < 5 ? ' · answer ' + (5 - userMsgs) + ' more before you can finish' : '') + '</div>' +
+        (userMsgs >= 5
+          ? '<div class="finish-cta"><button class="btn-finish" id="finish"' + (S.busy ? ' disabled' : '') + '>Finish session &amp; create my summary →</button>' +
+            '<div class="finish-sub">You’ve shared enough — this writes your take-home document from the whole conversation.</div></div>'
+          : '') +
+        '</div>';
     }
 
     if (S.view === 'review' && S.reward) {

@@ -180,12 +180,14 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!p) return fail(res, 'Session not found', 404);
       if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
       const session = await repo.getOrCreateSession(p.id, 'participant');
-      // Generate the participant's reward + share summary AND (in parallel) Vinay's
-      // private meeting brief, so the brief is ready the moment they finish.
-      const [{ rewardType, rewardMd, shareMd }] = await Promise.all([
-        generateRewardBundle(p, session.selected_depth),
-        generateOutput(p, 'vinay_meeting_brief').catch((e) => console.error('[abl] auto-brief failed:', e.message)),
-      ]);
+      // ONLY the participant's reward + share summary block this response — both run
+      // on the fast chat model (~10-15s). Vinay's meeting brief uses the slower Pro
+      // model; awaiting it here pushed the total past Firebase Hosting's 60s proxy
+      // limit, which killed the request and left the participant stuck on
+      // "Preparing…" (the doc only appeared on refresh). So the brief is now fired
+      // best-effort in the background — and can always be (re)generated from Studio.
+      const { rewardType, rewardMd, shareMd } = await generateRewardBundle(p, session.selected_depth);
+      generateOutput(p, 'vinay_meeting_brief').catch((e) => console.error('[abl] auto-brief failed:', e.message));
       await repo.updateSession(session.id, { current_stage: 'summary_review' });
       await repo.updateParticipant(p.id, { current_stage: 'summary_review' });
       const reward = await repo.getLatestOutput(p.id, rewardType);
