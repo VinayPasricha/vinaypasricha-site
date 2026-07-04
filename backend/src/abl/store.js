@@ -27,8 +27,19 @@ function randomCode(len = 6) {
 }
 export function sha256(s) { return crypto.createHash('sha256').update(String(s)).digest('hex'); }
 export function makeSlug(name) {
-  const code = randomCode(10); // ~50 bits — unguessable for a private participant link
-  return { slug: `${nameSlug(name)}-${code}`, code };
+  // Company-based, clean slug — no random code appended. This slug IS the
+  // private participant link, so callers MUST run it through uniqueSlug() so
+  // two participants at the same company can't overwrite each other's session.
+  return nameSlug(name);
+}
+
+// Append -2, -3, ... until the slug is free. Keeps same-named companies from
+// colliding on (and hijacking) an existing participant's session.
+async function uniqueSlug(base) {
+  let slug = base;
+  let n = 1;
+  while (await getParticipantBySlug(slug)) { n += 1; slug = `${base}-${n}`; }
+  return slug;
 }
 
 const col = (name) => db.collection(name);
@@ -48,7 +59,10 @@ export async function getParticipantBySlug(slug) {
 }
 export async function createParticipant(input) {
   const id = uuid();
-  const { slug, code } = makeSlug(input.name);
+  // Clean, company-based link (e.g. /s/acme-corp). The random code is retained
+  // only for access_code_hash — it is no longer part of the shared URL.
+  const code = randomCode(10);
+  const slug = await uniqueSlug(makeSlug(input.company_name || input.name));
   const p = {
     slug, access_code_hash: sha256(code), name: input.name, company_name: input.company_name,
     email: input.email || null, role_title: input.role_title || null,
