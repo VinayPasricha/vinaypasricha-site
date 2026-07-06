@@ -259,7 +259,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const [research, qa, outputs] = await Promise.all([
         repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs });
+      // The participant's conversation transcript, so Studio can display it.
+      let messages = [];
+      try {
+        const session = await repo.getOrCreateSession(p.id, 'participant');
+        messages = (await repo.listMessages(session.id))
+          .filter((m) => m.role === 'user' || m.role === 'assistant')
+          .map((m) => ({ role: m.role, content: m.content, at: m.created_at }));
+      } catch (e) { /* no session yet */ }
+      return ok(res, { participant: p, research, qa, outputs, messages });
     } catch (e) { return oops(res, e); }
   });
 

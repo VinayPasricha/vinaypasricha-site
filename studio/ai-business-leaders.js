@@ -183,6 +183,18 @@
         '<button class="btn danger" id="deleteBtn">Delete</button></div></div>' +
         (p.feedback_rating ? '<div class="fbline">Participant rated this <strong>' + p.feedback_rating + '/5 ★</strong>' + (p.feedback_comment ? ' — “' + esc(p.feedback_comment) + '”' : '') + '</div>' : '') +
 
+      // Conversation transcript
+      '<div class="card"><h4 style="margin:0 0 10px">Conversation <span class="muted" style="font-weight:400">· ' + ((d.messages && d.messages.length) || 0) + ' messages</span></h4>' +
+        ((d.messages && d.messages.length)
+          ? '<div class="convo">' + d.messages.map(function (m) {
+              var isP = m.role === 'user';
+              return '<div class="cmsg ' + (isP ? 'cp' : 'ca') + '">' +
+                '<div class="cwho">' + (isP ? esc((p.name || 'Participant').split(' ')[0]) : 'Agent') + '</div>' +
+                '<div class="cbody">' + esc(m.content).replace(/\n/g, '<br>') + '</div></div>';
+            }).join('') + '</div>'
+          : '<p class="muted">No conversation yet.</p>') +
+      '</div>' +
+
       // Research
       '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
         '<h4 style="margin:0">1 · Research (preliminary — the agent treats it as correctable)</h4>' +

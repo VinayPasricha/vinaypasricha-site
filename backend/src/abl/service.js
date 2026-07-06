@@ -200,7 +200,7 @@ export async function generateOutput(participant, type, modelName) {
   const useModel = modelName || DOC_MODEL;
   const md = await completeModel({
     system, messages: [{ role: 'user', content: message }],
-    model: useModel, generationConfig: gcfg(useModel, { maxOutputTokens: 4096, temperature: 0.4 }),
+    model: useModel, generationConfig: gcfg(useModel, { maxOutputTokens: 8192, temperature: 0.4 }),
   });
   await repo.saveOutput({ participant_id: participant.id, session_id: session.id, output_type: type, content_markdown: md });
   if (type === 'vinay_meeting_brief') {

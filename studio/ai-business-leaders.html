@@ -45,6 +45,16 @@
     .qa-b { font-size: 13.5px; line-height: 1.5; padding: 8px 11px; border-radius: 8px; max-width: 88%; }
     .qa-b.me { align-self: flex-end; background: var(--ink); color: var(--paper); }
     .qa-b.them { align-self: flex-start; background: var(--paper); border: 1px solid var(--rule); }
+    /* Participant conversation transcript */
+    .convo { border: 1px solid var(--rule); border-radius: 5px; background: var(--paper-3); padding: 12px; max-height: 540px; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+    .cmsg { max-width: 86%; }
+    .cmsg.cp { align-self: flex-end; }
+    .cmsg.ca { align-self: flex-start; }
+    .cwho { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 3px; }
+    .cp .cwho { text-align: right; }
+    .cbody { padding: 9px 12px; border-radius: 9px; font-size: 13.5px; line-height: 1.55; }
+    .cp .cbody { background: var(--ink); color: var(--paper); }
+    .ca .cbody { background: var(--paper); border: 1px solid var(--rule); color: var(--ink); }
     .row-actions a { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-right: 10px; text-decoration: none; }
     .muted { color: var(--ink-3); font-style: italic; }
     .del { background: none; border: none; color: var(--ink-4); font-size: 15px; cursor: pointer; padding: 2px 6px; border-radius: 3px; line-height: 1; }

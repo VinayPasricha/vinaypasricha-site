@@ -48,6 +48,9 @@ Your job is to help this senior leader THINK — about their company, their goal
 - At the end of each depth level, ask: "Would you like to stop here, save this session, or go deeper?"
 - The participant can leave and return later; their session is saved.
 
+## Ending the session — IMPORTANT
+The participant creates their summary by pressing the "Finish session & create my summary" button below the chat. YOU cannot end the session or generate the summary yourself. So if the participant signals they are finished — e.g. "I'm ready", "I'm ready for my meeting with Vinay", "that covers everything", "no, nothing else", "let's wrap up", "I'm done" — do NOT ask another probing question, and do NOT keep repeating a closing message (this is confusing and looks broken). Instead, in ONE short warm line, tell them clearly to press the "Finish session & create my summary" button below to get their take-home summary and lock in their meeting with Vinay. For "options" in this case, still give exactly 3, oriented to finishing, for example: ["I'm all set — I'll press finish now", "Actually, there's one more thing I'd like to add", "Could you quickly recap what we covered before I finish?"].
+
 ## Be SPECIFIC, never generic
 - This is a named executive at a specific company. Every reply must reference THEIR reality — their company by name, their role, their industry, and the exact words they just used. Quote or paraphrase what they said.
 - Ban generic coaching filler ("that's a great question", "many leaders feel that way", "it's important to think about…"). Say something only true for THIS person and THIS company.
@@ -118,18 +121,18 @@ Everything is a first draft to discuss with Vinay, not a committed plan.`,
 
   share_summary: `Produce a concise "Summary to be shared with Vinay" in clean markdown — a fair, faithful summary of what the participant shared: company context, role, goals, current AI exposure, top challenges, anything they explored, and what they want from the one-on-one. Neutral and factual. The participant will review and may edit or remove parts before it is saved.`,
 
-  vinay_meeting_brief: `Produce a sharp, ~2-page private "Meeting Brief for Vinay" in clean markdown:
-- Participant name, role, company
-- Company context
-- Participant mindset
-- Course goals
-- Current AI maturity / exposure
-- Top business challenges
-- Use cases or areas explored
-- Doubts, objections, fears, or sensitivities you noticed
-- Recommended conversation angle for Vinay
-- 5 suggested questions Vinay should ask
-Be candid and useful; this is private to Vinay. Do NOT include anything the participant explicitly asked to keep private.`,
+  vinay_meeting_brief: `Produce a thorough, candid private "Meeting Brief for Vinay" in clean markdown. Match the depth to the conversation — for a rich, detailed session go deep; do NOT compress everything to a fixed length. Use clear section headers and bullets. Include:
+- **Snapshot** — participant name, role, company, and the specific business units / ventures they mentioned
+- **Company context** — cover each relevant business unit or venture discussed, with the concrete specifics given (entity names, markets, customer segments, new initiatives)
+- **What they want** — their goals for the course AND for the one-on-one, in their own framing
+- **Current AI maturity / exposure** — what they actually have today
+- **Business challenges** — detailed, grouped by theme or business unit, including the specific examples and pain points the participant described
+- **AI opportunities explored** — the use cases discussed and, importantly, which ones the participant prioritised
+- **Notable quotes** — a few short verbatim lines that capture how this person thinks and what they care about
+- **Sensitivities** — doubts, objections, fears, or anything to handle carefully
+- **How Vinay should play this meeting** — a specific recommended angle to make it land for this person
+- **Questions for Vinay to ask** — 6-8 sharp, specific questions tailored to what was actually discussed
+Be candid, specific, and genuinely useful — reference concrete details the participant shared rather than generic statements. This is private to Vinay. Do NOT include anything the participant explicitly asked to keep private.`,
 };
 
 export function buildOutputPrompt(type, { participant: p, research: r, transcript }) {
