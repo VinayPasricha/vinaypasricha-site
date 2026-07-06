@@ -18,6 +18,9 @@ function contextBlock(p, r) {
   s += line('Industry', p.industry);
   s += line('Geography', p.geography);
   s += line('Business model', p.business_model);
+  s += line('Company size', sc.company_size);
+  s += line('Funding', sc.funding);
+  s += line('About the participant', sc.person);
   s += line('Customers / segments', sc.customers);
   s += line('Products / services', sc.products);
   s += line('Competitors', sc.competitors);
@@ -122,8 +125,9 @@ Everything is a first draft to discuss with Vinay, not a committed plan.`,
   share_summary: `Produce a concise "Summary to be shared with Vinay" in clean markdown — a fair, faithful summary of what the participant shared: company context, role, goals, current AI exposure, top challenges, anything they explored, and what they want from the one-on-one. Neutral and factual. The participant will review and may edit or remove parts before it is saved.`,
 
   vinay_meeting_brief: `Produce a thorough, candid private "Meeting Brief for Vinay" in clean markdown. Match the depth to the conversation — for a rich, detailed session go deep; do NOT compress everything to a fixed length. Use clear section headers and bullets. Include:
-- **Snapshot** — participant name, role, company, and the specific business units / ventures they mentioned
-- **Company context** — cover each relevant business unit or venture discussed, with the concrete specifics given (entity names, markets, customer segments, new initiatives)
+- **Snapshot** — participant name, role, company, company size, funding status, and the specific business units / ventures they mentioned
+- **About the participant** — their professional background (prior roles, tenure, notable achievements) from the preliminary research, where available
+- **Company context** — cover each relevant business unit or venture discussed, with the concrete specifics given (entity names, markets, customer segments, new initiatives); include company size and funding where known
 - **What they want** — their goals for the course AND for the one-on-one, in their own framing
 - **Current AI maturity / exposure** — what they actually have today
 - **Business challenges** — detailed, grouped by theme or business unit, including the specific examples and pain points the participant described

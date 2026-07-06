@@ -202,8 +202,10 @@
         '<p class="muted" id="autoStatus" style="margin:8px 0 0;font-size:12px"></p>' +
         '<div class="grid3">' +
           fld('r-role', 'Role / title', p.role_title) + fld('r-web', 'Website', p.company_website) + fld('r-ind', 'Industry', p.industry) +
-          fld('r-geo', 'Geography', p.geography) + fld('r-bm', 'Business model', p.business_model) + '<div></div>' +
+          fld('r-geo', 'Geography', p.geography) + fld('r-bm', 'Business model', p.business_model) + fld('r-size', 'Company size', sc.company_size) +
+          fld('r-fund', 'Funding', sc.funding) + '<div></div>' + '<div></div>' +
         '</div>' +
+        '<label class="fld">About the participant — ' + esc(p.name) + '</label><textarea class="ipt auto" id="r-person" rows="2" placeholder="Professional background, prior roles, tenure — from public sources, or run Auto-research.">' + esc(sc.person || '') + '</textarea>' +
         '<div class="grid2" style="margin-top:6px">' +
           fld('r-cust', 'Customers / segments', sc.customers, 2) + fld('r-prod', 'Products / services', sc.products, 2) +
           fld('r-comp', 'Competitors', sc.competitors, 2) + fld('r-press', 'Business pressures', sc.pressures, 2) +
@@ -259,7 +261,8 @@
         role_title: $('r-role').value, company_website: $('r-web').value, industry: $('r-ind').value,
         geography: $('r-geo').value, business_model: $('r-bm').value }) });
       var r = await api('/participants/' + p.id + '/research', { method: 'POST', body: JSON.stringify({
-        structured_context: { customers: $('r-cust').value, products: $('r-prod').value, competitors: $('r-comp').value,
+        structured_context: { person: $('r-person').value, company_size: $('r-size').value, funding: $('r-fund').value,
+          customers: $('r-cust').value, products: $('r-prod').value, competitors: $('r-comp').value,
           pressures: $('r-press').value, ai_relevance: $('r-air').value, ai_exposure: $('r-aie').value },
         research_dossier: $('r-dossier').value, sources_notes: $('r-sources').value }) });
       if (r.ok) { toast('Research saved'); await refresh(); await openDetail(p.id); restoreY(y); } else toast(r.error || 'Failed');

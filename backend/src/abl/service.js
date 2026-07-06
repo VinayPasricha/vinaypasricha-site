@@ -126,19 +126,23 @@ export async function researchCompany(participant) {
   const emailDomain = p.email && p.email.includes('@') ? p.email.split('@')[1] : '';
   const domain = (p.company_website || emailDomain || '').replace(/^https?:\/\//, '').replace(/\/+$/, '');
 
-  const system = `You are a diligent business researcher preparing a PRELIMINARY brief on a company, to help personalise an executive course ("AI for Business Leaders"). Use live web search to find real, current facts about THIS specific company (match the domain). Be accurate and explicitly preliminary; if you cannot find something, leave that field as an empty string rather than inventing it. Frame any AI relevance as "possible", never as a plan. Output STRICT JSON only — no prose, no code fences.`;
+  const system = `You are a diligent business researcher preparing a PRELIMINARY brief to help personalise an executive course ("AI for Business Leaders"). Use live web search to find real, current facts about THIS specific company (match the domain) AND the specific person attending (match their name + role + company). Be accurate and explicitly preliminary; if you cannot find something, leave that field as an empty string rather than inventing it. Frame any AI relevance as "possible", never as a plan. Output STRICT JSON only — no prose, no code fences.`;
 
-  const user = `Research this company and return the JSON object below.
+  const user = `Research this company AND the person attending, then return the JSON object below.
 
 COMPANY: ${p.company_name || ''}
 DOMAIN / WEBSITE: ${domain || '(unknown)'}
-KNOWN CONTEXT: role=${p.role_title || '?'}; industry=${p.industry || '?'}; contact=${p.email || '?'}
+PERSON: ${p.name || '?'} — role: ${p.role_title || '?'}
+KNOWN CONTEXT: industry=${p.industry || '?'}; contact=${p.email || '?'}
 
 Return ONLY this JSON shape (all values are short strings; leave "" if genuinely unknown):
 {
   "industry": "the company's industry / sector",
   "geography": "where they are based / operate (HQ city + region/country)",
   "business_model": "how they make money (e.g. B2B SaaS, D2C retail, marketplace, consulting)",
+  "company_size": "approximate size if discoverable — employee headcount range and/or revenue (e.g. '~200 employees', '50-100 staff', '$10-50M revenue')",
+  "funding": "funding status if discoverable — 'Bootstrapped/self-funded', or funded with stage + total raised + notable investors (e.g. 'Series B, ~$40M, Sequoia & Accel'), or 'Publicly listed' for a listed company",
+  "person": "a short background on ${p.name || 'the person attending'} specifically — professional history, prior roles, tenure, notable achievements from public sources (LinkedIn, press). Do NOT invent; leave \\"\\" if not discoverable.",
   "customers": "who they serve / main customer segments",
   "products": "their main products or services",
   "competitors": "a few notable competitors",
@@ -153,6 +157,7 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
   const j = extractJson(text) || {};
   const clean = (s) => String(s || '').replace(/\s*\[[\d,\s]+\]/g, '').replace(/\s{2,}/g, ' ').trim(); // drop inline [2, 7] cite markers
   const structured_context = {
+    person: clean(j.person), company_size: clean(j.company_size), funding: clean(j.funding),
     customers: clean(j.customers), products: clean(j.products), competitors: clean(j.competitors),
     pressures: clean(j.pressures), ai_relevance: clean(j.ai_relevance), ai_exposure: clean(j.ai_exposure),
   };
