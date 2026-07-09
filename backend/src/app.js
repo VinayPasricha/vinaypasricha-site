@@ -28,6 +28,11 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
+import { sendOtp, verifyOtp } from './services/otp.js';
+import {
+  ensureAccount, accountState, saveOutput, listAccounts, setAssignment,
+} from './services/portal.js';
+import * as session from './services/session.js';
 import crypto from 'node:crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -67,8 +72,9 @@ function parseCookies(req) {
   return out;
 }
 function studioAuthed(req) {
-  const expected = studioHash();
-  return !!expected && parseCookies(req)[STUDIO_COOKIE] === expected;
+  // Studio claim now lives inside the shared "__session" cookie (see session.js),
+  // so it can coexist with a participant's portal session in the same browser.
+  return session.studioAuthed(req, studioHash());
 }
 
 // Require the admin token (header `x-admin-token` or `?token=`) for endpoints
@@ -165,18 +171,91 @@ export function createApp() {
     if (pw !== STUDIO_PASSPHRASE && !(config.adminToken && pw === config.adminToken)) {
       return res.status(401).json({ error: 'invalid' });
     }
-    const secure = IS_PUBLIC_DEPLOY ? '; Secure' : '';
-    res.setHeader('Set-Cookie', STUDIO_COOKIE + '=' + studioHash() + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800' + secure);
+    res.setHeader('Set-Cookie', session.setStudio(req, studioHash()));
     res.json({ ok: true });
   });
   app.post('/api/studio/logout', (req, res) => {
-    res.setHeader('Set-Cookie', STUDIO_COOKIE + '=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0');
+    res.setHeader('Set-Cookie', session.setStudio(req, '')); // clears studio, keeps any portal session
     res.json({ ok: true });
   });
   app.get('/api/studio/status', (req, res) => res.json({ authed: studioAuthed(req), enabled: !!config.adminToken }));
 
   // ---- Health ----
   app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+  // ---- Participant Room: email OTP login ----
+  // send: generate + email a 6-digit code (per-IP throttled here, per-email
+  // throttled inside the service). verify: check it, one-time use.
+  app.post('/api/otp/send', rateLimit({ windowMs: 60000, max: 10 }), async (req, res) => {
+    try {
+      const r = await sendOtp({ email: req.body && req.body.email, name: req.body && req.body.name });
+      res.status(r.ok ? 200 : 400).json(r);
+    } catch (err) {
+      res.status(502).json({ ok: false, error: 'send_failed', detail: err.message });
+    }
+  });
+  app.post('/api/otp/verify', rateLimit({ windowMs: 60000, max: 20 }), async (req, res) => {
+    try {
+      const email = req.body && req.body.email;
+      const r = await verifyOtp({ email, code: req.body && req.body.code });
+      if (r.ok) {
+        // The verified email becomes the account. Set the portal claim in __session.
+        await ensureAccount(email, r.name);
+        res.setHeader('Set-Cookie', session.setPortal(req, email));
+      }
+      res.status(r.ok ? 200 : 400).json(r);
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+
+  // ---- Participant Room: account session + per-account data ----
+  function requirePortal(req, res, next) {
+    const email = session.portalEmail(req);
+    if (!email) return res.status(401).json({ ok: false, error: 'not_signed_in' });
+    req.portalEmail = email;
+    next();
+  }
+  app.get('/api/portal/me', (req, res) => {
+    const email = session.portalEmail(req);
+    res.json({ ok: !!email, email: email || null });
+  });
+  app.post('/api/portal/logout', (req, res) => {
+    res.setHeader('Set-Cookie', session.setPortal(req, null)); // clears portal, keeps any studio session
+    res.json({ ok: true });
+  });
+  app.get('/api/portal/state', requirePortal, async (req, res) => {
+    try { res.json({ ok: true, ...(await accountState(req.portalEmail)) }); }
+    catch (err) { res.status(500).json({ ok: false, error: 'server_error', detail: err.message }); }
+  });
+  // A runtime saves its output for the signed-in participant (best-effort; 401 if not signed in).
+  app.post('/api/portal/outputs', requirePortal, async (req, res) => {
+    try {
+      const { runtime, key, title, data } = req.body || {};
+      if (!runtime) return res.status(400).json({ ok: false, error: 'runtime_required' });
+      await saveOutput(req.portalEmail, { runtime, key, title, data });
+      res.json({ ok: true });
+    } catch (err) {
+      res.status(400).json({ ok: false, error: 'bad_request', detail: err.message });
+    }
+  });
+
+  // ---- Admin: manage participants + custom assignments ----
+  app.get('/api/portal/accounts', requireAdmin, async (req, res) => {
+    try { res.json({ ok: true, accounts: await listAccounts() }); }
+    catch (err) { res.status(500).json({ ok: false, error: 'server_error', detail: err.message }); }
+  });
+  app.post('/api/portal/accounts/:email/assign', requireAdmin, async (req, res) => {
+    try {
+      const acct = await setAssignment(req.params.email, {
+        runtimes: req.body && req.body.runtimes,
+        note: req.body && req.body.note,
+      });
+      res.json({ ok: true, account: acct });
+    } catch (err) {
+      res.status(400).json({ ok: false, error: 'bad_request', detail: err.message });
+    }
+  });
 
   // ---- AI for Business Leaders (course-prep agent) ----
   // Participant + admin endpoints and the participant/doc pages. Admin routes

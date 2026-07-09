@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participants · Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/portal/portal.css">
+  <style>
+    .admin-wrap { max-width: 920px; margin: 0 auto; padding: 48px clamp(24px,5vw,64px) 100px; }
+    .admin-wrap h1 { font-family: var(--serif); font-weight: 400; font-size: 34px; margin: 0 0 4px; }
+    .admin-wrap .lead { font-family: var(--serif); color: #4a463c; margin: 0 0 30px; }
+    .acct { border: 1px solid var(--rule); border-radius: 4px; padding: 22px 24px; margin-bottom: 16px; background: rgba(255,255,255,0.35); }
+    .acct .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .acct .em { font-family: var(--serif); font-size: 19px; color: var(--ink); }
+    .acct .meta { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #9a9078; }
+    .rt-checks { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 16px 0 12px; }
+    .rt-checks label { font-family: var(--sans); font-size: 13.5px; color: #55503f; display: flex; gap: 7px; align-items: center; }
+    .acct textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--rule); border-radius: 3px; padding: 10px 12px; font-family: var(--sans); font-size: 14px; color: var(--ink); background: transparent; resize: vertical; min-height: 56px; }
+    .acct .row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 12px; }
+    .acct .hint { font-family: var(--sans); font-size: 12px; color: #9a9078; }
+    .saved { color: #37613f; }
+    .empty { font-family: var(--serif); font-style: italic; color: #9a9078; }
+    .gate { max-width: 380px; margin: 80px auto; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="brand"><span class="name">Vinay <em>Pasricha</em></span><span class="subtitle">Participants · Admin</span></a>
+  <div></div><div class="right"></div>
+</header>
+
+<div id="gate" class="gate login-card" hidden>
+  <p class="mark">Admin</p>
+  <h1>Sign in.</h1>
+  <div class="field"><label for="pw">Passphrase</label><input type="password" id="pw" placeholder="••••••"></div>
+  <button class="btn-primary" id="go">Enter <span class="arrow">→</span></button>
+  <p class="otp-error" id="gate-err" hidden></p>
+</div>
+
+<main class="admin-wrap" id="wrap" hidden>
+  <h1>Participants</h1>
+  <p class="lead">Assign each participant a custom set of runtimes and a personal note. Blank = they see all runtimes.</p>
+  <div id="list"></div>
+</main>
+
+<script>
+(function () {
+  var RUNTIMES = [
+    { id: 'siv', name: 'The SIV Method' }, { id: 'kairos', name: 'KAIROS·1' },
+    { id: 'civ', name: 'Civilization Lab' }, { id: 'memory', name: 'Memory Lab' }, { id: 'freq', name: 'Org Frequency' }
+  ];
+  function j(path, opts) { return fetch(path, Object.assign({ credentials: 'include' }, opts || {})).then(function (r) { return r.json().catch(function () { return {}; }); }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  var gate = document.getElementById('gate'), wrap = document.getElementById('wrap');
+
+  function start() {
+    j('/api/studio/status').then(function (s) {
+      if (s && s.authed) { gate.hidden = true; wrap.hidden = false; load(); }
+      else { gate.hidden = false; wrap.hidden = true; }
+    });
+  }
+  document.getElementById('go').addEventListener('click', function () {
+    var pw = document.getElementById('pw').value;
+    j('/api/studio/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pw }) })
+      .then(function (r) {
+        if (r && r.ok) { gate.hidden = true; wrap.hidden = false; load(); }
+        else { var e = document.getElementById('gate-err'); e.textContent = 'Wrong passphrase.'; e.hidden = false; }
+      });
+  });
+
+  function load() {
+    j('/api/portal/accounts').then(function (r) {
+      var list = document.getElementById('list');
+      if (!r || !r.ok) { list.innerHTML = '<p class="empty">Could not load (are you signed in as admin?).</p>'; return; }
+      if (!r.accounts.length) { list.innerHTML = '<p class="empty">No participants have signed in yet.</p>'; return; }
+      list.innerHTML = r.accounts.map(card).join('');
+      r.accounts.forEach(wire);
+    });
+  }
+
+  function card(a) {
+    var assigned = a.assignedRuntimes; // null = all
+    var checks = RUNTIMES.map(function (rt) {
+      var on = !assigned || assigned.indexOf(rt.id) !== -1;
+      return '<label><input type="checkbox" data-rt="' + rt.id + '"' + (on ? ' checked' : '') + '> ' + esc(rt.name) + '</label>';
+    }).join('');
+    var id = 'a_' + btoa(a.email).replace(/[^a-z0-9]/gi, '');
+    return '<div class="acct" id="' + id + '" data-email="' + esc(a.email) + '">'
+      + '<div class="top"><span class="em">' + esc(a.email) + '</span><span class="meta">' + esc(a.name || '') + '</span></div>'
+      + '<div class="rt-checks">' + checks + '</div>'
+      + '<textarea placeholder="A personal note for this participant (optional)">' + esc(a.note || '') + '</textarea>'
+      + '<div class="row"><span class="hint">Tick the runtimes this participant should see. All ticked = everyone default.</span>'
+      + '<button class="btn-primary save">Save</button></div></div>';
+  }
+
+  function wire(a) {
+    var id = 'a_' + btoa(a.email).replace(/[^a-z0-9]/gi, '');
+    var el = document.getElementById(id);
+    el.querySelector('.save').addEventListener('click', function () {
+      var checks = Array.prototype.slice.call(el.querySelectorAll('[data-rt]'));
+      var on = checks.filter(function (c) { return c.checked; }).map(function (c) { return c.getAttribute('data-rt'); });
+      // all ticked → null (default: everyone sees all). Else the chosen subset.
+      var runtimes = on.length === RUNTIMES.length ? null : on;
+      var note = el.querySelector('textarea').value;
+      var btn = el.querySelector('.save'); btn.textContent = 'Saving…'; btn.disabled = true;
+      j('/api/portal/accounts/' + encodeURIComponent(a.email) + '/assign',
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ runtimes: runtimes, note: note }) })
+        .then(function (r) { btn.disabled = false; btn.textContent = (r && r.ok) ? 'Saved ✓' : 'Retry'; setTimeout(function(){ btn.textContent='Save'; }, 1600); });
+    });
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>

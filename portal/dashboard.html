@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Room · Vinay Pasricha</title>
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/portal/portal.css">
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="side">
+    <a href="/" class="side-brand">
+      <span class="name">Vinay <em>Pasricha</em></span>
+      <span class="subtitle">The Participant Room</span>
+    </a>
+    <nav class="side-nav" id="side-nav">
+      <button class="side-item is-on" data-view="overview">Overview</button>
+      <button class="side-item" data-view="runtimes">Runtimes</button>
+      <button class="side-item" data-view="outputs">Outputs</button>
+      <button class="side-item" data-view="course">The course</button>
+    </nav>
+    <div class="side-foot">
+      <div class="who" id="who"></div>
+      <button class="logout" id="logout">Log out</button>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <div id="dash-root"></div>
+  </main>
+</div>
+
+<dialog class="output-modal" id="output-modal"></dialog>
+
+<script src="/portal/portal.js"></script>
+</body>
+</html>

@@ -28,4 +28,15 @@ export const config = {
   // header or `?token=`. If empty, those endpoints are CLOSED (fail-safe),
   // never open. Set ADMIN_TOKEN on Cloud Run.
   adminToken: optional('ADMIN_TOKEN', ''),
+
+  // --- Email OTP (Participant Room login) ---
+  // Resend API key + verified "from" address for the one-time codes, and a
+  // server secret used to HMAC-hash codes at rest. If key/secret are empty the
+  // OTP endpoints report "not configured" rather than sending anything.
+  resendKey: optional('RESEND_API_KEY', ''),
+  otpFrom: optional('OTP_FROM', 'The Participant Room <vinay@goodspace.ai>'),
+  otpSecret: optional('OTP_SECRET', ''),
+  // Dev/testing only: when '1', /api/otp/send echoes the code in its response so
+  // automated tests can verify without reading email. NEVER set in production.
+  otpDevEcho: optional('OTP_DEV_ECHO', '') === '1',
 };

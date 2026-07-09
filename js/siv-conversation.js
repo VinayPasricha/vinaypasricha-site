@@ -185,6 +185,20 @@ function render() {
   }
 }
 
+// Bring the newest turn (latest reply, or the thinking indicator) into view,
+// sitting just below the sticky header. Double rAF lets the freshly-swapped
+// innerHTML lay out first so the scroll target is measured correctly.
+function scrollToLatest() {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const last = document.querySelector('#siv-conversation .siv-turn:last-of-type');
+    if (!last) return;
+    const header = document.querySelector('.topbar');
+    const offset = (header ? header.offsetHeight : 0) + 16;
+    const top = last.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }));
+}
+
 function renderIntro() {
   return `
     <div class="siv-inner">
@@ -444,6 +458,7 @@ function wireIntro() {
     state.phase = 'thinking';
     saveState();
     render();
+    scrollToLatest();
     await callClaude();
   });
 }
@@ -460,6 +475,7 @@ function wireConversation() {
       state.phase = 'thinking';
       saveState();
       render();
+      scrollToLatest();
       await callClaude();
     });
     if (input) {
@@ -477,6 +493,7 @@ function wireConversation() {
   document.getElementById('siv-retry')?.addEventListener('click', async () => {
     state.phase = 'thinking';
     render();
+    scrollToLatest();
     await callClaude();
   });
 }
@@ -559,17 +576,23 @@ async function callClaude() {
     if (artefact) {
       state.artefact = artefact;
       state.phase = 'artefact';
+      // Save to the participant's account if they're signed in (best-effort,
+      // same-origin so the session cookie rides along; ignored if signed out).
+      try {
+        if (localStorage.getItem('portal.hint') === '1') {
+          fetch('/api/portal/outputs', {
+            method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ runtime: 'siv', key: 'latest', title: artefact.title || 'A Decision, Examined', data: artefact }),
+          }).catch(function () {});
+        }
+      } catch (e) {}
     } else {
       state.phase = 'conversation';
     }
     state.messages.push({ role: 'assistant', content: response });
     saveState();
     render();
-    // Smooth scroll to keep latest in view
-    setTimeout(() => {
-      const last = document.querySelector('.siv-turn:last-of-type');
-      last?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 100);
+    scrollToLatest();
   } catch (err) {
     console.error('Claude call failed', err);
     state.phase = 'error';

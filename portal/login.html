@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Participant Room · Vinay Pasricha</title>
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/portal/portal.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="brand">
+    <span class="name">Vinay <em>Pasricha</em></span>
+    <span class="subtitle">Explorer of Emergence</span>
+  </a>
+  <div></div>
+  <div class="right"></div>
+</header>
+
+<main class="login-split">
+
+  <!-- editorial panel -->
+  <section class="login-aside">
+    <p class="mark">The Participant Room</p>
+    <h2 class="aside-title">The room remembers<br>what you <em>build</em>.</h2>
+    <p class="aside-copy">Return to your runtimes, your saved outputs, and the course — everything you’ve examined, gathered in one place.</p>
+    <ul class="aside-list">
+      <li><b>The SIV Method</b><span>Decisions, examined</span></li>
+      <li><b>KAIROS·1</b><span>The Execution Doctrine, live</span></li>
+      <li><b>AI for Business Leaders</b><span>The course · coming soon</span></li>
+    </ul>
+  </section>
+
+  <!-- form panel -->
+  <section class="login-form-col">
+  <div class="login-card">
+
+    <!-- STEP 1 — identity + channel -->
+    <form id="id-form" novalidate>
+      <p class="mark">Sign in</p>
+      <h1>Enter your <em>room</em>.</h1>
+      <p class="lead">We’ll send a one-time code to confirm it’s you.</p>
+
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input type="text" id="f-name" autocomplete="name" placeholder="e.g. Vaishnav Pillai">
+      </div>
+
+      <div class="field">
+        <label for="f-contact" id="contact-label">Email</label>
+        <input type="email" id="f-contact" autocomplete="email" placeholder="you@company.com">
+      </div>
+
+      <button type="submit" class="btn-primary" id="send-code" disabled>
+        Send code <span class="arrow">→</span>
+      </button>
+
+      <p class="proto-note">We’ll email you a 6-digit code to sign in — it expires in 10 minutes.</p>
+    </form>
+
+    <!-- STEP 2 — OTP verify -->
+    <form id="otp-form" novalidate hidden>
+      <p class="mark">Verify it’s you</p>
+      <h1>Enter the <em>code</em>.</h1>
+      <p class="lead">We sent a 6-digit code to <b id="otp-dest">you@company.com</b>.
+        <button type="button" class="linkish" id="otp-change">Change</button></p>
+
+      <div class="otp-boxes" id="otp-boxes">
+        <input class="otp-box" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1">
+        <input class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+        <input class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+        <input class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+        <input class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+        <input class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+      </div>
+
+      <p class="otp-demo" id="otp-demo"></p>
+      <p class="otp-error" id="otp-error" hidden></p>
+
+      <button type="submit" class="btn-primary" id="verify-code" disabled>
+        Verify &amp; enter <span class="arrow">→</span>
+      </button>
+
+      <p class="proto-note">
+        Didn’t get it? <button type="button" class="linkish" id="otp-resend">Resend code</button><span id="otp-timer"></span>
+      </p>
+    </form>
+
+  </div>
+  </section>
+</main>
+
+<script src="/portal/portal.js"></script>
+</body>
+</html>

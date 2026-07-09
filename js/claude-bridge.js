@@ -86,6 +86,44 @@
       email: lead.email,
       phone: lead.phone,
     });
+    savePortalOutput(completion);
+  }
+
+  // ---- Save this runtime's latest output to the signed-in participant's
+  // account (Participant Room). Best-effort, same-origin so the session cookie
+  // rides along. Gated on a non-secret "signed-in" hint so anonymous visitors
+  // never hit the endpoint. SIV is skipped — it saves its own richer artefact.
+  var PORTAL_NAMES = {
+    kairos: 'KAIROS·1 — Execution Runtime',
+    civ: 'The Civilization Lab',
+    memory: 'The Memory Lab',
+    freq: 'Organizational Frequency',
+  };
+  function portalRuntimeId() {
+    var p = location.pathname;
+    if (p.indexOf('decisions') >= 0) return 'siv';        // SIV self-saves its artefact
+    if (p.indexOf('/runtime/') >= 0) return 'kairos';
+    if (p.indexOf('civilization') >= 0) return 'civ';
+    if (p.indexOf('memory-lab') >= 0) return 'memory';
+    if (p.indexOf('/frequency/') >= 0) return 'freq';
+    return null;
+  }
+  function signedInHint() {
+    try { return localStorage.getItem('portal.hint') === '1'; } catch (e) { return false; }
+  }
+  function savePortalOutput(completion) {
+    if (!signedInHint()) return;
+    var id = portalRuntimeId();
+    if (!id || id === 'siv') return;
+    var summary = String(completion || '').replace(/\s+/g, ' ').trim().slice(0, 240);
+    if (!summary) return;
+    try {
+      fetch(apiBase() + '/api/portal/outputs', {
+        method: 'POST', credentials: 'include', keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ runtime: id, key: 'session', title: PORTAL_NAMES[id] || id, data: { summary: summary } }),
+      }).catch(function () {});
+    } catch (e) {}
   }
 
   // ---- 1. The AI bridge ----
