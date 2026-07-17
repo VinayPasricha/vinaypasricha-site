@@ -191,6 +191,50 @@ export async function reviewShareSummary(id, reviewed_markdown, approved) {
   return docData(await ref.get());
 }
 
+// Reset only the two course runtimes. Participant/company context, research,
+// the pre-course journey, QA, and non-runtime outputs are deliberately kept.
+export async function resetCourseRuntimes(participantId) {
+  const modes = ['ved', 'siv'];
+  const sessionSnaps = await Promise.all(modes.map((mode) => col(COLLECTIONS.ablSessions)
+    .where('participant_id', '==', participantId).where('mode', '==', mode).get()));
+  const sessionDocs = sessionSnaps.flatMap((snap) => snap.docs);
+  const messageSnaps = await Promise.all(sessionDocs.map((sessionDoc) => col(COLLECTIONS.ablMessages)
+    .where('session_id', '==', sessionDoc.id).get()));
+  const messageDocs = messageSnaps.flatMap((snap) => snap.docs);
+  const outputSnap = await col(COLLECTIONS.ablOutputs).where('participant_id', '==', participantId).get();
+  const outputDocs = outputSnap.docs.filter((doc) => {
+    const type = doc.data().output_type;
+    return type === 'ved_report' || type === 'siv_report';
+  });
+  const userTurns = messageDocs.filter((doc) => doc.data().role === 'user').length;
+  const refs = [...messageDocs, ...sessionDocs, ...outputDocs].map((doc) => doc.ref);
+
+  for (let offset = 0; offset < refs.length; offset += 450) {
+    const batch = db.batch();
+    refs.slice(offset, offset + 450).forEach((ref) => batch.delete(ref));
+    await batch.commit();
+  }
+
+  const participantRef = col(COLLECTIONS.ablParticipants).doc(participantId);
+  let messageCount = 0;
+  await db.runTransaction(async (transaction) => {
+    const participantSnap = await transaction.get(participantRef);
+    if (!participantSnap.exists) return;
+    const current = Number(participantSnap.data().message_count) || 0;
+    messageCount = Math.max(0, current - userTurns);
+    transaction.set(participantRef, { message_count: messageCount, updated_at: nowISO() }, { merge: true });
+  });
+
+  return {
+    modes,
+    sessions_deleted: sessionDocs.length,
+    messages_deleted: messageDocs.length,
+    reports_deleted: outputDocs.length,
+    user_turns_released: userTurns,
+    message_count: messageCount,
+  };
+}
+
 // ---- qa --------------------------------------------------------------------
 export async function getQa(participantId) {
   return docData(await col(COLLECTIONS.ablQa).doc(participantId).get());
