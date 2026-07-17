@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f2ede2;
+  --color-paper-deep: #ebe4d3;
+  --color-ink: #15171c;
+  --color-ink-soft: #2a2d35;
+  --color-muted: #7a7264;
+  --color-muted-soft: #a89f8e;
+  --color-rule: #d9d0bc;
+  --color-vermillion: #bf3a19;
+  --color-vermillion-deep: #8e2a10;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-body);
+  font-feature-settings: "kern", "liga", "calt", "onum";
+  font-optical-sizing: auto;
+  font-weight: 380;
+  font-size: 17px;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  position: relative;
+}
+
+/* Paper grain — a faint repeating noise overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.40  0 0 0 0 0.30  0 0 0 0.10 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-vermillion);
+  color: var(--color-paper);
+}
+
+/* Typography primitives */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+.font-mono    { font-family: var(--font-mono); }
+
+.display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0;
+  font-weight: 320;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.section-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 14, "SOFT" 100;
+  color: var(--color-vermillion);
+  font-weight: 400;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+}
+
+.rule-thick {
+  border: 0;
+  border-top: 2px solid var(--color-ink);
+}
+
+/* Drop cap */
+.dropcap::first-letter {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+  font-weight: 320;
+  float: left;
+  font-size: 5.2em;
+  line-height: 0.82;
+  padding: 0.06em 0.1em 0 0;
+  margin-right: 0.04em;
+  color: var(--color-ink);
+}
+
+.dropcap-red::first-letter {
+  color: var(--color-vermillion);
+}
+
+/* Link treatments */
+.linkish {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.linkish:hover { background-size: 100% 1px; }
+
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 1px;
+  background: var(--color-vermillion);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Marquee animation */
+@keyframes drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.drift { animation: drift 60s linear infinite; }
+
+/* Reveal */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+/* Ornamental star */
+.aster {
+  display: inline-block;
+  color: var(--color-vermillion);
+  transform: translateY(-0.05em);
+}
+
+/* Hairline grid for masthead */
+.masthead-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 1.5rem;
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .dropcap::first-letter { font-size: 4.2em; }
+  .masthead-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+}
