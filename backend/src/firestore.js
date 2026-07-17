@@ -11,17 +11,28 @@ import { Firestore } from '@google-cloud/firestore';
 // throwing on undefined fields.
 export const db = new Firestore({ ignoreUndefinedProperties: true });
 
+// Keep non-production deployments in their own Firestore collections while
+// preserving the existing production collection names by default. For
+// example, set FIRESTORE_COLLECTION_PREFIX=staging_ on the staging Cloud Run
+// service. Restricting the prefix to simple characters prevents accidental
+// creation of invalid or surprising collection paths.
+const collectionPrefix = (process.env.FIRESTORE_COLLECTION_PREFIX || '').trim();
+if (!/^[A-Za-z0-9_-]*$/.test(collectionPrefix)) {
+  throw new Error('FIRESTORE_COLLECTION_PREFIX may contain only letters, numbers, hyphens, and underscores');
+}
+const collectionName = (name) => `${collectionPrefix}${name}`;
+
 // Collection names — the two "folders" the whole site writes to.
 export const COLLECTIONS = {
-  conversations: 'conversations',   // every AI chat + its result, tagged by runtime
-  leads: 'leads',                   // emails / contacts captured anywhere on the site
-  companyProfiles: 'companyProfiles', // published Organizational Frequency pages, keyed by slug
+  conversations: collectionName('conversations'),   // every AI chat + its result, tagged by runtime
+  leads: collectionName('leads'),                   // emails / contacts captured anywhere on the site
+  companyProfiles: collectionName('companyProfiles'), // published Organizational Frequency pages, keyed by slug
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
-  ablParticipants: 'abl_participants',
-  ablResearch: 'abl_research',
-  ablSessions: 'abl_sessions',
-  ablMessages: 'abl_messages',
-  ablOutputs: 'abl_outputs',
-  ablQa: 'abl_qa',
+  ablParticipants: collectionName('abl_participants'),
+  ablResearch: collectionName('abl_research'),
+  ablSessions: collectionName('abl_sessions'),
+  ablMessages: collectionName('abl_messages'),
+  ablOutputs: collectionName('abl_outputs'),
+  ablQa: collectionName('abl_qa'),
 };
