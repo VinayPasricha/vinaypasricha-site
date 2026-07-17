@@ -74,10 +74,17 @@
     var p = data.participant || {};
     var session = data.session || {};
     var local = localProgress();
+    var runtimes = data.runtimes || {};
+    var vedStatus = runtimes.ved
+      ? (runtimes.ved.complete ? 'complete' : (runtimes.ved.started ? 'started' : 'idle'))
+      : local.ved;
+    var sivStatus = runtimes.siv
+      ? (runtimes.siv.complete ? 'complete' : (runtimes.siv.started ? 'started' : 'idle'))
+      : local.siv;
     var prepComplete = !!(data.share && data.share.approved) || p.status === 'completed';
     var prepStarted = !!session.selected_depth || (Array.isArray(data.messages) && data.messages.length > 0);
     var prepStatus = prepComplete ? 'complete' : (prepStarted ? 'started' : 'idle');
-    var statuses = [prepStatus, local.ved, local.siv];
+    var statuses = [prepStatus, vedStatus, sivStatus];
     var activeCount = statuses.filter(function (s) { return s !== 'idle'; }).length;
     var progress = Math.round((activeCount / 3) * 100);
 
@@ -99,8 +106,8 @@
         title: 'Find My Weakest <em>Execution Link</em>',
         description: 'Trace an important outcome through its sequence, constraints, capacity, and handoffs. Find the link governing performance now.',
         output: 'An Execution Constraint Map',
-        status: local.ved,
-        href: '/runtime/constraint/'
+        status: vedStatus,
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/ved'
       },
       {
         number: '03',
@@ -109,8 +116,8 @@
         title: 'Choose My First <em>AI Project</em>',
         description: 'Bring your possible AI projects into the open. Test value, feasibility, risk, readiness, and timing before choosing where to begin.',
         output: 'A First-Project Decision Artefact',
-        status: local.siv,
-        href: '/paths/decisions.html#conversation'
+        status: sivStatus,
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/siv'
       }
     ];
 
@@ -151,7 +158,7 @@
 
       '<div class="continuity">' +
         '<div class="continuity-mark">↳</div>' +
-        '<p><strong>Your AI Journey</strong> is saved to this participant link. The SIV and VED conversations currently resume on this browser and device.</p>' +
+        '<p><strong>Your three conversations</strong> are saved to this participant link. Leave and return whenever you need; each conversation resumes where you stopped.</p>' +
       '</div>';
   }
 

@@ -3,6 +3,12 @@
 // written documents.
 import { completeModel, completeGrounded } from '../services/ai.js';
 import { buildConversationSystem, buildOutputPrompt, buildSummaryPrompt, rewardTypeForDepth } from './prompts.js';
+import {
+  buildSivSystem,
+  buildSivReportPrompt,
+  buildVedSystem,
+  buildVedReportPrompt,
+} from './course-runtimes.js';
 import * as repo from './store.js';
 
 const CHAT_MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
@@ -61,6 +67,27 @@ async function converse(system, messages) {
 
 export { rewardTypeForDepth };
 
+// Carry useful context forward through the three-course sequence without asking
+// the participant to repeat it: AI Journey -> VED -> SIV.
+async function gatherCrossContext(participantId, mode) {
+  if (mode !== 'ved' && mode !== 'siv') return '';
+  const parts = [];
+
+  const journey = await repo.getSession(participantId, 'participant');
+  const share = await repo.getLatestOutput(participantId, 'share_summary');
+  const journeyText = (journey && journey.running_summary) || (share && (share.reviewed_content_markdown || share.content_markdown));
+  if (journeyText) parts.push(`### From the participant's AI Journey conversation\n${journeyText}`);
+
+  if (mode === 'siv') {
+    const vedReport = await repo.getLatestOutput(participantId, 'ved_report');
+    const vedSession = await repo.getSession(participantId, 'ved');
+    const vedText = (vedReport && vedReport.content_markdown) || (vedSession && vedSession.running_summary);
+    if (vedText) parts.push(`### From the Execution Doctrine diagnostic — the weakest execution link\n${vedText}`);
+  }
+
+  return parts.join('\n\n');
+}
+
 export async function agentTurn({ participant, session, userMessage, mode }) {
   const research = await repo.getResearch(participant.id);
 
@@ -75,15 +102,37 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     role: m.role === 'assistant' ? 'assistant' : 'user',
     content: m.content,
   }));
+  if (mode === 'siv' || mode === 'ved') {
+    while (recent.length && recent[0].role === 'assistant') recent.shift();
+  }
 
-  const system = buildConversationSystem({ participant, research, session });
-  const { say, options } = await converse(system, recent);
-  const reply = say || 'Could you say a little more about that?';
+  const crossContext = await gatherCrossContext(participant.id, mode);
+  const system = mode === 'siv'
+    ? buildSivSystem({ participant, research, session, crossContext })
+    : mode === 'ved'
+      ? buildVedSystem({ participant, research, session, crossContext })
+      : buildConversationSystem({ participant, research, session });
+
+  let reply = '';
+  let options = [];
+  if (mode === 'siv' || mode === 'ved') {
+    reply = await completeModel({
+      system,
+      messages: recent,
+      model: CHAT_MODEL,
+      generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 1200, temperature: 0.6 }),
+    });
+  } else {
+    const out = await converse(system, recent);
+    reply = out.say;
+    options = out.options;
+  }
+  reply = reply || 'Could you say a little more about that?';
 
   await repo.addMessage({ session_id: session.id, participant_id: participant.id, role: 'assistant', content: reply, metadata: { options } });
 
   let count = participant.message_count;
-  if (mode === 'participant') {
+  if (mode !== 'qa') {
     count = await repo.incMessageCount(participant.id);
     if (participant.status === 'link_ready' || participant.status === 'qa_approved') {
       await repo.setStatus(participant.id, 'active');
@@ -106,6 +155,64 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   }
 
   return { reply, options, messageCount: count };
+}
+
+function transcriptFor(messages, emptyLabel) {
+  return messages
+    .filter((m) => m.role === 'user' || m.role === 'assistant' || m.role === 'admin')
+    .map((m) => `${String(m.role).toUpperCase()}: ${m.content}`)
+    .join('\n\n') || emptyLabel;
+}
+
+export async function generateSivReport(participant) {
+  const research = await repo.getResearch(participant.id);
+  const session = await repo.getOrCreateSession(participant.id, 'siv');
+  const transcript = transcriptFor(await repo.listMessages(session.id), '(no examination captured yet)');
+  const prompt = buildSivReportPrompt({
+    participant,
+    research,
+    transcript,
+    depth: session.selected_depth || 'standard',
+  });
+  const markdown = await completeModel({
+    system: prompt.system,
+    messages: [{ role: 'user', content: prompt.message }],
+    model: CHAT_MODEL,
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 4096, temperature: 0.4 }),
+  });
+  const saved = await repo.saveOutput({
+    participant_id: participant.id,
+    session_id: session.id,
+    output_type: 'siv_report',
+    content_markdown: markdown,
+    content_json: { depth: session.selected_depth || 'standard' },
+  });
+  return { id: saved.id, markdown };
+}
+
+export async function generateVedReport(participant) {
+  const research = await repo.getResearch(participant.id);
+  const session = await repo.getOrCreateSession(participant.id, 'ved');
+  const transcript = transcriptFor(await repo.listMessages(session.id), '(no diagnostic captured yet)');
+  const prompt = buildVedReportPrompt({
+    participant,
+    research,
+    transcript,
+    crossContext: await gatherCrossContext(participant.id, 'ved'),
+  });
+  const markdown = await completeModel({
+    system: prompt.system,
+    messages: [{ role: 'user', content: prompt.message }],
+    model: CHAT_MODEL,
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 3600, temperature: 0.4 }),
+  });
+  const saved = await repo.saveOutput({
+    participant_id: participant.id,
+    session_id: session.id,
+    output_type: 'ved_report',
+    content_markdown: markdown,
+  });
+  return { id: saved.id, markdown };
 }
 
 // ---- auto-research -------------------------------------------------------

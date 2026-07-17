@@ -6,8 +6,18 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import PDFDocument from 'pdfkit';
 import * as repo from './store.js';
-import { agentTurn, generateOutput, rewardTypeForDepth, researchCompany, openingTurn, generateRewardBundle } from './service.js';
+import {
+  agentTurn,
+  generateOutput,
+  rewardTypeForDepth,
+  researchCompany,
+  openingTurn,
+  generateRewardBundle,
+  generateSivReport,
+  generateVedReport,
+} from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
+import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -125,8 +135,14 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         if (opening && opening.say) messages.push({ role: 'assistant', content: opening.say, options: opening.options || [], at: new Date().toISOString() });
       }
       const outputs = await repo.getOutputs(p.id);
-      const reward = outputs.find((o) => o.output_type !== 'vinay_meeting_brief' && o.output_type !== 'share_summary') || null;
+      const reward = outputs.find((o) => ['course_preparation_brief', 'use_case_map', 'strategy_note'].includes(o.output_type)) || null;
       const share = outputs.find((o) => o.output_type === 'share_summary') || null;
+      const [vedSession, sivSession] = await Promise.all([
+        repo.getSession(p.id, 'ved'),
+        repo.getSession(p.id, 'siv'),
+      ]);
+      const vedReport = outputs.find((o) => o.output_type === 'ved_report') || null;
+      const sivReport = outputs.find((o) => o.output_type === 'siv_report') || null;
       return ok(res, {
         participant: { name: p.name, company_name: p.company_name, role_title: p.role_title,
           status: p.status, current_stage: p.current_stage, message_count: p.message_count, max_messages: p.max_messages,
@@ -136,6 +152,10 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         messages,
         reward: reward ? { id: reward.id, type: reward.output_type, markdown: reward.content_markdown } : null,
         share: share ? { id: share.id, markdown: share.reviewed_content_markdown ?? share.content_markdown, approved: share.participant_approved } : null,
+        runtimes: {
+          ved: { started: !!(vedSession && vedSession.consent_given), complete: !!vedReport },
+          siv: { started: !!(sivSession && sivSession.selected_depth), complete: !!sivReport },
+        },
       });
     } catch (e) { return oops(res, e); }
   });
@@ -228,6 +248,105 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         feedback_at: new Date().toISOString(),
       });
       return ok(res, { ok: true });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // -------------------------------------------------------------------------
+  // Course-specific thinking tools (same participant link, separate sessions)
+  // -------------------------------------------------------------------------
+  const runtimeMode = (value) => (value === 'siv' || value === 'ved' ? value : null);
+
+  app.get('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const messages = (await repo.listMessages(session.id))
+        .filter((m) => m.role === 'user' || m.role === 'assistant')
+        .map((m) => ({ role: m.role, content: m.content, at: m.created_at }));
+      const report = await repo.getLatestOutput(p.id, mode + '_report');
+      return ok(res, {
+        mode,
+        config: COURSE_RUNTIME_MODES[mode],
+        participant: { name: p.name, company_name: p.company_name, role_title: p.role_title },
+        started: mode === 'siv' ? !!session.selected_depth : !!session.consent_given,
+        depth: mode === 'siv' ? session.selected_depth : null,
+        message_count: p.message_count || 0,
+        max_messages: p.max_messages || 200,
+        messages,
+        report: report ? { id: report.id, markdown: report.content_markdown } : null,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      const session = await repo.getOrCreateSession(p.id, mode);
+
+      if (mode === 'siv') {
+        const depth = String((req.body && req.body.depth) || '');
+        if (!['fast', 'standard', 'deep'].includes(depth)) return fail(res, 'Choose a valid depth.');
+        const updated = await repo.updateSession(session.id, { selected_depth: depth, consent_given: true });
+        return ok(res, { started: true, depth: updated.selected_depth });
+      }
+
+      await repo.updateSession(session.id, { consent_given: true });
+      return ok(res, { started: true });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/message', chatLimit, async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const msg = String((req.body && req.body.message) || '').trim();
+      if (!msg) return fail(res, 'Empty message');
+      if (msg.length > 6000) return fail(res, 'Message too long');
+
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      if ((p.message_count || 0) >= (p.max_messages || 200)) {
+        return fail(res, 'You have used your included course AI allowance. Please message the course admin if you need it extended.', 429);
+      }
+
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
+      if (!started) return fail(res, 'Start this course conversation before sending a message.', 400);
+      const turn = await agentTurn({ participant: p, session, userMessage: msg, mode });
+      return ok(res, {
+        reply: turn.reply,
+        message_count: turn.messageCount,
+        max_messages: p.max_messages || 200,
+        soft_warn: turn.messageCount >= SOFT_WARN_AT,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/report', rewardLimit, async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      const session = await repo.getOrCreateSession(p.id, mode);
+      if (mode === 'siv' && !session.selected_depth) return fail(res, 'Start the examination before generating a report.');
+      if (mode === 'ved' && !session.consent_given) return fail(res, 'Start the diagnostic before generating a report.');
+      const userTurns = (await repo.listMessages(session.id)).filter((m) => m.role === 'user').length;
+      if (userTurns < 2) return fail(res, 'Go a little further into the conversation before generating your report.');
+
+      const report = mode === 'siv' ? await generateSivReport(p) : await generateVedReport(p);
+      return ok(res, { report });
     } catch (e) { return oops(res, e); }
   });
 
@@ -342,6 +461,17 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // -------------------------------------------------------------------------
   let sessionShell = null;
   let workspaceShell = null;
+  let courseRuntimeShell = null;
+  app.get('/ai-business-leaders/workspace/:slug/:mode', (req, res, next) => {
+    try {
+      if (!runtimeMode(req.params.mode)) return next();
+      if (courseRuntimeShell == null) courseRuntimeShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'course-runtime.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'private, no-store');
+      return res.send(courseRuntimeShell);
+    } catch (e) { return next(); }
+  });
+
   app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
     try {
       if (workspaceShell == null) workspaceShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace.html'), 'utf8');

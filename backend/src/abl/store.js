@@ -108,14 +108,18 @@ export async function upsertResearch(participantId, input) {
 }
 
 // ---- sessions & messages ---------------------------------------------------
-export async function getOrCreateSession(participantId, mode) {
+export async function getSession(participantId, mode) {
   const snap = await col(COLLECTIONS.ablSessions)
     .where('participant_id', '==', participantId).where('mode', '==', mode).get();
-  if (!snap.empty) {
-    const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    docs.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-    return docs[0];
-  }
+  if (snap.empty) return null;
+  const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  docs.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  return docs[0];
+}
+
+export async function getOrCreateSession(participantId, mode) {
+  const existing = await getSession(participantId, mode);
+  if (existing) return existing;
   const id = uuid();
   const s = {
     participant_id: participantId, mode, selected_depth: null, current_stage: null,
