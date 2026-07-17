@@ -11,7 +11,11 @@ import { VertexAI } from '@google-cloud/vertexai';
 const PROJECT =
   process.env.GOOGLE_CLOUD_PROJECT ||
   process.env.GCLOUD_PROJECT ||
-  process.env.GCP_PROJECT;
+  process.env.GCP_PROJECT ||
+  // Cloud Run does not guarantee that a project-id environment variable is
+  // present, even though its service account credentials are available. This
+  // is the non-secret GCP project that owns the deployed Vertex AI endpoint.
+  'project-65b6724f-5ba8-4e67-bf3';
 const LOCATION = process.env.VERTEX_LOCATION || 'us-central1';
 const MODEL = process.env.VERTEX_MODEL || 'gemini-2.5-flash';
 // The heavy, grounded company research uses a stronger model (Pro) for deeper
