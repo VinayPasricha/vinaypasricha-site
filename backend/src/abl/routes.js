@@ -341,6 +341,16 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // Pages (served dynamically so links carry a slug / id)
   // -------------------------------------------------------------------------
   let sessionShell = null;
+  let workspaceShell = null;
+  app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
+    try {
+      if (workspaceShell == null) workspaceShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'private, no-store');
+      return res.send(workspaceShell);
+    } catch (e) { return next(); }
+  });
+
   app.get('/ai-business-leaders/s/:slug', (req, res, next) => {
     try {
       if (sessionShell == null) sessionShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'session.html'), 'utf8');
