@@ -270,12 +270,21 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         .filter((m) => m.role === 'user' || m.role === 'assistant')
         .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
           options: (m.metadata && m.metadata.options) || [] }));
+      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
+      // Self-heal a session that was marked started by an older revision but
+      // never received its opening agent turn.
+      if (started && !messages.length) {
+        const opening = await runtimeOpeningTurn({ participant: p, session, mode });
+        if (opening && opening.reply) messages.push({
+          role: 'assistant', content: opening.reply, options: opening.options || [], at: new Date().toISOString(),
+        });
+      }
       const report = await repo.getLatestOutput(p.id, mode + '_report');
       return ok(res, {
         mode,
         config: COURSE_RUNTIME_MODES[mode],
         participant: { name: p.name, company_name: p.company_name, role_title: p.role_title },
-        started: mode === 'siv' ? !!session.selected_depth : !!session.consent_given,
+        started,
         depth: mode === 'siv' ? session.selected_depth : null,
         message_count: p.message_count || 0,
         max_messages: p.max_messages || 200,
