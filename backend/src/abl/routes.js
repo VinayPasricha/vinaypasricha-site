@@ -18,6 +18,7 @@ import {
 } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
+import { fetchOfficialWebsite } from './website.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -115,6 +116,18 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   const rewardLimit = mk({ windowMs: 60000, max: 6 });    // reward/summary generation
   const researchLimit = mk({ windowMs: 60000, max: 12 }); // grounded auto-research
   const isAuthed = (req) => (typeof studioAuthed === 'function' ? studioAuthed(req) : false);
+
+  // Temporary, fixed-domain staging diagnostic. Removed after the website
+  // recovery fallback has been verified in the deployed Cloud Run environment.
+  app.get('/api/abl/research-diagnostic/goodspace', async (req, res) => {
+    try {
+      if (process.env.K_SERVICE !== 'vinay-site-staging') return fail(res, 'Not found', 404);
+      const page = await fetchOfficialWebsite('goodspace.ai');
+      return ok(res, { url: page.url, length: page.text.length, excerpt: page.text.slice(0, 1200) });
+    } catch (e) {
+      return fail(res, e.message || 'Website diagnostic failed', 502);
+    }
+  });
 
   // -------------------------------------------------------------------------
   // Participant experience (public — the slug is the key)

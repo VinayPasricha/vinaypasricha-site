@@ -103,6 +103,12 @@ async function recoverCompanyContext({ participant, userMessage, recentMessages 
     return {
       participant,
       directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: false }),
+      reply: 'Thank you for correcting the preliminary information. I will treat the rejected profile as invalid and will not guess a replacement. What is the correct company name and official website/domain?',
+      options: [
+        'I will provide the correct company name and website now.',
+        'The company name is correct, but I need to correct my role.',
+        'Let us continue using only the information I provide in this conversation.',
+      ],
     };
   }
 
@@ -117,22 +123,45 @@ async function recoverCompanyContext({ participant, userMessage, recentMessages 
       return {
         participant,
         directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: true }),
+        reply: `Thank you for the correction. I could not obtain a verified reading of https://${detected.domain} right now, so I will not guess what the company does. Would you like me to retry, or would you prefer to give me a one-sentence description?`,
+        options: [
+          'Please retry the official website research.',
+          'I will give you a one-sentence description now.',
+          'Pause here until the company research can be verified.',
+        ],
       };
     }
     const [updatedParticipant, updatedResearch] = await Promise.all([
       repo.getParticipant(participant.id),
       repo.getResearch(participant.id),
     ]);
+    const context = (updatedResearch && updatedResearch.structured_context) || {};
+    const company = (updatedParticipant && updatedParticipant.company_name) || companyNameFromDomain(detected.domain);
+    const products = String(context.products || '').trim();
+    const customers = String(context.customers || '').trim();
+    const summary = [products, customers ? `Its principal customers are ${customers}.` : ''].filter(Boolean).join(' ').slice(0, 700);
     return {
       participant: updatedParticipant || participant,
       research: updatedResearch,
       directive: buildRecoveryDirective({ ...detected, grounded: true, attempted: true }),
+      reply: `Thank you for correcting the preliminary profile. I checked the official website and have updated the stored context. My corrected understanding of ${company}: ${summary} Is this accurate enough for us to continue?`,
+      options: [
+        'Yes, that is accurate enough. Please continue.',
+        'It is broadly right, but I want to correct one detail.',
+        'No, please discard that summary and let me explain the company directly.',
+      ],
     };
   } catch (error) {
     console.error('[abl] context recovery failed:', error.message);
     return {
       participant,
       directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: true }),
+      reply: `Thank you for the correction. I could not obtain a verified reading of https://${detected.domain} right now, so I will not guess what the company does. Would you like me to retry, or would you prefer to give me a one-sentence description?`,
+      options: [
+        'Please retry the official website research.',
+        'I will give you a one-sentence description now.',
+        'Pause here until the company research can be verified.',
+      ],
     };
   }
 }
@@ -148,6 +177,21 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   const recovery = await recoverCompanyContext({ participant, userMessage, recentMessages: convo });
   const activeParticipant = recovery.participant || participant;
   const research = recovery.research || await repo.getResearch(participant.id);
+  if (recovery.reply) {
+    const options = recovery.options || [];
+    await repo.addMessage({
+      session_id: session.id, participant_id: participant.id,
+      role: 'assistant', content: recovery.reply, metadata: { options },
+    });
+    let count = participant.message_count;
+    if (mode !== 'qa') {
+      count = await repo.incMessageCount(participant.id);
+      if (activeParticipant.status === 'link_ready' || activeParticipant.status === 'qa_approved') {
+        await repo.setStatus(participant.id, 'active');
+      }
+    }
+    return { reply: recovery.reply, options, messageCount: count };
+  }
   const recent = convo.slice(-HISTORY_WINDOW).map((m) => ({
     role: m.role === 'assistant' ? 'assistant' : 'user',
     content: m.content,

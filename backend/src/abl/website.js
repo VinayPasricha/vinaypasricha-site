@@ -4,7 +4,7 @@ import dns from 'node:dns/promises';
 import net from 'node:net';
 import { JSDOM } from 'jsdom';
 
-const MAX_BYTES = 1_500_000;
+const MAX_BYTES = 5_000_000;
 const MAX_TEXT = 35_000;
 const MAX_REDIRECTS = 3;
 
