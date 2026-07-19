@@ -191,46 +191,6 @@ export async function reviewShareSummary(id, reviewed_markdown, approved) {
   return docData(await ref.get());
 }
 
-// Erase the participant-facing course experience while retaining the
-// participant identity, company details, verified research and link approval.
-// This is used only by a confirmation-gated staging maintenance route.
-export async function resetCourseExperience(participantId) {
-  const modes = ['participant', 'siv', 'ved'];
-  const sessionSnaps = await Promise.all(modes.map((mode) => col(COLLECTIONS.ablSessions)
-    .where('participant_id', '==', participantId).where('mode', '==', mode).get()));
-  const sessionDocs = sessionSnaps.flatMap((snap) => snap.docs);
-  const messageSnaps = await Promise.all(sessionDocs.map((sessionDoc) => col(COLLECTIONS.ablMessages)
-    .where('session_id', '==', sessionDoc.id).get()));
-  const messageDocs = messageSnaps.flatMap((snap) => snap.docs);
-  const outputSnap = await col(COLLECTIONS.ablOutputs).where('participant_id', '==', participantId).get();
-  const refs = [...messageDocs, ...sessionDocs, ...outputSnap.docs].map((doc) => doc.ref);
-
-  for (let offset = 0; offset < refs.length; offset += 450) {
-    const batch = db.batch();
-    refs.slice(offset, offset + 450).forEach((ref) => batch.delete(ref));
-    await batch.commit();
-  }
-
-  await updateParticipant(participantId, {
-    status: 'link_ready',
-    current_stage: null,
-    message_count: 0,
-    vinay_brief_status: 'none',
-    completed_at: null,
-    feedback_rating: 0,
-    feedback_comment: null,
-    feedback_at: null,
-  });
-
-  return {
-    modes,
-    sessions_deleted: sessionDocs.length,
-    messages_deleted: messageDocs.length,
-    outputs_deleted: outputSnap.size,
-    company_context_preserved: true,
-  };
-}
-
 // ---- qa --------------------------------------------------------------------
 export async function getQa(participantId) {
   return docData(await col(COLLECTIONS.ablQa).doc(participantId).get());
