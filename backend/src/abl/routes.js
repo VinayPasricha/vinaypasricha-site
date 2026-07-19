@@ -256,21 +256,6 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // -------------------------------------------------------------------------
   const runtimeMode = (value) => (value === 'siv' || value === 'ved' ? value : null);
 
-  // Temporary staging-only maintenance hook. Confirmation-gated and disabled
-  // everywhere except the staging Cloud Run service.
-  app.post('/api/abl/session/:slug/reset-course-experience', async (req, res) => {
-    try {
-      if (process.env.K_SERVICE !== 'vinay-site-staging') return fail(res, 'Not found', 404);
-      if (!req.body || req.body.confirm !== 'ERASE COURSE EXPERIENCE HISTORY') {
-        return fail(res, 'Exact reset confirmation required.', 400);
-      }
-      const p = await repo.getParticipantBySlug(req.params.slug);
-      if (!p) return fail(res, 'Session not found', 404);
-      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
-      return ok(res, await repo.resetCourseExperience(p.id));
-    } catch (e) { return oops(res, e); }
-  });
-
   app.get('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
     try {
       const mode = runtimeMode(req.params.mode);
