@@ -396,6 +396,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
       const r = await researchCompany(p);
+      if (!r.grounded) return fail(res, r.error || 'Verified company research was not completed.', 502);
       return ok(res, r);
     } catch (e) { return oops(res, e); }
   });
@@ -442,6 +443,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
 
   app.post('/api/abl/participants/:id/approve', requireAdmin, async (req, res) => {
     try {
+      const current = await repo.getParticipant(req.params.id);
+      if (!current) return fail(res, 'Not found', 404);
+      const research = await repo.getResearch(req.params.id);
+      const context = (research && research.structured_context) || {};
+      if (!current.company_website || !research || !research.research_dossier || !(context.products || context.customers)) {
+        return fail(res, 'Complete verified company research, including the official website, before approving this link.', 409);
+      }
       const p = await repo.updateParticipant(req.params.id, { link_approved: true, status: 'link_ready', approved_at: new Date().toISOString() });
       return ok(res, p);
     } catch (e) { return oops(res, e); }

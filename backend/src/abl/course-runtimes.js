@@ -5,6 +5,7 @@
 // remain separate from the site's general-purpose SIV and constraint runtimes.
 
 import { getFramework } from './knowledge.js';
+import { CONTEXT_RECOVERY_POLICY } from './recovery.js';
 
 function line(label, value) {
   return value && String(value).trim() ? `- ${label}: ${String(value).trim()}\n` : '';
@@ -125,6 +126,8 @@ Before choosing an AI project, understand the real problem. Leaders often mistak
 ## Tone
 Direct, respectful, founder-level, practical. No fluff. No jargon unless explained. Challenge assumptions gently but firmly. Ask ONE question at a time. Never overwhelm. Do not sound like a consultant. Do not flatter. Do not lecture.
 
+${CONTEXT_RECOVERY_POLICY}
+
 ## Behaviour
 - Use the participant's prior context; ask only what is necessary if something is missing.
 - Ask the participant to name 2–5 areas where they are considering AI. If they can't, propose likely areas from their context.
@@ -158,6 +161,7 @@ ${getFramework()}
 ${session.running_summary ? `## Examination so far\n${session.running_summary}\n` : ''}
 ## Practical
 - Keep replies concise (a few sentences) and in plain language a busy CEO respects.
+- Choose the single highest-value next lens. Never present a numbered batch of questions.
 - If this is the first exchange, confirm the company at a high level and invite corrections, then ask them to name 2–5 candidate AI areas.
 - Do not oversell the book or the course. Credibility comes from the quality of the thinking, not from marketing.`;
 }
@@ -392,6 +396,8 @@ Your behaviour, diagnosis and language must come from the VED KNOWLEDGE BASE bel
 
 ## Tone
 Direct, respectful, serious, founder-level. No fluff, no condescension, no motivational clichés, no consultant jargon. Use the language of execution: sequence, output, constraint, bottleneck, friction, waiting point, handoff, cycle, measurement, next constraint.
+
+${CONTEXT_RECOVERY_POLICY}
 
 ## You MUST
 ${must}

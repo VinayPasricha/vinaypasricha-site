@@ -9,6 +9,11 @@ import {
   buildVedSystem,
   buildVedReportPrompt,
 } from './course-runtimes.js';
+import {
+  buildRecoveryDirective,
+  companyNameFromDomain,
+  detectCompanyRecovery,
+} from './recovery.js';
 import * as repo from './store.js';
 
 const CHAT_MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
@@ -88,9 +93,49 @@ async function gatherCrossContext(participantId, mode) {
   return parts.join('\n\n');
 }
 
-export async function agentTurn({ participant, session, userMessage, mode }) {
-  const research = await repo.getResearch(participant.id);
+async function recoverCompanyContext({ participant, userMessage, recentMessages }) {
+  const detected = detectCompanyRecovery(userMessage, recentMessages);
+  if (!detected.triggered) return { participant, directive: '' };
 
+  if (!detected.shouldResearch) {
+    return {
+      participant,
+      directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: false }),
+    };
+  }
+
+  try {
+    const recovered = await researchCompany(participant, {
+      company_name: companyNameFromDomain(detected.domain),
+      company_website: `https://${detected.domain}`,
+      role_title: detected.roleTitle,
+      replaceIdentity: true,
+    });
+    if (!recovered.grounded) {
+      return {
+        participant,
+        directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: true }),
+      };
+    }
+    const [updatedParticipant, updatedResearch] = await Promise.all([
+      repo.getParticipant(participant.id),
+      repo.getResearch(participant.id),
+    ]);
+    return {
+      participant: updatedParticipant || participant,
+      research: updatedResearch,
+      directive: buildRecoveryDirective({ ...detected, grounded: true, attempted: true }),
+    };
+  } catch (error) {
+    console.error('[abl] context recovery failed:', error.message);
+    return {
+      participant,
+      directive: buildRecoveryDirective({ ...detected, grounded: false, attempted: true }),
+    };
+  }
+}
+
+export async function agentTurn({ participant, session, userMessage, mode }) {
   await repo.addMessage({
     session_id: session.id, participant_id: participant.id,
     role: mode === 'qa' ? 'admin' : 'user', content: userMessage,
@@ -98,6 +143,9 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
 
   const all = await repo.listMessages(session.id);
   const convo = all.filter((m) => m.role === 'user' || m.role === 'assistant' || m.role === 'admin');
+  const recovery = await recoverCompanyContext({ participant, userMessage, recentMessages: convo });
+  const activeParticipant = recovery.participant || participant;
+  const research = recovery.research || await repo.getResearch(participant.id);
   const recent = convo.slice(-HISTORY_WINDOW).map((m) => ({
     role: m.role === 'assistant' ? 'assistant' : 'user',
     content: m.content,
@@ -107,11 +155,12 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   }
 
   const crossContext = await gatherCrossContext(participant.id, mode);
-  const system = mode === 'siv'
-    ? buildSivSystem({ participant, research, session, crossContext })
+  let system = mode === 'siv'
+    ? buildSivSystem({ participant: activeParticipant, research, session, crossContext })
     : mode === 'ved'
-      ? buildVedSystem({ participant, research, session, crossContext })
-      : buildConversationSystem({ participant, research, session });
+      ? buildVedSystem({ participant: activeParticipant, research, session, crossContext })
+      : buildConversationSystem({ participant: activeParticipant, research, session });
+  if (recovery.directive) system += `\n\n${recovery.directive}`;
 
   let reply = '';
   let options = [];
@@ -134,7 +183,7 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   let count = participant.message_count;
   if (mode !== 'qa') {
     count = await repo.incMessageCount(participant.id);
-    if (participant.status === 'link_ready' || participant.status === 'qa_approved') {
+    if (activeParticipant.status === 'link_ready' || activeParticipant.status === 'qa_approved') {
       await repo.setStatus(participant.id, 'active');
     }
   }
@@ -228,8 +277,13 @@ function extractJson(text) {
   return null;
 }
 
-export async function researchCompany(participant) {
-  const p = participant;
+export async function researchCompany(participant, options = {}) {
+  const p = {
+    ...participant,
+    company_name: options.company_name || participant.company_name,
+    company_website: options.company_website || participant.company_website,
+    role_title: options.role_title || participant.role_title,
+  };
   const emailDomain = p.email && p.email.includes('@') ? p.email.split('@')[1] : '';
   const domain = (p.company_website || emailDomain || '').replace(/^https?:\/\//, '').replace(/\/+$/, '');
 
@@ -243,6 +297,7 @@ KNOWN CONTEXT: role=${p.role_title || '?'}; industry=${p.industry || '?'}; conta
 
 Return ONLY this JSON shape (all values are short strings; leave "" if genuinely unknown):
 {
+  "company_name": "the official company or brand name",
   "industry": "the company's industry / sector",
   "geography": "where they are based / operate (HQ city + region/country)",
   "business_model": "how they make money (e.g. B2B SaaS, D2C retail, marketplace, consulting)",
@@ -256,30 +311,50 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
   "sources_notes": "one line on what this is based on / confidence"
 }`;
 
-  const { text, sources } = await completeGrounded({ system, messages: [{ role: 'user', content: user }] });
+  const { text, sources, grounded } = await completeGrounded({ system, messages: [{ role: 'user', content: user }] });
   const j = extractJson(text) || {};
   const clean = (s) => String(s || '').replace(/\s*\[[\d,\s]+\]/g, '').replace(/\s{2,}/g, ' ').trim(); // drop inline [2, 7] cite markers
+  const hasSubstance = !!(clean(j.dossier) && (clean(j.products) || clean(j.customers) || clean(j.industry)));
+  if (!grounded || !Array.isArray(sources) || !sources.length || !hasSubstance) {
+    return {
+      grounded: false,
+      error: 'Live web research did not return enough verified company information. Check the official website/domain and retry.',
+      structured_context: {},
+      research_dossier: '',
+      sources_notes: '',
+      participant: {},
+      sources: [],
+    };
+  }
   const structured_context = {
     customers: clean(j.customers), products: clean(j.products), competitors: clean(j.competitors),
     pressures: clean(j.pressures), ai_relevance: clean(j.ai_relevance), ai_exposure: clean(j.ai_exposure),
   };
   let sources_notes = j.sources_notes || 'Preliminary — generated by live web research. Please verify.';
-  if (Array.isArray(sources) && sources.length) {
-    sources_notes += ' Sources: ' + sources.slice(0, 5).map((s) => s.uri || s.title).filter(Boolean).join(', ');
-  }
+  sources_notes += ' Sources: ' + sources.slice(0, 5).map((s) => s.uri || s.title).filter(Boolean).join(', ');
   const research_dossier = clean(j.dossier);
 
   await repo.upsertResearch(p.id, { structured_context, research_dossier, sources_notes });
-  // Fill the participant-level fields the research surfaced (don't clobber what
-  // the admin already typed).
+  // Normal Studio research fills missing fields only. An explicit participant
+  // correction is allowed to replace stale identity fields after grounded search.
   const fill = {};
-  if (clean(j.industry) && !p.industry) fill.industry = clean(j.industry);
-  if (clean(j.geography) && !p.geography) fill.geography = clean(j.geography);
-  if (clean(j.business_model) && !p.business_model) fill.business_model = clean(j.business_model);
+  if (options.replaceIdentity) {
+    fill.company_name = clean(j.company_name) || options.company_name || p.company_name;
+    fill.company_website = `https://${domain}`;
+    if (options.role_title) fill.role_title = options.role_title;
+    if (clean(j.industry)) fill.industry = clean(j.industry);
+    if (clean(j.geography)) fill.geography = clean(j.geography);
+    if (clean(j.business_model)) fill.business_model = clean(j.business_model);
+  } else {
+    if (domain && !p.company_website) fill.company_website = `https://${domain}`;
+    if (clean(j.industry) && !p.industry) fill.industry = clean(j.industry);
+    if (clean(j.geography) && !p.geography) fill.geography = clean(j.geography);
+    if (clean(j.business_model) && !p.business_model) fill.business_model = clean(j.business_model);
+  }
   const patch = Object.assign({}, fill);
   if (p.status === 'draft') patch.status = 'research_added';
   if (Object.keys(patch).length) await repo.updateParticipant(p.id, patch);
-  return { structured_context, research_dossier, sources_notes, participant: fill, grounded: !!(sources && sources.length) };
+  return { structured_context, research_dossier, sources_notes, participant: fill, grounded: true, sources };
 }
 
 // The agent's OPENING message — so the participant never faces a blank box.

@@ -2,6 +2,7 @@
 // (system + messages), same contract as the rest of the site's AI.
 import { getFramework } from './knowledge.js';
 import { MEETING_PREP_ESSENTIALS } from './copy.js';
+import { CONTEXT_RECOVERY_POLICY } from './recovery.js';
 
 function line(label, v) {
   return v && String(v).trim() ? `- ${label}: ${String(v).trim()}\n` : '';
@@ -48,8 +49,10 @@ Your job is to help this senior leader THINK — about their company, their goal
 - At the end of each depth level, ask: "Would you like to stop here, save this session, or go deeper?"
 - The participant can leave and return later; their session is saved.
 
+${CONTEXT_RECOVERY_POLICY}
+
 ## Be SPECIFIC, never generic
-- This is a named executive at a specific company. Every reply must reference THEIR reality — their company by name, their role, their industry, and the exact words they just used. Quote or paraphrase what they said.
+- This is a named executive at a specific company. Once their context is verified or confirmed, reference THEIR reality and the exact words they use. If the context is disputed, stop being specific until it is corrected.
 - Ban generic coaching filler ("that's a great question", "many leaders feel that way", "it's important to think about…"). Say something only true for THIS person and THIS company.
 - Use the preliminary research + the course framework to ask sharper, more informed questions than a generic chatbot could.
 
@@ -59,7 +62,7 @@ Return ONLY a JSON object (no prose, no code fences) in exactly this shape:
   "say": "your message to the participant — specific to them, a few sentences, ending in ONE clear question",
   "options": ["a detailed answer THEY might give", "a different detailed answer", "a third distinct detailed answer"]
 }
-Rules for "options": ALWAYS return exactly 3 — never two, never zero — realistic, DETAILED answers this specific participant might give to your question, written in the first person ("We…", "I…"), grounded in their company/industry/role, each one or two sentences and meaningfully different from the others (not three phrasings of the same thing). They are clickable shortcuts so the participant doesn't have to type. Do NOT add an "other"/"custom" option — the interface adds that itself. Even for a confirmation question (e.g. confirming their role or company), still give exactly 3 — typically an affirmation, a partial correction, and a fuller/different correction they might realistically pick.
+Rules for "options": ALWAYS return exactly 3 — never two, never zero — realistic answers the participant might give, written in the first person ("We…", "I…") and meaningfully different. They are clickable shortcuts so the participant doesn't have to type. Do NOT add an "other"/"custom" option — the interface adds that itself. Options must never contain guessed company facts. During a correction or uncertainty, make them safe operational choices such as confirming the corrected summary, correcting one remaining detail, or supplying the official website/context.
 
 ## The conversation
 The participant has chosen the ${depth ?? '(not yet chosen)'}-minute journey.
