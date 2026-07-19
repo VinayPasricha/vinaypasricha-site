@@ -136,11 +136,19 @@
     return body;
   }
 
-  function messageHtml(message) {
+  function messageHtml(message, messageIndex, activeOptionMessage) {
     var role = message.role === 'user' ? 'user' : 'assistant';
-    return '<div class="message ' + role + '"><div class="bubble">' +
+    var options = role === 'assistant' && messageIndex === activeOptionMessage && !S.busy
+      ? (message.options || []) : [];
+    var choices = options.length ? '<div class="answer-choice-wrap"><div class="answer-choice-note">Choose a starting answer — you can edit it before sending</div><div class="answer-choices">' +
+      options.map(function (option, optionIndex) {
+        return '<button type="button" class="answer-choice" data-answer-message="' + messageIndex + '" data-answer-option="' + optionIndex + '">' +
+          (optionIndex === 0 ? '<span class="answer-recommended">Recommended</span>' : '') +
+          '<span>' + esc(option) + '</span></button>';
+      }).join('') + '</div></div>' : '';
+    return '<div class="message ' + role + '"><div class="message-stack"><div class="bubble">' +
       (role === 'assistant' ? markdown(message.content) : esc(message.content).replace(/\n/g, '<br>')) +
-      '</div></div>';
+      '</div>' + choices + '</div></div>';
   }
 
   function chatView() {
@@ -148,8 +156,15 @@
     var prompt = MODE === 'siv'
       ? 'Name two to five areas where you are considering AI—or ask the selector to propose likely areas from your company context and execution constraint.'
       : 'Tell the assistant which execution area feels weakest right now. It will trace one real sequence before deciding whether AI is the right lever.';
+    var activeOptionMessage = -1;
+    for (var i = S.messages.length - 1; i >= 0; i -= 1) {
+      if (S.messages[i].role === 'assistant') { activeOptionMessage = i; break; }
+      if (S.messages[i].role === 'user') break;
+    }
     var html = '<div class="runtime-panel"><p class="chat-intro">' + esc(prompt) + '</p>' +
-      '<div class="messages" id="messages">' + S.messages.map(messageHtml).join('') +
+      '<div class="messages" id="messages">' + S.messages.map(function (message, index) {
+        return messageHtml(message, index, activeOptionMessage);
+      }).join('') +
       (S.busy ? '<div class="thinking">Examining…</div>' : '') + '<div id="messageEnd"></div></div>';
     if (S.error) html += '<div class="runtime-error">' + esc(S.error) + '</div>';
     html += '<div class="composer"><textarea id="runtimeInput" placeholder="Type your reply…  (Enter to send, Shift+Enter for a new line)"' +
@@ -200,6 +215,18 @@
     var start = document.getElementById('startRuntime');
     if (start) start.onclick = startRuntime;
 
+    Array.prototype.forEach.call(document.querySelectorAll('[data-answer-option]'), function (button) {
+      button.onclick = function () {
+        var message = S.messages[parseInt(button.getAttribute('data-answer-message'), 10)];
+        var option = message && (message.options || [])[parseInt(button.getAttribute('data-answer-option'), 10)];
+        if (!option) return;
+        S.input = option;
+        render();
+        var editor = document.getElementById('runtimeInput');
+        if (editor) { editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); }
+      };
+    });
+
     var input = document.getElementById('runtimeInput');
     if (input) {
       input.oninput = function () { S.input = input.value; };
@@ -247,6 +274,9 @@
     S.data.started = true;
     if (MODE === 'siv') S.data.depth = S.selectedDepth;
     S.view = 'chat';
+    if (result.data && result.data.reply) {
+      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [] });
+    }
     render();
   }
 
@@ -263,7 +293,7 @@
     });
     S.busy = false;
     if (result.ok && result.data) {
-      S.messages.push({ role: 'assistant', content: result.data.reply });
+      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [] });
       S.data.message_count = result.data.message_count;
       S.data.max_messages = result.data.max_messages;
     } else {

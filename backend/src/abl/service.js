@@ -29,36 +29,57 @@ function gcfg(model, base) {
   return /flash/i.test(model || '') ? { ...base, thinkingConfig: { thinkingBudget: 0 } } : base;
 }
 
+const FIVE_OPTION_FALLBACKS = [
+  'Based on what you know, recommend the strongest answer for me.',
+  'I need to add a little more context before answering.',
+  'I am not certain yet — help me think this through.',
+  'It is a combination of these factors.',
+  'Something else — let me explain.',
+];
+
+function fillFiveOptions(options) {
+  const custom = FIVE_OPTION_FALLBACKS[FIVE_OPTION_FALLBACKS.length - 1];
+  const out = Array.isArray(options)
+    ? options.filter((item) => item.toLowerCase() !== custom.toLowerCase()).slice(0, 4)
+    : [];
+  for (const fallback of FIVE_OPTION_FALLBACKS.slice(0, 4)) {
+    if (out.length >= 4) break;
+    if (!out.some((item) => item.toLowerCase() === fallback.toLowerCase())) out.push(fallback);
+  }
+  return out.slice(0, 4).concat(custom);
+}
+
 // One conversational turn: the model returns JSON { say, options }. `say` is the
-// message shown to the participant; `options` are up to 3 detailed, tailored
-// answers they can click instead of typing. Falls back gracefully to plain text.
-async function converse(system, messages) {
+// message shown to the participant; `options` are tailored answers they can
+// select and edit instead of typing from scratch.
+async function converse(system, messages, { optionCount = 3 } = {}) {
   const parse = (raw) => {
     const j = extractJson(raw) || {};
     const say = (typeof j.say === 'string' ? j.say : '').trim();
     const options = Array.isArray(j.options)
-      ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, 3)
+      ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, optionCount)
       : [];
     return { say, options, raw };
   };
   const call = (msgs) => completeModel({
     system, messages: msgs, model: CHAT_MODEL,
-    // Headroom so a longer reply + 3 detailed options can't truncate the JSON
+    // Headroom so a longer reply + detailed options cannot truncate the JSON
     // mid-array (which would drop the options entirely).
-    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 2000, temperature: 0.6 }),
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: optionCount === 5 ? 2600 : 2000, temperature: 0.6 }),
   });
 
   let out = parse(await call(messages));
 
-  // The participant UI always shows three clickable options. Retry once whenever
-  // the first pass yielded fewer than 3 — this covers BOTH "valid JSON but a short
+  // Retry once whenever the first pass yielded too few options. This covers BOTH
+  // "valid JSON but a short
   // options array" AND "the model slipped into plain prose with no options at all"
   // (in which case `say` parsed empty). Bounded to a single retry so a stubborn
   // turn can't stall the conversation.
-  if (out.options.length < 3) {
+  if (out.options.length < optionCount) {
+    const optionShape = Array(optionCount).fill('...').map((item) => `"${item}"`).join(',');
     const nudge = messages.concat([{
       role: 'user',
-      content: 'Reply again as STRICT JSON only — {"say":"...","options":["...","...","..."]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly 3 distinct, first-person answers this participant might click, even for a confirmation question (e.g. an affirmation, a partial correction, and a fuller correction).',
+      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit.`,
     }]);
     const retry = parse(await call(nudge));
     if (retry.options.length > out.options.length || (!out.say && retry.say)) {
@@ -69,7 +90,7 @@ async function converse(system, messages) {
   // Last-resort: if we still never got a JSON `say`, show the raw prose reply
   // rather than nothing — with whatever options (if any) we recovered.
   const say = out.say || String(out.raw || '').replace(/```json|```/g, '').trim();
-  return { say, options: out.options };
+  return { say, options: optionCount === 5 ? fillFiveOptions(out.options) : out.options };
 }
 
 export { rewardTypeForDepth };
@@ -178,7 +199,9 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   const activeParticipant = recovery.participant || participant;
   const research = recovery.research || await repo.getResearch(participant.id);
   if (recovery.reply) {
-    const options = recovery.options || [];
+    const options = mode === 'siv' || mode === 'ved'
+      ? fillFiveOptions(recovery.options)
+      : (recovery.options || []);
     await repo.addMessage({
       session_id: session.id, participant_id: participant.id,
       role: 'assistant', content: recovery.reply, metadata: { options },
@@ -211,12 +234,9 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   let reply = '';
   let options = [];
   if (mode === 'siv' || mode === 'ved') {
-    reply = await completeModel({
-      system,
-      messages: recent,
-      model: CHAT_MODEL,
-      generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 1200, temperature: 0.6 }),
-    });
+    const out = await converse(system, recent, { optionCount: 5 });
+    reply = out.say;
+    options = out.options;
   } else {
     const out = await converse(system, recent);
     reply = out.say;
@@ -250,6 +270,30 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
   }
 
   return { reply, options, messageCount: count };
+}
+
+// Open SIV and VED with a real agent question plus five tailored answer choices,
+// rather than leaving the participant to invent the first message unaided.
+export async function runtimeOpeningTurn({ participant, session, mode }) {
+  if (mode !== 'siv' && mode !== 'ved') return null;
+  const research = await repo.getResearch(participant.id);
+  const crossContext = await gatherCrossContext(participant.id, mode);
+  const system = mode === 'siv'
+    ? buildSivSystem({ participant, research, session, crossContext })
+    : buildVedSystem({ participant, research, session, crossContext });
+  const instruction = mode === 'siv'
+    ? 'The participant has just started the SIV AI Project Selector. Briefly use the verified company and prior-course context, invite corrections, then ask the single best first question that moves toward choosing one first AI project. Give exactly five selectable answer options under the system policy.'
+    : 'The participant has just started the Execution Doctrine diagnostic. Briefly use the verified company and prior-course context, invite corrections, then ask which execution area feels weakest right now. Give exactly five selectable answer options under the system policy.';
+  const out = await converse(system, [{ role: 'user', content: instruction }], { optionCount: 5 });
+  const reply = out.say || 'Which area should we examine first?';
+  await repo.addMessage({
+    session_id: session.id,
+    participant_id: participant.id,
+    role: 'assistant',
+    content: reply,
+    metadata: { options: out.options },
+  });
+  return { reply, options: out.options };
 }
 
 function transcriptFor(messages, emptyLabel) {

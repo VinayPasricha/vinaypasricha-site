@@ -79,6 +79,18 @@ test('all three agent prompts share the same anti-hallucination recovery policy'
   }
 });
 
+test('both course runtimes require five editable answer options', () => {
+  const prompts = [
+    buildSivSystem({ participant, research: null, session, crossContext: '' }),
+    buildVedSystem({ participant, research: null, session, crossContext: '' }),
+  ];
+  for (const prompt of prompts) {
+    assert.match(prompt, /exactly FIVE distinct/);
+    assert.match(prompt, /strongest context-grounded recommendation first/);
+    assert.match(prompt, /Something else — let me explain/);
+  }
+});
+
 test('official website fallback blocks private networks and accepts a public domain', () => {
   assert.equal(isPrivateAddress('127.0.0.1'), true);
   assert.equal(isPrivateAddress('169.254.169.254'), true);

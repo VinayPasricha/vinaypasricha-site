@@ -15,6 +15,7 @@ import {
   generateRewardBundle,
   generateSivReport,
   generateVedReport,
+  runtimeOpeningTurn,
 } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
@@ -267,7 +268,8 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const session = await repo.getOrCreateSession(p.id, mode);
       const messages = (await repo.listMessages(session.id))
         .filter((m) => m.role === 'user' || m.role === 'assistant')
-        .map((m) => ({ role: m.role, content: m.content, at: m.created_at }));
+        .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
+          options: (m.metadata && m.metadata.options) || [] }));
       const report = await repo.getLatestOutput(p.id, mode + '_report');
       return ok(res, {
         mode,
@@ -296,11 +298,17 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         const depth = String((req.body && req.body.depth) || '');
         if (!['fast', 'standard', 'deep'].includes(depth)) return fail(res, 'Choose a valid depth.');
         const updated = await repo.updateSession(session.id, { selected_depth: depth, consent_given: true });
-        return ok(res, { started: true, depth: updated.selected_depth });
+        const existing = await repo.listMessages(updated.id);
+        const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
+        return ok(res, { started: true, depth: updated.selected_depth,
+          reply: opening && opening.reply, options: (opening && opening.options) || [] });
       }
 
-      await repo.updateSession(session.id, { consent_given: true });
-      return ok(res, { started: true });
+      const updated = await repo.updateSession(session.id, { consent_given: true });
+      const existing = await repo.listMessages(updated.id);
+      const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
+      return ok(res, { started: true, reply: opening && opening.reply,
+        options: (opening && opening.options) || [] });
     } catch (e) { return oops(res, e); }
   });
 
@@ -325,6 +333,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const turn = await agentTurn({ participant: p, session, userMessage: msg, mode });
       return ok(res, {
         reply: turn.reply,
+        options: turn.options || [],
         message_count: turn.messageCount,
         max_messages: p.max_messages || 200,
         soft_warn: turn.messageCount >= SOFT_WARN_AT,

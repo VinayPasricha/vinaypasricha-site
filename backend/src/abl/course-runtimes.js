@@ -41,6 +41,15 @@ function crossBlock(crossContext) {
     : '';
 }
 
+const FIVE_ANSWER_OPTIONS_POLICY = `## Five answer options (required on every turn)
+- Return STRICT JSON only: {"say":"your concise reply and ONE primary question","options":["answer 1","answer 2","answer 3","answer 4","answer 5"]}.
+- Provide exactly FIVE distinct, concise, first-person answers the participant can select or edit.
+- Put your strongest context-grounded recommendation first. The interface will mark it "Recommended".
+- Options 2 and 3 should be credible alternatives. Option 4 may combine the leading answers or express uncertainty when that genuinely fits.
+- Option 5 must always be: "Something else — let me explain."
+- Tailor options to verified company context and the conversation. Never invent facts merely to make an option specific.
+- The five options support the ONE question in "say"; they do not permit a numbered batch of questions.`;
+
 // ---------------------------------------------------------------------------
 // SIV AI Project Selector
 // ---------------------------------------------------------------------------
@@ -127,6 +136,8 @@ Before choosing an AI project, understand the real problem. Leaders often mistak
 Direct, respectful, founder-level, practical. No fluff. No jargon unless explained. Challenge assumptions gently but firmly. Ask ONE question at a time. Never overwhelm. Do not sound like a consultant. Do not flatter. Do not lecture.
 
 ${CONTEXT_RECOVERY_POLICY}
+
+${FIVE_ANSWER_OPTIONS_POLICY}
 
 ## Behaviour
 - Use the participant's prior context; ask only what is necessary if something is missing.
@@ -398,6 +409,8 @@ Your behaviour, diagnosis and language must come from the VED KNOWLEDGE BASE bel
 Direct, respectful, serious, founder-level. No fluff, no condescension, no motivational clichés, no consultant jargon. Use the language of execution: sequence, output, constraint, bottleneck, friction, waiting point, handoff, cycle, measurement, next constraint.
 
 ${CONTEXT_RECOVERY_POLICY}
+
+${FIVE_ANSWER_OPTIONS_POLICY}
 
 ## You MUST
 ${must}
