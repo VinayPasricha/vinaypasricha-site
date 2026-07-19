@@ -149,6 +149,15 @@ export async function addMessage(m) {
   await col(COLLECTIONS.ablMessages).doc(id).set(row);
   return { id, ...row };
 }
+export async function deleteMessages(ids) {
+  const cleanIds = Array.from(new Set((ids || []).filter(Boolean)));
+  for (let offset = 0; offset < cleanIds.length; offset += 450) {
+    const batch = db.batch();
+    cleanIds.slice(offset, offset + 450).forEach((id) => batch.delete(col(COLLECTIONS.ablMessages).doc(id)));
+    await batch.commit();
+  }
+  return { deleted: cleanIds.length };
+}
 
 // ---- outputs ---------------------------------------------------------------
 export async function getOutputs(participantId) {

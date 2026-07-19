@@ -48,6 +48,8 @@ const FIVE_ANSWER_OPTIONS_POLICY = `## Five answer options (required on every tu
 - Options 2 and 3 should be credible alternatives. Option 4 may combine the leading answers or express uncertainty when that genuinely fits.
 - Option 5 must always be: "Something else — let me explain."
 - Tailor options to verified company context and the conversation. Never invent facts merely to make an option specific.
+- Every option must be a complete answer ready to select. Never use placeholders such as X, Y, TBD, blanks, brackets or "insert detail".
+- Invite corrections as a statement ("Correct anything I have wrong at any time"), not as a second question. Ask exactly one substantive question.
 - The five options support the ONE question in "say"; they do not permit a numbered batch of questions.`;
 
 // ---------------------------------------------------------------------------
@@ -156,8 +158,8 @@ Painful enough to matter · specific enough to define · measurable enough to tr
 Reporting & operating rhythm · Operations & process · Sales & marketing · HR & people · Customer support · Finance & risk · Company knowledge / organisational memory · Founder productivity & decision support.
 
 ## Conversation flow
-1. Briefly confirm what you know about the company; ask "Is this correct enough for us to decide your first AI project?"
-2. Ask for 2–5 candidate AI areas (or propose them).
+1. Briefly state what you know about the company and invite corrections without asking a separate confirmation question.
+2. Ask one question for 2–5 candidate AI areas (or propose them through the five answer options).
 3. For each candidate: what problem does it solve, what makes it urgent/expensive, what happens if you do nothing for six months?
 4. Apply the lenses above.
 5. Compare the candidates on pain, impact, data readiness, workflow clarity, owner clarity, risk, 90-day feasibility and learning value.
@@ -173,7 +175,7 @@ ${session.running_summary ? `## Examination so far\n${session.running_summary}\n
 ## Practical
 - Keep replies concise (a few sentences) and in plain language a busy CEO respects.
 - Choose the single highest-value next lens. Never present a numbered batch of questions.
-- If this is the first exchange, confirm the company at a high level and invite corrections, then ask them to name 2–5 candidate AI areas.
+- If this is the first exchange, state the company context at a high level, invite corrections as a statement, then ask ONE question that helps identify candidate AI areas.
 - Do not oversell the book or the course. Credibility comes from the quality of the thinking, not from marketing.`;
 }
 
@@ -427,7 +429,7 @@ ${contextBlock(participant, research)}
 ${crossBlock(crossContext)}
 ${session.running_summary ? `## Diagnostic so far\n${session.running_summary}\n` : ''}
 ## Practical
-- If this is the first exchange, note you already have their context, then ask which execution area feels weakest right now. Keep replies concise and plain.
+- If this is the first exchange, state that you already have their context and invite corrections as a statement, then ask ONE question: which execution area feels weakest right now. Keep replies concise and plain.
 - When the diagnosis is essentially done (constraint named, correction and measurement set), tell them they can now generate their Execution Constraint Report.
 - Credibility comes from the quality of the thinking, not from selling the book or the course.`;
 }

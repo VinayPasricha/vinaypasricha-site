@@ -16,6 +16,7 @@ import {
   generateSivReport,
   generateVedReport,
   runtimeOpeningTurn,
+  RUNTIME_OPENING_VERSION,
 } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
@@ -266,11 +267,20 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
 
       const session = await repo.getOrCreateSession(p.id, mode);
-      const messages = (await repo.listMessages(session.id))
+      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
+      let storedMessages = (await repo.listMessages(session.id))
+        .filter((m) => m.role === 'user' || m.role === 'assistant');
+      const hasUserAnswer = storedMessages.some((m) => m.role === 'user');
+      const staleUnansweredOpening = started && storedMessages.length && !hasUserAnswer &&
+        storedMessages.every((m) => !m.metadata || m.metadata.runtime_opening_version !== RUNTIME_OPENING_VERSION);
+      if (staleUnansweredOpening) {
+        await repo.deleteMessages(storedMessages.map((m) => m.id));
+        storedMessages = [];
+      }
+      const messages = storedMessages
         .filter((m) => m.role === 'user' || m.role === 'assistant')
         .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
           options: (m.metadata && m.metadata.options) || [] }));
-      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
       // Self-heal a session that was marked started by an older revision but
       // never received its opening agent turn.
       if (started && !messages.length) {

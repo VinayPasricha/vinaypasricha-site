@@ -21,6 +21,7 @@ import * as repo from './store.js';
 const CHAT_MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
 const DOC_MODEL = process.env.ABL_DOC_MODEL || process.env.VERTEX_RESEARCH_MODEL || 'gemini-2.5-pro';
 const HISTORY_WINDOW = 16; // recent turns sent verbatim; older folded into running_summary
+export const RUNTIME_OPENING_VERSION = 'five-options-v2';
 
 // Gemini 2.5 Flash can disable its internal "thinking" (thinkingBudget 0) for
 // speed + no mid-reply truncation; Pro does NOT allow 0, so we only turn it off
@@ -40,7 +41,9 @@ const FIVE_OPTION_FALLBACKS = [
 function fillFiveOptions(options) {
   const custom = FIVE_OPTION_FALLBACKS[FIVE_OPTION_FALLBACKS.length - 1];
   const out = Array.isArray(options)
-    ? options.filter((item) => item.toLowerCase() !== custom.toLowerCase()).slice(0, 4)
+    ? options.filter((item) => item.toLowerCase() !== custom.toLowerCase())
+      .filter((item) => !/\b(?:X|Y|TBD)\b|_{2,}|\[[^\]]+\]|<[^>]+>|insert detail/i.test(item))
+      .slice(0, 4)
     : [];
   for (const fallback of FIVE_OPTION_FALLBACKS.slice(0, 4)) {
     if (out.length >= 4) break;
@@ -282,8 +285,8 @@ export async function runtimeOpeningTurn({ participant, session, mode }) {
     ? buildSivSystem({ participant, research, session, crossContext })
     : buildVedSystem({ participant, research, session, crossContext });
   const instruction = mode === 'siv'
-    ? 'The participant has just started the SIV AI Project Selector. Briefly use the verified company and prior-course context, invite corrections, then ask the single best first question that moves toward choosing one first AI project. Give exactly five selectable answer options under the system policy.'
-    : 'The participant has just started the Execution Doctrine diagnostic. Briefly use the verified company and prior-course context, invite corrections, then ask which execution area feels weakest right now. Give exactly five selectable answer options under the system policy.';
+    ? 'The participant has just started the SIV AI Project Selector. State your verified company understanding briefly and say they may correct anything at any time; do NOT ask for confirmation. Then ask exactly ONE substantive question that identifies candidate AI areas and moves toward choosing one first AI project. Give exactly five complete selectable answer options under the system policy, with no placeholders.'
+    : 'The participant has just started the Execution Doctrine diagnostic. State your verified company understanding briefly and say they may correct anything at any time; do NOT ask for confirmation. Then ask exactly ONE substantive question: which execution area feels weakest right now? Give exactly five complete selectable answer options under the system policy, with no placeholders.';
   const out = await converse(system, [{ role: 'user', content: instruction }], { optionCount: 5 });
   const reply = out.say || 'Which area should we examine first?';
   await repo.addMessage({
@@ -291,7 +294,7 @@ export async function runtimeOpeningTurn({ participant, session, mode }) {
     participant_id: participant.id,
     role: 'assistant',
     content: reply,
-    metadata: { options: out.options },
+    metadata: { options: out.options, runtime_opening_version: RUNTIME_OPENING_VERSION },
   });
   return { reply, options: out.options };
 }

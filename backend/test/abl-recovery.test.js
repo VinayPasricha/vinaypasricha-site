@@ -88,6 +88,8 @@ test('both course runtimes require five editable answer options', () => {
     assert.match(prompt, /exactly FIVE distinct/);
     assert.match(prompt, /strongest context-grounded recommendation first/);
     assert.match(prompt, /Something else — let me explain/);
+    assert.match(prompt, /Never use placeholders such as X, Y, TBD/);
+    assert.match(prompt, /Ask exactly one substantive question/);
   }
 });
 
