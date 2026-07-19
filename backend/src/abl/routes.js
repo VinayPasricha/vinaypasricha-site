@@ -258,22 +258,6 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // -------------------------------------------------------------------------
   const runtimeMode = (value) => (value === 'siv' || value === 'ved' ? value : null);
 
-  // Temporary, confirmation-gated staging hook used to clear the affected test
-  // transcript after validating the progression fix.
-  app.post('/api/abl/session/:slug/runtime/:mode/staging-reset', async (req, res) => {
-    try {
-      if (process.env.K_SERVICE !== 'vinay-site-staging') return fail(res, 'Not found', 404);
-      const mode = runtimeMode(req.params.mode);
-      if (!mode) return fail(res, 'Unknown course runtime', 404);
-      if (!req.body || req.body.confirm !== 'ERASE THIS COURSE RUNTIME') {
-        return fail(res, 'Exact reset confirmation required.', 400);
-      }
-      const p = await repo.getParticipantBySlug(req.params.slug);
-      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
-      return ok(res, await repo.resetSingleCourseRuntime(p.id, mode));
-    } catch (e) { return oops(res, e); }
-  });
-
   app.get('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
     try {
       const mode = runtimeMode(req.params.mode);

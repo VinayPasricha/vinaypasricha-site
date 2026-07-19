@@ -44,6 +44,7 @@ function fillFiveOptions(options) {
   const out = Array.isArray(options)
     ? options.filter((item) => item.toLowerCase() !== custom.toLowerCase())
       .filter((item) => !/\b(?:X|Y|TBD)\b|_{2,}|\[[^\]]+\]|<[^>]+>|insert detail/i.test(item))
+      .filter((item) => !/^(?:tell me|describe|walk me|choose|select|please describe)\b/i.test(item.trim()))
       .slice(0, 4)
     : [];
   for (const fallback of FIVE_OPTION_FALLBACKS.slice(0, 4)) {
@@ -83,7 +84,7 @@ async function converse(system, messages, { optionCount = 3 } = {}) {
     const optionShape = Array(optionCount).fill('...').map((item) => `"${item}"`).join(',');
     const nudge = messages.concat([{
       role: 'user',
-      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit.`,
+      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit. Each option must be the participant's answer, never an instruction such as "Tell me", "Describe" or "Walk me through".`,
     }]);
     const retry = parse(await call(nudge));
     if (retry.options.length > out.options.length || (!out.say && retry.say)) {

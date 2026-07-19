@@ -49,6 +49,7 @@ const FIVE_ANSWER_OPTIONS_POLICY = `## Five answer options (required on every tu
 - Option 5 must always be: "Something else — let me explain."
 - Tailor options to verified company context and the conversation. Never invent facts merely to make an option specific.
 - Every option must be a complete answer ready to select. Never use placeholders such as X, Y, TBD, blanks, brackets or "insert detail".
+- Write every option as the exact answer the participant would send in their own voice. Never phrase an option as an instruction to the participant such as "Tell me...", "Describe..." or "Walk me through...".
 - Invite corrections as a statement ("Correct anything I have wrong at any time"), not as a second question. Ask exactly one substantive question.
 - The five options support the ONE question in "say"; they do not permit a numbered batch of questions.`;
 
