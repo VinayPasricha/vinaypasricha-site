@@ -140,7 +140,7 @@
     var role = message.role === 'user' ? 'user' : 'assistant';
     var options = role === 'assistant' && messageIndex === activeOptionMessage && !S.busy
       ? (message.options || []) : [];
-    var choices = options.length ? '<div class="answer-choice-wrap"><div class="answer-choice-note">Choose a starting answer — you can edit it before sending</div><div class="answer-choices">' +
+    var choices = options.length ? '<div class="answer-choice-wrap"><div class="answer-choice-note">Choose an answer to continue — or write your own below</div><div class="answer-choices">' +
       options.map(function (option, optionIndex) {
         return '<button type="button" class="answer-choice" data-answer-message="' + messageIndex + '" data-answer-option="' + optionIndex + '">' +
           (optionIndex === 0 ? '<span class="answer-recommended">Recommended</span>' : '') +
@@ -220,10 +220,16 @@
         var message = S.messages[parseInt(button.getAttribute('data-answer-message'), 10)];
         var option = message && (message.options || [])[parseInt(button.getAttribute('data-answer-option'), 10)];
         if (!option) return;
+        var optionIndex = parseInt(button.getAttribute('data-answer-option'), 10);
+        if (optionIndex === (message.options || []).length - 1) {
+          S.input = '';
+          render();
+          var editor = document.getElementById('runtimeInput');
+          if (editor) editor.focus();
+          return;
+        }
         S.input = option;
-        render();
-        var editor = document.getElementById('runtimeInput');
-        if (editor) { editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); }
+        send();
       };
     });
 

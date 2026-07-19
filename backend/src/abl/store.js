@@ -200,6 +200,36 @@ export async function reviewShareSummary(id, reviewed_markdown, approved) {
   return docData(await ref.get());
 }
 
+// Temporary staging maintenance helper: clear one course runtime while keeping
+// participant identity, verified company research and the other conversations.
+export async function resetSingleCourseRuntime(participantId, mode) {
+  if (mode !== 'siv' && mode !== 'ved') throw new Error('Unsupported runtime mode');
+  const sessionSnap = await col(COLLECTIONS.ablSessions)
+    .where('participant_id', '==', participantId).where('mode', '==', mode).get();
+  const sessionDocs = sessionSnap.docs;
+  const messageSnaps = await Promise.all(sessionDocs.map((sessionDoc) => col(COLLECTIONS.ablMessages)
+    .where('session_id', '==', sessionDoc.id).get()));
+  const messageDocs = messageSnaps.flatMap((snap) => snap.docs);
+  const outputSnap = await col(COLLECTIONS.ablOutputs)
+    .where('participant_id', '==', participantId).where('output_type', '==', `${mode}_report`).get();
+  const userTurns = messageDocs.filter((doc) => doc.data().role === 'user').length;
+  const refs = [...messageDocs, ...sessionDocs, ...outputSnap.docs].map((doc) => doc.ref);
+  for (let offset = 0; offset < refs.length; offset += 450) {
+    const batch = db.batch();
+    refs.slice(offset, offset + 450).forEach((ref) => batch.delete(ref));
+    await batch.commit();
+  }
+  const participantRef = col(COLLECTIONS.ablParticipants).doc(participantId);
+  await db.runTransaction(async (transaction) => {
+    const snap = await transaction.get(participantRef);
+    if (!snap.exists) return;
+    const messageCount = Math.max(0, (Number(snap.data().message_count) || 0) - userTurns);
+    transaction.set(participantRef, { message_count: messageCount, updated_at: nowISO() }, { merge: true });
+  });
+  return { mode, sessions_deleted: sessionDocs.length, messages_deleted: messageDocs.length,
+    reports_deleted: outputSnap.size, user_turns_released: userTurns };
+}
+
 // ---- qa --------------------------------------------------------------------
 export async function getQa(participantId) {
   return docData(await col(COLLECTIONS.ablQa).doc(participantId).get());

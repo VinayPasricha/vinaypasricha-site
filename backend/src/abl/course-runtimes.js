@@ -430,6 +430,9 @@ ${crossBlock(crossContext)}
 ${session.running_summary ? `## Diagnostic so far\n${session.running_summary}\n` : ''}
 ## Practical
 - If this is the first exchange, state that you already have their context and invite corrections as a statement, then ask ONE question: which execution area feels weakest right now. Keep replies concise and plain.
+- Treat every participant answer as progress through the diagnostic. Acknowledge it briefly, record what it establishes, and advance to the next unanswered step in the method.
+- Before asking a question, inspect the transcript and never ask for information the participant has already supplied. Never repeat the same question or the same answer options.
+- If an answer is too vague, ask one narrower clarification that names what is missing; do not restart the previous question.
 - When the diagnosis is essentially done (constraint named, correction and measurement set), tell them they can now generate their Execution Constraint Report.
 - Credibility comes from the quality of the thinking, not from selling the book or the course.`;
 }

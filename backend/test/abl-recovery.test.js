@@ -94,6 +94,13 @@ test('both course runtimes require five editable answer options', () => {
   }
 });
 
+test('VED advances instead of repeating an answered question', () => {
+  const prompt = buildVedSystem({ participant, research: null, session, crossContext: '' });
+  assert.match(prompt, /Treat every participant answer as progress through the diagnostic/);
+  assert.match(prompt, /never ask for information the participant has already supplied/);
+  assert.match(prompt, /Never repeat the same question or the same answer options/);
+});
+
 test('model JSON parser repairs literal newlines inside strings', () => {
   const raw = `Here is the response:\n{"say":"First line.\n\nWhich area is weakest?","options":["Sales","Operations","Hiring","Reporting","Something else — let me explain."]}`;
   assert.deepEqual(extractJson(raw), {
