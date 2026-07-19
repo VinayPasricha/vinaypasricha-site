@@ -9,6 +9,7 @@ import {
 import { buildConversationSystem } from '../src/abl/prompts.js';
 import { buildSivSystem, buildVedSystem } from '../src/abl/course-runtimes.js';
 import { candidateWebsiteUrls, extractWebsiteText, isPrivateAddress, officialWebsiteUrl } from '../src/abl/website.js';
+import { extractJson } from '../src/abl/json.js';
 
 const participant = {
   name: 'Preview Participant',
@@ -91,6 +92,14 @@ test('both course runtimes require five editable answer options', () => {
     assert.match(prompt, /Never use placeholders such as X, Y, TBD/);
     assert.match(prompt, /Ask exactly one substantive question/);
   }
+});
+
+test('model JSON parser repairs literal newlines inside strings', () => {
+  const raw = `Here is the response:\n{"say":"First line.\n\nWhich area is weakest?","options":["Sales","Operations","Hiring","Reporting","Something else — let me explain."]}`;
+  assert.deepEqual(extractJson(raw), {
+    say: 'First line.\n\nWhich area is weakest?',
+    options: ['Sales', 'Operations', 'Hiring', 'Reporting', 'Something else — let me explain.'],
+  });
 });
 
 test('official website fallback blocks private networks and accepts a public domain', () => {

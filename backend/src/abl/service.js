@@ -16,12 +16,13 @@ import {
   domainFromText,
 } from './recovery.js';
 import { fetchOfficialWebsite } from './website.js';
+import { extractJson } from './json.js';
 import * as repo from './store.js';
 
 const CHAT_MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
 const DOC_MODEL = process.env.ABL_DOC_MODEL || process.env.VERTEX_RESEARCH_MODEL || 'gemini-2.5-pro';
 const HISTORY_WINDOW = 16; // recent turns sent verbatim; older folded into running_summary
-export const RUNTIME_OPENING_VERSION = 'five-options-v2';
+export const RUNTIME_OPENING_VERSION = 'five-options-v3';
 
 // Gemini 2.5 Flash can disable its internal "thinking" (thinkingBudget 0) for
 // speed + no mid-reply truncation; Pro does NOT allow 0, so we only turn it off
@@ -361,14 +362,6 @@ export async function generateVedReport(participant) {
 // Given just company + domain (+ email/role), run a LIVE web-grounded pass
 // (Gemini Pro + Google Search) and return the structured research fields, so the
 // admin doesn't have to fill them by hand. Always preliminary and correctable.
-function extractJson(text) {
-  if (!text) return null;
-  let s = String(text).trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  try { return JSON.parse(s); } catch (e) { /* fall through */ }
-  const i = s.indexOf('{'), j = s.lastIndexOf('}');
-  if (i >= 0 && j > i) { try { return JSON.parse(s.slice(i, j + 1)); } catch (e) { /* ignore */ } }
-  return null;
-}
 
 export async function researchCompany(participant, options = {}) {
   const p = {
