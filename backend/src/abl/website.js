@@ -6,6 +6,7 @@ import { JSDOM } from 'jsdom';
 
 const MAX_BYTES = 5_000_000;
 const MAX_TEXT = 35_000;
+const MAX_COMBINED_TEXT = 60_000;
 const MAX_REDIRECTS = 3;
 
 export function isPrivateAddress(address) {
@@ -80,11 +81,43 @@ export function extractWebsiteText(html) {
   return [title, description, visible].filter(Boolean).join('\n').slice(0, MAX_TEXT);
 }
 
+export function candidateWebsiteUrls(html, baseUrl) {
+  const base = new URL(baseUrl);
+  const hostKey = base.hostname.replace(/^www\./, '');
+  const dom = new JSDOM(String(html || ''));
+  const seen = new Set();
+  const rows = [];
+  for (const anchor of dom.window.document.querySelectorAll('a[href]')) {
+    try {
+      const url = new URL(anchor.getAttribute('href'), base);
+      if (url.protocol !== 'https:' || url.hostname.replace(/^www\./, '') !== hostKey) continue;
+      url.hash = ''; url.search = '';
+      if (url.pathname === '/' || seen.has(url.href)) continue;
+      const haystack = `${url.pathname} ${anchor.textContent || ''}`.toLowerCase();
+      let score = 0;
+      if (/about|company|who-we-are/.test(haystack)) score += 12;
+      if (/hirer|employer|business/.test(haystack)) score += 11;
+      if (/product|service|solution|platform/.test(haystack)) score += 8;
+      if (!score || /login|sign-in|privacy|terms|blog|career|job\//.test(haystack)) continue;
+      seen.add(url.href);
+      rows.push({ url: url.href, score });
+    } catch (error) { /* ignore malformed links */ }
+  }
+  dom.window.close();
+  return rows.sort((a, b) => b.score - a.score).slice(0, 2).map((row) => row.url);
+}
+
 export async function fetchOfficialWebsite(domain) {
   const url = officialWebsiteUrl(domain);
   if (!url) throw new Error('A valid public company domain is required');
-  const page = await fetchPage(url);
-  const text = extractWebsiteText(page.html);
+  const home = await fetchPage(url);
+  const pages = [home];
+  const candidates = candidateWebsiteUrls(home.html, home.url);
+  const extras = await Promise.all(candidates.map(async (candidate) => {
+    try { return await fetchPage(new URL(candidate)); } catch (error) { return null; }
+  }));
+  pages.push(...extras.filter(Boolean));
+  const text = pages.map((page) => `PAGE: ${page.url}\n${extractWebsiteText(page.html)}`).join('\n\n').slice(0, MAX_COMBINED_TEXT);
   if (text.length < 200) throw new Error('Official website did not expose enough readable content');
-  return { url: page.url, text };
+  return { url: home.url, pages: pages.map((page) => page.url), text };
 }

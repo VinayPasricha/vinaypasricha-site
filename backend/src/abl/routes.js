@@ -123,7 +123,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       if (process.env.K_SERVICE !== 'vinay-site-staging') return fail(res, 'Not found', 404);
       const page = await fetchOfficialWebsite('goodspace.ai');
-      return ok(res, { url: page.url, length: page.text.length, excerpt: page.text.slice(0, 1200) });
+      return ok(res, { url: page.url, pages: page.pages, length: page.text.length, excerpt: page.text.slice(0, 1200) });
     } catch (e) {
       return fail(res, e.message || 'Website diagnostic failed', 502);
     }

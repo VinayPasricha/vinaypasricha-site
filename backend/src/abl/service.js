@@ -137,9 +137,9 @@ async function recoverCompanyContext({ participant, userMessage, recentMessages 
     ]);
     const context = (updatedResearch && updatedResearch.structured_context) || {};
     const company = (updatedParticipant && updatedParticipant.company_name) || companyNameFromDomain(detected.domain);
-    const products = String(context.products || '').trim();
-    const customers = String(context.customers || '').trim();
-    const summary = [products, customers ? `Its principal customers are ${customers}.` : ''].filter(Boolean).join(' ').slice(0, 700);
+    const products = String(context.products || '').trim().replace(/[.!?]+$/, '');
+    const customers = String(context.customers || '').trim().replace(/[.!?]+$/, '');
+    const summary = [`${products}.`, customers ? `It principally serves ${customers}.` : ''].filter(Boolean).join(' ').slice(0, 700);
     return {
       participant: updatedParticipant || participant,
       research: updatedResearch,
@@ -382,7 +382,7 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
       hasSubstance = !!(clean(j.dossier) && (clean(j.products) || clean(j.customers) || clean(j.industry)));
       if (hasSubstance) {
         grounded = true;
-        sources = [{ title: `${domain} official website`, uri: official.url }];
+        sources = official.pages.map((uri, index) => ({ title: `${domain} official website${index ? ` page ${index + 1}` : ''}`, uri }));
       }
     } catch (error) {
       console.error('[abl] official website research fallback failed:', error.message);

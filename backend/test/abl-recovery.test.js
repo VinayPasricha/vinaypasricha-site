@@ -8,7 +8,7 @@ import {
 } from '../src/abl/recovery.js';
 import { buildConversationSystem } from '../src/abl/prompts.js';
 import { buildSivSystem, buildVedSystem } from '../src/abl/course-runtimes.js';
-import { extractWebsiteText, isPrivateAddress, officialWebsiteUrl } from '../src/abl/website.js';
+import { candidateWebsiteUrls, extractWebsiteText, isPrivateAddress, officialWebsiteUrl } from '../src/abl/website.js';
 
 const participant = {
   name: 'Preview Participant',
@@ -96,4 +96,12 @@ test('official website fallback extracts readable content and removes scripts', 
   assert.match(text, /AI recruitment/);
   assert.match(text, /AI sourcing and interviews/);
   assert.doesNotMatch(text, /ignore me/);
+});
+
+test('official website fallback prioritises same-domain about and employer pages', () => {
+  const html = '<a href="/jobs/123">Job</a><a href="https://elsewhere.example/about">Other</a><a href="/about-us">About Us</a><a href="/hirer">Looking to hire?</a><a href="/privacy">Privacy</a>';
+  assert.deepEqual(candidateWebsiteUrls(html, 'https://goodspace.ai/'), [
+    'https://goodspace.ai/about-us',
+    'https://goodspace.ai/hirer',
+  ]);
 });
