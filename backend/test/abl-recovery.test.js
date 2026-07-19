@@ -8,6 +8,7 @@ import {
 } from '../src/abl/recovery.js';
 import { buildConversationSystem } from '../src/abl/prompts.js';
 import { buildSivSystem, buildVedSystem } from '../src/abl/course-runtimes.js';
+import { extractWebsiteText, isPrivateAddress, officialWebsiteUrl } from '../src/abl/website.js';
 
 const participant = {
   name: 'Preview Participant',
@@ -76,4 +77,23 @@ test('all three agent prompts share the same anti-hallucination recovery policy'
     assert.match(prompt, /Say you reviewed, searched, checked or visited a website ONLY/);
     assert.match(prompt, /Ask exactly ONE primary question per reply/);
   }
+});
+
+test('official website fallback blocks private networks and accepts a public domain', () => {
+  assert.equal(isPrivateAddress('127.0.0.1'), true);
+  assert.equal(isPrivateAddress('169.254.169.254'), true);
+  assert.equal(isPrivateAddress('10.20.30.40'), true);
+  assert.equal(isPrivateAddress('192.168.1.20'), true);
+  assert.equal(isPrivateAddress('8.8.8.8'), false);
+  assert.equal(officialWebsiteUrl('localhost'), null);
+  assert.equal(officialWebsiteUrl('169.254.169.254'), null);
+  assert.equal(officialWebsiteUrl('goodspace.ai').href, 'https://goodspace.ai/');
+});
+
+test('official website fallback extracts readable content and removes scripts', () => {
+  const text = extractWebsiteText('<html><head><title>GoodSpace</title><meta name="description" content="AI recruitment"></head><body><script>ignore me</script><h1>Hire faster</h1><p>AI sourcing and interviews.</p></body></html>');
+  assert.match(text, /GoodSpace/);
+  assert.match(text, /AI recruitment/);
+  assert.match(text, /AI sourcing and interviews/);
+  assert.doesNotMatch(text, /ignore me/);
 });
