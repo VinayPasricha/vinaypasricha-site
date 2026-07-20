@@ -24,4 +24,7 @@ export const COLLECTIONS = {
   ablMessages: 'abl_messages',
   ablOutputs: 'abl_outputs',
   ablQa: 'abl_qa',
+  // First-party website analytics — one document per tracked event (page view,
+  // duration beacon, custom event). Anonymous; auto-expires via the expiresAt TTL.
+  analyticsEvents: 'analytics_events',
 };

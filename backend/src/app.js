@@ -28,6 +28,7 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
+import { recordEvent, analyticsSummary } from './services/analytics.js';
 import { sendOtp, verifyOtp } from './services/otp.js';
 import {
   ensureAccount, accountState, saveOutput, listAccounts, setAssignment,
@@ -49,6 +50,17 @@ const IS_PUBLIC_DEPLOY = !!process.env.K_SERVICE;
 // /studio is no longer hard-blocked in prod — it is access-gated behind an admin
 // login (see the studio gate below). Locally it stays fully open.
 const blockedPrefixes = () => BLOCKED_PREFIXES;
+
+// First-party analytics: the tracker script injected into every served HTML page
+// (see the injection middleware below). Loading it site-wide is what lets the
+// Studio Analytics dashboard "track everything" without editing all 100+ pages.
+const TRACKER_TAG = '<script defer src="/js/track.js"></script>';
+function injectTracker(html) {
+  if (typeof html !== 'string' || html.indexOf('/js/track.js') !== -1) return html;
+  if (html.includes('</head>')) return html.replace('</head>', '  ' + TRACKER_TAG + '\n</head>');
+  if (html.includes('</body>')) return html.replace('</body>', TRACKER_TAG + '</body>');
+  return html;
+}
 
 // ---- Studio admin access ----
 // In production /studio opens only after the admin posts the ADMIN_TOKEN once and
@@ -331,6 +343,27 @@ export function createApp() {
     }
   });
 
+  // ---- First-party website analytics ----
+  // Anonymous, best-effort event ingest from js/track.js (page views, duration
+  // beacons, custom events). recordEvent never throws, so we await it (Cloud Run
+  // throttles CPU after the response, so post-response work isn't reliable) and
+  // then answer 204. Rate-limited generously per IP.
+  app.post('/api/track', rateLimit({ windowMs: 60000, max: 300 }), async (req, res) => {
+    const ip = String(req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim();
+    const ua = req.get('user-agent') || '';
+    await recordEvent(req.body || {}, { ip, ua });
+    res.status(204).end();
+  });
+
+  // The Studio Analytics dashboard reads its aggregated numbers here (admin only).
+  app.get('/api/analytics/summary', requireAdmin, async (req, res) => {
+    try {
+      res.json({ ok: true, ...(await analyticsSummary({ days: req.query.days })) });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+
   // ---- Leads (captured emails / contacts) ----
   app.post('/api/leads', async (req, res) => {
     try {
@@ -430,7 +463,7 @@ export function createApp() {
       }
       const html = renderCompanyPage(companyTemplate, { name: prof.name, domain: prof.domain, slug: prof.slug }, prof.store);
       res.set('Content-Type', 'text/html; charset=utf-8');
-      return res.send(html);
+      return res.send(injectTracker(html));
     } catch (err) {
       return next();
     }
@@ -487,9 +520,41 @@ export function createApp() {
       if (!out) return next(); // nothing translated → serve English
       res.set('Content-Type', 'text/html; charset=utf-8');
       res.set('Content-Language', lang);
-      return res.send(out);
+      return res.send(injectTracker(out));
     } catch (e) {
       return next(); // safe fallback
+    }
+  });
+
+  // ---- Inject the analytics tracker into every served HTML page ----
+  // Runs just before express.static so all 100+ static pages carry the tracker
+  // without editing them. Only touches requests that resolve to a real .html
+  // file; assets, missing files, /studio (admin), and blocked folders fall
+  // through to static untouched. Cached per (file, mtime) like the i18n path.
+  const trackedHtmlCache = new Map(); // abs+mtime -> injected html
+  app.get(/.*/, (req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    let rel = decodeURIComponent(req.path);
+    if (rel.endsWith('/')) rel += 'index.html';
+    else if (!path.extname(rel)) rel += '.html';
+    else if (!rel.endsWith('.html')) return next(); // a real asset (.css/.js/.png/…)
+    // Never inject into (or serve here) the admin studio or private folders.
+    if (rel === '/studio' || rel.startsWith('/studio/')) return next();
+    if (blockedPrefixes().some((p) => rel === p || rel.startsWith(p + '/'))) return next();
+    const abs = path.join(SITE_ROOT, rel);
+    if (!abs.startsWith(SITE_ROOT) || !existsSync(abs)) return next();
+    try {
+      const key = abs + '\0' + statSync(abs).mtimeMs;
+      let out = trackedHtmlCache.get(key);
+      if (out === undefined) {
+        out = injectTracker(readFileSync(abs, 'utf8'));
+        trackedHtmlCache.set(key, out);
+        if (trackedHtmlCache.size > 3000) trackedHtmlCache.clear();
+      }
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      return res.send(out);
+    } catch (e) {
+      return next(); // fall through to static on any read/inject error
     }
   });
 
