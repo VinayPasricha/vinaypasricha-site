@@ -159,6 +159,7 @@
         var v = inputs[i].value;
         if (looksLikeEmail(v)) {
           post('/api/leads', { email: v.trim(), source: runtimeName() + ':' + location.pathname, sessionId: sid() });
+          if (window.vpTrack && window.vpTrack.identify) window.vpTrack.identify({ email: v.trim(), source: runtimeName() });
           return true;
         }
       }
@@ -180,5 +181,6 @@
   window.captureLead = function (email, extra) {
     if (!looksLikeEmail(email)) return;
     post('/api/leads', Object.assign({ email: String(email).trim(), source: runtimeName(), sessionId: sid() }, extra || {}));
+    if (window.vpTrack && window.vpTrack.identify) window.vpTrack.identify(Object.assign({ email: String(email).trim(), source: runtimeName() }, extra || {}));
   };
 })();

@@ -51,6 +51,28 @@
     .mini td { padding: 7px 8px; border-bottom: 1px solid var(--rule-soft); }
     .mini td.r { text-align: right; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
 
+    .ppl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 620px; }
+    .ppl th { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+    .ppl td { padding: 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+    .ppl tr:hover td { background: var(--paper-3); cursor: pointer; }
+    .ppl .pnm { font-family: var(--serif); font-size: 14px; color: var(--ink); }
+    .ppl .pem { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+    .ppl .num { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .badge { font-family: var(--mono); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; background: var(--paper-2); color: var(--ink-2); padding: 2px 6px; border-radius: 3px; }
+
+    .pcard { border: 1px solid var(--accent); border-radius: 8px; background: var(--paper-2); padding: 18px; margin-bottom: 16px; }
+    .pcard .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .pcard .ph h3 { font-family: var(--serif); font-size: 20px; }
+    .pcard .meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+    .pcard .close { background: none; border: 1px solid var(--rule); color: var(--ink-2); font-family: var(--mono); font-size: 11px; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+    .tl { margin-top: 14px; display: flex; flex-direction: column; gap: 0; max-height: 460px; overflow: auto; border-top: 1px solid var(--rule); }
+    .tl-row { display: grid; grid-template-columns: 88px 120px 1fr; gap: 10px; padding: 8px 4px; border-bottom: 1px solid var(--rule-soft); font-size: 13px; align-items: baseline; }
+    .tl-when { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+    .tl-type { font-family: var(--mono); font-size: 10px; }
+    .tl-type .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .tl-what { color: var(--ink); word-break: break-word; }
+    .tl-what .sub { color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
+
     #login { max-width: 360px; margin: 90px auto; text-align: center; }
     #login input { width: 100%; margin: 10px 0; border: 1px solid var(--rule); background: var(--paper-3); border-radius: 4px; padding: 9px 11px; font: inherit; }
     .btn { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; background: var(--ink); color: var(--paper); border: none; border-radius: 5px; padding: 9px 16px; cursor: pointer; }
@@ -94,6 +116,21 @@
     <div class="an-sec">
       <h2>Traffic over time</h2>
       <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Known people <span id="peopleCount" class="an-sub" style="margin:0"></span></h2>
+      <div id="personPanel"></div>
+      <input id="peopleSearch" placeholder="Search name, email, company…" style="width:100%;max-width:420px;margin-bottom:10px;border:1px solid var(--rule);background:var(--paper-3);border-radius:4px;padding:8px 11px;font:inherit;font-size:13px">
+      <div style="overflow-x:auto"><table class="ppl" id="people"></table></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Events (in-depth interactions)</h2>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top events</h3><div class="bars" id="topEvents"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">By type</h3><div class="bars" id="eventTypes"></div></div>
+      </div>
     </div>
 
     <div class="an-sec">

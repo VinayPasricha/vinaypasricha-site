@@ -100,6 +100,8 @@
       // Remember locally + expose immediately (don't trap the user on network issues).
       try { localStorage.setItem(STORE_KEY, JSON.stringify(lead)); } catch (e) {}
       window.OF_LEAD = lead;
+      // Analytics: this visitor is now a known person — link their history.
+      if (window.vpTrack && window.vpTrack.identify) window.vpTrack.identify({ email: email, name: name, phone: phone, source: 'lead-gate' });
 
       fetch(apiBase() + '/api/leads', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },

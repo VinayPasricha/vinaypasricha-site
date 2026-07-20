@@ -77,15 +77,20 @@
       { v: num(t.sessions), l: 'Sessions' },
       { v: dur(t.avgSeconds), l: 'Avg time on page' },
       { v: (t.bounceRate || 0) + '%', l: 'Bounce rate', s: 'single-page sessions' },
+      { v: num((d.people && d.people.known) || 0), l: 'Known people', hot: true, s: 'identified' },
+      { v: num((d.events && d.events.total) || 0), l: 'Events tracked', s: 'clicks · forms · scroll' },
       { v: num(eng.conversations), l: 'AI conversations' },
       { v: num(eng.leads), l: 'Leads captured' },
-      { v: num(fun.total) + (fun.avgRating ? '' : ''), l: 'ABL participants', s: fun.avgRating ? ('avg ' + fun.avgRating + '★') : '' },
+      { v: num(fun.total), l: 'ABL participants', s: fun.avgRating ? ('avg ' + fun.avgRating + '★') : '' },
     ];
     $('kpis').innerHTML = kpis.map(function (k) {
       return '<div class="stat' + (k.hot ? ' hot' : '') + '"><div class="stat-v">' + k.v + '</div><div class="stat-l">' + esc(k.l) + '</div>' + (k.s ? '<div class="stat-s">' + esc(k.s) + '</div>' : '') + '</div>';
     }).join('');
 
     renderChart(t.timeseries || []);
+    bars('topEvents', (d.events && d.events.topEvents) || [], function (k) { return k; });
+    bars('eventTypes', (d.events && d.events.byType) || [], function (k) { return cap(String(k).replace(/_/g, ' ')); });
+    loadPeople();
     bars('topPages', t.topPages, function (k) { return k; });
     bars('topRefs', t.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
     bars('devices', t.devices, cap);
@@ -161,6 +166,113 @@
       '<div class="lgnd"><span class="k"><span class="sw" style="background:var(--accent)"></span>Page views</span>' +
       '<span class="k"><span class="sw" style="background:var(--ink-2)"></span>Unique visitors</span></div>';
     el.innerHTML = svg;
+  }
+
+  // ---- People directory ----------------------------------------------------
+  var peopleCache = null;   // loaded once (people are all-time, not range-scoped)
+  var peopleLoading = false;
+
+  async function loadPeople() {
+    if (peopleCache || peopleLoading) { if (peopleCache) renderPeople(peopleCache); return; }
+    peopleLoading = true;
+    var res = await fetch('/api/analytics/people?limit=500', { headers: { 'Content-Type': 'application/json' } });
+    peopleLoading = false;
+    var body = {}; try { body = await res.json(); } catch (e) {}
+    peopleCache = (body && body.people) || [];
+    renderPeople(peopleCache);
+    var s = $('peopleSearch');
+    if (s && !s._wired) { s._wired = true; s.oninput = function () { renderPeople(peopleCache); }; }
+  }
+
+  function renderPeople(people) {
+    $('peopleCount').textContent = people.length ? '· ' + people.length + ' identified' : '';
+    var q = ($('peopleSearch') && $('peopleSearch').value || '').trim().toLowerCase();
+    var rows = people.filter(function (p) {
+      if (!q) return true;
+      return (p.name + ' ' + p.email + ' ' + p.company).toLowerCase().indexOf(q) !== -1;
+    });
+    var el = $('people');
+    if (!people.length) { el.innerHTML = '<tr><td class="muted" style="padding:14px">No one identified yet. People appear here once a visitor submits a lead form, logs into the Participant Room, opens an ABL session, or shares their email in a chat.</td></tr>'; return; }
+    el.innerHTML = '<thead><tr><th>Person</th><th>Company</th><th>Source</th><th>Events</th><th>Devices</th><th>Last seen</th></tr></thead><tbody>' +
+      rows.map(function (p) {
+        return '<tr data-pid="' + esc(p.id) + '">' +
+          '<td><div class="pnm">' + esc(p.name || '—') + '</div><div class="pem">' + esc(p.email || '(no email)') + '</div></td>' +
+          '<td>' + esc(p.company || '—') + '</td>' +
+          '<td>' + (p.source ? '<span class="badge">' + esc(p.source) + '</span>' : '—') + '</td>' +
+          '<td class="num">' + num(p.eventCount) + '</td>' +
+          '<td class="num">' + num(p.devices) + '</td>' +
+          '<td class="num">' + when(p.lastSeen) + '</td>' +
+          '</tr>';
+      }).join('') + '</tbody>';
+    Array.prototype.forEach.call(el.querySelectorAll('tr[data-pid]'), function (tr) {
+      tr.onclick = function () { openPerson(tr.getAttribute('data-pid')); };
+    });
+  }
+
+  var DOTS = { pageview: 'var(--accent)', duration: 'var(--ink-3)', click: '#6a8caf', form_submit: '#b08968', scroll: '#9a9a9a', event: '#7a9e7e', identify: 'var(--accent-2, #b08968)' };
+
+  async function openPerson(pid) {
+    var panel = $('personPanel');
+    panel.innerHTML = '<div class="pcard"><div class="muted">Loading timeline…</div></div>';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var res = await fetch('/api/analytics/person/' + encodeURIComponent(pid) + '?limit=500', { headers: { 'Content-Type': 'application/json' } });
+    var body = {}; try { body = await res.json(); } catch (e) {}
+    if (!body.ok) { panel.innerHTML = '<div class="pcard"><div class="muted">Could not load this person.</div></div>'; return; }
+    var p = body.person, evs = body.events || [];
+    var meta = [];
+    if (p.email) meta.push(esc(p.email));
+    if (p.company) meta.push(esc(p.company));
+    if (p.role) meta.push(esc(p.role));
+    if (p.phone) meta.push(esc(p.phone));
+    meta.push(p.eventCount + ' events');
+    meta.push(p.devices + ' device' + (p.devices === 1 ? '' : 's') + (p.moreDevices ? '+' : ''));
+    meta.push('first ' + when(p.firstSeen) + ' · last ' + when(p.lastSeen));
+
+    var tl = evs.map(function (e) {
+      var dot = DOTS[e.type] || 'var(--ink-3)';
+      var what = describe(e);
+      return '<div class="tl-row"><div class="tl-when">' + whenTime(e.at) + '</div>' +
+        '<div class="tl-type"><span class="dot" style="background:' + dot + '"></span>' + esc(e.type) + '</div>' +
+        '<div class="tl-what">' + what + '</div></div>';
+    }).join('');
+
+    panel.innerHTML = '<div class="pcard">' +
+      '<div class="ph"><div><h3>' + esc(p.name || p.email || 'Anonymous person') + '</h3>' +
+      '<div class="meta">' + meta.join(' · ') + (p.source ? ' · <span class="badge">' + esc(p.source) + '</span>' : '') + '</div></div>' +
+      '<button class="close" id="pclose">Close ✕</button></div>' +
+      '<div class="tl">' + (tl || '<div class="muted" style="padding:12px">No events recorded for this person yet.</div>') + '</div></div>';
+    $('pclose').onclick = function () { panel.innerHTML = ''; };
+  }
+
+  function describe(e) {
+    if (e.type === 'pageview') return '<span>' + esc(e.title || e.path) + '</span> <span class="sub">' + esc(e.path) + (e.ref && e.ref !== 'direct' ? ' · via ' + esc(e.ref) : '') + '</span>';
+    if (e.type === 'duration') return '<span class="sub">' + dur(e.seconds) + ' on ' + esc(e.path) + '</span>';
+    if (e.type === 'click') { var pr = e.props || {}; return '<span>' + esc(e.name || 'click') + '</span> <span class="sub">' + esc(pr.text || pr.href || '') + (pr.outbound ? ' ↗' : '') + '</span>'; }
+    if (e.type === 'form_submit') return '<span>form submit</span> <span class="sub">' + esc((e.props && e.props.action) || e.name || '') + '</span>';
+    if (e.type === 'scroll') return '<span class="sub">scrolled ' + esc((e.props && e.props.depth) || '') + '% of ' + esc(e.path) + '</span>';
+    if (e.type === 'identify') return '<span>identified</span> <span class="sub">' + esc(e.path) + '</span>';
+    return '<span>' + esc(e.name || e.type) + '</span> <span class="sub">' + esc(e.path) + '</span>';
+  }
+
+  function when(v) {
+    if (!v) return '—';
+    var t = toDate(v); if (!t) return '—';
+    var days = Math.floor((Date.now() - t.getTime()) / 86400000);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 30) return days + 'd ago';
+    return t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' });
+  }
+  function whenTime(v) {
+    var t = toDate(v); if (!t) return '—';
+    return t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+  function toDate(v) {
+    try {
+      if (!v) return null;
+      if (typeof v === 'object' && v._seconds != null) return new Date(v._seconds * 1000);
+      var t = new Date(v); return isNaN(t.getTime()) ? null : t;
+    } catch (e) { return null; }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

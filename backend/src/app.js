@@ -28,7 +28,7 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
-import { recordEvent, analyticsSummary } from './services/analytics.js';
+import { recordEvent, analyticsSummary, listPeople, personTimeline } from './services/analytics.js';
 import { sendOtp, verifyOtp } from './services/otp.js';
 import {
   ensureAccount, accountState, saveOutput, listAccounts, setAssignment,
@@ -359,6 +359,24 @@ export function createApp() {
   app.get('/api/analytics/summary', requireAdmin, async (req, res) => {
     try {
       res.json({ ok: true, ...(await analyticsSummary({ days: req.query.days })) });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+
+  // Person-level: the directory of known people, and one person's full timeline.
+  app.get('/api/analytics/people', requireAdmin, async (req, res) => {
+    try {
+      res.json({ ok: true, people: await listPeople({ limit: req.query.limit }) });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+  app.get('/api/analytics/person/:pid', requireAdmin, async (req, res) => {
+    try {
+      const t = await personTimeline(req.params.pid, { limit: req.query.limit });
+      if (!t) return res.status(404).json({ ok: false, error: 'not_found' });
+      res.json({ ok: true, ...t });
     } catch (err) {
       res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
     }

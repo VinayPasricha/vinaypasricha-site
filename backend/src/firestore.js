@@ -25,6 +25,10 @@ export const COLLECTIONS = {
   ablOutputs: 'abl_outputs',
   ablQa: 'abl_qa',
   // First-party website analytics — one document per tracked event (page view,
-  // duration beacon, custom event). Anonymous; auto-expires via the expiresAt TTL.
+  // duration beacon, click, form submit, scroll, custom event, identify).
+  // Anonymous; auto-expires via the expiresAt TTL.
   analyticsEvents: 'analytics_events',
+  // One document per known person (once identified via a lead, portal login, ABL
+  // session, or AI chat). Links their device visitor-ids for timeline stitching.
+  analyticsPeople: 'analytics_people',
 };

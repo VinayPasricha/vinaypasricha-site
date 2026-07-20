@@ -186,6 +186,12 @@
     var who = document.getElementById('who');
     if (who) who.textContent = name || (state.account && state.account.email) || '';
 
+    // Analytics: a signed-in participant is a known person — link their history.
+    var acctEmail = state.account && state.account.email;
+    if (acctEmail && window.vpTrack && window.vpTrack.identify) {
+      window.vpTrack.identify({ email: acctEmail, name: name, source: 'portal-login' });
+    }
+
     // outputs → latest per runtime
     var byRt = {};
     (state.outputs || []).forEach(function (o) {

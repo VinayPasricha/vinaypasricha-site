@@ -77,6 +77,11 @@
     if (!r.ok || !r.data) { S.err = r.error || 'This session could not be found.'; S.view = 'error'; return render(); }
     var d = r.data;
     S.data = d; S.consent = d.session.consent_given;
+    // Analytics: tie this ABL participant's site activity to their record.
+    // Email isn't exposed to the browser, so key on the session slug + name.
+    if (window.vpTrack && window.vpTrack.identify && d.participant) {
+      window.vpTrack.identify({ id: 'abl:' + SLUG, name: d.participant.name || '', company: d.participant.company_name || '', source: 'abl-session' });
+    }
     S.messages = d.messages.map(function (m) { return { role: m.role, content: m.content, options: m.options || [] }; });
     S.count = d.participant.message_count; S.max = d.participant.max_messages;
     S.reward = d.reward; S.shareId = d.share && d.share.id; S.shareText = (d.share && d.share.markdown) || '';
