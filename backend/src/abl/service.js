@@ -137,6 +137,7 @@ KNOWN CONTEXT: industry=${p.industry || '?'}; contact=${p.email || '?'}
 
 Return ONLY this JSON shape (all values are short strings; leave "" if genuinely unknown):
 {
+  "role_title": "${p.name || 'the person attending'}'s current job title / role at ${p.company_name || 'this company'}, confirmed from LinkedIn, the company's own site/team/leadership page, or press. Match this specific person AND company — do not guess from the email. Leave \\"\\" if you cannot confirm it.",
   "industry": "the company's industry / sector",
   "geography": "where they are based / operate (HQ city + region/country)",
   "business_model": "how they make money (e.g. B2B SaaS, D2C retail, marketplace, consulting)",
@@ -171,6 +172,7 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
   // Fill the participant-level fields the research surfaced (don't clobber what
   // the admin already typed).
   const fill = {};
+  if (clean(j.role_title) && !p.role_title) fill.role_title = clean(j.role_title);
   if (clean(j.industry) && !p.industry) fill.industry = clean(j.industry);
   if (clean(j.geography) && !p.geography) fill.geography = clean(j.geography);
   if (clean(j.business_model) && !p.business_model) fill.business_model = clean(j.business_model);
