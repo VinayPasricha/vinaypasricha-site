@@ -88,6 +88,32 @@
     .tl-what { color: var(--ink); word-break: break-word; }
     .tl-what .sub { color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
 
+    .funnel { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+    .fstep { }
+    .fstep .fhead { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+    .fstep .fname { color: var(--ink); }
+    .fstep .fval { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .fstep .ftrack { height: 26px; background: var(--paper-2); border-radius: 5px; overflow: hidden; }
+    .fstep .ffill { height: 100%; background: color-mix(in srgb, var(--accent) 30%, transparent); border-right: 2px solid var(--accent); display: flex; align-items: center; padding-left: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink); transition: width .4s; }
+    .fstep .fdrop { font-family: var(--mono); font-size: 10px; color: var(--ink-4); margin-top: 2px; }
+
+    .nvr { display: flex; gap: 10px; margin-top: 4px; }
+    .nvr .seg { flex: 1; background: var(--paper-3); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; }
+    .nvr .seg .v { font-family: var(--serif); font-size: 20px; color: var(--ink); }
+    .nvr .seg .l { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+
+    .bar .lbl.clk { cursor: pointer; }
+    .bar .lbl.clk:hover { background: var(--paper-2); }
+    .ppage { border: 1px solid var(--accent); border-radius: 8px; background: var(--paper-2); padding: 16px; margin-bottom: 14px; }
+    .ppage .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .ppage h3 { font-family: var(--mono); font-size: 13px; color: var(--ink); word-break: break-all; }
+    .ppage .close { background: none; border: 1px solid var(--rule); color: var(--ink-2); font-family: var(--mono); font-size: 11px; border-radius: 5px; padding: 4px 9px; cursor: pointer; }
+    .ppage .pgstats { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; }
+    .ppage .pgstats .s .v { font-family: var(--serif); font-size: 18px; color: var(--ink); }
+    .ppage .pgstats .s .l { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+    .ppage .pgcols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .ppage .pgcols { grid-template-columns: 1fr; } }
+
     #login { max-width: 360px; margin: 90px auto; text-align: center; }
     #login input { width: 100%; margin: 10px 0; border: 1px solid var(--rule); background: var(--paper-3); border-radius: 4px; padding: 9px 11px; font: inherit; }
     .btn { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; background: var(--ink); color: var(--paper); border: none; border-radius: 5px; padding: 9px 16px; cursor: pointer; }
@@ -148,7 +174,20 @@
             <dt>Email / phone link <span class="tag">contact_link</span></dt><dd>Clicked a <code>mailto:</code> or <code>tel:</code> link.</dd>
             <dt>Form submitted <span class="tag">form_submit</span></dt><dd>Submitted any form. We record which form and the <em>number</em> of fields — <strong>never the values typed in</strong>.</dd>
             <dt>Scroll depth <span class="tag">depth_25…100</span></dt><dd>Reached 25%, halfway, 75%, or the end of a page.</dd>
+            <dt>Rage click</dt><dd>3+ rapid clicks in the same spot — a signal of frustration or a broken control.</dd>
             <dt>Custom event</dt><dd>Anything a runtime chooses to report via <code>vpTrack('name')</code>.</dd>
+          </dl>
+        </div>
+
+        <div class="an-ref-group">
+          <h4>Acquisition & audience · per visit</h4>
+          <dl>
+            <dt>Source / campaign</dt><dd>Where the visit came from — a UTM tag (<code>utm_source</code>/<code>utm_campaign</code>) if present, else the referring site, else "direct". First-touch source is remembered per person.</dd>
+            <dt>Landing &amp; exit page</dt><dd>The first page a session arrived on and the last one before leaving.</dd>
+            <dt>Country</dt><dd>Approximate, derived from the browser's <em>timezone</em> — we never do IP geolocation.</dd>
+            <dt>Browser / OS</dt><dd>Read from the user-agent (Chrome, Safari, Windows, iOS…).</dd>
+            <dt>New vs returning</dt><dd>Whether it's a device's first-ever visit or a repeat one.</dd>
+            <dt>Engaged time</dt><dd>Seconds a visitor was <em>active</em> on a page (moving/scrolling/typing) — not just idle with the tab open.</dd>
           </dl>
         </div>
 
@@ -192,6 +231,12 @@
     </div>
 
     <div class="an-sec">
+      <h2>Conversion funnel</h2>
+      <p class="sec-sub">How far sessions get: <strong>Visited</strong> → <strong>Engaged</strong> (scrolled halfway, viewed 2+ pages, or stayed 30s+) → <strong>Interacted</strong> (clicked or submitted something) → <strong>Identified</strong> (became a known person). Percent is of all sessions.</p>
+      <div class="funnel" id="funnelSteps"></div>
+    </div>
+
+    <div class="an-sec">
       <h2>Events (in-depth interactions)</h2>
       <p class="sec-sub">Every click, form submission, and scroll milestone across the public site. <strong>Top events</strong> = the specific action; <strong>By type</strong> = grouped. See the reference above for what each label means.</p>
       <div class="cols">
@@ -202,9 +247,37 @@
 
     <div class="an-sec">
       <h2>Where they go &amp; where they come from</h2>
+      <p class="sec-sub">Most-viewed pages and where visits originate. <strong>Click any page</strong> to drill into its own stats — time on page, scroll depth, events, referrers, and countries.</p>
+      <div id="pagePanel"></div>
       <div class="cols">
-        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top pages</h3><div class="bars" id="topPages"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top pages <span style="color:var(--ink-4);text-transform:none;letter-spacing:0">· click to drill in</span></h3><div class="bars" id="topPages"></div></div>
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top referrers</h3><div class="bars" id="topRefs"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Acquisition — how they arrive</h2>
+      <p class="sec-sub">Per session: the traffic <strong>source</strong> (UTM campaign tag, or the referring site, or direct), the <strong>campaign</strong>, the <strong>landing</strong> page they arrived on, and the <strong>exit</strong> page they left from.</p>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top sources</h3><div class="bars" id="acqSources"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Campaigns (UTM)</h3><div class="bars" id="acqCampaigns"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Landing pages</h3><div class="bars" id="acqLanding"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Exit pages</h3><div class="bars" id="acqExit"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Audience — who they are</h2>
+      <p class="sec-sub">Approximate <strong>country</strong> (from the visitor's timezone — never IP), <strong>browser</strong>, <strong>operating system</strong>, and how many are <strong>new</strong> vs <strong>returning</strong>.</p>
+      <div class="nvr" style="margin-bottom:16px">
+        <div class="seg"><div class="v" id="newV">0</div><div class="l">New visitors</div></div>
+        <div class="seg"><div class="v" id="retV">0</div><div class="l">Returning visitors</div></div>
+      </div>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Countries</h3><div class="bars" id="audCountries"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Browsers</h3><div class="bars" id="audBrowsers"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Operating systems</h3><div class="bars" id="audOS"></div></div>
+        <div></div>
       </div>
     </div>
 
@@ -217,7 +290,8 @@
 
     <div class="an-sec">
       <h2>Engagement (AI runtimes &amp; leads)</h2>
-      <p class="sec-sub">From your existing database (not the page tracker): how many AI conversations happened in each runtime, and the leads captured across the site.</p>
+      <p class="sec-sub">From your existing database (not the page tracker): AI-conversation depth, how many conversations happened in each runtime, and the leads captured across the site.</p>
+      <div class="stats" id="aiDepth" style="margin-bottom:16px"></div>
       <div class="cols">
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">AI conversations by runtime</h3><div class="bars" id="runtimes"></div></div>
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Recent leads</h3><table class="mini" id="leads"></table></div>

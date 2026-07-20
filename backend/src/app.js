@@ -28,7 +28,7 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
-import { recordEvent, analyticsSummary, listPeople, personTimeline } from './services/analytics.js';
+import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats } from './services/analytics.js';
 import { sendOtp, verifyOtp } from './services/otp.js';
 import {
   ensureAccount, accountState, saveOutput, listAccounts, setAssignment,
@@ -377,6 +377,15 @@ export function createApp() {
       const t = await personTimeline(req.params.pid, { limit: req.query.limit });
       if (!t) return res.status(404).json({ ok: false, error: 'not_found' });
       res.json({ ok: true, ...t });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+  // Per-page drill-down (admin): ?path=/books&days=30
+  app.get('/api/analytics/page', requireAdmin, async (req, res) => {
+    try {
+      if (!req.query.path) return res.status(400).json({ ok: false, error: 'path_required' });
+      res.json({ ok: true, ...(await pageStats(req.query.path, { days: req.query.days })) });
     } catch (err) {
       res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
     }

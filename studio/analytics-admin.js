@@ -77,6 +77,7 @@
       { v: num(t.sessions), l: 'Sessions' },
       { v: dur(t.avgSeconds), l: 'Avg time on page' },
       { v: (t.bounceRate || 0) + '%', l: 'Bounce rate', s: 'single-page sessions' },
+      { v: dur((d.behavior && d.behavior.avgEngaged) || 0), l: 'Avg engaged time', s: 'active, not idle' },
       { v: num((d.people && d.people.known) || 0), l: 'Known people', hot: true, s: 'identified' },
       { v: num((d.events && d.events.total) || 0), l: 'Events tracked', s: 'clicks · forms · scroll' },
       { v: num(eng.conversations), l: 'AI conversations' },
@@ -91,7 +92,31 @@
     bars('topEvents', (d.events && d.events.topEvents) || [], evLabel);
     bars('eventTypes', (d.events && d.events.byType) || [], evLabel);
     loadPeople();
-    bars('topPages', t.topPages, function (k) { return k; });
+    renderFunnel(d.funnelSteps || []);
+
+    var acq = d.acquisition || {};
+    bars('acqSources', acq.topSources, function (k) { return k === 'direct' ? 'Direct / none' : k; });
+    bars('acqCampaigns', acq.topCampaigns, function (k) { return k; });
+    bars('acqLanding', acq.landingPages, function (k) { return k; }, openPage);
+    bars('acqExit', acq.exitPages, function (k) { return k; }, openPage);
+
+    var aud = d.audience || {};
+    if ($('newV')) $('newV').textContent = num(aud.newVisitors || 0);
+    if ($('retV')) $('retV').textContent = num(aud.returningVisitors || 0);
+    bars('audCountries', aud.countries, function (k) { return k; });
+    bars('audBrowsers', aud.browsers, function (k) { return k; });
+    bars('audOS', aud.os, function (k) { return k; });
+
+    var aiTiles = [
+      { v: num(eng.conversations), l: 'AI conversations' },
+      { v: (eng.avgMessages || 0), l: 'Avg messages / chat' },
+      { v: (eng.completionRate || 0) + '%', l: 'Completion rate', s: 'reached a result' },
+    ];
+    if ($('aiDepth')) $('aiDepth').innerHTML = aiTiles.map(function (k) {
+      return '<div class="stat"><div class="stat-v">' + k.v + '</div><div class="stat-l">' + esc(k.l) + '</div>' + (k.s ? '<div class="stat-s">' + esc(k.s) + '</div>' : '') + '</div>';
+    }).join('');
+
+    bars('topPages', t.topPages, function (k) { return k; }, openPage);
     bars('topRefs', t.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
     bars('devices', t.devices, cap);
     bars('langs', t.languages, function (k) { return k.toUpperCase(); });
@@ -115,20 +140,27 @@
     link: 'Internal link click', outbound_link: 'Outbound link click', button: 'Button click',
     contact_link: 'Email / phone link', form: 'Form submitted',
     depth_25: 'Scrolled 25%', depth_50: 'Scrolled halfway', depth_75: 'Scrolled 75%', depth_100: 'Scrolled to the end',
+    rage_click: 'Rage click (frustration)',
   };
   function evLabel(k) { return EVENT_LABELS[k] || cap(String(k).replace(/_/g, ' ')); }
 
-  // Horizontal bar list from [{key, count}].
-  function bars(id, items, fmt) {
+  // Horizontal bar list from [{key, count}]. Pass onClick to make rows clickable.
+  function bars(id, items, fmt, onClick) {
     items = items || [];
     var el = $(id);
+    if (!el) return;
     if (!items.length) { el.innerHTML = '<div class="muted">No data yet.</div>'; return; }
     var max = items.reduce(function (m, x) { return Math.max(m, x.count || 0); }, 0) || 1;
-    el.innerHTML = items.map(function (x) {
+    el.innerHTML = items.map(function (x, i) {
       var pct = Math.max(2, Math.round((x.count || 0) / max * 100));
       var label = fmt ? fmt(x.key) : x.key;
-      return '<div class="bar"><div class="lbl"><span class="fill" style="width:' + pct + '%"></span><span>' + esc(label) + '</span></div><div class="val">' + num(x.count) + '</div></div>';
+      return '<div class="bar"><div class="lbl' + (onClick ? ' clk' : '') + '" data-i="' + i + '"><span class="fill" style="width:' + pct + '%"></span><span>' + esc(label) + '</span></div><div class="val">' + num(x.count) + '</div></div>';
     }).join('');
+    if (onClick) {
+      Array.prototype.forEach.call(el.querySelectorAll('.lbl.clk'), function (lbl) {
+        lbl.onclick = function () { var it = items[parseInt(lbl.getAttribute('data-i'), 10)]; if (it) onClick(it.key); };
+      });
+    }
   }
 
   // Inline SVG line chart: daily page views (area) + unique visitors (line).
@@ -203,14 +235,15 @@
     });
     var el = $('people');
     if (!people.length) { el.innerHTML = '<tr><td class="muted" style="padding:14px">No one identified yet. People appear here once a visitor submits a lead form, logs into the Participant Room, opens an ABL session, or shares their email in a chat.</td></tr>'; return; }
-    el.innerHTML = '<thead><tr><th>Person</th><th>Company</th><th>Source</th><th>Events</th><th>Devices</th><th>Last seen</th></tr></thead><tbody>' +
+    el.innerHTML = '<thead><tr><th>Person</th><th>Company</th><th>Country</th><th>Source</th><th>Score</th><th>Events</th><th>Last seen</th></tr></thead><tbody>' +
       rows.map(function (p) {
         return '<tr data-pid="' + esc(p.id) + '">' +
           '<td><div class="pnm">' + esc(p.name || '—') + '</div><div class="pem">' + esc(p.email || '(no email)') + '</div></td>' +
           '<td>' + esc(p.company || '—') + '</td>' +
+          '<td>' + esc(p.country || '—') + '</td>' +
           '<td>' + (p.source ? '<span class="badge">' + esc(p.source) + '</span>' : '—') + '</td>' +
+          '<td class="num">' + num(p.score || 0) + '</td>' +
           '<td class="num">' + num(p.eventCount) + '</td>' +
-          '<td class="num">' + num(p.devices) + '</td>' +
           '<td class="num">' + when(p.lastSeen) + '</td>' +
           '</tr>';
       }).join('') + '</tbody>';
@@ -234,6 +267,8 @@
     if (p.company) meta.push(esc(p.company));
     if (p.role) meta.push(esc(p.role));
     if (p.phone) meta.push(esc(p.phone));
+    if (p.country) meta.push('📍 ' + esc(p.country));
+    if (p.firstTouch) meta.push('first touch: ' + esc(p.firstTouch));
     meta.push(p.eventCount + ' events');
     meta.push(p.devices + ' device' + (p.devices === 1 ? '' : 's') + (p.moreDevices ? '+' : ''));
     meta.push('first ' + when(p.firstSeen) + ' · last ' + when(p.lastSeen));
@@ -283,6 +318,48 @@
       if (typeof v === 'object' && v._seconds != null) return new Date(v._seconds * 1000);
       var t = new Date(v); return isNaN(t.getTime()) ? null : t;
     } catch (e) { return null; }
+  }
+
+  // ---- Conversion funnel ---------------------------------------------------
+  function renderFunnel(steps) {
+    var el = $('funnelSteps'); if (!el) return;
+    if (!steps.length) { el.innerHTML = '<div class="muted">No sessions in this range yet.</div>'; return; }
+    var prev = null;
+    el.innerHTML = steps.map(function (s) {
+      var drop = (prev != null && prev > 0) ? Math.round((1 - s.count / prev) * 100) : 0;
+      prev = s.count;
+      return '<div class="fstep"><div class="fhead"><span class="fname">' + esc(s.step) + '</span><span class="fval">' + num(s.count) + ' · ' + s.pct + '%</span></div>' +
+        '<div class="ftrack"><div class="ffill" style="width:' + Math.max(3, s.pct) + '%">' + s.pct + '%</div></div>' +
+        (drop > 0 ? '<div class="fdrop">↓ ' + drop + '% drop-off from previous step</div>' : '') + '</div>';
+    }).join('');
+  }
+
+  // ---- Per-page drill-down -------------------------------------------------
+  var H3 = 'font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px';
+  async function openPage(path) {
+    var panel = $('pagePanel'); if (!panel) return;
+    panel.innerHTML = '<div class="ppage"><div class="muted">Loading page stats…</div></div>';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    var res = await fetch('/api/analytics/page?path=' + encodeURIComponent(path) + '&days=' + days, { headers: { 'Content-Type': 'application/json' } });
+    var b = {}; try { b = await res.json(); } catch (e) {}
+    if (!b.ok) { panel.innerHTML = '<div class="ppage"><div class="muted">Could not load page stats.</div></div>'; return; }
+    var st = [
+      { v: num(b.views), l: 'Views' }, { v: num(b.visitors), l: 'Visitors' },
+      { v: dur(b.avgSeconds), l: 'Avg time' }, { v: dur(b.avgEngaged), l: 'Avg engaged' },
+    ];
+    panel.innerHTML = '<div class="ppage"><div class="ph"><h3>' + esc(b.path) + '</h3><button class="close" id="pgclose">Close ✕</button></div>' +
+      '<div class="pgstats">' + st.map(function (s) { return '<div class="s"><div class="v">' + s.v + '</div><div class="l">' + esc(s.l) + '</div></div>'; }).join('') + '</div>' +
+      '<div class="pgcols">' +
+        '<div><h3 style="' + H3 + '">Scroll depth reached</h3><div class="bars" id="pgScroll"></div></div>' +
+        '<div><h3 style="' + H3 + '">Events on this page</h3><div class="bars" id="pgEvents"></div></div>' +
+        '<div><h3 style="' + H3 + '">Referrers</h3><div class="bars" id="pgRefs"></div></div>' +
+        '<div><h3 style="' + H3 + '">Countries</h3><div class="bars" id="pgCountries"></div></div>' +
+      '</div></div>';
+    bars('pgScroll', (b.scroll || []).map(function (s) { return { key: 'Scrolled ' + s.depth + '%', count: s.count }; }), function (k) { return k; });
+    bars('pgEvents', b.topEvents, evLabel);
+    bars('pgRefs', b.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
+    bars('pgCountries', b.topCountries, function (k) { return k; });
+    $('pgclose').onclick = function () { panel.innerHTML = ''; };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
