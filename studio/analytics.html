@@ -20,6 +20,21 @@
     .an-range button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
     .an-sub { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-bottom: 18px; }
     .an-note { font-size: 12px; color: var(--accent); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 5px; padding: 8px 12px; margin: 8px 0 16px; }
+    .sec-sub { font-size: 12.5px; color: var(--ink-3); margin: -8px 0 16px; max-width: 780px; line-height: 1.5; }
+
+    .an-ref { background: var(--paper-3); border: 1px solid var(--rule); border-radius: 8px; margin: 6px 0 22px; overflow: hidden; }
+    .an-ref > summary { list-style: none; cursor: pointer; padding: 13px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+    .an-ref > summary::-webkit-details-marker { display: none; }
+    .an-ref > summary::before { content: '▸'; color: var(--accent); transition: transform .15s; }
+    .an-ref[open] > summary::before { transform: rotate(90deg); }
+    .an-ref-body { padding: 4px 18px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
+    @media (max-width: 760px) { .an-ref-body { grid-template-columns: 1fr; } }
+    .an-ref-group { break-inside: avoid; margin-top: 12px; }
+    .an-ref-group h4 { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; border-bottom: 1px solid var(--rule-soft); padding-bottom: 5px; }
+    .an-ref-group dl { margin: 0; }
+    .an-ref-group dt { font-size: 13px; color: var(--ink); font-weight: 500; margin-top: 8px; }
+    .an-ref-group dd { margin: 1px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
+    .an-ref-group dt .tag { font-family: var(--mono); font-size: 10px; color: var(--ink-4); font-weight: 400; }
     .an-sec { margin: 26px 0; }
     .an-sec h2 { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid var(--rule); padding-bottom: 9px; margin-bottom: 16px; }
 
@@ -109,17 +124,68 @@
 
     <div id="note"></div>
 
+    <details class="an-ref" open>
+      <summary>What's tracked — and what each label means</summary>
+      <div class="an-ref-body">
+
+        <div class="an-ref-group">
+          <h4>Traffic · every page, anonymous</h4>
+          <dl>
+            <dt>Page view</dt><dd>Each time someone opens or navigates to a page (including in-app view changes inside the runtimes).</dd>
+            <dt>Unique visitor</dt><dd>A distinct browser/device, counted by a random anonymous id kept on their device. Not a person.</dd>
+            <dt>Session</dt><dd>One visit. It ends after 30 minutes of inactivity, then a new session starts.</dd>
+            <dt>Time on page</dt><dd>Seconds spent on a page, measured when the visitor leaves or switches away.</dd>
+            <dt>Bounce rate</dt><dd>Share of sessions that viewed only a single page before leaving.</dd>
+          </dl>
+        </div>
+
+        <div class="an-ref-group">
+          <h4>Interactions · events on every page</h4>
+          <dl>
+            <dt>Internal link click <span class="tag">link</span></dt><dd>Clicked a link that stays on this site.</dd>
+            <dt>Outbound link click <span class="tag">outbound_link</span></dt><dd>Clicked a link that leaves for another website.</dd>
+            <dt>Button click <span class="tag">button</span></dt><dd>Clicked a button or button-like control.</dd>
+            <dt>Email / phone link <span class="tag">contact_link</span></dt><dd>Clicked a <code>mailto:</code> or <code>tel:</code> link.</dd>
+            <dt>Form submitted <span class="tag">form_submit</span></dt><dd>Submitted any form. We record which form and the <em>number</em> of fields — <strong>never the values typed in</strong>.</dd>
+            <dt>Scroll depth <span class="tag">depth_25…100</span></dt><dd>Reached 25%, halfway, 75%, or the end of a page.</dd>
+            <dt>Custom event</dt><dd>Anything a runtime chooses to report via <code>vpTrack('name')</code>.</dd>
+          </dl>
+        </div>
+
+        <div class="an-ref-group">
+          <h4>People · only after someone identifies</h4>
+          <dl>
+            <dt>Known person</dt><dd>A visitor stops being anonymous when they: submit a lead form, share their email in an AI chat, log into the Participant Room, or open an ABL course session.</dd>
+            <dt>Timeline</dt><dd>Their full activity history — including the pages they viewed <em>before</em> they identified, stitched together by their device.</dd>
+            <dt>Profile kept</dt><dd>Name, email, company, phone, role, how they were identified (source), device count, first &amp; last seen.</dd>
+          </dl>
+        </div>
+
+        <div class="an-ref-group">
+          <h4>Privacy · what we don't do</h4>
+          <dl>
+            <dt>No raw IP, no cookies</dt><dd>The IP is turned into a salted hash and immediately discarded; identity uses local storage, not cookies.</dd>
+            <dt>No form contents</dt><dd>Form values, passwords, and message text are never captured — only that a form was submitted.</dd>
+            <dt>Opt-out respected</dt><dd>Honors browser Do-Not-Track and a per-visitor opt-out; the Studio itself is never tracked.</dd>
+          </dl>
+        </div>
+
+      </div>
+    </details>
+
     <div class="an-sec">
       <div class="stats" id="kpis"></div>
     </div>
 
     <div class="an-sec">
       <h2>Traffic over time</h2>
+      <p class="sec-sub">Daily page views (filled area) and unique visitors (dashed line) across the range you picked above.</p>
       <div class="chart" id="chart"></div>
     </div>
 
     <div class="an-sec">
       <h2>Known people <span id="peopleCount" class="an-sub" style="margin:0"></span></h2>
+      <p class="sec-sub">Visitors who identified themselves via a lead form, AI chat, Participant Room login, or ABL session. Click anyone to open their full timeline — including what they did while still anonymous.</p>
       <div id="personPanel"></div>
       <input id="peopleSearch" placeholder="Search name, email, company…" style="width:100%;max-width:420px;margin-bottom:10px;border:1px solid var(--rule);background:var(--paper-3);border-radius:4px;padding:8px 11px;font:inherit;font-size:13px">
       <div style="overflow-x:auto"><table class="ppl" id="people"></table></div>
@@ -127,6 +193,7 @@
 
     <div class="an-sec">
       <h2>Events (in-depth interactions)</h2>
+      <p class="sec-sub">Every click, form submission, and scroll milestone across the public site. <strong>Top events</strong> = the specific action; <strong>By type</strong> = grouped. See the reference above for what each label means.</p>
       <div class="cols">
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top events</h3><div class="bars" id="topEvents"></div></div>
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">By type</h3><div class="bars" id="eventTypes"></div></div>
@@ -150,6 +217,7 @@
 
     <div class="an-sec">
       <h2>Engagement (AI runtimes &amp; leads)</h2>
+      <p class="sec-sub">From your existing database (not the page tracker): how many AI conversations happened in each runtime, and the leads captured across the site.</p>
       <div class="cols">
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">AI conversations by runtime</h3><div class="bars" id="runtimes"></div></div>
         <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Recent leads</h3><table class="mini" id="leads"></table></div>
@@ -158,6 +226,7 @@
 
     <div class="an-sec">
       <h2>AI for Business Leaders — funnel</h2>
+      <p class="sec-sub">Course-prep participants by stage, from first draft to a completed session: draft → research added → link ready → active → completed.</p>
       <div class="bars" id="funnel"></div>
     </div>
   </main>

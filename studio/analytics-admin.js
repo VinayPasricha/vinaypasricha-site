@@ -88,8 +88,8 @@
     }).join('');
 
     renderChart(t.timeseries || []);
-    bars('topEvents', (d.events && d.events.topEvents) || [], function (k) { return k; });
-    bars('eventTypes', (d.events && d.events.byType) || [], function (k) { return cap(String(k).replace(/_/g, ' ')); });
+    bars('topEvents', (d.events && d.events.topEvents) || [], evLabel);
+    bars('eventTypes', (d.events && d.events.byType) || [], evLabel);
     loadPeople();
     bars('topPages', t.topPages, function (k) { return k; });
     bars('topRefs', t.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
@@ -107,6 +107,16 @@
   }
 
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // Plain-language labels for the raw event names/types the tracker emits.
+  var EVENT_LABELS = {
+    pageview: 'Page views', duration: 'Time on page',
+    click: 'Clicks', scroll: 'Scroll depth', event: 'Custom events', form_submit: 'Form submissions', identify: 'Identified',
+    link: 'Internal link click', outbound_link: 'Outbound link click', button: 'Button click',
+    contact_link: 'Email / phone link', form: 'Form submitted',
+    depth_25: 'Scrolled 25%', depth_50: 'Scrolled halfway', depth_75: 'Scrolled 75%', depth_100: 'Scrolled to the end',
+  };
+  function evLabel(k) { return EVENT_LABELS[k] || cap(String(k).replace(/_/g, ' ')); }
 
   // Horizontal bar list from [{key, count}].
   function bars(id, items, fmt) {
@@ -232,7 +242,7 @@
       var dot = DOTS[e.type] || 'var(--ink-3)';
       var what = describe(e);
       return '<div class="tl-row"><div class="tl-when">' + whenTime(e.at) + '</div>' +
-        '<div class="tl-type"><span class="dot" style="background:' + dot + '"></span>' + esc(e.type) + '</div>' +
+        '<div class="tl-type"><span class="dot" style="background:' + dot + '"></span>' + esc(evLabel(e.type)) + '</div>' +
         '<div class="tl-what">' + what + '</div></div>';
     }).join('');
 
