@@ -306,11 +306,18 @@ export async function analyticsSummary({ days = 30 } = {}) {
   const bounceRate = sessCount ? Math.round((bounces / sessCount) * 100) : 0;
 
   // Event-level breakdown.
-  const eventByType = {}, eventByName = {};
+  const eventByType = {}, eventByName = {}, clickTargets = {};
   for (const e of interactions) {
     eventByType[e.type] = (eventByType[e.type] || 0) + 1;
     const label = e.name || e.type;
     eventByName[label] = (eventByName[label] || 0) + 1;
+    // "Which buttons/links" — group clicks by their visible label (or href/name).
+    if (e.type === 'click' || (e.type === 'event' && e.name && e.name !== 'rage_click')) {
+      const p = e.props || {};
+      const kind = e.name === 'button' ? '🔘 ' : (e.name === 'outbound_link' || e.name === 'link') ? '🔗 ' : (e.name === 'contact_link' ? '✉ ' : '• ');
+      const target = String(p.text || p.href || e.name || '').trim().slice(0, 80);
+      if (target) { const key = kind + target; clickTargets[key] = (clickTargets[key] || 0) + 1; }
+    }
   }
   const identifiedInRange = new Set(events.filter((e) => e.personId).map((e) => e.personId)).size;
 
@@ -443,6 +450,7 @@ export async function analyticsSummary({ days = 30 } = {}) {
       total: interactions.length,
       byType: topN(eventByType, 8),
       topEvents: topN(eventByName, 15),
+      topClicks: topN(clickTargets, 20),
       identifiedInRange,
     },
     acquisition: {
@@ -515,9 +523,17 @@ export async function pageStats(path, { days = 30 } = {}) {
   const durs = docs.filter((e) => e.type === 'duration' && e.seconds != null);
   const evs = docs.filter((e) => ['click', 'form_submit', 'event'].includes(e.type));
   const visitors = new Set(pv.map((e) => e.visitorId).filter(Boolean));
-  const refC = {}, cC = {}, evC = {}, scroll = { 25: 0, 50: 0, 75: 0, 100: 0 };
+  const refC = {}, cC = {}, evC = {}, clkC = {}, scroll = { 25: 0, 50: 0, 75: 0, 100: 0 };
   pv.forEach((e) => { refC[e.ref || 'direct'] = (refC[e.ref || 'direct'] || 0) + 1; if (e.country) cC[e.country] = (cC[e.country] || 0) + 1; });
-  evs.forEach((e) => { const l = e.name || e.type; evC[l] = (evC[l] || 0) + 1; });
+  evs.forEach((e) => {
+    const l = e.name || e.type; evC[l] = (evC[l] || 0) + 1;
+    if (e.type === 'click' || (e.type === 'event' && e.name && e.name !== 'rage_click')) {
+      const p = e.props || {};
+      const kind = e.name === 'button' ? '🔘 ' : (e.name === 'outbound_link' || e.name === 'link') ? '🔗 ' : (e.name === 'contact_link' ? '✉ ' : '• ');
+      const t = String(p.text || p.href || e.name || '').trim().slice(0, 80);
+      if (t) clkC[kind + t] = (clkC[kind + t] || 0) + 1;
+    }
+  });
   docs.filter((e) => e.type === 'scroll').forEach((e) => { const dp = e.props && e.props.depth; if (scroll[dp] != null) scroll[dp]++; });
   const engagedDur = durs.filter((d) => d.engaged != null);
   return {
@@ -529,6 +545,7 @@ export async function pageStats(path, { days = 30 } = {}) {
     avgEngaged: engagedDur.length ? Math.round(engagedDur.reduce((s, d) => s + (d.engaged || 0), 0) / engagedDur.length) : 0,
     scroll: [25, 50, 75, 100].map((dp) => ({ depth: dp, count: scroll[dp] })),
     topEvents: topN(evC, 12),
+    topClicks: topN(clkC, 15),
     topReferrers: topN(refC, 8),
     topCountries: topN(cC, 8),
   };

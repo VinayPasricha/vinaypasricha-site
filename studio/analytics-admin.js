@@ -91,6 +91,7 @@
     renderChart(t.timeseries || []);
     bars('topEvents', (d.events && d.events.topEvents) || [], evLabel);
     bars('eventTypes', (d.events && d.events.byType) || [], evLabel);
+    bars('topClicks', (d.events && d.events.topClicks) || [], function (k) { return k; });
     loadPeople();
     renderFunnel(d.funnelSteps || []);
 
@@ -350,11 +351,13 @@
     panel.innerHTML = '<div class="ppage"><div class="ph"><h3>' + esc(b.path) + '</h3><button class="close" id="pgclose">Close ✕</button></div>' +
       '<div class="pgstats">' + st.map(function (s) { return '<div class="s"><div class="v">' + s.v + '</div><div class="l">' + esc(s.l) + '</div></div>'; }).join('') + '</div>' +
       '<div class="pgcols">' +
+        '<div><h3 style="' + H3 + '">Buttons &amp; links clicked</h3><div class="bars" id="pgClicks"></div></div>' +
         '<div><h3 style="' + H3 + '">Scroll depth reached</h3><div class="bars" id="pgScroll"></div></div>' +
         '<div><h3 style="' + H3 + '">Events on this page</h3><div class="bars" id="pgEvents"></div></div>' +
         '<div><h3 style="' + H3 + '">Referrers</h3><div class="bars" id="pgRefs"></div></div>' +
         '<div><h3 style="' + H3 + '">Countries</h3><div class="bars" id="pgCountries"></div></div>' +
       '</div></div>';
+    bars('pgClicks', b.topClicks, function (k) { return k; });
     bars('pgScroll', (b.scroll || []).map(function (s) { return { key: 'Scrolled ' + s.depth + '%', count: s.count }; }), function (k) { return k; });
     bars('pgEvents', b.topEvents, evLabel);
     bars('pgRefs', b.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
