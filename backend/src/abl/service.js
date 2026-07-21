@@ -8,6 +8,7 @@ import {
   buildSivReportPrompt,
   buildVedSystem,
   buildVedReportPrompt,
+  buildContinuingSystem,
 } from './course-runtimes.js';
 import {
   buildRecoveryDirective,
@@ -17,12 +18,13 @@ import {
 } from './recovery.js';
 import { fetchOfficialWebsite } from './website.js';
 import { extractJson } from './json.js';
+import { advanceStage, buildCourseMemory, memoryPromptBlock, sanitiseMemoryFields, validStage } from './memory.js';
 import * as repo from './store.js';
 
 const CHAT_MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
 const DOC_MODEL = process.env.ABL_DOC_MODEL || process.env.VERTEX_RESEARCH_MODEL || 'gemini-2.5-pro';
 const HISTORY_WINDOW = 16; // recent turns sent verbatim; older folded into running_summary
-export const RUNTIME_OPENING_VERSION = 'five-options-v3';
+export const RUNTIME_OPENING_VERSION = 'course-memory-v4';
 
 // Gemini 2.5 Flash can disable its internal "thinking" (thinkingBudget 0) for
 // speed + no mid-reply truncation; Pro does NOT allow 0, so we only turn it off
@@ -64,7 +66,9 @@ async function converse(system, messages, { optionCount = 3 } = {}) {
     const options = Array.isArray(j.options)
       ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, optionCount)
       : [];
-    return { say, options, raw };
+    const selectionMode = j.selection_mode === 'multi' ? 'multi' : 'single';
+    return { say, options, stage: typeof j.stage === 'string' ? j.stage : '',
+      memory: sanitiseMemoryFields(j.memory), selectionMode, raw };
   };
   const call = (msgs) => completeModel({
     system, messages: msgs, model: CHAT_MODEL,
@@ -84,18 +88,21 @@ async function converse(system, messages, { optionCount = 3 } = {}) {
     const optionShape = Array(optionCount).fill('...').map((item) => `"${item}"`).join(',');
     const nudge = messages.concat([{
       role: 'user',
-      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}]} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit. Each option must be the participant's answer, never an instruction such as "Tell me", "Describe" or "Walk me through".`,
+      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}],"stage":"current milestone id","memory":{},"selection_mode":"single"} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit. Each option must be the participant's answer, never an instruction such as "Tell me", "Describe" or "Walk me through". Preserve the correct stage, newly confirmed memory and selection mode from your intended answer.`,
     }]);
     const retry = parse(await call(nudge));
     if (retry.options.length > out.options.length || (!out.say && retry.say)) {
-      out = { say: retry.say || out.say, options: retry.options.length ? retry.options : out.options, raw: retry.raw };
+      out = { say: retry.say || out.say, options: retry.options.length ? retry.options : out.options,
+        stage: retry.stage || out.stage, memory: Object.keys(retry.memory || {}).length ? retry.memory : out.memory,
+        selectionMode: retry.selectionMode || out.selectionMode, raw: retry.raw };
     }
   }
 
   // Last-resort: if we still never got a JSON `say`, show the raw prose reply
   // rather than nothing — with whatever options (if any) we recovered.
   const say = out.say || String(out.raw || '').replace(/```json|```/g, '').trim();
-  return { say, options: optionCount === 5 ? fillFiveOptions(out.options) : out.options };
+  return { say, options: optionCount === 5 ? fillFiveOptions(out.options) : out.options,
+    stage: out.stage, memory: out.memory || {}, selectionMode: out.selectionMode || 'single' };
 }
 
 export { rewardTypeForDepth };
@@ -103,19 +110,34 @@ export { rewardTypeForDepth };
 // Carry useful context forward through the three-course sequence without asking
 // the participant to repeat it: AI Journey -> VED -> SIV.
 async function gatherCrossContext(participantId, mode) {
-  if (mode !== 'ved' && mode !== 'siv') return '';
   const parts = [];
+
+  const participant = await repo.getParticipant(participantId);
+  if (participant) {
+    const memory = await buildCourseMemory(participant);
+    const block = memoryPromptBlock(memory);
+    if (block) parts.push(block);
+  }
+
+  if (mode !== 'ved' && mode !== 'siv' && mode !== 'continuing') return parts.join('\n\n');
 
   const journey = await repo.getSession(participantId, 'participant');
   const share = await repo.getLatestOutput(participantId, 'share_summary');
   const journeyText = (journey && journey.running_summary) || (share && (share.reviewed_content_markdown || share.content_markdown));
   if (journeyText) parts.push(`### From the participant's AI Journey conversation\n${journeyText}`);
 
-  if (mode === 'siv') {
+  if (mode === 'siv' || mode === 'continuing') {
     const vedReport = await repo.getLatestOutput(participantId, 'ved_report');
     const vedSession = await repo.getSession(participantId, 'ved');
     const vedText = (vedReport && vedReport.content_markdown) || (vedSession && vedSession.running_summary);
     if (vedText) parts.push(`### From the Execution Doctrine diagnostic — the weakest execution link\n${vedText}`);
+  }
+
+  if (mode === 'continuing') {
+    const sivReport = await repo.getLatestOutput(participantId, 'siv_report');
+    if (sivReport && sivReport.content_markdown) parts.push(`### From the SIV first-project decision\n${sivReport.content_markdown}`);
+    const blueprint = await repo.getLatestOutput(participantId, 'leadership_blueprint');
+    if (blueprint && blueprint.content_markdown) parts.push(`### Current 90-day blueprint\n${blueprint.content_markdown}`);
   }
 
   return parts.join('\n\n');
@@ -209,7 +231,7 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
       : (recovery.options || []);
     await repo.addMessage({
       session_id: session.id, participant_id: participant.id,
-      role: 'assistant', content: recovery.reply, metadata: { options },
+      role: 'assistant', content: recovery.reply, metadata: { options, selection_mode: 'single' },
     });
     let count = participant.message_count;
     if (mode !== 'qa') {
@@ -218,7 +240,7 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
         await repo.setStatus(participant.id, 'active');
       }
     }
-    return { reply: recovery.reply, options, messageCount: count };
+    return { reply: recovery.reply, options, selectionMode: 'single', messageCount: count };
   }
   const recent = convo.slice(-HISTORY_WINDOW).map((m) => ({
     role: m.role === 'assistant' ? 'assistant' : 'user',
@@ -233,23 +255,38 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     ? buildSivSystem({ participant: activeParticipant, research, session, crossContext })
     : mode === 'ved'
       ? buildVedSystem({ participant: activeParticipant, research, session, crossContext })
-      : buildConversationSystem({ participant: activeParticipant, research, session });
+      : mode === 'continuing'
+        ? buildContinuingSystem({ participant: activeParticipant, research, session, crossContext })
+        : buildConversationSystem({ participant: activeParticipant, research, session, courseMemory: crossContext });
   if (recovery.directive) system += `\n\n${recovery.directive}`;
 
   let reply = '';
   let options = [];
-  if (mode === 'siv' || mode === 'ved') {
+  let stage = '';
+  let memory = {};
+  let selectionMode = 'single';
+  if (mode === 'siv' || mode === 'ved' || mode === 'continuing') {
     const out = await converse(system, recent, { optionCount: 5 });
     reply = out.say;
     options = out.options;
+    stage = advanceStage(mode, session.current_stage, out.stage) || '';
+    memory = out.memory || {};
+    selectionMode = out.selectionMode || 'single';
   } else {
     const out = await converse(system, recent);
     reply = out.say;
     options = out.options;
+    stage = advanceStage('participant', session.current_stage, out.stage) || '';
+    memory = out.memory || {};
   }
   reply = reply || 'Could you say a little more about that?';
 
-  await repo.addMessage({ session_id: session.id, participant_id: participant.id, role: 'assistant', content: reply, metadata: { options } });
+  await repo.addMessage({ session_id: session.id, participant_id: participant.id, role: 'assistant', content: reply,
+    metadata: { options, stage, selection_mode: selectionMode } });
+  const updates = [];
+  if (stage) updates.push(repo.updateSession(session.id, { current_stage: stage }));
+  if (Object.keys(memory).length) updates.push(repo.upsertMemory(participant.id, { fields: memory }));
+  if (updates.length) await Promise.all(updates);
 
   let count = participant.message_count;
   if (mode !== 'qa') {
@@ -274,21 +311,25 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     }
   }
 
-  return { reply, options, messageCount: count };
+  return { reply, options, stage, selectionMode, messageCount: count };
 }
 
 // Open SIV and VED with a real agent question plus five tailored answer choices,
 // rather than leaving the participant to invent the first message unaided.
 export async function runtimeOpeningTurn({ participant, session, mode }) {
-  if (mode !== 'siv' && mode !== 'ved') return null;
+  if (mode !== 'siv' && mode !== 'ved' && mode !== 'continuing') return null;
   const research = await repo.getResearch(participant.id);
   const crossContext = await gatherCrossContext(participant.id, mode);
   const system = mode === 'siv'
     ? buildSivSystem({ participant, research, session, crossContext })
-    : buildVedSystem({ participant, research, session, crossContext });
+    : mode === 'ved'
+      ? buildVedSystem({ participant, research, session, crossContext })
+      : buildContinuingSystem({ participant, research, session, crossContext });
   const instruction = mode === 'siv'
     ? 'The participant has just started the SIV AI Project Selector. State your verified company understanding briefly and say they may correct anything at any time; do NOT ask for confirmation. Then ask exactly ONE substantive question that identifies candidate AI areas and moves toward choosing one first AI project. Give exactly five complete selectable answer options under the system policy, with no placeholders.'
-    : 'The participant has just started the Execution Doctrine diagnostic. State your verified company understanding briefly and say they may correct anything at any time; do NOT ask for confirmation. Then ask exactly ONE substantive question: which execution area feels weakest right now? Give exactly five complete selectable answer options under the system policy, with no placeholders.';
+    : mode === 'ved'
+      ? 'The participant has just started the Execution Doctrine diagnostic. State your verified company understanding briefly and say they may correct anything at any time; do NOT ask for confirmation. Then ask exactly ONE substantive question: which execution area feels weakest right now? Give exactly five complete selectable answer options under the system policy, with no placeholders.'
+      : 'The participant has returned for an ongoing AI Leadership Check-in. Briefly recognise their current shared Course Memory and ask exactly ONE question: what has changed since their last meeting, milestone or conversation? Give exactly five concise selectable answers.';
   const out = await converse(system, [{ role: 'user', content: instruction }], { optionCount: 5 });
   const reply = out.say || 'Which area should we examine first?';
   await repo.addMessage({
@@ -296,9 +337,11 @@ export async function runtimeOpeningTurn({ participant, session, mode }) {
     participant_id: participant.id,
     role: 'assistant',
     content: reply,
-    metadata: { options: out.options, runtime_opening_version: RUNTIME_OPENING_VERSION },
+    metadata: { options: out.options, selection_mode: mode === 'siv' ? 'multi' : 'single',
+      stage: validStage(mode, out.stage), runtime_opening_version: RUNTIME_OPENING_VERSION },
   });
-  return { reply, options: out.options };
+  await repo.updateSession(session.id, { current_stage: mode === 'siv' ? 'candidates' : mode === 'ved' ? 'output' : 'check_in' });
+  return { reply, options: out.options, selectionMode: mode === 'siv' ? 'multi' : 'single' };
 }
 
 function transcriptFor(messages, emptyLabel) {
@@ -355,6 +398,56 @@ export async function generateVedReport(participant) {
     session_id: session.id,
     output_type: 'ved_report',
     content_markdown: markdown,
+  });
+  return { id: saved.id, markdown };
+}
+
+export async function generateLeadershipBlueprint(participant) {
+  const memory = await buildCourseMemory(participant);
+  const [journey, ved, siv] = await Promise.all([
+    repo.getSession(participant.id, 'participant'), repo.getSession(participant.id, 'ved'), repo.getSession(participant.id, 'siv'),
+  ]);
+  const outputText = [memory.outputs.preparation, memory.outputs.ved, memory.outputs.siv]
+    .filter(Boolean).map((item) => item.content_markdown).join('\n\n---\n\n');
+  const transcripts = [];
+  for (const session of [journey, ved, siv].filter(Boolean)) {
+    transcripts.push(transcriptFor(await repo.listMessages(session.id), ''));
+  }
+  const system = `You create a simple, practical 90-Day AI Leadership Blueprint for a senior business leader in Vinay Pasricha's "AI for Business Leaders" course. Use only grounded participant context, course memory and completed reports. Do not invent facts, numbers or ROI. Where a baseline, target or owner is missing, mark it "To confirm". Keep the document concise enough to use in a leadership meeting. Output clean markdown without tables.`;
+  const message = `Create the blueprint with EXACTLY these sections:
+1. Leadership objective
+2. Weakest execution constraint
+3. Company Brain lens — Memory, Reasoning, Action and/or Feedback
+4. First AI project
+5. Workflow and owner
+6. Baseline and 90-day target
+7. Value and rough payback assumptions
+8. Data required
+9. Human guardrails
+10. First 30 days
+11. Days 31–60
+12. Days 61–90
+13. Scale, fix or stop criteria
+14. Next conversation with Vinay
+
+Use at most three bullets in each 30-day period. Keep financial assumptions honest and visibly provisional.
+
+${memoryPromptBlock(memory)}
+
+## Completed reports
+${outputText || '(No completed reports yet.)'}
+
+## Conversation evidence
+${transcripts.join('\n\n')}
+
+Now write the blueprint.`;
+  const markdown = await completeModel({
+    system, messages: [{ role: 'user', content: message }], model: CHAT_MODEL,
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 3600, temperature: 0.35 }),
+  });
+  const saved = await repo.saveOutput({
+    participant_id: participant.id, session_id: (siv && siv.id) || null,
+    output_type: 'leadership_blueprint', content_markdown: markdown,
   });
   return { id: saved.id, markdown };
 }
@@ -492,7 +585,11 @@ export async function generateOutput(participant, type, modelName) {
       .map((m) => `${String(m.role).toUpperCase()}: ${m.content}`)
       .join('\n\n') || '(no conversation captured yet)';
 
-  const { system, message } = buildOutputPrompt(type, { participant, research, transcript });
+  const memory = await buildCourseMemory(participant, { includePrivate: type === 'vinay_meeting_brief' });
+  const { system, message } = buildOutputPrompt(type, {
+    participant, research,
+    transcript: `${transcript}\n\n${memoryPromptBlock(memory, { includeMeetingNotes: true })}`,
+  });
   const useModel = modelName || DOC_MODEL;
   const md = await completeModel({
     system, messages: [{ role: 'user', content: message }],

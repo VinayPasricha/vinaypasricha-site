@@ -219,6 +219,25 @@
           (bmd ? '<div class="brief-inline" style="margin-top:12px;border-top:1px solid var(--rule);padding-top:12px">' + md(bmd) + '</div>' : '') +
           '</div>';
       })() +
+
+      // Physical meeting / conversation summaries
+      '<div class="card"><h4>4 · Meeting &amp; conversation summaries</h4>' +
+        '<p class="muted">Paste a summary or load a .txt/.md file. Checked summaries become part of the shared Course Memory and improve future participant conversations.</p>' +
+        '<div class="grid2"><div><label class="fld">Title</label><input class="ipt" id="noteTitle" placeholder="One-on-one meeting · 21 July"></div>' +
+        '<div><label class="fld">Meeting date</label><input class="ipt" id="noteDate" type="date"></div></div>' +
+        '<label class="fld">Summary</label><textarea class="ipt" id="noteContent" rows="7" placeholder="Paste the meeting or conversation summary here…"></textarea>' +
+        '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px">' +
+          '<input type="file" id="noteFile" accept=".txt,.md,text/plain,text/markdown" style="font-size:12px">' +
+          '<label style="font-size:12px;color:var(--ink-2)"><input type="checkbox" id="noteShared" checked style="accent-color:var(--accent)"> Use in participant conversations and Course Memory</label>' +
+          '<button class="btn" id="saveNote">Save summary</button><span id="noteStatus" class="muted"></span>' +
+        '</div>' +
+        '<div id="noteList" style="margin-top:16px">' + ((d.notes || []).map(function (note) {
+          return '<div class="note-row"><div style="display:flex;justify-content:space-between;gap:12px"><div><strong>' + esc(note.title || 'Meeting summary') + '</strong>' +
+            '<div class="note-meta">' + fmtDate(note.occurred_at) + ' · ' + (note.visibility === 'private' ? 'Private facilitator note' : 'Shared Course Memory') + '</div></div>' +
+            '<button class="del" data-note-del="' + esc(note.id) + '" title="Delete summary">✕</button></div>' +
+            '<div class="note-copy">' + esc(note.content || '') + '</div></div>';
+        }).join('') || '<span class="muted">No meeting summaries added yet.</span>') + '</div>' +
+      '</div>' +
       '</div>';
 
     wireDetail(d);
@@ -265,6 +284,41 @@
       $('briefBtn').disabled = false;
       if (r.ok) { $('briefOut').textContent = 'Brief generated.'; await refresh(); await openDetail(p.id); restoreY(y); } else $('briefOut').textContent = r.error || 'Failed';
     };
+
+    var noteFile = $('noteFile');
+    if (noteFile) noteFile.onchange = async function () {
+      var file = noteFile.files && noteFile.files[0];
+      if (!file) return;
+      if (!/\.(txt|md)$/i.test(file.name)) { $('noteStatus').textContent = 'Please use a .txt or .md summary.'; return; }
+      $('noteContent').value = await file.text();
+      if (!$('noteTitle').value) $('noteTitle').value = file.name.replace(/\.(txt|md)$/i, '');
+      $('noteStatus').textContent = 'File loaded. Review it, then save.';
+    };
+    var saveNote = $('saveNote');
+    if (saveNote) saveNote.onclick = async function () {
+      var content = $('noteContent').value.trim();
+      if (!content) { $('noteStatus').textContent = 'Add a summary first.'; return; }
+      var y = window.pageYOffset;
+      saveNote.disabled = true; $('noteStatus').textContent = 'Saving…';
+      var r = await api('/participants/' + p.id + '/notes', { method: 'POST', body: JSON.stringify({
+        title: $('noteTitle').value.trim() || 'Meeting summary', content: content,
+        source_name: (noteFile && noteFile.files && noteFile.files[0] && noteFile.files[0].name) || '',
+        visibility: $('noteShared').checked ? 'course_memory' : 'private',
+        occurred_at: $('noteDate').value ? new Date($('noteDate').value + 'T12:00:00').toISOString() : new Date().toISOString()
+      }) });
+      saveNote.disabled = false;
+      if (r.ok) { toast('Meeting summary saved'); await openDetail(p.id); restoreY(y); }
+      else $('noteStatus').textContent = r.error || 'Could not save.';
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-del]'), function (button) {
+      button.onclick = async function () {
+        if (!window.confirm('Delete this meeting summary?')) return;
+        var y = window.pageYOffset;
+        var r = await api('/participants/' + p.id + '/notes/' + button.getAttribute('data-note-del'), { method: 'DELETE' });
+        if (r.ok) { toast('Summary deleted'); await openDetail(p.id); restoreY(y); }
+        else toast(r.error || 'Could not delete');
+      };
+    });
   }
 
   boot();

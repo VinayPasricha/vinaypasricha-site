@@ -197,6 +197,32 @@
   background: var(--paper-soft);
   transform: translateX(2px);
 }
+.answer-choice.selected {
+  border-color: var(--sage);
+  background: color-mix(in srgb, var(--sage) 9%, var(--paper-soft));
+}
+.choice-check {
+  flex: 0 0 19px;
+  height: 19px;
+  border: 1px solid var(--sage);
+  border-radius: 3px;
+  color: var(--sage);
+  font: 600 12px/17px var(--sans);
+  text-align: center;
+}
+.multi-continue {
+  margin-top: 10px;
+  border: 0;
+  border-radius: 3px;
+  padding: 11px 14px;
+  background: var(--sage);
+  color: var(--paper);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.multi-continue:disabled { opacity: .35; cursor: not-allowed; }
 .answer-recommended {
   flex: 0 0 auto;
   margin-top: 2px;
@@ -254,6 +280,18 @@
   text-decoration: none;
   cursor: pointer;
 }
+.restart-action {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: var(--faint);
+  padding: 0;
+  font: 500 8px/1.4 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.restart-action:hover { color: var(--accent); }
 
 .report-action:disabled { color: var(--faint); cursor: not-allowed; }
 .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 20px; }
@@ -275,6 +313,19 @@
 .report-doc p { margin: 8px 0; font: 400 15px/1.65 var(--sans); }
 .report-doc ul { margin: 8px 0 8px 20px; padding: 0; }
 .report-doc li { margin: 5px 0; line-height: 1.55; }
+.blueprint-editor {
+  width: 100%;
+  min-height: 620px;
+  margin-top: 22px;
+  resize: vertical;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: rgba(255,255,255,.34);
+  color: var(--ink-2);
+  padding: 18px;
+  font: 400 14px/1.6 var(--sans);
+}
+.blueprint-editor:focus { outline: 0; border-color: var(--accent); }
 
 @media (max-width: 760px) {
   .runtime { width: min(100% - 34px, 940px); padding-top: 44px; }

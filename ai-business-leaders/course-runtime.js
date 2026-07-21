@@ -20,6 +20,8 @@
     busy: false,
     generating: false,
     error: '',
+    selectedOptions: {},
+    editingReport: false,
   };
 
   function esc(value) {
@@ -90,7 +92,9 @@
   function heading() {
     return MODE === 'siv'
       ? 'Choose your first <em>AI project.</em>'
-      : 'Find your weakest <em>execution link.</em>';
+      : MODE === 'ved'
+        ? 'Find your weakest <em>execution link.</em>'
+        : 'Keep your AI direction <em>alive.</em>';
   }
 
   function participantBlock() {
@@ -129,7 +133,8 @@
     var config = S.data.config || {};
     var body = '<div class="runtime-panel"><p class="runtime-intro">' + esc(config.intro || '') + '</p>';
     if (MODE === 'siv') body += '<h2 class="runtime-h2">Choose your depth</h2>' + depthCards();
-    else body += '<p class="chat-intro" style="margin-top:26px">Begin with the area that feels weakest right now: reporting rhythm, operations, sales, hiring, customer support, finance—or something else.</p>';
+    else if (MODE === 'ved') body += '<p class="chat-intro" style="margin-top:26px">Begin with the area that feels weakest right now: reporting rhythm, operations, sales, hiring, customer support, finance—or something else.</p>';
+    else body += '<p class="chat-intro" style="margin-top:26px">Use this after a meeting, milestone or new development. A short update is enough; the agent will carry your earlier context forward.</p>';
     if (S.error) body += '<div class="runtime-error">' + esc(S.error) + '</div>';
     body += '<button type="button" class="runtime-button" id="startRuntime"' + (S.busy ? ' disabled' : '') + '>' +
       (S.busy ? 'Starting…' : esc(config.button || 'Begin') + ' →') + '</button></div>';
@@ -140,12 +145,19 @@
     var role = message.role === 'user' ? 'user' : 'assistant';
     var options = role === 'assistant' && messageIndex === activeOptionMessage && !S.busy
       ? (message.options || []) : [];
-    var choices = options.length ? '<div class="answer-choice-wrap"><div class="answer-choice-note">Choose an answer to continue — or write your own below</div><div class="answer-choices">' +
+    var isMulti = message.selection_mode === 'multi';
+    var selected = S.selectedOptions[messageIndex] || [];
+    var choices = options.length ? '<div class="answer-choice-wrap"><div class="answer-choice-note">' +
+      (isMulti ? 'Choose every area that applies, then continue' : 'Choose an answer to continue — or write your own below') + '</div><div class="answer-choices">' +
       options.map(function (option, optionIndex) {
-        return '<button type="button" class="answer-choice" data-answer-message="' + messageIndex + '" data-answer-option="' + optionIndex + '">' +
+        var chosen = selected.indexOf(optionIndex) >= 0;
+        return '<button type="button" class="answer-choice' + (chosen ? ' selected' : '') + '" data-answer-message="' + messageIndex + '" data-answer-option="' + optionIndex + '">' +
           (optionIndex === 0 ? '<span class="answer-recommended">Recommended</span>' : '') +
+          (isMulti && optionIndex < options.length - 1 ? '<span class="choice-check">' + (chosen ? '✓' : '') + '</span>' : '') +
           '<span>' + esc(option) + '</span></button>';
-      }).join('') + '</div></div>' : '';
+      }).join('') + '</div>' +
+      (isMulti ? '<button type="button" class="multi-continue" data-multi-continue="' + messageIndex + '"' + (selected.length ? '' : ' disabled') + '>Continue with ' + selected.length + ' selected →</button>' : '') +
+      '</div>' : '';
     return '<div class="message ' + role + '"><div class="message-stack"><div class="bubble">' +
       (role === 'assistant' ? markdown(message.content) : esc(message.content).replace(/\n/g, '<br>')) +
       '</div>' + choices + '</div></div>';
@@ -155,7 +167,9 @@
     var userTurns = S.messages.filter(function (message) { return message.role === 'user'; }).length;
     var prompt = MODE === 'siv'
       ? 'Name two to five areas where you are considering AI—or ask the selector to propose likely areas from your company context and execution constraint.'
-      : 'Tell the assistant which execution area feels weakest right now. It will trace one real sequence before deciding whether AI is the right lever.';
+      : MODE === 'ved'
+        ? 'Tell the assistant which execution area feels weakest right now. It will trace one real sequence before deciding whether AI is the right lever.'
+        : 'Share one change, result or obstacle. The check-in will use your Course Memory and agree the next move.';
     var activeOptionMessage = -1;
     for (var i = S.messages.length - 1; i >= 0; i -= 1) {
       if (S.messages[i].role === 'assistant') { activeOptionMessage = i; break; }
@@ -174,7 +188,8 @@
       '<div class="actions"><button type="button" class="report-action" id="generateReport"' +
       (S.busy || S.generating || userTurns < 2 ? ' disabled' : '') + '>' +
       (S.generating ? 'Preparing your report…' : esc(S.data.config.reportTitle || 'Generate report') + ' →') + '</button>' +
-      '<span class="runtime-meta">' + esc(String(S.data.message_count || 0)) + '/' + esc(String(S.data.max_messages || 200)) + ' course interactions</span></div>' +
+      '<span class="runtime-meta">' + esc(String(S.data.message_count || 0)) + '/' + esc(String(S.data.max_messages || 200)) + ' course interactions</span>' +
+      '<button type="button" class="restart-action" id="restartRuntime">Restart this conversation</button></div>' +
       (userTurns < 2 ? '<p class="runtime-meta" style="margin-top:9px">Continue for at least two turns before generating the report.</p>' : '') +
       '</div>';
     return html;
@@ -183,11 +198,19 @@
   function reportView() {
     var next = MODE === 'ved'
       ? '<a class="text-action" href="' + workspacePath + '/siv">Next: choose your first AI project →</a>'
-      : '<a class="text-action" href="' + workspacePath + '">Return to the participant workspace →</a>';
+      : MODE === 'siv'
+        ? '<a class="text-action" href="' + workspacePath + '">Return to build your 90-day blueprint →</a>'
+        : '<a class="text-action" href="' + workspacePath + '">Return to the participant workspace →</a>';
+    var documentBody = MODE === 'continuing' && S.editingReport
+      ? '<textarea class="blueprint-editor" id="blueprintEditor">' + esc(S.report.markdown) + '</textarea>'
+      : '<article class="report-doc">' + markdown(S.report.markdown) + '</article>';
     return '<div class="runtime-panel"><div class="report-head"><h2>' + esc(S.data.config.reportTitle || 'Your report') + '</h2>' +
       '<a class="text-action" href="/ai-business-leaders/pdf/' + encodeURIComponent(S.report.id) + '" target="_blank" rel="noopener">Download PDF ↓</a></div>' +
-      '<article class="report-doc">' + markdown(S.report.markdown) + '</article>' +
+      documentBody +
       '<div class="actions">' + next +
+      (MODE === 'continuing' ? (S.editingReport
+        ? '<button type="button" class="text-action" id="saveBlueprint">Save blueprint</button><button type="button" class="text-action" id="cancelBlueprint">Cancel</button>'
+        : '<button type="button" class="text-action" id="editBlueprint">Edit blueprint</button>') : '') +
       '<button type="button" class="text-action" id="continueRuntime">← Continue the conversation</button>' +
       '<button type="button" class="text-action" id="regenerateReport"' + (S.generating ? ' disabled' : '') + '>Regenerate report</button></div></div>';
   }
@@ -221,6 +244,15 @@
         var option = message && (message.options || [])[parseInt(button.getAttribute('data-answer-option'), 10)];
         if (!option) return;
         var optionIndex = parseInt(button.getAttribute('data-answer-option'), 10);
+        if (message.selection_mode === 'multi' && optionIndex < (message.options || []).length - 1) {
+          var messageIndex = parseInt(button.getAttribute('data-answer-message'), 10);
+          var chosen = (S.selectedOptions[messageIndex] || []).slice();
+          var existing = chosen.indexOf(optionIndex);
+          if (existing >= 0) chosen.splice(existing, 1); else chosen.push(optionIndex);
+          S.selectedOptions[messageIndex] = chosen;
+          render();
+          return;
+        }
         if (optionIndex === (message.options || []).length - 1) {
           S.input = '';
           render();
@@ -229,6 +261,16 @@
           return;
         }
         S.input = option;
+        send();
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-multi-continue]'), function (button) {
+      button.onclick = function () {
+        var messageIndex = parseInt(button.getAttribute('data-multi-continue'), 10);
+        var message = S.messages[messageIndex];
+        var chosen = S.selectedOptions[messageIndex] || [];
+        if (!message || !chosen.length) return;
+        S.input = chosen.map(function (index) { return (message.options || [])[index]; }).filter(Boolean).join('\n');
         send();
       };
     });
@@ -249,10 +291,18 @@
     if (regenerateButton) regenerateButton.onclick = generateReport;
     var continueButton = document.getElementById('continueRuntime');
     if (continueButton) continueButton.onclick = function () { S.view = 'chat'; S.error = ''; render(); };
+    var restartButton = document.getElementById('restartRuntime');
+    if (restartButton) restartButton.onclick = restartRuntime;
+    var editBlueprint = document.getElementById('editBlueprint');
+    if (editBlueprint) editBlueprint.onclick = function () { S.editingReport = true; render(); };
+    var cancelBlueprint = document.getElementById('cancelBlueprint');
+    if (cancelBlueprint) cancelBlueprint.onclick = function () { S.editingReport = false; render(); };
+    var saveBlueprint = document.getElementById('saveBlueprint');
+    if (saveBlueprint) saveBlueprint.onclick = saveBlueprintEdit;
   }
 
   async function load() {
-    if (!SLUG || (MODE !== 'siv' && MODE !== 'ved')) {
+    if (!SLUG || (MODE !== 'siv' && MODE !== 'ved' && MODE !== 'continuing')) {
       S.view = 'error'; S.error = 'This course conversation link is incomplete.'; return render();
     }
     var result = await api('/session/' + encodeURIComponent(SLUG) + '/runtime/' + MODE);
@@ -263,7 +313,10 @@
     S.messages = result.data.messages || [];
     S.report = result.data.report || null;
     if (result.data.depth) S.selectedDepth = result.data.depth;
-    S.view = S.report ? 'report' : (result.data.started ? 'chat' : 'intro');
+    var showExistingReport = MODE === 'continuing' && new URLSearchParams(location.search).get('report') === '1' && S.report;
+    S.view = MODE === 'continuing'
+      ? (showExistingReport ? 'report' : (result.data.started ? 'chat' : 'intro'))
+      : (S.report ? 'report' : (result.data.started ? 'chat' : 'intro'));
     document.title = (result.data.config.title || 'Guided Conversation') + ' — AI for Business Leaders';
     render();
   }
@@ -281,7 +334,7 @@
     if (MODE === 'siv') S.data.depth = S.selectedDepth;
     S.view = 'chat';
     if (result.data && result.data.reply) {
-      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [] });
+      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [], selection_mode: result.data.selection_mode || 'single' });
     }
     render();
   }
@@ -299,7 +352,7 @@
     });
     S.busy = false;
     if (result.ok && result.data) {
-      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [] });
+      S.messages.push({ role: 'assistant', content: result.data.reply, options: result.data.options || [], selection_mode: result.data.selection_mode || 'single', stage: result.data.stage || '' });
       S.data.message_count = result.data.message_count;
       S.data.max_messages = result.data.max_messages;
     } else {
@@ -320,6 +373,29 @@
       S.error = result.error || 'Could not generate the report. Please try again.';
       S.view = 'chat';
     }
+    render();
+  }
+
+  async function restartRuntime() {
+    if (S.busy || !window.confirm('Restart only this conversation? Its messages and report will be cleared. Your verified company context and other conversations will remain.')) return;
+    S.busy = true; S.error = ''; render();
+    var result = await api('/session/' + encodeURIComponent(SLUG) + '/runtime/' + MODE + '/restart', { method: 'POST' });
+    if (!result.ok) { S.busy = false; S.error = result.error || 'Could not restart this conversation.'; return render(); }
+    location.reload();
+  }
+
+  async function saveBlueprintEdit() {
+    var editor = document.getElementById('blueprintEditor');
+    var markdownText = editor ? editor.value.trim() : '';
+    if (!markdownText || S.busy) return;
+    S.busy = true;
+    var result = await api('/session/' + encodeURIComponent(SLUG) + '/blueprint', {
+      method: 'PATCH', body: JSON.stringify({ markdown: markdownText }),
+    });
+    S.busy = false;
+    if (!result.ok || !result.data) { S.error = result.error || 'Could not save the blueprint.'; return render(); }
+    S.report = result.data;
+    S.editingReport = false;
     render();
   }
 

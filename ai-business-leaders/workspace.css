@@ -381,6 +381,49 @@ a { color: inherit; }
 .card-arrow { font-size: 17px; transition: transform .2s ease; }
 .conversation:hover .card-arrow { transform: translateX(5px); }
 
+.milestone-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 22px 0 0;
+}
+.milestone-group { padding: 14px 16px; border: 1px solid var(--rule-soft); background: rgba(251,248,241,.42); }
+.milestone-title { color: var(--muted); font: 500 9px/1 var(--mono); letter-spacing: .11em; text-transform: uppercase; }
+.milestone-dots { display: flex; gap: 7px; margin-top: 10px; }
+.milestone-dot { width: 8px; height: 8px; border: 1px solid var(--rule); border-radius: 50%; background: transparent; }
+.milestone-dot.complete { border-color: var(--sage); background: var(--sage); }
+.milestone-dot.current { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(180,71,45,.1); }
+
+.memory-panel,
+.blueprint-panel,
+.ongoing-panel {
+  margin-top: 34px;
+  padding: 30px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: rgba(251,248,241,.62);
+}
+.memory-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.memory-head .eyebrow, .blueprint-panel .eyebrow, .ongoing-panel .eyebrow { margin-bottom: 10px; }
+.memory-head h2, .blueprint-panel h2, .ongoing-panel h2 { margin: 0; font: 400 30px/1.1 var(--serif); letter-spacing: -.02em; }
+.memory-toggle { border: 0; background: none; color: var(--accent); font: 500 9px/1.3 var(--mono); letter-spacing: .09em; text-transform: uppercase; cursor: pointer; }
+.memory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; margin-top: 24px; }
+.memory-item { padding-top: 12px; border-top: 1px solid var(--rule-soft); }
+.memory-item span { display: block; color: var(--faint); font: 500 8px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.memory-item strong { display: block; margin-top: 6px; color: var(--ink-2); font: 400 14px/1.5 var(--sans); }
+.memory-empty, .memory-foot { color: var(--muted); font: 400 12px/1.55 var(--sans); }
+.memory-editor { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.memory-editor label { display: block; margin-bottom: 8px; color: var(--muted); font: 500 9px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.memory-editor textarea { width: 100%; min-height: 105px; padding: 12px; resize: vertical; border: 1px solid var(--rule); background: rgba(255,255,255,.35); color: var(--ink); font: 400 14px/1.5 var(--sans); }
+.memory-actions { display: flex; align-items: center; gap: 14px; margin-top: 10px; color: var(--muted); font: 400 11px/1.4 var(--sans); }
+.memory-actions button, .blueprint-action, .ongoing-action { border: 0; border-radius: 3px; padding: 12px 16px; background: var(--ink); color: var(--paper); font: 500 9px/1 var(--mono); letter-spacing: .09em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.memory-actions button:disabled, .blueprint-action:disabled { opacity: .35; cursor: not-allowed; }
+.blueprint-panel, .ongoing-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 26px; align-items: center; }
+.blueprint-panel p, .ongoing-panel p { max-width: 700px; margin: 12px 0 0; color: var(--muted); font: 400 13px/1.6 var(--sans); }
+.blueprint-status { grid-column: 2; color: var(--faint); font: 500 8px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; text-align: center; }
+.ongoing-panel { border-color: color-mix(in srgb, var(--sage) 38%, var(--rule)); }
+.ongoing-action { background: var(--sage); }
+
 .continuity {
   margin-top: 22px;
   padding: 21px 23px;
@@ -430,6 +473,8 @@ a { color: inherit; }
   .conversation { min-height: 0; }
   .sequence { grid-template-columns: auto 1fr auto 1fr auto; }
   .sequence-end { grid-column: 1 / -1; text-align: left; margin-top: 4px; }
+  .blueprint-panel, .ongoing-panel { grid-template-columns: 1fr; }
+  .blueprint-status { grid-column: 1; text-align: left; }
 }
 
 @media (max-width: 640px) {
@@ -449,6 +494,9 @@ a { color: inherit; }
   .section-note { margin-top: 10px; text-align: left; }
   .conversation { padding: 25px 23px 23px; }
   .conversation h3 { font-size: 31px; }
+  .milestone-groups, .memory-grid { grid-template-columns: 1fr; }
+  .memory-panel, .blueprint-panel, .ongoing-panel { padding: 22px 19px; }
+  .memory-head { align-items: flex-start; }
   .continuity { padding: 18px; }
   .foot { display: grid; gap: 10px; }
 }

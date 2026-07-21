@@ -42,7 +42,7 @@ function crossBlock(crossContext) {
 }
 
 const FIVE_ANSWER_OPTIONS_POLICY = `## Five answer options (required on every turn)
-- Return STRICT JSON only: {"say":"your concise reply and ONE primary question","options":["answer 1","answer 2","answer 3","answer 4","answer 5"]}.
+- Return STRICT JSON only: {"say":"your concise reply and ONE primary question","options":["answer 1","answer 2","answer 3","answer 4","answer 5"],"stage":"current milestone id","memory":{"only_newly_confirmed_field":"value"},"selection_mode":"single or multi"}.
 - Provide exactly FIVE distinct, concise, first-person answers the participant can select or edit.
 - Put your strongest context-grounded recommendation first. The interface will mark it "Recommended".
 - Options 2 and 3 should be credible alternatives. Option 4 may combine the leading answers or express uncertainty when that genuinely fits.
@@ -81,15 +81,15 @@ export const SIV_LENSES = [
   { id: 'first_bet', name: 'First Bet', q: 'Is this the right FIRST AI project — not merely a good future one?' },
 ];
 
-const FAST_IDS = ['stated_problem', 'symptom_cause', 'evidence', 'data_readiness', 'owner', 'metric', 'feasibility_90'];
+const FAST_IDS = ['stated_problem', 'symptom_cause', 'evidence', 'data_readiness', 'owner', 'metric', 'feasibility_90', 'company_brain'];
 const STANDARD_IDS = [
   'symptom_cause', 'evidence', 'assumption', 'workflow_reality', 'data_readiness',
-  'human_judgment', 'owner', 'metric', 'risk', 'feasibility_90', 'roi', 'sequence',
+  'human_judgment', 'owner', 'metric', 'risk', 'feasibility_90', 'roi', 'sequence', 'company_brain',
 ];
 
 export const SIV_DEPTHS = [
-  { id: 'fast', lensCount: 7, title: 'Fast Scan', minutes: '10–15 minutes', blurb: 'Seven lenses. For busy leaders who want a quick, disciplined read on where AI should go first.' },
-  { id: 'standard', lensCount: 12, title: 'Standard SIV', minutes: '20–30 minutes', blurb: 'Twelve lenses. The recommended examination — enough rigour to make a real decision you can defend.', recommended: true },
+  { id: 'fast', lensCount: 8, title: 'Fast Scan', minutes: '10–15 minutes', blurb: 'Eight lenses. For busy leaders who want a quick, disciplined read on where AI should go first.' },
+  { id: 'standard', lensCount: 13, title: 'Standard SIV', minutes: '20–30 minutes', blurb: 'Thirteen lenses. The recommended examination — enough rigour to make a real decision you can defend.', recommended: true },
   { id: 'deep', lensCount: 21, title: 'Deep SIV', minutes: '45–60 minutes', blurb: 'Twenty-one lenses. A rigorous, founder-level examination for a decision you want fully stress-tested.' },
 ];
 
@@ -106,8 +106,9 @@ export const SIV_REPORT_SECTIONS = [
   'Company Context', 'Projects Considered', 'SIV Depth Selected', 'Key Reality Check',
   'Main Assumptions Exposed', 'Hidden Constraints', 'Recommended First AI Project',
   'Why This Project Comes First', 'Why Other Projects Should Wait', 'Workflow to Change',
-  'Owner', 'Success Metric', 'Data Needed', 'Risks and Guardrails', 'First 30 Days',
-  '90-Day Pilot Direction',
+  'Company Brain — Memory, Reasoning, Action and Feedback', 'Owner', 'Baseline and 90-Day Target',
+  'Value and Rough Payback Logic', 'Data Needed', 'Risks and Human Guardrails',
+  '30 / 60 / 90-Day Direction', 'Scale, Fix or Stop Criteria',
 ];
 
 export const SIV_COPY = {
@@ -145,7 +146,10 @@ ${FIVE_ANSWER_OPTIONS_POLICY}
 ## Behaviour
 - Use the participant's prior context; ask only what is necessary if something is missing.
 - Ask the participant to name 2–5 areas where they are considering AI. If they can't, propose likely areas from their context.
+- For that first candidate-area question only, set "selection_mode":"multi" so they can select several options before continuing. For every later turn use "selection_mode":"single".
 - Examine candidates through the ${meta.title} lens set (${lenses.length} lenses) below.
+- In EVERY depth, translate the VED constraint into a likely Company Brain weakness (Memory, Reasoning, Action, Feedback, or a combination), then ask the participant to confirm or correct it. Company Brain is an embedded lens, not a separate tool.
+- Before the final recommendation, establish one honest baseline, one 90-day target, a clear owner, the value category, and a rough cost/payback assumption. Show uncertainty; never manufacture financial precision.
 - Keep moving toward a decision. Do NOT let them leave with five possible projects. The outcome must be ONE first AI project.
 - When the examination is essentially done, tell them they can now generate their decision report.
 
@@ -163,9 +167,10 @@ Reporting & operating rhythm · Operations & process · Sales & marketing · HR 
 2. Ask one question for 2–5 candidate AI areas (or propose them through the five answer options).
 3. For each candidate: what problem does it solve, what makes it urgent/expensive, what happens if you do nothing for six months?
 4. Apply the lenses above.
-5. Compare the candidates on pain, impact, data readiness, workflow clarity, owner clarity, risk, 90-day feasibility and learning value.
-6. Recommend ONE first project and be explicit about why it comes first, why the others wait, what must be validated, and what the first 30 days focus on.
-7. Then invite them to generate the decision report.
+5. Confirm the Company Brain component: Memory, Reasoning, Action, Feedback, or a combination.
+6. Establish baseline, 90-day target, owner, value category, and rough economics using explicit assumptions.
+7. Compare the candidates and recommend ONE first project. Explain why it comes first, why the others wait, and what the first 30 days focus on.
+8. Then invite them to generate the decision report and simple 90-day blueprint.
 
 ${contextBlock(participant, research)}
 ${crossBlock(crossContext)}
@@ -177,6 +182,7 @@ ${session.running_summary ? `## Examination so far\n${session.running_summary}\n
 - Keep replies concise (a few sentences) and in plain language a busy CEO respects.
 - Choose the single highest-value next lens. Never present a numbered batch of questions.
 - If this is the first exchange, state the company context at a high level, invite corrections as a statement, then ask ONE question that helps identify candidate AI areas.
+- Set "stage" to one of: candidates, comparison, company_brain, economics, decision, blueprint, complete. Put only facts newly established in this turn into "memory" using these keys where relevant: candidate_projects, company_brain, selected_project, baseline, target, owner, value_case, guardrails, next_actions.
 - Do not oversell the book or the course. Credibility comes from the quality of the thinking, not from marketing.`;
 }
 
@@ -198,6 +204,8 @@ Notes:
 - "SIV Depth Selected" is: ${meta.title} (${meta.lensCount} lenses).
 - Be decisive in "Recommended First AI Project": name one concrete project.
 - "First 30 Days" must be a short, concrete action list.
+- Keep the 30 / 60 / 90 direction compact: at most three actions per period.
+- State ROI assumptions and confidence plainly; do not create false precision.
 - End the report with this exact italic line on its own: *${SIV_COPY.footer}*
 
 ## Examination transcript
@@ -435,6 +443,7 @@ ${session.running_summary ? `## Diagnostic so far\n${session.running_summary}\n`
 - Before asking a question, inspect the transcript and never ask for information the participant has already supplied. Never repeat the same question or the same answer options.
 - If an answer is too vague, ask one narrower clarification that names what is missing; do not restart the previous question.
 - When the diagnosis is essentially done (constraint named, correction and measurement set), tell them they can now generate their Execution Constraint Report.
+- Set "stage" to one of: output, sequence, constraint, correction, measurement, complete. Put only facts newly established in this turn into "memory" using these keys where relevant: desired_output, execution_sequence, ved_constraint, ved_correction, ved_measurement, next_actions. Always use "selection_mode":"single".
 - Credibility comes from the quality of the thinking, not from selling the book or the course.`;
 }
 
@@ -468,7 +477,44 @@ Now write the report as clean markdown.`,
   };
 }
 
+// ---------------------------------------------------------------------------
+// Continuing Company Brain conversation
+// ---------------------------------------------------------------------------
+export const CONTINUING_COPY = {
+  eyebrow: 'Your Company Brain · ongoing',
+  title: 'AI Leadership Check-in',
+  tagline: 'Keep the plan alive as reality changes.',
+  intro: 'Return after a meeting, a pilot milestone, or a new constraint. Add what changed, examine the evidence, and decide the next small move. The conversation keeps your company context and prior decisions in view.',
+  button: 'Continue My AI Journey',
+  reportTitle: 'Updated 90-Day AI Leadership Blueprint',
+};
+
+export function buildContinuingSystem({ participant, research, session, crossContext }) {
+  return `You are the ongoing AI Leadership Check-in for Vinay Pasricha's "AI for Business Leaders" course. This is a continuing conversation after the participant's preparation, VED diagnostic, SIV project decision, meetings and real-world experiments.
+
+Your job is to keep the participant's plan alive as reality changes. Use the shared Course Memory and meeting summaries. Ask what changed, examine actual evidence, surface contradictions, and agree ONE next move. Never restart the full intake and never make them repeat established context.
+
+Tone: direct, warm, brief and practical. Ask exactly ONE primary question at a time. Do not force a long form. A participant should be able to complete a useful check-in in a few minutes.
+
+${CONTEXT_RECOVERY_POLICY}
+
+${FIVE_ANSWER_OPTIONS_POLICY}
+
+## Check-in loop
+1. What changed since the last conversation, meeting or milestone?
+2. What evidence do we now have — numbers, observed behaviour, delays, errors, adoption or customer response?
+3. Does the current constraint, Company Brain diagnosis or first project need to change?
+4. Agree one next action, one owner and one date or measure.
+
+Set "stage" to one of: check_in, evidence, adjustment, next_cycle. Use "selection_mode":"single". Put only newly confirmed facts into "memory" using: ved_constraint, company_brain, selected_project, baseline, target, owner, value_case, guardrails, next_actions.
+
+${contextBlock(participant, research)}
+${crossBlock(crossContext)}
+${session.running_summary ? `## Check-ins so far\n${session.running_summary}\n` : ''}`;
+}
+
 export const COURSE_RUNTIME_MODES = {
   siv: { title: SIV_COPY.title, eyebrow: SIV_COPY.eyebrow, tagline: SIV_COPY.tagline, intro: SIV_COPY.intro, button: SIV_COPY.button, reportTitle: SIV_COPY.reportTitle, depths: SIV_DEPTHS },
   ved: { title: VED_COPY.title, eyebrow: VED_COPY.eyebrow, tagline: VED_COPY.tagline, intro: VED_COPY.intro, button: VED_COPY.button, reportTitle: VED_COPY.reportTitle, depths: [] },
+  continuing: { title: CONTINUING_COPY.title, eyebrow: CONTINUING_COPY.eyebrow, tagline: CONTINUING_COPY.tagline, intro: CONTINUING_COPY.intro, button: CONTINUING_COPY.button, reportTitle: CONTINUING_COPY.reportTitle, depths: [] },
 };

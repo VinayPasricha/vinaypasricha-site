@@ -24,4 +24,6 @@ export const COLLECTIONS = {
   ablMessages: 'abl_messages',
   ablOutputs: 'abl_outputs',
   ablQa: 'abl_qa',
+  ablMemory: 'abl_memory',
+  ablNotes: 'abl_notes',
 };

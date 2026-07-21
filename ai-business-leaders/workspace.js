@@ -70,6 +70,47 @@
     '</a>';
   }
 
+  function asText(value) {
+    return Array.isArray(value) ? value.join(' · ') : String(value || '');
+  }
+
+  function milestoneStrip(memory) {
+    var groups = (memory && memory.milestones) || {};
+    var order = [['participant', 'AI Journey'], ['ved', 'VED'], ['siv', 'SIV']];
+    return '<div class="milestone-groups">' + order.map(function (entry) {
+      var rows = groups[entry[0]] || [];
+      return '<div class="milestone-group"><div class="milestone-title">' + esc(entry[1]) + '</div>' +
+        '<div class="milestone-dots">' + rows.map(function (row) {
+          return '<span class="milestone-dot' + (row.complete ? ' complete' : '') + (row.current ? ' current' : '') + '" title="' + esc(row.label) + '"></span>';
+        }).join('') + '</div></div>';
+    }).join('') + '</div>';
+  }
+
+  function memoryPanel(memory) {
+    memory = memory || {};
+    var f = memory.fields || {};
+    var items = [
+      ['Company', memory.identity && memory.identity.company_name],
+      ['Role', memory.identity && memory.identity.role_title],
+      ['Priority', f.priorities || f.goals],
+      ['Weakest link', f.ved_constraint],
+      ['Company Brain', f.company_brain],
+      ['First AI project', f.selected_project],
+      ['90-day target', f.target]
+    ].filter(function (item) { return asText(item[1]).trim(); });
+    return '<section class="memory-panel" id="courseMemory">' +
+      '<div class="memory-head"><div><p class="eyebrow">Shared Course Memory</p><h2>What I currently understand</h2></div>' +
+      '<button type="button" class="memory-toggle" id="memoryToggle">Review or correct</button></div>' +
+      '<div class="memory-grid">' + items.map(function (item) {
+        return '<div class="memory-item"><span>' + esc(item[0]) + '</span><strong>' + esc(asText(item[1])) + '</strong></div>';
+      }).join('') + (items.length ? '' : '<p class="memory-empty">Your confirmed context will build here as the conversations progress.</p>') + '</div>' +
+      '<div class="memory-editor" id="memoryEditor" hidden><label for="memoryNote">Correct anything or add a priority</label>' +
+      '<textarea id="memoryNote" placeholder="For example: Our immediate priority is reducing proposal turnaround from five days to one.">' + esc(memory.participant_note || '') + '</textarea>' +
+      '<div class="memory-actions"><button type="button" id="saveMemory">Save to Course Memory</button><span id="memoryStatus"></span></div></div>' +
+      '<p class="memory-foot">This understanding is shared across all three conversations and future check-ins. You can correct it at any time.</p>' +
+      '</section>';
+  }
+
   function render(data) {
     var p = data.participant || {};
     var session = data.session || {};
@@ -86,7 +127,10 @@
     var prepStatus = prepComplete ? 'complete' : (prepStarted ? 'started' : 'idle');
     var statuses = [prepStatus, vedStatus, sivStatus];
     var activeCount = statuses.filter(function (s) { return s !== 'idle'; }).length;
-    var progress = Math.round((activeCount / 3) * 100);
+    var milestoneGroups = (data.memory && data.memory.milestones) || {};
+    var milestoneRows = ['participant', 'ved', 'siv'].reduce(function (all, key) { return all.concat(milestoneGroups[key] || []); }, []);
+    var completedMilestones = milestoneRows.filter(function (row) { return row.complete; }).length;
+    var progress = milestoneRows.length ? Math.round((completedMilestones / milestoneRows.length) * 100) : 0;
 
     var cards = [
       {
@@ -134,7 +178,7 @@
           '<div class="participant-company">' + esc([p.role_title, p.company_name].filter(Boolean).join(' · ')) + '</div>' +
           '<span class="progress-label">Workspace progress</span>' +
           '<div class="progress-track"><span style="width:' + progress + '%"></span></div>' +
-          '<div class="progress-copy">' + activeCount + ' of 3 conversations started</div>' +
+          '<div class="progress-copy">' + completedMilestones + ' of ' + milestoneRows.length + ' milestones complete</div>' +
         '</aside>' +
       '</section>' +
 
@@ -156,10 +200,64 @@
         '<div class="conversation-grid">' + cards.map(card).join('') + '</div>' +
       '</section>' +
 
+      milestoneStrip(data.memory) +
+      memoryPanel(data.memory) +
+
+      '<section class="blueprint-panel">' +
+        '<div><p class="eyebrow">One practical output</p><h2>Your 90-Day AI Leadership Blueprint</h2>' +
+        '<p>Combines your leadership objective, weakest execution link, Company Brain diagnosis, first AI project, owner, baseline, target, guardrails and 30/60/90-day direction.</p></div>' +
+        (data.blueprint
+          ? '<a class="blueprint-action" href="/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/continuing?report=1">Open or edit blueprint →</a>'
+          : '<button type="button" class="blueprint-action" id="buildBlueprint"' + (vedStatus === 'complete' && sivStatus === 'complete' ? '' : ' disabled') + '>Build my blueprint →</button>') +
+        '<span class="blueprint-status" id="blueprintStatus">' + (data.blueprint ? 'Ready and saved' : (vedStatus === 'complete' && sivStatus === 'complete' ? 'Ready to build' : 'Complete VED and SIV reports first')) + '</span>' +
+      '</section>' +
+
+      '<section class="ongoing-panel">' +
+        '<div><p class="eyebrow">After meetings and milestones</p><h2>Keep the conversation going</h2>' +
+        '<p>Return whenever something changes. Add new evidence, revisit the constraint or project, and agree the next small move without starting again.</p></div>' +
+        '<a class="ongoing-action" href="/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/continuing">Continue my AI journey →</a>' +
+      '</section>' +
+
       '<div class="continuity">' +
         '<div class="continuity-mark">↳</div>' +
         '<p><strong>Your three conversations</strong> are saved to this participant link. Leave and return whenever you need; each conversation resumes where you stopped.</p>' +
       '</div>';
+    wire();
+  }
+
+  function wire() {
+    var toggle = document.getElementById('memoryToggle');
+    var editor = document.getElementById('memoryEditor');
+    if (toggle && editor) toggle.onclick = function () {
+      editor.hidden = !editor.hidden;
+      toggle.textContent = editor.hidden ? 'Review or correct' : 'Close';
+      if (!editor.hidden) document.getElementById('memoryNote').focus();
+    };
+    var save = document.getElementById('saveMemory');
+    if (save) save.onclick = async function () {
+      var status = document.getElementById('memoryStatus');
+      save.disabled = true; status.textContent = 'Saving…';
+      try {
+        var response = await fetch('/api/abl/session/' + encodeURIComponent(slug) + '/memory', {
+          method: 'PATCH', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ participant_note: document.getElementById('memoryNote').value })
+        });
+        var body = await response.json();
+        status.textContent = response.ok ? 'Saved across all conversations.' : (body.error || 'Could not save.');
+      } catch (e) { status.textContent = 'Could not save. Please try again.'; }
+      save.disabled = false;
+    };
+    var build = document.getElementById('buildBlueprint');
+    if (build) build.onclick = async function () {
+      var status = document.getElementById('blueprintStatus');
+      build.disabled = true; build.textContent = 'Building…'; status.textContent = 'Combining your three conversations…';
+      try {
+        var response = await fetch('/api/abl/session/' + encodeURIComponent(slug) + '/blueprint', { method: 'POST', headers: { Accept: 'application/json' } });
+        var body = await response.json();
+        if (!response.ok || !body.data || !body.data.report) throw new Error(body.error || 'Could not build blueprint.');
+        location.reload();
+      } catch (e) { status.textContent = e.message || 'Could not build blueprint.'; build.disabled = false; build.textContent = 'Build my blueprint →'; }
+    };
   }
 
   function fail(message) {

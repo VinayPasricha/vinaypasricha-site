@@ -15,11 +15,13 @@ import {
   generateRewardBundle,
   generateSivReport,
   generateVedReport,
+  generateLeadershipBlueprint,
   runtimeOpeningTurn,
   RUNTIME_OPENING_VERSION,
 } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
+import { buildCourseMemory } from './memory.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -139,12 +141,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const outputs = await repo.getOutputs(p.id);
       const reward = outputs.find((o) => ['course_preparation_brief', 'use_case_map', 'strategy_note'].includes(o.output_type)) || null;
       const share = outputs.find((o) => o.output_type === 'share_summary') || null;
-      const [vedSession, sivSession] = await Promise.all([
+      const [vedSession, sivSession, continuingSession, memory] = await Promise.all([
         repo.getSession(p.id, 'ved'),
         repo.getSession(p.id, 'siv'),
+        repo.getSession(p.id, 'continuing'),
+        buildCourseMemory(p),
       ]);
       const vedReport = outputs.find((o) => o.output_type === 'ved_report') || null;
       const sivReport = outputs.find((o) => o.output_type === 'siv_report') || null;
+      const blueprint = outputs.find((o) => o.output_type === 'leadership_blueprint') || null;
       return ok(res, {
         participant: { name: p.name, company_name: p.company_name, role_title: p.role_title,
           status: p.status, current_stage: p.current_stage, message_count: p.message_count, max_messages: p.max_messages,
@@ -157,7 +162,10 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         runtimes: {
           ved: { started: !!(vedSession && vedSession.consent_given), complete: !!vedReport },
           siv: { started: !!(sivSession && sivSession.selected_depth), complete: !!sivReport },
+          continuing: { started: !!(continuingSession && continuingSession.consent_given), complete: false },
         },
+        memory,
+        blueprint: blueprint ? { id: blueprint.id, markdown: blueprint.content_markdown } : null,
       });
     } catch (e) { return oops(res, e); }
   });
@@ -256,7 +264,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // -------------------------------------------------------------------------
   // Course-specific thinking tools (same participant link, separate sessions)
   // -------------------------------------------------------------------------
-  const runtimeMode = (value) => (value === 'siv' || value === 'ved' ? value : null);
+  const runtimeMode = (value) => (value === 'siv' || value === 'ved' || value === 'continuing' ? value : null);
 
   app.get('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
     try {
@@ -280,16 +288,19 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const messages = storedMessages
         .filter((m) => m.role === 'user' || m.role === 'assistant')
         .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
-          options: (m.metadata && m.metadata.options) || [] }));
+          options: (m.metadata && m.metadata.options) || [],
+          selection_mode: (m.metadata && m.metadata.selection_mode) || 'single',
+          stage: (m.metadata && m.metadata.stage) || '' }));
       // Self-heal a session that was marked started by an older revision but
       // never received its opening agent turn.
       if (started && !messages.length) {
         const opening = await runtimeOpeningTurn({ participant: p, session, mode });
         if (opening && opening.reply) messages.push({
-          role: 'assistant', content: opening.reply, options: opening.options || [], at: new Date().toISOString(),
+          role: 'assistant', content: opening.reply, options: opening.options || [],
+          selection_mode: opening.selectionMode || 'single', at: new Date().toISOString(),
         });
       }
-      const report = await repo.getLatestOutput(p.id, mode + '_report');
+      const report = await repo.getLatestOutput(p.id, mode === 'continuing' ? 'leadership_blueprint' : mode + '_report');
       return ok(res, {
         mode,
         config: COURSE_RUNTIME_MODES[mode],
@@ -300,6 +311,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         max_messages: p.max_messages || 200,
         messages,
         report: report ? { id: report.id, markdown: report.content_markdown } : null,
+        memory: await buildCourseMemory(p),
       });
     } catch (e) { return oops(res, e); }
   });
@@ -320,14 +332,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         const existing = await repo.listMessages(updated.id);
         const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
         return ok(res, { started: true, depth: updated.selected_depth,
-          reply: opening && opening.reply, options: (opening && opening.options) || [] });
+          reply: opening && opening.reply, options: (opening && opening.options) || [],
+          selection_mode: (opening && opening.selectionMode) || 'multi' });
       }
 
       const updated = await repo.updateSession(session.id, { consent_given: true });
       const existing = await repo.listMessages(updated.id);
       const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
       return ok(res, { started: true, reply: opening && opening.reply,
-        options: (opening && opening.options) || [] });
+        options: (opening && opening.options) || [], selection_mode: (opening && opening.selectionMode) || 'single' });
     } catch (e) { return oops(res, e); }
   });
 
@@ -353,6 +366,8 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       return ok(res, {
         reply: turn.reply,
         options: turn.options || [],
+        selection_mode: turn.selectionMode || 'single',
+        stage: turn.stage || '',
         message_count: turn.messageCount,
         max_messages: p.max_messages || 200,
         soft_warn: turn.messageCount >= SOFT_WARN_AT,
@@ -370,11 +385,91 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const session = await repo.getOrCreateSession(p.id, mode);
       if (mode === 'siv' && !session.selected_depth) return fail(res, 'Start the examination before generating a report.');
       if (mode === 'ved' && !session.consent_given) return fail(res, 'Start the diagnostic before generating a report.');
+      if (mode === 'continuing' && !session.consent_given) return fail(res, 'Start a check-in before updating the blueprint.');
       const userTurns = (await repo.listMessages(session.id)).filter((m) => m.role === 'user').length;
       if (userTurns < 2) return fail(res, 'Go a little further into the conversation before generating your report.');
 
-      const report = mode === 'siv' ? await generateSivReport(p) : await generateVedReport(p);
+      const report = mode === 'siv' ? await generateSivReport(p)
+        : mode === 'ved' ? await generateVedReport(p) : await generateLeadershipBlueprint(p);
       return ok(res, { report });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/restart', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const messages = await repo.listMessages(session.id);
+      const usedTurns = messages.filter((message) => message.role === 'user').length;
+      await repo.deleteMessages(messages.map((message) => message.id));
+      await repo.updateSession(session.id, {
+        consent_given: false, selected_depth: null, current_stage: null,
+        running_summary: null, summary_reviewed: false,
+      });
+      if (usedTurns) await repo.updateParticipant(p.id, { message_count: Math.max(0, (p.message_count || 0) - usedTurns) });
+      if (mode === 'ved') {
+        await Promise.all([
+          repo.deleteOutput(p.id, 'ved_report'), repo.deleteOutput(p.id, 'leadership_blueprint'),
+          repo.upsertMemory(p.id, { fields: { desired_output: '', execution_sequence: '', ved_constraint: '', ved_correction: '', ved_measurement: '' } }),
+        ]);
+      } else if (mode === 'siv') {
+        await Promise.all([
+          repo.deleteOutput(p.id, 'siv_report'), repo.deleteOutput(p.id, 'leadership_blueprint'),
+          repo.upsertMemory(p.id, { fields: { candidate_projects: '', company_brain: '', selected_project: '', baseline: '', target: '', owner: '', value_case: '', guardrails: '' } }),
+        ]);
+      }
+      return ok(res, { restarted: true, preserved: 'verified company context and other conversations' });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // Shared participant-visible memory. A concise correction or priority can be
+  // added without forcing the participant to restart any conversation.
+  app.get('/api/abl/session/:slug/memory', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      return ok(res, await buildCourseMemory(p));
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/session/:slug/memory', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const note = String((req.body && req.body.participant_note) || '').trim();
+      if (note.length > 6000) return fail(res, 'Please keep this note under 6,000 characters.');
+      await repo.upsertMemory(p.id, { participant_note: note });
+      return ok(res, await buildCourseMemory(p));
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/blueprint', rewardLimit, async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const [ved, siv] = await Promise.all([
+        repo.getLatestOutput(p.id, 'ved_report'), repo.getLatestOutput(p.id, 'siv_report'),
+      ]);
+      if (!ved || !siv) return fail(res, 'Complete the VED and SIV reports before building the combined blueprint.', 409);
+      return ok(res, { report: await generateLeadershipBlueprint(p) });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/session/:slug/blueprint', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const markdown = String((req.body && req.body.markdown) || '').trim();
+      if (!markdown || markdown.length > 30000) return fail(res, 'Blueprint text is empty or too long.');
+      const existing = await repo.getLatestOutput(p.id, 'leadership_blueprint');
+      const saved = await repo.saveOutput({
+        participant_id: p.id, session_id: existing && existing.session_id,
+        output_type: 'leadership_blueprint', content_markdown: markdown,
+      });
+      return ok(res, { id: saved.id, markdown: saved.content_markdown });
     } catch (e) { return oops(res, e); }
   });
 
@@ -403,10 +498,10 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs] = await Promise.all([
-        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id),
+      const [research, qa, outputs, memory, notes] = await Promise.all([
+        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }), repo.listNotes(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs });
+      return ok(res, { participant: p, research, qa, outputs, memory, notes });
     } catch (e) { return oops(res, e); }
   });
 
@@ -489,6 +584,28 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!p) return fail(res, 'Not found', 404);
       const md = await generateOutput(p, 'vinay_meeting_brief');
       return ok(res, { markdown: md });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/notes', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'Add a meeting or conversation summary first.');
+      const note = await repo.addNote(p.id, {
+        title: req.body.title, content, source_name: req.body.source_name,
+        visibility: req.body.visibility, occurred_at: req.body.occurred_at,
+      });
+      return ok(res, note, 201);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.delete('/api/abl/participants/:id/notes/:noteId', requireAdmin, async (req, res) => {
+    try {
+      const deleted = await repo.deleteNote(req.params.id, req.params.noteId);
+      if (!deleted) return fail(res, 'Note not found', 404);
+      return ok(res, { deleted: true });
     } catch (e) { return oops(res, e); }
   });
 

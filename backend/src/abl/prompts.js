@@ -31,7 +31,7 @@ function contextBlock(p, r) {
   return s;
 }
 
-export function buildConversationSystem({ participant: p, research: r, session: s }) {
+export function buildConversationSystem({ participant: p, research: r, session: s, courseMemory = '' }) {
   const depth = s.selected_depth;
   const remaining = Math.max(0, (p.max_messages || 200) - (p.message_count || 0));
 
@@ -60,9 +60,13 @@ ${CONTEXT_RECOVERY_POLICY}
 Return ONLY a JSON object (no prose, no code fences) in exactly this shape:
 {
   "say": "your message to the participant — specific to them, a few sentences, ending in ONE clear question",
-  "options": ["a detailed answer THEY might give", "a different detailed answer", "a third distinct detailed answer"]
+  "options": ["a detailed answer THEY might give", "a different detailed answer", "a third distinct detailed answer"],
+  "stage": "current milestone id",
+  "memory": {"only_newly_confirmed_field": "value"},
+  "selection_mode": "single"
 }
 Rules for "options": ALWAYS return exactly 3 — never two, never zero — realistic answers the participant might give, written in the first person ("We…", "I…") and meaningfully different. They are clickable shortcuts so the participant doesn't have to type. Do NOT add an "other"/"custom" option — the interface adds that itself. Options must never contain guessed company facts. During a correction or uncertainty, make them safe operational choices such as confirming the corrected summary, correcting one remaining detail, or supplying the official website/context.
+Rules for progress and memory: set "stage" to one of context, goals, ai_exposure, challenges, meeting_agenda, complete. Advance when the current milestone has been established; do not ask for it again. Put only facts newly confirmed in this turn into "memory", using these keys when relevant: goals, priorities, ai_exposure, challenges, next_actions. Always use "selection_mode":"single".
 
 ## The conversation
 The participant has chosen the ${depth ?? '(not yet chosen)'}-minute journey.
@@ -77,6 +81,8 @@ Then, for the 30-minute journey, explore where AI may or may not be relevant acr
 4. Your broader business/AI reasoning — only when helpful, never contradicting the participant's context.
 
 ${contextBlock(p, r)}
+
+${courseMemory || ''}
 
 ## Course framework (the spine)
 ${getFramework()}
