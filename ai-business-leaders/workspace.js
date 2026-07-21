@@ -111,6 +111,77 @@
       '</section>';
   }
 
+  function nextStepPanel(state) {
+    var step;
+    if (state.prepStatus !== 'complete') {
+      step = {
+        count: 'Step 1 of 4',
+        title: state.prepStatus === 'started' ? 'Continue your AI Journey' : 'Start with your AI Journey',
+        copy: 'Confirm your company context and what you want this course to change. Every later conversation will use this understanding.',
+        time: 'About 8 minutes',
+        action: state.prepStatus === 'started' ? 'Continue' : 'Begin',
+        href: '/ai-business-leaders/s/' + encodeURIComponent(slug)
+      };
+    } else if (state.vedStatus !== 'complete') {
+      step = {
+        count: 'Step 2 of 4',
+        win: 'Your company context is saved and ready to guide the course.',
+        title: state.vedStatus === 'started' ? 'Continue finding your weakest execution link' : 'Find your weakest execution link',
+        copy: 'Trace one important outcome and identify the constraint that is governing performance now.',
+        time: 'About 7 minutes',
+        action: state.vedStatus === 'started' ? 'Continue' : 'Start VED',
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/ved'
+      };
+    } else if (state.sivStatus !== 'complete') {
+      step = {
+        count: 'Step 3 of 4',
+        win: 'You have located the execution constraint that matters most.',
+        title: state.sivStatus === 'started' ? 'Continue choosing your first AI project' : 'Choose your first AI project',
+        copy: 'Use your company context and weakest link to compare the strongest practical AI opportunities.',
+        time: 'About 8 minutes',
+        action: state.sivStatus === 'started' ? 'Continue' : 'Start SIV',
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/siv'
+      };
+    } else if (!state.blueprint) {
+      step = {
+        count: 'Step 4 of 4',
+        win: 'Your first AI project has been chosen.',
+        title: 'Build your 90-Day AI Leadership Blueprint',
+        copy: 'Bring the three conversations together into one short, practical direction you can use with your team.',
+        time: 'About 1 minute',
+        action: 'Build my blueprint',
+        build: true
+      };
+    } else {
+      step = {
+        count: 'Your journey continues',
+        win: 'Your 90-day direction is ready and saved.',
+        title: state.continuingStarted ? 'Continue your leadership check-in' : 'Record your first progress update',
+        copy: 'Return after a meeting, milestone or new obstacle. Add what changed and agree the next small move.',
+        time: 'About 3 minutes',
+        action: state.continuingStarted ? 'Continue check-in' : 'Add an update',
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/continuing'
+      };
+    }
+
+    return '<section class="next-step-panel" aria-labelledby="nextStepTitle">' +
+      '<div class="next-step-marker" aria-hidden="true"><span></span></div>' +
+      '<div class="next-step-content">' +
+        '<div class="next-step-kicker"><span>Your next step</span><b>' + esc(step.count) + '</b></div>' +
+        (step.win ? '<p class="next-step-win"><span>✓</span> Small win: ' + esc(step.win) + '</p>' : '') +
+        '<h2 class="next-step-title" id="nextStepTitle">' + esc(step.title) + '</h2>' +
+        '<p class="next-step-copy">' + esc(step.copy) + '</p>' +
+      '</div>' +
+      '<div class="next-step-cta">' +
+        '<span class="next-step-time">' + esc(step.time) + '</span>' +
+        (step.build
+          ? '<button type="button" class="next-step-action" data-build-blueprint>' + esc(step.action) + ' <span>→</span></button>'
+          : '<a class="next-step-action" href="' + esc(step.href) + '">' + esc(step.action) + ' <span>→</span></a>') +
+        '<span class="next-step-status" data-blueprint-status></span>' +
+      '</div>' +
+    '</section>';
+  }
+
   function render(data) {
     var p = data.participant || {};
     var session = data.session || {};
@@ -131,6 +202,13 @@
     var milestoneRows = ['participant', 'ved', 'siv'].reduce(function (all, key) { return all.concat(milestoneGroups[key] || []); }, []);
     var completedMilestones = milestoneRows.filter(function (row) { return row.complete; }).length;
     var progress = milestoneRows.length ? Math.round((completedMilestones / milestoneRows.length) * 100) : 0;
+    var nextStep = nextStepPanel({
+      prepStatus: prepStatus,
+      vedStatus: vedStatus,
+      sivStatus: sivStatus,
+      blueprint: data.blueprint,
+      continuingStarted: !!(runtimes.continuing && runtimes.continuing.started)
+    });
 
     var cards = [
       {
@@ -182,6 +260,8 @@
         '</aside>' +
       '</section>' +
 
+      nextStep +
+
       '<div class="sequence" aria-label="Recommended course preparation sequence">' +
         '<div class="sequence-step"><b>01</b><span>Understand the company</span></div>' +
         '<div class="sequence-line"></div>' +
@@ -208,7 +288,7 @@
         '<p>Combines your leadership objective, weakest execution link, Company Brain diagnosis, first AI project, owner, baseline, target, guardrails and 30/60/90-day direction.</p></div>' +
         (data.blueprint
           ? '<a class="blueprint-action" href="/ai-business-leaders/workspace/' + encodeURIComponent(slug) + '/continuing?report=1">Open or edit blueprint →</a>'
-          : '<button type="button" class="blueprint-action" id="buildBlueprint"' + (vedStatus === 'complete' && sivStatus === 'complete' ? '' : ' disabled') + '>Build my blueprint →</button>') +
+          : '<button type="button" class="blueprint-action" data-build-blueprint' + (vedStatus === 'complete' && sivStatus === 'complete' ? '' : ' disabled') + '>Build my blueprint →</button>') +
         '<span class="blueprint-status" id="blueprintStatus">' + (data.blueprint ? 'Ready and saved' : (vedStatus === 'complete' && sivStatus === 'complete' ? 'Ready to build' : 'Complete VED and SIV reports first')) + '</span>' +
       '</section>' +
 
@@ -247,17 +327,24 @@
       } catch (e) { status.textContent = 'Could not save. Please try again.'; }
       save.disabled = false;
     };
-    var build = document.getElementById('buildBlueprint');
-    if (build) build.onclick = async function () {
+    var builds = Array.prototype.slice.call(document.querySelectorAll('[data-build-blueprint]'));
+    builds.forEach(function (build) { build.onclick = async function () {
       var status = document.getElementById('blueprintStatus');
-      build.disabled = true; build.textContent = 'Building…'; status.textContent = 'Combining your three conversations…';
+      var nextStatus = document.querySelector('[data-blueprint-status]');
+      builds.forEach(function (button) { button.disabled = true; button.textContent = 'Building…'; });
+      if (status) status.textContent = 'Combining your three conversations…';
+      if (nextStatus) nextStatus.textContent = 'Combining your conversations…';
       try {
         var response = await fetch('/api/abl/session/' + encodeURIComponent(slug) + '/blueprint', { method: 'POST', headers: { Accept: 'application/json' } });
         var body = await response.json();
         if (!response.ok || !body.data || !body.data.report) throw new Error(body.error || 'Could not build blueprint.');
         location.reload();
-      } catch (e) { status.textContent = e.message || 'Could not build blueprint.'; build.disabled = false; build.textContent = 'Build my blueprint →'; }
-    };
+      } catch (e) {
+        if (status) status.textContent = e.message || 'Could not build blueprint.';
+        if (nextStatus) nextStatus.textContent = e.message || 'Could not build blueprint.';
+        builds.forEach(function (button) { button.disabled = false; button.textContent = 'Build my blueprint →'; });
+      }
+    }; });
   }
 
   function fail(message) {

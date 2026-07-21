@@ -53,6 +53,41 @@ test('participant UI contains multi-select, Course Memory, blueprint and continu
   assert.match(workspace, /Shared Course Memory/);
   assert.match(workspace, /90-Day AI Leadership Blueprint/);
   assert.match(workspace, /Continue my AI journey/);
+  assert.match(workspace, /Your next step/);
+  assert.match(workspace, /Small win/);
+  assert.match(workspace, /data-build-blueprint/);
+});
+
+test('workspace recommends exactly one useful next action from milestone state', async () => {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const root = path.resolve(here, '..', '..');
+  const source = readFileSync(path.join(root, 'ai-business-leaders', 'workspace.js'), 'utf8');
+  const cases = [
+    [{ share: null, session: {}, runtimes: {} }, 'Start with your AI Journey', '/ai-business-leaders/s/demo'],
+    [{ share: { approved: true }, session: {}, runtimes: { ved: { started: false, complete: false } } }, 'Find your weakest execution link', '/workspace/demo/ved'],
+    [{ share: { approved: true }, session: {}, runtimes: { ved: { complete: true }, siv: { started: false, complete: false } } }, 'Choose your first AI project', '/workspace/demo/siv'],
+    [{ share: { approved: true }, session: {}, runtimes: { ved: { complete: true }, siv: { complete: true } } }, 'Build your 90-Day AI Leadership Blueprint', null],
+    [{ share: { approved: true }, session: {}, runtimes: { ved: { complete: true }, siv: { complete: true }, continuing: { started: false } }, blueprint: { id: 'b1' } }, 'Record your first progress update', '/workspace/demo/continuing'],
+  ];
+
+  for (const [state, title, href] of cases) {
+    const dom = new JSDOM('<main id="workspace"></main>', {
+      url: 'https://example.test/ai-business-leaders/workspace/demo', runScripts: 'outside-only',
+    });
+    dom.window.fetch = async () => response({
+      participant: { name: 'Leader', company_name: 'Example Co', role_title: 'CEO' },
+      messages: [], memory: { milestones: {} }, blueprint: null, ...state,
+    });
+    function response(data) { return { ok: true, json: async () => ({ ok: true, data }) }; }
+    dom.window.eval(source);
+    await tick();
+    assert.equal(dom.window.document.querySelectorAll('.next-step-panel').length, 1);
+    assert.equal(dom.window.document.querySelector('.next-step-title').textContent, title);
+    assert.equal(dom.window.document.querySelectorAll('.next-step-action').length, 1);
+    if (href) assert.match(dom.window.document.querySelector('.next-step-action').getAttribute('href'), new RegExp(href.replace(/\//g, '\\/')));
+    else assert.ok(dom.window.document.querySelector('[data-build-blueprint]'));
+    dom.window.close();
+  }
 });
 
 test('SIV candidate choices support real multi-selection before one submitted turn', async () => {
