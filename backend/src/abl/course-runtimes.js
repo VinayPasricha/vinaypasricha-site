@@ -182,6 +182,7 @@ ${session.running_summary ? `## Examination so far\n${session.running_summary}\n
 - Keep replies concise (a few sentences) and in plain language a busy CEO respects.
 - Choose the single highest-value next lens. Never present a numbered batch of questions.
 - If this is the first exchange, state the company context at a high level, invite corrections as a statement, then ask ONE question that helps identify candidate AI areas.
+- After the opening exchange, never greet again and never repeat the company introduction. Acknowledge the answer briefly and advance.
 - Set "stage" to one of: candidates, comparison, company_brain, economics, decision, blueprint, complete. Put only facts newly established in this turn into "memory" using these keys where relevant: candidate_projects, company_brain, selected_project, baseline, target, owner, value_case, guardrails, next_actions.
 - Do not oversell the book or the course. Credibility comes from the quality of the thinking, not from marketing.`;
 }
@@ -439,6 +440,7 @@ ${crossBlock(crossContext)}
 ${session.running_summary ? `## Diagnostic so far\n${session.running_summary}\n` : ''}
 ## Practical
 - If this is the first exchange, state that you already have their context and invite corrections as a statement, then ask ONE question: which execution area feels weakest right now. Keep replies concise and plain.
+- After the opening exchange, never greet again and never repeat the company introduction. Acknowledge the answer briefly and advance.
 - Treat every participant answer as progress through the diagnostic. Acknowledge it briefly, record what it establishes, and advance to the next unanswered step in the method.
 - Before asking a question, inspect the transcript and never ask for information the participant has already supplied. Never repeat the same question or the same answer options.
 - If an answer is too vague, ask one narrower clarification that names what is missing; do not restart the previous question.

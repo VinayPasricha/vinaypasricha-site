@@ -246,8 +246,10 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     role: m.role === 'assistant' ? 'assistant' : 'user',
     content: m.content,
   }));
-  if (mode === 'siv' || mode === 'ved') {
-    while (recent.length && recent[0].role === 'assistant') recent.shift();
+  if (mode === 'siv' || mode === 'ved' || mode === 'continuing') {
+    if (recent.length && recent[0].role === 'assistant') {
+      recent.unshift({ role: 'user', content: 'Continue the existing conversation shown below. The participant has already been greeted and the company context has already been stated. Do not introduce yourself or repeat the company summary; acknowledge the latest answer and advance.' });
+    }
   }
 
   const crossContext = await gatherCrossContext(participant.id, mode);
@@ -272,6 +274,9 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     stage = advanceStage(mode, session.current_stage, out.stage) || '';
     memory = out.memory || {};
     selectionMode = out.selectionMode || 'single';
+    if (mode === 'siv' && session.current_stage === 'candidates' && !memory.candidate_projects) {
+      memory.candidate_projects = String(userMessage).split(/\n+/).map((item) => item.replace(/^[-*]\s*/, '').trim()).filter(Boolean).slice(0, 5);
+    }
   } else {
     const out = await converse(system, recent);
     reply = out.say;
