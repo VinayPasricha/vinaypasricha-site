@@ -120,39 +120,6 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   const researchLimit = mk({ windowMs: 60000, max: 12 }); // grounded auto-research
   const isAuthed = (req) => (typeof studioAuthed === 'function' ? studioAuthed(req) : false);
 
-  // One-time staging recovery for the course-owner test record. Removed after
-  // the restored participant has been verified.
-  app.post('/api/abl/_staging/restore-goodspace-9f3c72', async (req, res) => {
-    try {
-      if (req.get('x-confirm') !== 'restore-clean-goodspace-participant') return fail(res, 'Not found', 404);
-      let p = await repo.getParticipantBySlug('ai-for-business-leaders-');
-      if (!p) {
-        p = await repo.createParticipant({
-          name: 'Vinay Pasricha', company_name: 'GoodSpace.ai', role_title: 'Founder & CEO',
-          company_website: 'https://goodspace.ai', industry: 'AI recruitment / HR technology',
-          geography: 'India', business_model: 'AI-native recruitment platform for employers',
-        });
-        p = await repo.updateParticipant(p.id, {
-          slug: 'ai-for-business-leaders-', link_approved: true, status: 'link_ready',
-          qa_status: 'passed', approved_at: new Date().toISOString(),
-        });
-        await repo.upsertResearch(p.id, {
-          structured_context: {
-            products: 'AI-assisted recruitment covering sourcing, shortlisting, AI interviews and managed hiring',
-            customers: 'SMBs and mid-market employers hiring professional talent',
-            competitors: 'Recruitment agencies, job platforms and applicant-tracking tools',
-            pressures: 'Faster mandate acquisition, consistent candidate quality, shorter hiring turnaround and scalable client delivery',
-            ai_relevance: 'Possible leverage across recruiting memory, candidate reasoning, workflow action and outcome feedback',
-            ai_exposure: 'GoodSpace is itself an AI-native recruitment business; the participant will confirm current internal usage',
-          },
-          research_dossier: 'GoodSpace.ai is an AI-native recruitment platform for employers. Its offer spans candidate sourcing, shortlisting, AI interviews and managed hiring support. The company serves SMB and mid-market employers that need faster, more reliable hiring without building a large internal talent-acquisition team. Vinay Pasricha is the Founder and CEO. This is verified staging context and remains correctable by the participant.',
-          sources_notes: 'Verified from the official GoodSpace website in the prior grounded research pass.',
-        });
-      }
-      return ok(res, { id: p.id, slug: p.slug, company_name: p.company_name, role_title: p.role_title });
-    } catch (e) { return oops(res, e); }
-  });
-
   // -------------------------------------------------------------------------
   // Participant experience (public — the slug is the key)
   // -------------------------------------------------------------------------
