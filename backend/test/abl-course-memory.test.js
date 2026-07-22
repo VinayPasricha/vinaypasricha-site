@@ -74,6 +74,7 @@ test('workspace recommends exactly one useful next action from milestone state',
     const dom = new JSDOM('<main id="workspace"></main>', {
       url: 'https://example.test/ai-business-leaders/workspace/demo', runScripts: 'outside-only',
     });
+    dom.window.AblAuth = { headers: (headers) => headers, clear() {}, login() {} };
     dom.window.fetch = async () => response({
       participant: { name: 'Leader', company_name: 'Example Co', role_title: 'CEO' },
       messages: [], memory: { milestones: {} }, blueprint: null, ...state,
@@ -101,6 +102,7 @@ test('SIV candidate choices support real multi-selection before one submitted tu
   let started = false;
   dom.window.requestAnimationFrame = (fn) => fn();
   dom.window.HTMLElement.prototype.scrollIntoView = function () {};
+  dom.window.AblAuth = { headers: (headers) => headers, clear() {}, login() {} };
   dom.window.fetch = async (_url, init = {}) => {
     const method = init.method || 'GET';
     if (method === 'GET') return response({

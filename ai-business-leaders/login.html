@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course sign in — AI for Business Leaders</title>
+  <meta name="description" content="Sign in to your private AI for Business Leaders course workspace.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ai-business-leaders/login.css">
+</head>
+<body>
+  <header class="login-topbar">
+    <a href="/" class="login-brand"><span>Vinay <em>Pasricha</em></span><small>AI for Business Leaders</small></a>
+    <span class="cohort-mark">Harvard OPM Alumni</span>
+  </header>
+
+  <main class="login-layout">
+    <section class="login-intro">
+      <p class="kicker">Your private course workspace</p>
+      <h1>Welcome back to your <em>AI leadership journey.</em></h1>
+      <p class="intro-copy">Your sessions, course tools, Company Brain thinking and 90-Day AI Blueprint are kept together here.</p>
+      <ul>
+        <li><span>01</span> Continue exactly where you left off</li>
+        <li><span>02</span> Keep your company context across every session</li>
+        <li><span>03</span> Build one practical 90-Day AI Blueprint</li>
+      </ul>
+    </section>
+
+    <section class="login-card" aria-live="polite">
+      <div class="card-rule"></div>
+      <p class="card-eyebrow">Participant sign in</p>
+      <div id="emailStep">
+        <h2>Enter the email you gave us</h2>
+        <p>We will send a six-digit sign-in code. There is no password to remember.</p>
+        <form id="emailForm">
+          <label for="email">Course email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required>
+          <button type="submit">Send my sign-in code <span>→</span></button>
+        </form>
+      </div>
+      <div id="codeStep" hidden>
+        <h2>Check your email</h2>
+        <p>A six-digit code was sent to <strong id="emailEcho"></strong>. It expires in 10 minutes.</p>
+        <form id="codeForm">
+          <label for="code">Six-digit code</label>
+          <input id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required>
+          <button type="submit">Enter your course workspace <span>→</span></button>
+        </form>
+        <p class="preview-code" id="previewCode" hidden></p>
+        <button class="text-button" id="changeEmail" type="button">Use a different email</button>
+      </div>
+      <p class="form-status" id="formStatus" role="status"></p>
+      <p class="privacy-note">Access is limited to pre-registered course participants. You will stay signed in on this device for 30 days.</p>
+    </section>
+  </main>
+
+  <footer><span>AI for Business Leaders</span><a href="mailto:vinay@goodspace.ai">Need help? Write to Vinay</a></footer>
+  <script src="/ai-business-leaders/auth-client.js"></script>
+  <script src="/ai-business-leaders/login.js"></script>
+</body>
+</html>

@@ -42,6 +42,7 @@
     $('main').style.display = 'block';
     renderList(r.data || []);
     wireCreate();
+    wireBulkCreate();
   }
   function showLogin() {
     $('login').style.display = 'block';
@@ -142,6 +143,35 @@
       ['n-name', 'n-company', 'n-role', 'n-email', 'n-website', 'n-industry'].forEach(function (i) { $(i).value = ''; });
       toast('Created'); await refresh(); await openDetail(r.data.id, true);
       if (auto) autoResearch(r.data.id);
+    };
+  }
+
+  function wireBulkCreate() {
+    var button = $('bulkCreateBtn');
+    if (!button) return;
+    button.onclick = async function () {
+      var lines = $('bulkParticipants').value.split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean);
+      var participants = lines.map(function (line) {
+        var cells = line.split(/\t|,/).map(function (cell) { return cell.trim(); }).filter(Boolean);
+        var emailIndex = cells.findIndex(function (cell) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cell); });
+        if (emailIndex < 0) return { email: line };
+        return {
+          email: cells[emailIndex],
+          name: emailIndex > 0 ? cells[0] : '',
+          company_name: cells[emailIndex + 1] || '',
+          role_title: cells[emailIndex + 2] || ''
+        };
+      });
+      if (!participants.length) { toast('Add participant emails first'); return; }
+      button.disabled = true; button.textContent = 'Preloading…'; $('bulkStatus').textContent = '';
+      var r = await api('/participants/bulk', { method: 'POST', body: JSON.stringify({ participants: participants }) });
+      button.disabled = false; button.textContent = 'Preload participants';
+      if (!r.ok) { toast(r.error || 'Import failed'); return; }
+      var d = r.data || {};
+      $('bulkStatus').textContent = (d.created || 0) + ' added · ' + (d.updated || 0) + ' updated' + ((d.skipped || 0) ? ' · ' + d.skipped + ' skipped' : '');
+      $('bulkParticipants').value = '';
+      toast('Participant emails preloaded');
+      await refresh();
     };
   }
 

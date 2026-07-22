@@ -57,6 +57,17 @@ export async function getParticipantBySlug(slug) {
   const snap = await col(COLLECTIONS.ablParticipants).where('slug', '==', slug).limit(1).get();
   return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
+export async function getParticipantByEmail(email) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized) return null;
+  const exact = await col(COLLECTIONS.ablParticipants).where('email_normalized', '==', normalized).limit(1).get();
+  if (!exact.empty) return { id: exact.docs[0].id, ...exact.docs[0].data() };
+  // Older participant records predate email_normalized. The dashboard holds a
+  // small cohort, so this compatibility scan is bounded and avoids a migration.
+  const legacy = await col(COLLECTIONS.ablParticipants).limit(500).get();
+  const match = legacy.docs.find((d) => String(d.data().email || '').trim().toLowerCase() === normalized);
+  return match ? { id: match.id, ...match.data() } : null;
+}
 export async function createParticipant(input) {
   const id = uuid();
   // Clean, company-based link (e.g. /s/acme-corp). The random code is retained
@@ -65,7 +76,10 @@ export async function createParticipant(input) {
   const slug = await uniqueSlug(makeSlug(input.company_name || input.name));
   const p = {
     slug, access_code_hash: sha256(code), name: input.name, company_name: input.company_name,
-    email: input.email || null, role_title: input.role_title || null,
+    email: input.email || null,
+    email_normalized: input.email ? String(input.email).trim().toLowerCase() : null,
+    login_enabled: input.login_enabled !== false,
+    role_title: input.role_title || null,
     company_website: input.company_website || null, industry: input.industry || null,
     geography: input.geography || null, business_model: input.business_model || null,
     status: 'draft', qa_status: 'not_started', link_approved: false, current_stage: null,
@@ -74,6 +88,33 @@ export async function createParticipant(input) {
   };
   await col(COLLECTIONS.ablParticipants).doc(id).set(p);
   return { id, ...p };
+}
+
+// ---- passwordless participant access -------------------------------------
+export async function saveAuthCode(email, input) {
+  const id = sha256(String(email || '').trim().toLowerCase());
+  const row = {
+    participant_id: input.participant_id,
+    email_normalized: String(email || '').trim().toLowerCase(),
+    code_hash: input.code_hash,
+    expires_at: input.expires_at,
+    attempts: 0,
+    created_at: nowISO(),
+  };
+  await col(COLLECTIONS.ablAuthCodes).doc(id).set(row);
+  return { id, ...row };
+}
+export async function getAuthCode(email) {
+  const id = sha256(String(email || '').trim().toLowerCase());
+  return docData(await col(COLLECTIONS.ablAuthCodes).doc(id).get());
+}
+export async function incrementAuthAttempts(email) {
+  const id = sha256(String(email || '').trim().toLowerCase());
+  await col(COLLECTIONS.ablAuthCodes).doc(id).set({ attempts: FieldValue.increment(1) }, { merge: true });
+}
+export async function consumeAuthCode(email) {
+  const id = sha256(String(email || '').trim().toLowerCase());
+  await col(COLLECTIONS.ablAuthCodes).doc(id).delete();
 }
 export async function updateParticipant(id, patch) {
   const ref = col(COLLECTIONS.ablParticipants).doc(id);

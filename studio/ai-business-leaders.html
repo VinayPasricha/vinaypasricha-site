@@ -112,6 +112,16 @@
     </div>
 
     <div class="abl-sec">
+      <h2>Preload course participants</h2>
+      <p class="muted">Paste one participant per line. Email alone works; for richer onboarding use: <strong>Name, Email, Company, Role</strong>.</p>
+      <textarea class="ipt" id="bulkParticipants" rows="7" placeholder="anjali@company.com&#10;Rajesh Menon, rajesh@meridian.com, Meridian Logistics, Managing Director" style="width:100%;margin-top:10px;resize:vertical"></textarea>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn accent" id="bulkCreateBtn">Preload participants</button>
+        <span class="muted" id="bulkStatus"></span>
+      </div>
+    </div>
+
+    <div class="abl-sec">
       <h2>Participants <span id="pcount" class="sub" style="font-family:var(--mono);color:var(--ink-3)"></span></h2>
       <div class="stats" id="stats"></div>
       <table class="tbl"><thead><tr>

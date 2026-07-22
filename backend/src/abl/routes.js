@@ -22,6 +22,19 @@ import {
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
 import { buildCourseMemory } from './memory.js';
+import {
+  bearerToken,
+  codeExpiry,
+  createLoginCode,
+  createParticipantToken,
+  deliverLoginCode,
+  hashLoginCode,
+  isPreviewEnvironment,
+  normalizeEmail,
+  validEmail,
+  verifyLoginCode,
+  verifyParticipantToken,
+} from './auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -118,10 +131,95 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   const chatLimit = mk({ windowMs: 60000, max: 25 });     // participant chat turns
   const rewardLimit = mk({ windowMs: 60000, max: 6 });    // reward/summary generation
   const researchLimit = mk({ windowMs: 60000, max: 12 }); // grounded auto-research
+  const authRequestLimit = mk({ windowMs: 60000, max: 5 });
+  const authVerifyLimit = mk({ windowMs: 60000, max: 12 });
   const isAuthed = (req) => (typeof studioAuthed === 'function' ? studioAuthed(req) : false);
 
   // -------------------------------------------------------------------------
-  // Participant experience (public — the slug is the key)
+  // Participant passwordless sign-in
+  // -------------------------------------------------------------------------
+  app.post('/api/abl/auth/request', authRequestLimit, async (req, res) => {
+    try {
+      const email = normalizeEmail(req.body && req.body.email);
+      if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
+      const p = await repo.getParticipantByEmail(email);
+      const generic = { message: 'If this email is registered for the course, a sign-in code is on its way.' };
+      if (!p || p.login_enabled === false || !p.link_approved) return ok(res, generic);
+      const code = createLoginCode();
+      await repo.saveAuthCode(email, {
+        participant_id: p.id,
+        code_hash: hashLoginCode(email, code),
+        expires_at: codeExpiry(),
+      });
+      const delivery = await deliverLoginCode({ email, code, name: p.name });
+      return ok(res, {
+        ...generic,
+        preview_code: delivery.preview && isPreviewEnvironment() ? code : undefined,
+      });
+    } catch (e) {
+      console.error('[abl] auth request error:', e.message);
+      return fail(res, 'The sign-in code could not be sent. Please try again shortly.', 503);
+    }
+  });
+
+  app.post('/api/abl/auth/verify', authVerifyLimit, async (req, res) => {
+    try {
+      const email = normalizeEmail(req.body && req.body.email);
+      const code = String((req.body && req.body.code) || '').replace(/\s/g, '');
+      if (!validEmail(email) || !/^\d{6}$/.test(code)) return fail(res, 'Enter the six-digit code from your email.');
+      const saved = await repo.getAuthCode(email);
+      const expired = !saved || Number.isNaN(Date.parse(saved.expires_at)) || Date.parse(saved.expires_at) <= Date.now();
+      const exhausted = saved && Number(saved.attempts || 0) >= 5;
+      if (expired || exhausted || !verifyLoginCode(email, code, saved && saved.code_hash)) {
+        if (saved) await repo.incrementAuthAttempts(email);
+        return fail(res, 'That code is incorrect or has expired.', 401);
+      }
+      const p = await repo.getParticipant(saved.participant_id);
+      if (!p || p.login_enabled === false || !p.link_approved || normalizeEmail(p.email) !== email) {
+        return fail(res, 'This course access is not active.', 403);
+      }
+      const token = createParticipantToken(p);
+      if (!token) return fail(res, 'Course sign-in is not configured.', 503);
+      await repo.consumeAuthCode(email);
+      await repo.touchActivity(p.id);
+      return ok(res, {
+        token,
+        participant: { name: p.name, company_name: p.company_name, email: p.email },
+        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
+        expires_in_days: 30,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.get('/api/abl/auth/status', async (req, res) => {
+    try {
+      const payload = verifyParticipantToken(bearerToken(req));
+      if (!payload) return fail(res, 'Sign-in required.', 401);
+      const p = await repo.getParticipant(payload.sub);
+      if (!p || p.slug !== payload.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
+      return ok(res, {
+        participant: { name: p.name, company_name: p.company_name, email: p.email },
+        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // All participant APIs now require the short-lived bearer issued above. The
+  // page shells remain reachable so a missing/expired sign-in can redirect to
+  // the friendly login screen rather than exposing participant data.
+  app.use('/api/abl/session/:slug', async (req, res, next) => {
+    try {
+      const payload = verifyParticipantToken(bearerToken(req));
+      if (!payload || payload.slug !== req.params.slug) return fail(res, 'Sign-in required.', 401);
+      const p = await repo.getParticipant(payload.sub);
+      if (!p || p.slug !== req.params.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
+      req.ablParticipant = p;
+      return next();
+    } catch (e) { return oops(res, e); }
+  });
+
+  // -------------------------------------------------------------------------
+  // Participant experience
   // -------------------------------------------------------------------------
   app.get('/api/abl/session/:slug', async (req, res) => {
     try {
@@ -488,9 +586,55 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const p = await repo.createParticipant({
         name: b.name.trim(), company_name: b.company_name.trim(), email: b.email,
         role_title: b.role_title, company_website: b.company_website, industry: b.industry,
-        geography: b.geography, business_model: b.business_model,
+        geography: b.geography, business_model: b.business_model, login_enabled: b.login_enabled,
       });
       return ok(res, p, 201);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/bulk', requireAdmin, async (req, res) => {
+    try {
+      const entries = Array.isArray(req.body && req.body.participants) ? req.body.participants.slice(0, 250) : [];
+      if (!entries.length) return fail(res, 'Add at least one participant email.');
+      const result = { created: 0, updated: 0, skipped: 0, errors: [] };
+      const titleCase = (value) => String(value || '').replace(/[._-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim();
+      for (let i = 0; i < entries.length; i += 1) {
+        const row = entries[i] || {};
+        const email = normalizeEmail(row.email);
+        if (!validEmail(email)) { result.errors.push(`Row ${i + 1}: invalid email`); result.skipped += 1; continue; }
+        const existing = await repo.getParticipantByEmail(email);
+        if (existing) {
+          await repo.updateParticipant(existing.id, {
+            email,
+            email_normalized: email,
+            login_enabled: true,
+            link_approved: true,
+            status: existing.status === 'draft' ? 'link_ready' : existing.status,
+            approved_at: existing.approved_at || new Date().toISOString(),
+            ...(row.name ? { name: String(row.name).trim() } : {}),
+            ...(row.company_name ? { company_name: String(row.company_name).trim() } : {}),
+            ...(row.role_title ? { role_title: String(row.role_title).trim() } : {}),
+          });
+          result.updated += 1;
+          continue;
+        }
+        const local = email.split('@')[0];
+        const domain = email.split('@')[1].split('.')[0];
+        const p = await repo.createParticipant({
+          name: String(row.name || titleCase(local) || 'Course participant').trim(),
+          company_name: String(row.company_name || titleCase(domain) || 'To confirm').trim(),
+          email,
+          role_title: row.role_title ? String(row.role_title).trim() : null,
+          login_enabled: true,
+        });
+        await repo.updateParticipant(p.id, {
+          link_approved: true,
+          status: 'link_ready',
+          approved_at: new Date().toISOString(),
+        });
+        result.created += 1;
+      }
+      return ok(res, result, 201);
     } catch (e) { return oops(res, e); }
   });
 
@@ -506,7 +650,11 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   });
 
   app.patch('/api/abl/participants/:id', requireAdmin, async (req, res) => {
-    try { return ok(res, await repo.updateParticipant(req.params.id, req.body || {})); } catch (e) { return oops(res, e); }
+    try {
+      const patch = { ...(req.body || {}) };
+      if (Object.prototype.hasOwnProperty.call(patch, 'email')) patch.email_normalized = normalizeEmail(patch.email);
+      return ok(res, await repo.updateParticipant(req.params.id, patch));
+    } catch (e) { return oops(res, e); }
   });
 
   app.delete('/api/abl/participants/:id', requireAdmin, async (req, res) => {

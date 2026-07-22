@@ -26,4 +26,5 @@ export const COLLECTIONS = {
   ablQa: 'abl_qa',
   ablMemory: 'abl_memory',
   ablNotes: 'abl_notes',
+  ablAuthCodes: 'abl_auth_codes',
 };

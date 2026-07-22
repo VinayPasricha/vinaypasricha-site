@@ -5,6 +5,19 @@
   var parts = location.pathname.split('/').filter(Boolean);
   var slug = decodeURIComponent(parts[parts.length - 1] || '');
   var root = document.getElementById('workspace');
+  var signOut = document.getElementById('courseSignOut');
+  if (signOut) signOut.onclick = function () {
+    window.AblAuth.clear();
+    location.replace('/ai-business-leaders/login');
+  };
+
+  async function authFetch(url, init) {
+    var options = Object.assign({}, init || {});
+    options.headers = window.AblAuth.headers(Object.assign({}, (init && init.headers) || {}));
+    var response = await fetch(url, options);
+    if (response.status === 401) { window.AblAuth.clear(); window.AblAuth.login(); }
+    return response;
+  }
 
   function esc(value) {
     return String(value == null ? '' : value)
@@ -318,7 +331,7 @@
       var status = document.getElementById('memoryStatus');
       save.disabled = true; status.textContent = 'Saving…';
       try {
-        var response = await fetch('/api/abl/session/' + encodeURIComponent(slug) + '/memory', {
+        var response = await authFetch('/api/abl/session/' + encodeURIComponent(slug) + '/memory', {
           method: 'PATCH', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ participant_note: document.getElementById('memoryNote').value })
         });
@@ -335,7 +348,7 @@
       if (status) status.textContent = 'Combining your three conversations…';
       if (nextStatus) nextStatus.textContent = 'Combining your conversations…';
       try {
-        var response = await fetch('/api/abl/session/' + encodeURIComponent(slug) + '/blueprint', { method: 'POST', headers: { Accept: 'application/json' } });
+        var response = await authFetch('/api/abl/session/' + encodeURIComponent(slug) + '/blueprint', { method: 'POST', headers: { Accept: 'application/json' } });
         var body = await response.json();
         if (!response.ok || !body.data || !body.data.report) throw new Error(body.error || 'Could not build blueprint.');
         location.reload();
@@ -354,7 +367,7 @@
   async function load() {
     if (!slug || slug === 'workspace') return fail('This link is missing its participant key.');
     try {
-      var response = await fetch('/api/abl/session/' + encodeURIComponent(slug), { headers: { Accept: 'application/json' } });
+      var response = await authFetch('/api/abl/session/' + encodeURIComponent(slug), { headers: { Accept: 'application/json' } });
       var body = await response.json().catch(function () { return {}; });
       if (!response.ok || !body || !body.data) return fail(body.error || 'This participant workspace could not be found.');
       render(body.data);

@@ -78,11 +78,15 @@
 
   async function api(path, init) {
     try {
-      var response = await fetch('/api/abl' + path, Object.assign({
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      }, init || {}));
+      var options = Object.assign({}, init || {});
+      options.headers = window.AblAuth.headers(Object.assign(
+        { 'Content-Type': 'application/json', Accept: 'application/json' },
+        (init && init.headers) || {}
+      ));
+      var response = await fetch('/api/abl' + path, options);
       var body = {};
       try { body = await response.json(); } catch (e) {}
+      if (response.status === 401) { window.AblAuth.clear(); window.AblAuth.login(); }
       return { ok: response.ok && body.ok !== false, data: body.data, error: body.error, status: response.status };
     } catch (e) {
       return { ok: false, error: 'Network error — please check your connection and try again.', status: 0 };
