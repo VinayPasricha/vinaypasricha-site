@@ -13,6 +13,9 @@ test('homepage course banner uses approved copy and passwordless entry', () => {
   assert.match(html, /An Exclusive Course for Harvard OPM Alumni/);
   assert.match(html, /Enter Your Course Workspace/);
   assert.match(html, /href="\/ai-business-leaders\/login" data-course-entry/);
+  assert.match(html, /opm-course-emblem/);
+  assert.match(html, /ai-for-business-leaders-cover-front\.jpg/);
+  assert.doesNotMatch(html, /ai-business-leaders-opm-classroom/);
 });
 
 test('all participant experiences load the shared access client', () => {
@@ -26,4 +29,10 @@ test('login asks for the pre-registered email and one-time code', () => {
   assert.match(html, /Enter the email you gave us/);
   assert.match(html, /six-digit sign-in code/i);
   assert.match(html, /autocomplete="one-time-code"/);
+});
+
+test('unknown course emails receive Vinay access instructions', () => {
+  const routes = read('backend/src/abl/routes.js');
+  assert.match(routes, /This email is not registered for the course\. Please contact Vinay at Vinay@goodspace\.ai to get access\./);
+  assert.match(routes, /email === 'vinay@wlci\.in'/);
 });
