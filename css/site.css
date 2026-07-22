@@ -1717,15 +1717,16 @@ a{color:inherit;text-decoration:none}
   height:100%;
   object-fit:contain;
 }
-.opm-course-edition{
+.opm-course-outcome{
   margin-top:14px;
   font-family:var(--mono);
-  font-size:7px;
-  line-height:1.4;
-  letter-spacing:.18em;
+  max-width:310px;
+  font-size:8px;
+  line-height:1.55;
+  letter-spacing:.14em;
   text-align:center;
   text-transform:uppercase;
-  color:rgba(235,222,185,.78);
+  color:rgba(245,231,194,.88);
 }
 .shelf-book{
   display: flex;
@@ -2101,7 +2102,7 @@ a{color:inherit;text-decoration:none}
   .opm-course-content strong{font-size:42px}
   .opm-course-identity{right:20px;width:31%}
   .opm-course-book-button{width:100%}
-  .opm-course-edition{font-size:6px;letter-spacing:.1em}
+  .opm-course-outcome{font-size:7px;letter-spacing:.09em}
   .shelf-book-cover{ margin-bottom: 20px; }
   .sb-title{ font-size: 19px; }
   .sb-dek{ font-size: 14px; }
@@ -2130,7 +2131,7 @@ a{color:inherit;text-decoration:none}
   .opm-course-copy{font-size:12px}
   .opm-course-identity{top:24px;right:50%;transform:translateX(50%);width:210px}
   .opm-course-book-button{width:190px}
-  .opm-course-edition{margin-top:8px;font-size:5.5px}
+  .opm-course-outcome{margin-top:8px;font-size:6.5px;letter-spacing:.08em}
 }
 
 /* ============================================================
