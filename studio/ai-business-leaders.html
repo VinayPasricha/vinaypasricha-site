@@ -78,6 +78,18 @@
     .transcript-original summary { cursor: pointer; font-family: var(--mono); font-size: 10px; color: var(--accent); }
     .transcript-original pre { white-space: pre-wrap; max-height: 280px; overflow: auto; padding: 10px; background: var(--paper-3); border: 1px solid var(--rule-soft); font: 12px/1.5 var(--mono); }
     .note-edit-box { margin-top: 8px; min-height: 220px; }
+    .context-pending { border-style: dashed; background: var(--paper-3); }
+    .asset-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 14px 0; border-top: 1px solid var(--rule-soft); }
+    .asset-row:first-child { border-top: 0; }
+    .asset-main { min-width: 0; }
+    .asset-description { margin-top: 6px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+    .asset-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; flex: 0 0 auto; }
+    .asset-actions .btn { padding: 7px 10px; font-size: 10px; }
+    @media (max-width: 720px) {
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+      .asset-row { flex-direction: column; }
+      .asset-actions { justify-content: flex-start; }
+    }
     #login { max-width: 360px; margin: 80px auto; text-align: center; }
     #login input { width: 100%; margin: 10px 0; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 4px; font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; }

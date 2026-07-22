@@ -49,13 +49,14 @@ test('only relevant passages from shared transcripts are retrieved', () => {
 test('admin UI offers transcript processing inside the existing participant record', () => {
   const ui = readFileSync(path.join(root, 'studio', 'ai-business-leaders.js'), 'utf8');
   const routes = readFileSync(path.join(root, 'backend', 'src', 'abl', 'routes.js'), 'utf8');
-  assert.match(ui, /Meetings &amp; Transcripts/);
+  assert.match(ui, /Participant context — meetings &amp; transcripts/);
   assert.match(ui, /Create draft summary/);
   assert.match(ui, /Approve for course AI/);
   assert.match(ui, /Also share this summary with the participant/);
   assert.match(ui, /Edit summary/);
   assert.match(ui, /\.txt,\.md,\.docx,\.pdf/);
-  assert.ok(ui.indexOf('2 · Meetings &amp; Transcripts') < ui.indexOf('3 · Approve &amp; share the link'));
+  assert.ok(ui.indexOf('2 · Participant page &amp; private link') < ui.indexOf('3 · Participant context — meetings &amp; transcripts'));
+  assert.match(ui, /A first-agent conversation is not required/);
   assert.match(routes, /participants\/:id\/transcripts/);
   assert.match(routes, /analyseTranscript/);
   assert.match(routes, /notes\/:noteId\/approve/);

@@ -24,6 +24,12 @@ import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
 import { buildCourseMemory } from './memory.js';
 import { analyseTranscript, extractTranscript, transcriptSummaryMarkdown } from './transcripts.js';
 import {
+  decodeParticipantAsset,
+  extractParticipantAssetText,
+  participantAssetMime,
+  supportedParticipantAsset,
+} from './assets.js';
+import {
   bearerToken,
   codeExpiry,
   createLoginCode,
@@ -687,10 +693,10 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs, memory, notes] = await Promise.all([
-        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }), repo.listNotes(p.id),
+      const [research, qa, outputs, memory, notes, assets] = await Promise.all([
+        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }), repo.listNotes(p.id), repo.listAssets(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs, memory, notes });
+      return ok(res, { participant: p, research, qa, outputs, memory, notes, assets });
     } catch (e) { return oops(res, e); }
   });
 
@@ -784,6 +790,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding meeting context.', 409);
       const content = String((req.body && req.body.content) || '').trim();
       if (!content) return fail(res, 'Add a meeting or conversation summary first.');
       const note = await repo.addNote(p.id, {
@@ -798,6 +805,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding meeting context.', 409);
       const extracted = await extractTranscript(req.body || {});
       const analysis = await analyseTranscript({ participant: p, transcript: extracted.text });
       const note = await repo.addNote(p.id, {
@@ -858,6 +866,66 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       });
       if (!note) return fail(res, 'Meeting record not found', 404);
       return ok(res, note);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/assets', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding files.', 409);
+      const fileName = String((req.body && req.body.file_name) || '').trim();
+      if (!supportedParticipantAsset(fileName)) {
+        return fail(res, 'Upload a PDF, Word, PowerPoint, Excel, text, CSV or image file.');
+      }
+      const buffer = decodeParticipantAsset(req.body && req.body.file_base64);
+      const extracted = await extractParticipantAssetText(fileName, buffer);
+      const asset = await repo.addAsset(p.id, {
+        title: req.body.title || fileName,
+        description: req.body.description,
+        file_name: fileName,
+        mime_type: participantAssetMime(fileName),
+        buffer,
+        extracted_text: extracted.text,
+        extractable: extracted.extractable,
+        extraction_error: extracted.extraction_error,
+        context_truncated: extracted.truncated,
+      });
+      return ok(res, asset, 201);
+    } catch (e) {
+      if (/uploaded file|Participant files|Upload a PDF/i.test(String(e && e.message))) return fail(res, e.message, 400);
+      return oops(res, e);
+    }
+  });
+
+  app.get('/api/abl/participants/:id/assets/:assetId/download', requireAdmin, async (req, res) => {
+    try {
+      const result = await repo.getAssetBuffer(req.params.id, req.params.assetId);
+      if (!result) return fail(res, 'File not found', 404);
+      const safeName = String(result.asset.file_name || 'participant-file').replace(/["\r\n]/g, '_');
+      res.setHeader('Content-Type', result.asset.mime_type || 'application/octet-stream');
+      res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`);
+      res.setHeader('Content-Length', String(result.buffer.length));
+      res.setHeader('Cache-Control', 'private, no-store');
+      return res.send(result.buffer);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/assets/:assetId/approve', requireAdmin, async (req, res) => {
+    try {
+      const current = await repo.getAsset(req.params.id, req.params.assetId);
+      if (!current) return fail(res, 'File not found', 404);
+      if (!current.extracted_text) return fail(res, 'This file is stored safely, but its text cannot be read by the course AI.', 409);
+      const asset = await repo.updateAsset(req.params.id, req.params.assetId, { review_status: 'approved' });
+      return ok(res, asset);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.delete('/api/abl/participants/:id/assets/:assetId', requireAdmin, async (req, res) => {
+    try {
+      const deleted = await repo.deleteAsset(req.params.id, req.params.assetId);
+      if (!deleted) return fail(res, 'File not found', 404);
+      return ok(res, { deleted: true });
     } catch (e) { return oops(res, e); }
   });
 

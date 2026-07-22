@@ -11,6 +11,7 @@
   // Restore the window scroll after re-renders settle, so buttons never jump the page.
   function restoreY(y) { requestAnimationFrame(function () { window.scrollTo(0, y); requestAnimationFrame(function () { window.scrollTo(0, y); }); }); }
   function fmtDate(v) { if (!v) return '—'; var d = new Date(v); return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  function fmtBytes(v) { var n = Number(v || 0); if (n < 1024) return n + ' B'; if (n < 1024 * 1024) return Math.round(n / 1024) + ' KB'; return (n / (1024 * 1024)).toFixed(1) + ' MB'; }
   function md(src) {
     var lines = String(src || '').replace(/\r/g, '').split('\n'), out = '', inList = false;
     function inl(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); }
@@ -231,8 +232,16 @@
         '<label class="fld">Sources / notes</label><textarea class="ipt auto" id="r-sources" rows="2">' + esc((d.research && d.research.sources_notes) || '') + '</textarea>' +
         '<button class="btn" id="saveResearch" style="margin-top:12px">Save research</button></div>' +
 
+      // Generate the participant page before adding later meeting context.
+      '<div class="card"><h4>2 · Participant page &amp; private link</h4>' +
+        (p.link_approved
+          ? '<p class="muted">The participant page is ready. The participant may speak with the first agent before or after your one-on-one meeting.</p><div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
+          : '<p class="muted">Generate the participant page and private link. This creates their permanent Studio record; first-agent interaction is optional.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Generate participant page &amp; link</button>') +
+      '</div>' +
+
+      (p.link_approved ?
       // Physical meetings and full transcripts
-      '<div class="card"><h4>2 · Meetings &amp; Transcripts</h4>' +
+      '<div class="card"><h4>3 · Participant context — meetings &amp; transcripts</h4>' +
         '<p class="muted">Upload or paste the full one-on-one transcript. The original stays private. AI creates a draft summary for you to review before any course agent can use it.</p>' +
         '<div class="grid2"><div><label class="fld">Title</label><input class="ipt" id="noteTitle" placeholder="One-on-one meeting · 21 July"></div>' +
         '<div><label class="fld">Meeting date</label><input class="ipt" id="noteDate" type="date"></div></div>' +
@@ -257,18 +266,32 @@
         }).join('') || '<span class="muted">No meetings or transcripts added yet.</span>') + '</div>' +
       '</div>' +
 
-      // Approve + link
-      '<div class="card"><h4>3 · Approve &amp; share the link</h4>' +
-        (p.link_approved
-          ? '<div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
-          : '<p class="muted">Approve to activate this participant\'s private link, then send it to them.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Approve link</button>') +
-      '</div>' +
+      // Participant-submitted files
+      '<div class="card"><h4>4 · Participant assets</h4>' +
+        '<p class="muted">Keep PDFs, Word documents, presentations, spreadsheets and other materials submitted by this participant on their private page. Files remain admin-only. Where text can be extracted, you may approve it for the course AI.</p>' +
+        '<div class="grid2"><div><label class="fld">Asset title</label><input class="ipt" id="assetTitle" placeholder="Strategy note, process document, presentation…"></div>' +
+        '<div><label class="fld">File</label><input class="ipt" type="file" id="assetFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.csv,.jpg,.jpeg,.png"></div></div>' +
+        '<label class="fld">Description / why it matters (optional)</label><textarea class="ipt" id="assetDescription" rows="2" placeholder="Add any guidance that will help you or the AI interpret this file correctly."></textarea>' +
+        '<div class="transcript-actions"><button class="btn" id="uploadAsset">Upload participant asset</button><span id="assetStatus" class="muted"></span></div>' +
+        '<div id="assetList" style="margin-top:16px">' + ((d.assets || []).map(function (asset) {
+          var approved = asset.review_status === 'approved';
+          var readable = asset.extraction_status === 'extracted' && !!asset.extracted_text;
+          var status = approved ? 'Approved for course AI' : (readable ? 'Stored privately · awaiting AI approval' : 'Stored privately · admin reference only');
+          return '<div class="asset-row"><div class="asset-main"><strong>' + esc(asset.title || asset.file_name) + '</strong>' +
+            '<div class="note-meta">' + esc(asset.file_name) + ' · ' + fmtBytes(asset.byte_size) + ' · ' + status + '</div>' +
+            (asset.description ? '<div class="asset-description">' + esc(asset.description) + '</div>' : '') + '</div>' +
+            '<div class="asset-actions"><a class="viewbrief" href="/api/abl/participants/' + encodeURIComponent(p.id) + '/assets/' + encodeURIComponent(asset.id) + '/download">Download</a>' +
+            (!approved && readable ? '<button class="btn accent" data-asset-approve="' + esc(asset.id) + '">Approve for course AI</button>' : '') +
+            '<button class="del" data-asset-del="' + esc(asset.id) + '" title="Delete participant file">✕</button></div></div>';
+        }).join('') || '<span class="muted">No participant assets uploaded yet.</span>') + '</div>' +
+      '</div>' :
+      '<div class="card context-pending"><h4>3 · Participant context &amp; assets</h4><p class="muted">Meeting summaries, transcripts and participant files will appear here as soon as the participant page and link are generated. A first-agent conversation is not required.</p></div>') +
 
       // Brief
       (function () {
         var brief = (d.outputs || []).filter(function (o) { return o.output_type === 'vinay_meeting_brief'; })[0];
         var bmd = brief ? (brief.reviewed_content_markdown || brief.content_markdown || '') : '';
-        return '<div class="card"><h4>4 · Vinay meeting brief (private)</h4>' +
+        return '<div class="card"><h4>' + (p.link_approved ? '5' : '4') + ' · Vinay meeting brief (private)</h4>' +
           '<button class="btn" id="briefBtn">' + (brief ? 'Regenerate brief' : 'Generate Vinay brief') + '</button>' +
           (brief ? ' <a class="row-actions" href="/ai-business-leaders/pdf/' + brief.id + '" target="_blank" rel="noopener" style="margin-left:10px">Open printable / PDF ↗</a>' : '') +
           '<div id="briefOut" class="muted" style="margin-top:10px"></div>' +
@@ -413,6 +436,51 @@
         var r = await api('/participants/' + p.id + '/notes/' + button.getAttribute('data-note-del'), { method: 'DELETE' });
         if (r.ok) { toast('Meeting record deleted'); await openDetail(p.id); restoreY(y); }
         else toast(r.error || 'Could not delete');
+      };
+    });
+
+    var assetFile = $('assetFile');
+    if (assetFile) assetFile.onchange = function () {
+      var file = assetFile.files && assetFile.files[0];
+      if (!file) return;
+      if (file.size > 6 * 1024 * 1024) { $('assetStatus').textContent = 'Participant files must be smaller than 6 MB.'; assetFile.value = ''; return; }
+      if (!$('assetTitle').value) $('assetTitle').value = file.name.replace(/\.[^.]+$/, '');
+      $('assetStatus').textContent = 'Ready to upload privately.';
+    };
+    var uploadAsset = $('uploadAsset');
+    if (uploadAsset) uploadAsset.onclick = async function () {
+      var file = assetFile && assetFile.files && assetFile.files[0];
+      if (!file) { $('assetStatus').textContent = 'Choose a participant file first.'; return; }
+      var y = window.pageYOffset;
+      uploadAsset.disabled = true; uploadAsset.textContent = 'Uploading…'; $('assetStatus').textContent = 'Saving this file to the participant page…';
+      var r;
+      try {
+        r = await api('/participants/' + p.id + '/assets', { method: 'POST', body: JSON.stringify({
+          title: $('assetTitle').value.trim() || file.name,
+          description: $('assetDescription').value.trim(),
+          file_name: file.name,
+          file_base64: await fileBase64(file)
+        }) });
+      } catch (error) { r = { ok: false, error: error.message }; }
+      uploadAsset.disabled = false; uploadAsset.textContent = 'Upload participant asset';
+      if (r.ok) { toast('Participant asset uploaded'); await openDetail(p.id); restoreY(y); }
+      else $('assetStatus').textContent = r.error || 'Could not upload the participant file.';
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-asset-approve]'), function (button) {
+      button.onclick = async function () {
+        button.disabled = true; button.textContent = 'Approving…';
+        var r = await api('/participants/' + p.id + '/assets/' + button.getAttribute('data-asset-approve') + '/approve', { method: 'POST' });
+        if (r.ok) { toast('Asset approved for all course agents'); await openDetail(p.id); }
+        else { button.disabled = false; button.textContent = 'Approve for course AI'; toast(r.error || 'Could not approve asset'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-asset-del]'), function (button) {
+      button.onclick = async function () {
+        if (!window.confirm('Delete this participant file?')) return;
+        var y = window.pageYOffset;
+        var r = await api('/participants/' + p.id + '/assets/' + button.getAttribute('data-asset-del'), { method: 'DELETE' });
+        if (r.ok) { toast('Participant file deleted'); await openDetail(p.id); restoreY(y); }
+        else toast(r.error || 'Could not delete participant file');
       };
     });
   }

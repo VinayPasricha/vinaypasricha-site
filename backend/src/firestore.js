@@ -26,6 +26,8 @@ export const COLLECTIONS = {
   ablQa: 'abl_qa',
   ablMemory: 'abl_memory',
   ablNotes: 'abl_notes',
+  ablAssets: 'abl_assets',
+  ablAssetChunks: 'abl_asset_chunks',
   ablAuthCodes: 'abl_auth_codes',
   ablParticipantSessions: 'abl_participant_sessions',
 };

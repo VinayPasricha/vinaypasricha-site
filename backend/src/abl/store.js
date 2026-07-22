@@ -287,6 +287,94 @@ export async function deleteNote(participantId, id) {
   return true;
 }
 
+// ---- participant files ----------------------------------------------------
+// Files are kept in private Firestore chunks so they survive Cloud Run
+// restarts. Each chunk stays comfortably below Firestore's 1 MiB document
+// limit; only admin-gated routes can list or download them.
+const ASSET_CHUNK_BYTES = 540_000;
+export async function listAssets(participantId) {
+  const snap = await col(COLLECTIONS.ablAssets).where('participant_id', '==', participantId).get();
+  const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  rows.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  return rows;
+}
+export async function addAsset(participantId, input) {
+  const id = uuid();
+  const buffer = Buffer.isBuffer(input.buffer) ? input.buffer : Buffer.from(input.buffer || '');
+  const chunks = [];
+  for (let offset = 0; offset < buffer.length; offset += ASSET_CHUNK_BYTES) {
+    chunks.push(buffer.subarray(offset, offset + ASSET_CHUNK_BYTES).toString('base64'));
+  }
+  const row = {
+    participant_id: participantId,
+    title: String(input.title || input.file_name || 'Participant file').slice(0, 180),
+    description: String(input.description || '').slice(0, 2000),
+    file_name: String(input.file_name || 'participant-file').replace(/[\\/\u0000-\u001f]/g, '_').slice(0, 240),
+    mime_type: String(input.mime_type || 'application/octet-stream').slice(0, 160),
+    byte_size: buffer.length,
+    chunk_count: chunks.length,
+    extracted_text: String(input.extracted_text || '').slice(0, 300000),
+    extraction_status: input.extraction_error ? 'failed' : (input.extractable ? 'extracted' : 'not_supported'),
+    extraction_error: String(input.extraction_error || '').slice(0, 500),
+    context_truncated: !!input.context_truncated,
+    review_status: 'draft',
+    visibility: 'private',
+    approved_at: null,
+    created_at: nowISO(),
+    updated_at: nowISO(),
+  };
+  await col(COLLECTIONS.ablAssets).doc(id).set(row);
+  for (let i = 0; i < chunks.length; i += 450) {
+    const batch = db.batch();
+    chunks.slice(i, i + 450).forEach((data, relativeIndex) => {
+      const index = i + relativeIndex;
+      batch.set(col(COLLECTIONS.ablAssetChunks).doc(`${id}_${String(index).padStart(4, '0')}`), {
+        asset_id: id, participant_id: participantId, index, data,
+      });
+    });
+    await batch.commit();
+  }
+  return { id, ...row };
+}
+export async function getAsset(participantId, id) {
+  const asset = docData(await col(COLLECTIONS.ablAssets).doc(id).get());
+  return asset && asset.participant_id === participantId ? asset : null;
+}
+export async function getAssetBuffer(participantId, id) {
+  const asset = await getAsset(participantId, id);
+  if (!asset) return null;
+  const snap = await col(COLLECTIONS.ablAssetChunks).where('asset_id', '==', id).get();
+  const chunks = snap.docs.map((d) => d.data()).sort((a, b) => Number(a.index) - Number(b.index));
+  if (chunks.length !== Number(asset.chunk_count || 0)) return null;
+  return { asset, buffer: Buffer.concat(chunks.map((chunk) => Buffer.from(chunk.data, 'base64'))) };
+}
+export async function updateAsset(participantId, id, input) {
+  const current = await getAsset(participantId, id);
+  if (!current) return null;
+  const patch = { updated_at: nowISO() };
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'title')) patch.title = String(input.title || current.file_name).slice(0, 180);
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'description')) patch.description = String(input.description || '').slice(0, 2000);
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'review_status')) {
+    patch.review_status = input.review_status === 'approved' ? 'approved' : 'draft';
+    patch.visibility = patch.review_status === 'approved' ? 'course_memory' : 'private';
+    patch.approved_at = patch.review_status === 'approved' ? nowISO() : null;
+  }
+  await col(COLLECTIONS.ablAssets).doc(id).set(patch, { merge: true });
+  return { ...current, ...patch };
+}
+export async function deleteAsset(participantId, id) {
+  const asset = await getAsset(participantId, id);
+  if (!asset) return false;
+  const chunks = await col(COLLECTIONS.ablAssetChunks).where('asset_id', '==', id).get();
+  for (let i = 0; i < chunks.docs.length; i += 450) {
+    const batch = db.batch();
+    chunks.docs.slice(i, i + 450).forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  }
+  await col(COLLECTIONS.ablAssets).doc(id).delete();
+  return true;
+}
+
 // ---- outputs ---------------------------------------------------------------
 export async function getOutputs(participantId) {
   const snap = await col(COLLECTIONS.ablOutputs).where('participant_id', '==', participantId).get();
@@ -357,6 +445,8 @@ export async function deleteParticipant(id) {
   }
   const notes = await col(COLLECTIONS.ablNotes).where('participant_id', '==', id).get();
   notes.docs.forEach((d) => refs.push(d.ref));
+  const assets = await col(COLLECTIONS.ablAssets).where('participant_id', '==', id).get();
+  for (const asset of assets.docs) await deleteAsset(id, asset.id);
   refs.push(col(COLLECTIONS.ablResearch).doc(id));
   refs.push(col(COLLECTIONS.ablMemory).doc(id));
   refs.push(col(COLLECTIONS.ablQa).doc(id));

@@ -583,7 +583,8 @@ Return ONLY this JSON shape (all values are short strings; leave "" if genuinely
 // asks the first question. Stored as the first assistant turn.
 export async function openingTurn({ participant, session }) {
   const research = await repo.getResearch(participant.id);
-  const system = buildConversationSystem({ participant, research, session });
+  const memory = await buildCourseMemory(participant, { agentContext: true });
+  const system = buildConversationSystem({ participant, research, session, courseMemory: memoryPromptBlock(memory) });
   const { say, options } = await converse(system, [{ role: 'user', content: 'The participant has just opened the session and will see your reply as the very first message. Greet them warmly by first name, briefly confirm their company and role from the preliminary research and invite corrections, then ask your first question. Provide exactly 3 options they might click to answer that first question — even though it is a confirmation, still give 3 (an affirmation, a partial correction, and a fuller correction).' }]);
   if (say) await repo.addMessage({ session_id: session.id, participant_id: participant.id, role: 'assistant', content: say, metadata: { options } });
   return { say, options };
