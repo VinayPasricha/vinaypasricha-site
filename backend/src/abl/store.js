@@ -116,6 +116,19 @@ export async function consumeAuthCode(email) {
   const id = sha256(String(email || '').trim().toLowerCase());
   await col(COLLECTIONS.ablAuthCodes).doc(id).delete();
 }
+export async function saveParticipantSession(tokenHash, input) {
+  const row = {
+    participant_id: input.participant_id,
+    slug: input.slug,
+    expires_at: input.expires_at,
+    created_at: nowISO(),
+  };
+  await col(COLLECTIONS.ablParticipantSessions).doc(tokenHash).set(row);
+  return { id: tokenHash, ...row };
+}
+export async function getParticipantSession(tokenHash) {
+  return docData(await col(COLLECTIONS.ablParticipantSessions).doc(tokenHash).get());
+}
 export async function updateParticipant(id, patch) {
   const ref = col(COLLECTIONS.ablParticipants).doc(id);
   await ref.set({ ...patch, updated_at: nowISO() }, { merge: true });
