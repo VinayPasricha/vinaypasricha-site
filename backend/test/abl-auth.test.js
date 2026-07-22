@@ -31,3 +31,13 @@ test('course email normalization rejects malformed addresses', () => {
   assert.equal(auth.validEmail('leader@example.com'), true);
   assert.equal(auth.validEmail('not-an-email'), false);
 });
+
+test('opaque participant tokens are random and stored only by hash', () => {
+  const first = auth.createOpaqueParticipantToken();
+  const second = auth.createOpaqueParticipantToken();
+  assert.match(first, /^ablr\.[A-Za-z0-9_-]+$/);
+  assert.notEqual(first, second);
+  assert.match(auth.hashParticipantToken(first), /^[a-f0-9]{64}$/);
+  assert.notEqual(auth.hashParticipantToken(first), first);
+  assert.ok(Date.parse(auth.participantTokenExpiry()) > Date.now());
+});
