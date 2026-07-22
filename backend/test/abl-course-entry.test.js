@@ -10,13 +10,16 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8');
 test('homepage course banner uses approved copy and passwordless entry', () => {
   const html = read('index.html');
   assert.match(html, /AI for Business Leaders/);
-  assert.match(html, /An Exclusive Course for Harvard OPM Alumni/);
+  assert.match(html, /Build Your Company Brain\. Lead AI with Clarity\./);
+  assert.match(html, /A practical five-week journey to identify your weakest execution link/);
+  assert.match(html, /Five weeks · Five practical wins · One 90-Day Blueprint/);
   assert.match(html, /Enter Your Course Workspace/);
   assert.match(html, /href="\/ai-business-leaders\/login" data-course-entry/);
   assert.match(html, /opm-course-book-button/);
   assert.match(html, /ai-for-business-leaders-book-button\.png/);
   assert.doesNotMatch(html, /opm-course-wordmark|The Company Brain/);
   assert.doesNotMatch(html, /ai-business-leaders-opm-classroom/);
+  assert.doesNotMatch(html, /Second Edition/);
 });
 
 test('all participant experiences load the shared access client', () => {
