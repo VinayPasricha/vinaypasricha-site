@@ -459,13 +459,13 @@
   z-index: 1;
 }
 .intake-draft.is-visible { display: block; }
+/* Label sits inside the top edge, not straddling the border — the panel
+   behind it is a gradient, so an opaque "legend" chip showed as a patch. */
 .intake-draft::before {
   content: "MESSAGE TO VINAY";
   position: absolute;
-  top: -10px;
-  left: 16px;
-  background: #0d1117;
-  padding: 0 10px;
+  top: 12px;
+  left: 22px;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.28em;
@@ -473,7 +473,7 @@
 }
 
 .draft-header {
-  padding: 18px 22px 14px;
+  padding: 34px 22px 14px;
   border-bottom: 1px solid rgba(180, 200, 230, 0.06);
 }
 .draft-header .label { display: none; }
