@@ -36,7 +36,13 @@ export function createLoginCode() {
 }
 
 export function hashLoginCode(email, code) {
-  return sign(`code:${normalizeEmail(email)}:${String(code || '').trim()}`);
+  const value = `code:${normalizeEmail(email)}:${String(code || '').trim()}`;
+  // Preview deployments may not have their long-lived signing secret yet.
+  // A deterministic one-way digest still lets the short-lived code be checked
+  // correctly instead of treating every code as the same empty signature.
+  return secret()
+    ? sign(value)
+    : crypto.createHash('sha256').update(value).digest('base64url');
 }
 
 export function verifyLoginCode(email, code, expectedHash) {

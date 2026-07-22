@@ -13,8 +13,9 @@ test('homepage course banner uses approved copy and passwordless entry', () => {
   assert.match(html, /An Exclusive Course for Harvard OPM Alumni/);
   assert.match(html, /Enter Your Course Workspace/);
   assert.match(html, /href="\/ai-business-leaders\/login" data-course-entry/);
-  assert.match(html, /opm-course-emblem/);
-  assert.match(html, /ai-for-business-leaders-cover-front\.jpg/);
+  assert.match(html, /opm-course-book-button/);
+  assert.match(html, /ai-for-business-leaders-book-button\.png/);
+  assert.doesNotMatch(html, /opm-course-wordmark|The Company Brain/);
   assert.doesNotMatch(html, /ai-business-leaders-opm-classroom/);
 });
 
@@ -26,9 +27,12 @@ test('all participant experiences load the shared access client', () => {
 
 test('login asks for the pre-registered email and one-time code', () => {
   const html = read('ai-business-leaders/login.html');
+  const js = read('ai-business-leaders/login.js');
   assert.match(html, /Enter the email you gave us/);
   assert.match(html, /six-digit sign-in code/i);
   assert.match(html, /autocomplete="one-time-code"/);
+  assert.match(js, /Approved email confirmed\. Opening your course workspace/);
+  assert.match(js, /verifyAndEnter\(result\.data\.preview_code/);
 });
 
 test('unknown course emails receive Vinay access instructions', () => {

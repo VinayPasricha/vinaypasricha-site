@@ -155,15 +155,22 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const email = normalizeEmail(req.body && req.body.email);
       if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
       let p = await repo.getParticipantByEmail(email);
-      // A single staging-only participant makes the access flow immediately
-      // testable without adding a production back door or a public sign-up.
-      if (!p && isPreviewEnvironment() && email === 'vinay@wlci.in') {
-        const created = await repo.createParticipant({
-          name: 'Vinay Pasricha', company_name: 'GoodSpace AI', email,
-          role_title: 'Founder & CEO', company_website: 'https://goodspace.ai',
-        });
-        p = await repo.updateParticipant(created.id, {
-          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
+      // Keep one staging-only participant deterministic so repeated design and
+      // sign-in tests cannot be blocked by an older disabled/draft record.
+      if (isPreviewEnvironment() && email === 'vinay@wlci.in') {
+        if (!p) {
+          p = await repo.createParticipant({
+            name: 'Vinay Pasricha', company_name: 'GoodSpace AI', email,
+            role_title: 'Founder & CEO', company_website: 'https://goodspace.ai',
+          });
+        }
+        p = await repo.updateParticipant(p.id, {
+          email,
+          email_normalized: email,
+          login_enabled: true,
+          link_approved: true,
+          status: 'link_ready',
+          approved_at: p.approved_at || new Date().toISOString(),
         });
       }
       if (!p || p.login_enabled === false) {

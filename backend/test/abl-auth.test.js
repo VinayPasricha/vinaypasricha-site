@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 
 process.env.ABL_AUTH_SECRET = process.env.ABL_AUTH_SECRET || 'test-only-participant-auth-secret';
 
@@ -40,4 +41,19 @@ test('opaque participant tokens are random and stored only by hash', () => {
   assert.match(auth.hashParticipantToken(first), /^[a-f0-9]{64}$/);
   assert.notEqual(auth.hashParticipantToken(first), first);
   assert.ok(Date.parse(auth.participantTokenExpiry()) > Date.now());
+});
+
+test('preview login codes are still checked when no deployment secret exists', () => {
+  const script = `
+    const auth = await import('./src/abl/auth.js');
+    const hash = auth.hashLoginCode('leader@example.com', '482913');
+    if (!auth.verifyLoginCode('leader@example.com', '482913', hash)) process.exit(2);
+    if (auth.verifyLoginCode('leader@example.com', '111111', hash)) process.exit(3);
+  `;
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+    cwd: new URL('..', import.meta.url),
+    env: { ...process.env, ABL_AUTH_SECRET: '', ADMIN_TOKEN: '' },
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
 });

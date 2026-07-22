@@ -1608,8 +1608,8 @@ a{color:inherit;text-decoration:none}
   color: #fffaf0;
   text-decoration: none;
   background:
-    radial-gradient(circle at 82% 42%,rgba(38,187,221,.16),transparent 27%),
-    linear-gradient(135deg,#0d1d31 0%,#132d49 58%,#0b1b2d 100%);
+    radial-gradient(circle at 82% 44%,rgba(228,199,139,.10),transparent 27%),
+    linear-gradient(135deg,#101b29 0%,#162230 62%,#101b29 100%);
   border: 1px solid rgba(185,151,85,.52);
   box-shadow: 0 38px 78px -44px rgba(20,17,10,.72);
   transition: transform .3s ease, box-shadow .3s ease;
@@ -1702,52 +1702,30 @@ a{color:inherit;text-decoration:none}
   justify-content:center;
   color:#d8c384;
 }
-.opm-course-emblem{
+.opm-course-book-button{
   position:relative;
   display:block;
   width:min(30vw,330px);
   aspect-ratio:1;
-  overflow:hidden;
-  border-radius:50%;
-  border:1px solid rgba(106,220,244,.52);
-  background:#0b2540;
-  box-shadow:
-    0 0 0 10px rgba(209,184,120,.045),
-    0 0 55px rgba(49,203,235,.25),
-    inset 0 0 38px rgba(0,0,0,.25);
+  overflow:visible;
+  background:transparent;
+  filter:drop-shadow(0 24px 36px rgba(0,0,0,.18));
 }
-.opm-course-emblem::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  box-shadow:inset 0 0 55px 18px rgba(6,22,38,.28);
+.opm-course-book-button img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
-.opm-course-emblem img{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:135.3%;
-  max-width:none;
-  transform:translate(-53%,-50%);
-  filter:saturate(.92) contrast(1.06);
-}
-.opm-course-lens{
-  margin-top:19px;
+.opm-course-edition{
+  margin-top:14px;
   font-family:var(--mono);
   font-size:7px;
   line-height:1.4;
-  letter-spacing:.14em;
+  letter-spacing:.18em;
   text-align:center;
   text-transform:uppercase;
   color:rgba(235,222,185,.78);
-}
-.opm-course-wordmark{
-  margin-top:6px;
-  font-family:var(--serif);
-  font-size:17px;
-  font-style:italic;
-  color:#f3ead8;
 }
 .shelf-book{
   display: flex;
@@ -2122,8 +2100,8 @@ a{color:inherit;text-decoration:none}
   .opm-course-content{width:75%;padding:36px 30px}
   .opm-course-content strong{font-size:42px}
   .opm-course-identity{right:20px;width:31%}
-  .opm-course-emblem{width:100%}
-  .opm-course-lens{font-size:6px;letter-spacing:.08em}
+  .opm-course-book-button{width:100%}
+  .opm-course-edition{font-size:6px;letter-spacing:.1em}
   .shelf-book-cover{ margin-bottom: 20px; }
   .sb-title{ font-size: 19px; }
   .sb-dek{ font-size: 14px; }
@@ -2151,9 +2129,8 @@ a{color:inherit;text-decoration:none}
   .opm-course-content em{font-size:20px}
   .opm-course-copy{font-size:12px}
   .opm-course-identity{top:24px;right:50%;transform:translateX(50%);width:210px}
-  .opm-course-emblem{width:190px}
-  .opm-course-lens{margin-top:10px;font-size:5.5px}
-  .opm-course-wordmark{font-size:14px}
+  .opm-course-book-button{width:190px}
+  .opm-course-edition{margin-top:8px;font-size:5.5px}
 }
 
 /* ============================================================

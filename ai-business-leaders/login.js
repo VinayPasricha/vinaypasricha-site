@@ -23,31 +23,14 @@
     button.disabled = yes;
   }
 
-  document.getElementById('emailForm').onsubmit = async function (event) {
-    event.preventDefault();
-    email = emailInput.value.trim().toLowerCase();
-    message(''); busy(event.currentTarget, true);
-    var result = await json('/auth/request', { method: 'POST', body: JSON.stringify({ email: email }) });
-    busy(event.currentTarget, false);
-    if (!result.ok) { message(result.error || 'We could not send the code. Please try again.', true); return; }
-    document.getElementById('emailEcho').textContent = email;
-    emailStep.hidden = true; codeStep.hidden = false;
-    if (result.data.preview_code) {
-      var preview = document.getElementById('previewCode');
-      preview.hidden = false;
-      preview.textContent = 'Staging preview code: ' + result.data.preview_code;
-      codeInput.value = result.data.preview_code;
+  async function verifyAndEnter(code, form) {
+    busy(form, true);
+    var result = await json('/auth/verify', { method: 'POST', body: JSON.stringify({ email: email, code: code }) });
+    if (!result.ok) {
+      busy(form, false);
+      message(result.error || 'That code could not be verified.', true);
+      return false;
     }
-    message(result.data.message || 'Enter the code to continue.');
-    codeInput.focus();
-  };
-
-  document.getElementById('codeForm').onsubmit = async function (event) {
-    event.preventDefault();
-    message(''); busy(event.currentTarget, true);
-    var result = await json('/auth/verify', { method: 'POST', body: JSON.stringify({ email: email, code: codeInput.value }) });
-    busy(event.currentTarget, false);
-    if (!result.ok) { message(result.error || 'That code could not be verified.', true); return; }
     localStorage.setItem(window.AblAuth.key, JSON.stringify({
       token: result.data.token,
       email: email,
@@ -56,6 +39,44 @@
       saved_at: new Date().toISOString()
     }));
     location.replace(result.data.workspace);
+    return true;
+  }
+
+  document.getElementById('emailForm').onsubmit = async function (event) {
+    event.preventDefault();
+    email = emailInput.value.trim().toLowerCase();
+    var emailForm = event.currentTarget;
+    message(''); busy(emailForm, true);
+    var result = await json('/auth/request', { method: 'POST', body: JSON.stringify({ email: email }) });
+    if (!result.ok) {
+      busy(emailForm, false);
+      message(result.error || 'We could not send the code. Please try again.', true);
+      return;
+    }
+    document.getElementById('emailEcho').textContent = email;
+    if (result.data.preview_code) {
+      message('Approved email confirmed. Opening your course workspace...');
+      if (await verifyAndEnter(result.data.preview_code, emailForm)) return;
+      codeInput.value = result.data.preview_code;
+    }
+    busy(emailForm, false);
+    emailStep.hidden = true; codeStep.hidden = false;
+    var preview = document.getElementById('previewCode');
+    if (result.data.preview_code) {
+      preview.hidden = false;
+      preview.textContent = 'Staging preview code: ' + result.data.preview_code;
+    } else {
+      preview.hidden = true;
+      preview.textContent = '';
+    }
+    message(result.data.message || 'Enter the code to continue.');
+    codeInput.focus();
+  };
+
+  document.getElementById('codeForm').onsubmit = async function (event) {
+    event.preventDefault();
+    message('');
+    await verifyAndEnter(codeInput.value, event.currentTarget);
   };
 
   document.getElementById('changeEmail').onclick = function () {
