@@ -231,8 +231,34 @@
         '<label class="fld">Sources / notes</label><textarea class="ipt auto" id="r-sources" rows="2">' + esc((d.research && d.research.sources_notes) || '') + '</textarea>' +
         '<button class="btn" id="saveResearch" style="margin-top:12px">Save research</button></div>' +
 
+      // Physical meetings and full transcripts
+      '<div class="card"><h4>2 · Meetings &amp; Transcripts</h4>' +
+        '<p class="muted">Upload or paste the full one-on-one transcript. The original stays private. AI creates a draft summary for you to review before any course agent can use it.</p>' +
+        '<div class="grid2"><div><label class="fld">Title</label><input class="ipt" id="noteTitle" placeholder="One-on-one meeting · 21 July"></div>' +
+        '<div><label class="fld">Meeting date</label><input class="ipt" id="noteDate" type="date"></div></div>' +
+        '<div class="transcript-box"><label class="fld">Meeting transcript</label><textarea class="ipt" id="noteContent" rows="9" placeholder="Paste the complete transcript here, or upload a file below…"></textarea>' +
+        '<div class="transcript-actions">' +
+          '<input type="file" id="noteFile" accept=".txt,.md,.docx,.pdf,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="font-size:12px">' +
+          '<button class="btn" id="saveNote">Create draft summary</button><span id="noteStatus" class="muted"></span>' +
+        '</div></div>' +
+        '<div id="noteList" style="margin-top:16px">' + ((d.notes || []).map(function (note) {
+          var isTranscript = note.source_kind === 'transcript';
+          var isDraft = note.review_status === 'draft';
+          var status = isDraft ? 'Draft — review required' : 'Approved for course AI';
+          return '<div class="note-row"><div style="display:flex;justify-content:space-between;gap:12px"><div><strong>' + esc(note.title || 'Meeting summary') + '</strong>' +
+            '<div class="note-meta">' + fmtDate(note.occurred_at) + ' · ' + (isTranscript ? 'AI-processed transcript' : 'Meeting summary') + ' · ' + status + ' · Participant: ' + (note.share_with_participant ? 'shared' : 'private') + '</div></div>' +
+            '<div><button class="viewbrief" data-note-edit="' + esc(note.id) + '">Edit summary</button><button class="del" data-note-del="' + esc(note.id) + '" title="Delete meeting record">✕</button></div></div>' +
+            '<div class="note-copy" data-note-copy="' + esc(note.id) + '">' + esc(note.content || '') + '</div>' +
+            '<textarea class="ipt note-edit-box" data-note-editor="' + esc(note.id) + '" hidden>' + esc(note.content || '') + '</textarea>' +
+            (isDraft
+              ? '<div class="transcript-actions"><label style="font-size:12px;color:var(--ink-2)"><input type="checkbox" data-note-share="' + esc(note.id) + '" style="accent-color:var(--accent)"> Also share this summary with the participant</label><button class="btn accent" data-note-approve="' + esc(note.id) + '">Approve for course AI</button></div>'
+              : '<div class="transcript-actions"><button class="btn ghost" data-note-participant="' + esc(note.id) + '" data-shared="' + (note.share_with_participant ? 'true' : 'false') + '">' + (note.share_with_participant ? 'Stop sharing with participant' : 'Share summary with participant') + '</button></div>') +
+            (note.raw_transcript ? '<details class="transcript-original"><summary>View original private transcript</summary><pre>' + esc(note.raw_transcript) + '</pre></details>' : '') + '</div>';
+        }).join('') || '<span class="muted">No meetings or transcripts added yet.</span>') + '</div>' +
+      '</div>' +
+
       // Approve + link
-      '<div class="card"><h4>2 · Approve &amp; share the link</h4>' +
+      '<div class="card"><h4>3 · Approve &amp; share the link</h4>' +
         (p.link_approved
           ? '<div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
           : '<p class="muted">Approve to activate this participant\'s private link, then send it to them.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Approve link</button>') +
@@ -242,32 +268,13 @@
       (function () {
         var brief = (d.outputs || []).filter(function (o) { return o.output_type === 'vinay_meeting_brief'; })[0];
         var bmd = brief ? (brief.reviewed_content_markdown || brief.content_markdown || '') : '';
-        return '<div class="card"><h4>3 · Vinay meeting brief (private)</h4>' +
+        return '<div class="card"><h4>4 · Vinay meeting brief (private)</h4>' +
           '<button class="btn" id="briefBtn">' + (brief ? 'Regenerate brief' : 'Generate Vinay brief') + '</button>' +
           (brief ? ' <a class="row-actions" href="/ai-business-leaders/pdf/' + brief.id + '" target="_blank" rel="noopener" style="margin-left:10px">Open printable / PDF ↗</a>' : '') +
           '<div id="briefOut" class="muted" style="margin-top:10px"></div>' +
           (bmd ? '<div class="brief-inline" style="margin-top:12px;border-top:1px solid var(--rule);padding-top:12px">' + md(bmd) + '</div>' : '') +
           '</div>';
       })() +
-
-      // Physical meeting / conversation summaries
-      '<div class="card"><h4>4 · Meeting &amp; conversation summaries</h4>' +
-        '<p class="muted">Paste a summary or load a .txt/.md file. Checked summaries become part of the shared Course Memory and improve future participant conversations.</p>' +
-        '<div class="grid2"><div><label class="fld">Title</label><input class="ipt" id="noteTitle" placeholder="One-on-one meeting · 21 July"></div>' +
-        '<div><label class="fld">Meeting date</label><input class="ipt" id="noteDate" type="date"></div></div>' +
-        '<label class="fld">Summary</label><textarea class="ipt" id="noteContent" rows="7" placeholder="Paste the meeting or conversation summary here…"></textarea>' +
-        '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px">' +
-          '<input type="file" id="noteFile" accept=".txt,.md,text/plain,text/markdown" style="font-size:12px">' +
-          '<label style="font-size:12px;color:var(--ink-2)"><input type="checkbox" id="noteShared" checked style="accent-color:var(--accent)"> Use in participant conversations and Course Memory</label>' +
-          '<button class="btn" id="saveNote">Save summary</button><span id="noteStatus" class="muted"></span>' +
-        '</div>' +
-        '<div id="noteList" style="margin-top:16px">' + ((d.notes || []).map(function (note) {
-          return '<div class="note-row"><div style="display:flex;justify-content:space-between;gap:12px"><div><strong>' + esc(note.title || 'Meeting summary') + '</strong>' +
-            '<div class="note-meta">' + fmtDate(note.occurred_at) + ' · ' + (note.visibility === 'private' ? 'Private facilitator note' : 'Shared Course Memory') + '</div></div>' +
-            '<button class="del" data-note-del="' + esc(note.id) + '" title="Delete summary">✕</button></div>' +
-            '<div class="note-copy">' + esc(note.content || '') + '</div></div>';
-        }).join('') || '<span class="muted">No meeting summaries added yet.</span>') + '</div>' +
-      '</div>' +
       '</div>';
 
     wireDetail(d);
@@ -319,33 +326,92 @@
     if (noteFile) noteFile.onchange = async function () {
       var file = noteFile.files && noteFile.files[0];
       if (!file) return;
-      if (!/\.(txt|md)$/i.test(file.name)) { $('noteStatus').textContent = 'Please use a .txt or .md summary.'; return; }
-      $('noteContent').value = await file.text();
-      if (!$('noteTitle').value) $('noteTitle').value = file.name.replace(/\.(txt|md)$/i, '');
-      $('noteStatus').textContent = 'File loaded. Review it, then save.';
+      if (!/\.(txt|md|docx|pdf)$/i.test(file.name)) { $('noteStatus').textContent = 'Please use a .txt, .md, .docx or .pdf transcript.'; return; }
+      if (file.size > 6 * 1024 * 1024) { $('noteStatus').textContent = 'Transcript files must be smaller than 6 MB.'; noteFile.value = ''; return; }
+      if (/\.(txt|md)$/i.test(file.name)) $('noteContent').value = await file.text();
+      else $('noteContent').value = '';
+      if (!$('noteTitle').value) $('noteTitle').value = file.name.replace(/\.(txt|md|docx|pdf)$/i, '');
+      $('noteStatus').textContent = /\.(txt|md)$/i.test(file.name) ? 'Transcript loaded. Review it, then process.' : 'File ready to process securely.';
     };
+    function fileBase64(file) {
+      if (!file) return Promise.resolve('');
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(String(reader.result || '').split(',')[1] || ''); };
+        reader.onerror = function () { reject(new Error('Could not read file')); };
+        reader.readAsDataURL(file);
+      });
+    }
     var saveNote = $('saveNote');
     if (saveNote) saveNote.onclick = async function () {
       var content = $('noteContent').value.trim();
-      if (!content) { $('noteStatus').textContent = 'Add a summary first.'; return; }
+      var file = noteFile && noteFile.files && noteFile.files[0];
+      if (!content && !file) { $('noteStatus').textContent = 'Paste or upload a transcript first.'; return; }
       var y = window.pageYOffset;
-      saveNote.disabled = true; $('noteStatus').textContent = 'Saving…';
-      var r = await api('/participants/' + p.id + '/notes', { method: 'POST', body: JSON.stringify({
-        title: $('noteTitle').value.trim() || 'Meeting summary', content: content,
-        source_name: (noteFile && noteFile.files && noteFile.files[0] && noteFile.files[0].name) || '',
-        visibility: $('noteShared').checked ? 'course_memory' : 'private',
+      saveNote.disabled = true; saveNote.textContent = 'Processing…'; $('noteStatus').textContent = 'Reading transcript and creating a private draft summary…';
+      var r;
+      try {
+        r = await api('/participants/' + p.id + '/transcripts', { method: 'POST', body: JSON.stringify({
+        title: $('noteTitle').value.trim() || 'One-on-one meeting', transcript_text: content,
+        file_base64: content ? '' : await fileBase64(file), source_name: (file && file.name) || 'Pasted transcript',
         occurred_at: $('noteDate').value ? new Date($('noteDate').value + 'T12:00:00').toISOString() : new Date().toISOString()
-      }) });
-      saveNote.disabled = false;
-      if (r.ok) { toast('Meeting summary saved'); await openDetail(p.id); restoreY(y); }
-      else $('noteStatus').textContent = r.error || 'Could not save.';
+        }) });
+      } catch (error) { r = { ok: false, error: error.message }; }
+      saveNote.disabled = false; saveNote.textContent = 'Create draft summary';
+      if (r.ok) { toast('Draft summary ready for review'); await openDetail(p.id); restoreY(y); }
+      else $('noteStatus').textContent = r.error || 'Could not process the transcript.';
     };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-edit]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-edit');
+        var copy = document.querySelector('[data-note-copy="' + id + '"]');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        if (editor.hidden) {
+          editor.hidden = false; copy.hidden = true; button.textContent = 'Save edited summary'; editor.focus(); return;
+        }
+        var content = editor.value.trim();
+        if (!content) { toast('The summary cannot be empty'); return; }
+        button.disabled = true; button.textContent = 'Saving…';
+        var r = await api('/participants/' + p.id + '/notes/' + id, { method: 'PATCH', body: JSON.stringify({ content: content }) });
+        button.disabled = false;
+        if (r.ok) { toast('Summary updated'); await openDetail(p.id); }
+        else { button.textContent = 'Save edited summary'; toast(r.error || 'Could not update summary'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-approve]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-approve');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        var content = editor.value.trim();
+        if (!content) { toast('Review the summary before approving it'); return; }
+        var share = document.querySelector('[data-note-share="' + id + '"]');
+        button.disabled = true; button.textContent = 'Approving…';
+        var r = await api('/participants/' + p.id + '/notes/' + id + '/approve', { method: 'POST', body: JSON.stringify({
+          content: content, share_with_participant: !!(share && share.checked)
+        }) });
+        if (r.ok) { toast('Approved for all course agents'); await openDetail(p.id); }
+        else { button.disabled = false; button.textContent = 'Approve for course AI'; toast(r.error || 'Could not approve summary'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-participant]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-participant');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        var sharing = button.getAttribute('data-shared') !== 'true';
+        button.disabled = true;
+        var r = await api('/participants/' + p.id + '/notes/' + id, { method: 'PATCH', body: JSON.stringify({
+          content: editor.value.trim(), share_with_participant: sharing
+        }) });
+        if (r.ok) { toast(sharing ? 'Summary shared with participant' : 'Participant sharing stopped'); await openDetail(p.id); }
+        else { button.disabled = false; toast(r.error || 'Could not update participant visibility'); }
+      };
+    });
     Array.prototype.forEach.call(document.querySelectorAll('[data-note-del]'), function (button) {
       button.onclick = async function () {
-        if (!window.confirm('Delete this meeting summary?')) return;
+        if (!window.confirm('Delete this meeting transcript and summary?')) return;
         var y = window.pageYOffset;
         var r = await api('/participants/' + p.id + '/notes/' + button.getAttribute('data-note-del'), { method: 'DELETE' });
-        if (r.ok) { toast('Summary deleted'); await openDetail(p.id); restoreY(y); }
+        if (r.ok) { toast('Meeting record deleted'); await openDetail(p.id); restoreY(y); }
         else toast(r.error || 'Could not delete');
       };
     });

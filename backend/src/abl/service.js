@@ -18,6 +18,7 @@ import {
 } from './recovery.js';
 import { fetchOfficialWebsite } from './website.js';
 import { extractJson } from './json.js';
+import { relevantTranscriptPassages } from './transcripts.js';
 import { advanceStage, buildCourseMemory, memoryPromptBlock, sanitiseMemoryFields, validStage } from './memory.js';
 import * as repo from './store.js';
 
@@ -109,14 +110,22 @@ export { rewardTypeForDepth };
 
 // Carry useful context forward through the three-course sequence without asking
 // the participant to repeat it: AI Journey -> VED -> SIV.
-async function gatherCrossContext(participantId, mode) {
+async function gatherCrossContext(participantId, mode, query = '') {
   const parts = [];
 
   const participant = await repo.getParticipant(participantId);
   if (participant) {
-    const memory = await buildCourseMemory(participant);
+    const memory = await buildCourseMemory(participant, { agentContext: true });
     const block = memoryPromptBlock(memory);
     if (block) parts.push(block);
+  }
+
+  if (query) {
+    const notes = await repo.listNotes(participantId);
+    const passages = relevantTranscriptPassages(notes, query);
+    if (passages.length) {
+      parts.push(`### Relevant passages from private one-on-one transcripts\n${passages.map((item) => `- ${item.title} (${String(item.occurred_at || '').slice(0, 10)}): ${item.passage}`).join('\n')}`);
+    }
   }
 
   if (mode !== 'ved' && mode !== 'siv' && mode !== 'continuing') return parts.join('\n\n');
@@ -252,7 +261,7 @@ export async function agentTurn({ participant, session, userMessage, mode }) {
     }
   }
 
-  const crossContext = await gatherCrossContext(participant.id, mode);
+  const crossContext = await gatherCrossContext(participant.id, mode, userMessage);
   let system = mode === 'siv'
     ? buildSivSystem({ participant: activeParticipant, research, session, crossContext })
     : mode === 'ved'
@@ -408,7 +417,7 @@ export async function generateVedReport(participant) {
 }
 
 export async function generateLeadershipBlueprint(participant) {
-  const memory = await buildCourseMemory(participant);
+  const memory = await buildCourseMemory(participant, { agentContext: true });
   const [journey, ved, siv] = await Promise.all([
     repo.getSession(participant.id, 'participant'), repo.getSession(participant.id, 'ved'), repo.getSession(participant.id, 'siv'),
   ]);
@@ -590,7 +599,10 @@ export async function generateOutput(participant, type, modelName) {
       .map((m) => `${String(m.role).toUpperCase()}: ${m.content}`)
       .join('\n\n') || '(no conversation captured yet)';
 
-  const memory = await buildCourseMemory(participant, { includePrivate: type === 'vinay_meeting_brief' });
+  const memory = await buildCourseMemory(participant, {
+    includePrivate: type === 'vinay_meeting_brief',
+    agentContext: type !== 'vinay_meeting_brief',
+  });
   const { system, message } = buildOutputPrompt(type, {
     participant, research,
     transcript: `${transcript}\n\n${memoryPromptBlock(memory, { includeMeetingNotes: true })}`,

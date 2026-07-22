@@ -248,6 +248,14 @@ export async function addNote(participantId, input) {
     participant_id: participantId,
     title: String((input && input.title) || 'Meeting summary').slice(0, 180),
     content: String((input && input.content) || '').slice(0, 30000),
+    raw_transcript: String((input && input.raw_transcript) || '').slice(0, 300000),
+    source_kind: input && input.source_kind === 'transcript' ? 'transcript' : 'summary',
+    structured_context: (input && input.structured_context) || null,
+    transcript_truncated: !!(input && input.transcript_truncated),
+    processed_at: (input && input.processed_at) || null,
+    review_status: (input && input.review_status) === 'draft' ? 'draft' : 'approved',
+    approved_at: (input && input.approved_at) || null,
+    share_with_participant: !!(input && input.share_with_participant),
     source_name: String((input && input.source_name) || '').slice(0, 240),
     visibility: input && input.visibility === 'private' ? 'private' : 'course_memory',
     occurred_at: (input && input.occurred_at) || nowISO(),
@@ -256,6 +264,20 @@ export async function addNote(participantId, input) {
   };
   await col(COLLECTIONS.ablNotes).doc(id).set(row);
   return { id, ...row };
+}
+export async function updateNote(participantId, id, input) {
+  const ref = col(COLLECTIONS.ablNotes).doc(id);
+  const note = await ref.get();
+  if (!note.exists || note.data().participant_id !== participantId) return null;
+  const patch = { updated_at: nowISO() };
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'content')) patch.content = String(input.content || '').slice(0, 30000);
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'title')) patch.title = String(input.title || 'Meeting summary').slice(0, 180);
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'visibility')) patch.visibility = input.visibility === 'private' ? 'private' : 'course_memory';
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'review_status')) patch.review_status = input.review_status === 'approved' ? 'approved' : 'draft';
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'approved_at')) patch.approved_at = input.approved_at || null;
+  if (Object.prototype.hasOwnProperty.call(input || {}, 'share_with_participant')) patch.share_with_participant = !!input.share_with_participant;
+  await ref.set(patch, { merge: true });
+  return { id, ...note.data(), ...patch };
 }
 export async function deleteNote(participantId, id) {
   const ref = col(COLLECTIONS.ablNotes).doc(id);

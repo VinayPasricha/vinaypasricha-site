@@ -61,17 +61,24 @@ function stageRows(mode, session, complete) {
   }));
 }
 
-function compactNotes(notes, includePrivate) {
+function compactNotes(notes, { includePrivate = false, agentContext = false } = {}) {
   return (notes || [])
-    .filter((note) => includePrivate || note.visibility === 'course_memory')
+    .filter((note) => {
+      if (includePrivate) return true;
+      const approved = note.review_status !== 'draft';
+      if (agentContext) return approved && note.visibility === 'course_memory';
+      return approved && note.share_with_participant === true;
+    })
     .map((note) => ({
       id: note.id, title: note.title, content: note.content,
       source_name: note.source_name || '', visibility: note.visibility,
+      review_status: note.review_status || 'approved',
+      share_with_participant: !!note.share_with_participant,
       occurred_at: note.occurred_at, created_at: note.created_at,
     }));
 }
 
-export async function buildCourseMemory(participant, { includePrivate = false } = {}) {
+export async function buildCourseMemory(participant, { includePrivate = false, agentContext = false } = {}) {
   const [research, memory, outputs, notes, journey, ved, siv, continuing] = await Promise.all([
     repo.getResearch(participant.id), repo.getMemory(participant.id), repo.getOutputs(participant.id),
     repo.listNotes(participant.id), repo.getSession(participant.id, 'participant'),
@@ -79,7 +86,7 @@ export async function buildCourseMemory(participant, { includePrivate = false } 
     repo.getSession(participant.id, 'continuing'),
   ]);
   const output = (type) => outputs.find((item) => item.output_type === type) || null;
-  const sharedNotes = compactNotes(notes, includePrivate);
+  const sharedNotes = compactNotes(notes, { includePrivate, agentContext });
   return {
     identity: {
       name: participant.name || '', company_name: participant.company_name || '',

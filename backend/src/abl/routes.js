@@ -22,6 +22,7 @@ import {
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
 import { buildCourseMemory } from './memory.js';
+import { analyseTranscript, extractTranscript, transcriptSummaryMarkdown } from './transcripts.js';
 import {
   bearerToken,
   codeExpiry,
@@ -793,11 +794,70 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     } catch (e) { return oops(res, e); }
   });
 
+  app.post('/api/abl/participants/:id/transcripts', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const extracted = await extractTranscript(req.body || {});
+      const analysis = await analyseTranscript({ participant: p, transcript: extracted.text });
+      const note = await repo.addNote(p.id, {
+        title: req.body.title || 'One-on-one meeting',
+        content: transcriptSummaryMarkdown(analysis),
+        raw_transcript: extracted.text,
+        source_kind: 'transcript',
+        structured_context: analysis,
+        transcript_truncated: extracted.truncated,
+        source_name: req.body.source_name,
+        visibility: 'private',
+        review_status: 'draft',
+        share_with_participant: false,
+        occurred_at: req.body.occurred_at,
+        processed_at: new Date().toISOString(),
+      });
+      return ok(res, note, 201);
+    } catch (e) {
+      if (/transcript|\.txt|\.md|\.docx|\.pdf|6 MB/i.test(String(e && e.message))) return fail(res, e.message, 400);
+      return oops(res, e);
+    }
+  });
+
   app.delete('/api/abl/participants/:id/notes/:noteId', requireAdmin, async (req, res) => {
     try {
       const deleted = await repo.deleteNote(req.params.id, req.params.noteId);
       if (!deleted) return fail(res, 'Note not found', 404);
       return ok(res, { deleted: true });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/participants/:id/notes/:noteId', requireAdmin, async (req, res) => {
+    try {
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'The Course Memory summary cannot be empty.');
+      const patch = { content };
+      if (Object.prototype.hasOwnProperty.call(req.body || {}, 'share_with_participant')) {
+        patch.share_with_participant = !!req.body.share_with_participant;
+      }
+      const note = await repo.updateNote(req.params.id, req.params.noteId, patch);
+      if (!note) return fail(res, 'Note not found', 404);
+      return ok(res, note);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/notes/:noteId/approve', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'Review the summary before approving it.');
+      const note = await repo.updateNote(req.params.id, req.params.noteId, {
+        content,
+        visibility: 'course_memory',
+        review_status: 'approved',
+        approved_at: new Date().toISOString(),
+        share_with_participant: !!(req.body && req.body.share_with_participant),
+      });
+      if (!note) return fail(res, 'Meeting record not found', 404);
+      return ok(res, note);
     } catch (e) { return oops(res, e); }
   });
 

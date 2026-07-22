@@ -72,6 +72,12 @@
     .note-row:first-child { border-top: 0; }
     .note-meta { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
     .note-copy { margin-top: 6px; white-space: pre-wrap; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+    .transcript-box { border: 1px dashed var(--rule); border-radius: 5px; padding: 12px; margin-top: 12px; background: var(--paper-3); }
+    .transcript-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+    .transcript-original { margin-top: 10px; }
+    .transcript-original summary { cursor: pointer; font-family: var(--mono); font-size: 10px; color: var(--accent); }
+    .transcript-original pre { white-space: pre-wrap; max-height: 280px; overflow: auto; padding: 10px; background: var(--paper-3); border: 1px solid var(--rule-soft); font: 12px/1.5 var(--mono); }
+    .note-edit-box { margin-top: 8px; min-height: 220px; }
     #login { max-width: 360px; margin: 80px auto; text-align: center; }
     #login input { width: 100%; margin: 10px 0; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 4px; font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; }

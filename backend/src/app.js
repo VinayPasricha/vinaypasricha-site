@@ -108,7 +108,9 @@ function rateLimit({ windowMs, max }) {
 
 export function createApp() {
   const app = express();
-  app.use(express.json({ limit: '1mb' }));
+  // Transcript uploads are admin-only and capped again at 6 MB by the ABL
+  // parser. The larger envelope allows PDF/DOCX bytes to travel as base64.
+  app.use(express.json({ limit: '10mb' }));
 
   app.use(
     cors({
