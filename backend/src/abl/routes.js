@@ -26,11 +26,14 @@ import {
   bearerToken,
   codeExpiry,
   createLoginCode,
+  createOpaqueParticipantToken,
   createParticipantToken,
   deliverLoginCode,
   hashLoginCode,
+  hashParticipantToken,
   isPreviewEnvironment,
   normalizeEmail,
+  participantTokenExpiry,
   validEmail,
   verifyLoginCode,
   verifyParticipantToken,
@@ -134,6 +137,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   const authRequestLimit = mk({ windowMs: 60000, max: 5 });
   const authVerifyLimit = mk({ windowMs: 60000, max: 12 });
   const isAuthed = (req) => (typeof studioAuthed === 'function' ? studioAuthed(req) : false);
+  const participantPayload = async (req) => {
+    const token = bearerToken(req);
+    const signed = verifyParticipantToken(token);
+    if (signed) return signed;
+    if (!token.startsWith('ablr.')) return null;
+    const saved = await repo.getParticipantSession(hashParticipantToken(token));
+    if (!saved || Number.isNaN(Date.parse(saved.expires_at)) || Date.parse(saved.expires_at) <= Date.now()) return null;
+    return { sub: saved.participant_id, slug: saved.slug };
+  };
 
   // -------------------------------------------------------------------------
   // Participant passwordless sign-in
@@ -198,8 +210,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
           link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
         });
       }
-      const token = createParticipantToken(p);
-      if (!token) return fail(res, 'Course sign-in is not configured.', 503);
+      let token = createParticipantToken(p);
+      if (!token) {
+        token = createOpaqueParticipantToken();
+        await repo.saveParticipantSession(hashParticipantToken(token), {
+          participant_id: p.id, slug: p.slug, expires_at: participantTokenExpiry(),
+        });
+      }
       await repo.consumeAuthCode(email);
       await repo.touchActivity(p.id);
       return ok(res, {
@@ -213,7 +230,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
 
   app.get('/api/abl/auth/status', async (req, res) => {
     try {
-      const payload = verifyParticipantToken(bearerToken(req));
+      const payload = await participantPayload(req);
       if (!payload) return fail(res, 'Sign-in required.', 401);
       const p = await repo.getParticipant(payload.sub);
       if (!p || p.slug !== payload.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
@@ -229,7 +246,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // the friendly login screen rather than exposing participant data.
   app.use('/api/abl/session/:slug', async (req, res, next) => {
     try {
-      const payload = verifyParticipantToken(bearerToken(req));
+      const payload = await participantPayload(req);
       if (!payload || payload.slug !== req.params.slug) return fail(res, 'Sign-in required.', 401);
       const p = await repo.getParticipant(payload.sub);
       if (!p || p.slug !== req.params.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
