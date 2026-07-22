@@ -43,6 +43,19 @@ test('opaque participant tokens are random and stored only by hash', () => {
   assert.ok(Date.parse(auth.participantTokenExpiry()) > Date.now());
 });
 
+test('the same participant can establish access independently on multiple devices', () => {
+  const participant = { id: 'participant-123', slug: 'meridian-logistics' };
+  const firstDevice = auth.createOpaqueParticipantToken();
+  const secondDevice = auth.createOpaqueParticipantToken();
+  assert.notEqual(firstDevice, secondDevice);
+  assert.notEqual(auth.hashParticipantToken(firstDevice), auth.hashParticipantToken(secondDevice));
+
+  const firstSignedSession = auth.createParticipantToken(participant);
+  const secondSignedSession = auth.createParticipantToken(participant);
+  assert.equal(auth.verifyParticipantToken(firstSignedSession).slug, participant.slug);
+  assert.equal(auth.verifyParticipantToken(secondSignedSession).slug, participant.slug);
+});
+
 test('preview login codes are still checked when no deployment secret exists', () => {
   const script = `
     const auth = await import('./src/abl/auth.js');
