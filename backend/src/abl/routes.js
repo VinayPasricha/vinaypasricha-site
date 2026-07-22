@@ -142,9 +142,22 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const email = normalizeEmail(req.body && req.body.email);
       if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
-      const p = await repo.getParticipantByEmail(email);
-      const generic = { message: 'If this email is registered for the course, a sign-in code is on its way.' };
-      if (!p || p.login_enabled === false || !p.link_approved) return ok(res, generic);
+      let p = await repo.getParticipantByEmail(email);
+      // A single staging-only participant makes the access flow immediately
+      // testable without adding a production back door or a public sign-up.
+      if (!p && isPreviewEnvironment() && email === 'vinay@wlci.in') {
+        const created = await repo.createParticipant({
+          name: 'Vinay Pasricha', company_name: 'GoodSpace AI', email,
+          role_title: 'Founder & CEO', company_website: 'https://goodspace.ai',
+        });
+        p = await repo.updateParticipant(created.id, {
+          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
+        });
+      }
+      if (!p || p.login_enabled === false) {
+        return fail(res, 'This email is not registered for the course. Please contact Vinay at Vinay@goodspace.ai to get access.', 403);
+      }
+      const generic = { message: 'Your sign-in code is on its way.' };
       const code = createLoginCode();
       await repo.saveAuthCode(email, {
         participant_id: p.id,
@@ -174,9 +187,16 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         if (saved) await repo.incrementAuthAttempts(email);
         return fail(res, 'That code is incorrect or has expired.', 401);
       }
-      const p = await repo.getParticipant(saved.participant_id);
-      if (!p || p.login_enabled === false || !p.link_approved || normalizeEmail(p.email) !== email) {
+      let p = await repo.getParticipant(saved.participant_id);
+      if (!p || p.login_enabled === false || normalizeEmail(p.email) !== email) {
         return fail(res, 'This course access is not active.', 403);
+      }
+      // Presence in the preloaded participant list is the access decision.
+      // Verified email ownership activates older draft records automatically.
+      if (!p.link_approved) {
+        p = await repo.updateParticipant(p.id, {
+          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
+        });
       }
       const token = createParticipantToken(p);
       if (!token) return fail(res, 'Course sign-in is not configured.', 503);
