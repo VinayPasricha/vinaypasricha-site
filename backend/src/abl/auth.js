@@ -57,6 +57,21 @@ export function createParticipantToken(participant) {
   return `abl.${payload}.${sign(`token:${payload}`)}`;
 }
 
+// When a deployment has not yet been given a signing secret, use a random
+// opaque token whose hash is stored server-side. This remains secure across
+// instances and avoids ever storing the bearer token itself.
+export function createOpaqueParticipantToken() {
+  return `ablr.${crypto.randomBytes(32).toString('base64url')}`;
+}
+
+export function hashParticipantToken(token) {
+  return crypto.createHash('sha256').update(String(token || '')).digest('hex');
+}
+
+export function participantTokenExpiry() {
+  return new Date(Date.now() + TOKEN_DAYS * 24 * 60 * 60 * 1000).toISOString();
+}
+
 export function verifyParticipantToken(token) {
   const parts = String(token || '').split('.');
   if (parts.length !== 3 || parts[0] !== 'abl' || !secret()) return null;
