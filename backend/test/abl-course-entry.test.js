@@ -31,6 +31,9 @@ test('login asks for the pre-registered email and one-time code', () => {
   assert.match(html, /Enter the email you gave us/);
   assert.match(html, /six-digit sign-in code/i);
   assert.match(html, /autocomplete="one-time-code"/);
+  assert.match(html, /another computer or phone/i);
+  assert.match(html, /same course email/i);
+  assert.match(html, /saved work will still be here/i);
   assert.match(js, /Approved email confirmed\. Opening your course workspace/);
   assert.match(js, /verifyAndEnter\(result\.data\.preview_code/);
 });
