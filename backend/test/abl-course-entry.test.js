@@ -31,6 +31,11 @@ test('all participant experiences load the shared access client', () => {
 test('login asks for the pre-registered email and one-time code', () => {
   const html = read('ai-business-leaders/login.html');
   const js = read('ai-business-leaders/login.js');
+  assert.match(html, /id="loginWelcome">Welcome to your/);
+  assert.doesNotMatch(html, /id="loginWelcome">Welcome back/);
+  assert.match(js, /abl_has_signed_in_v1/);
+  assert.match(js, /Welcome back to your <em>AI leadership journey\.<\/em>/);
+  assert.match(js, /rememberParticipant\(\)/);
   assert.match(html, /Enter the email you gave us/);
   assert.match(html, /six-digit sign-in code/i);
   assert.match(html, /autocomplete="one-time-code"/);
