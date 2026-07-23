@@ -27,13 +27,35 @@ test('pasted transcripts are cleaned and bounded before analysis', async () => {
 test('structured analysis produces the complete Course Memory summary', () => {
   const analysis = normaliseTranscriptAnalysis({
     overview: 'The leader wants faster exception reporting.',
+    actions: [{ owner: 'Priya', action: 'Map the current workflow', due: 'next Friday' }],
+    decisions: ['Start with operations'], open_questions: ['Which region reports first?'],
     company_context: ['Industrial distributor'], business_challenges: ['Late reports'],
     course_objectives: ['Choose one pilot'], ai_opportunities: ['Exception alerts'],
-    decisions: ['Start with operations'], concerns_constraints: ['Fragmented data'],
-    commitments: ['Name an owner'], next_actions: ['Map the current workflow'],
+    concerns_constraints: ['Fragmented data'],
   });
   const summary = transcriptSummaryMarkdown(analysis);
-  ['Meeting overview', 'Company context and corrections', 'Main business challenges', 'Course objectives', 'Possible AI opportunities', 'Decisions made', 'Concerns and constraints', 'Commitments', 'Next actions'].forEach((heading) => assert.match(summary, new RegExp(heading)));
+  ['Meeting overview', 'Who does what next', 'Decisions', 'Open questions', 'Company context', 'Business challenges', 'Course objectives', 'AI opportunities', 'Concerns and constraints'].forEach((heading) => assert.match(summary, new RegExp(heading)));
+  // An action is only useful if it carries its owner and any stated date.
+  assert.match(summary, /\*\*Priya\*\* — Map the current workflow · _next Friday_/);
+});
+
+test('an action survives however the model phrased it, and is never listed twice', () => {
+  const analysis = normaliseTranscriptAnalysis({
+    // The pre-owner shape: summaries stored before actions carried an owner.
+    commitments: ['Send the book to the participant'],
+    next_actions: ['send the book to the participant', 'Book the training session'],
+  });
+  assert.equal(analysis.actions.length, 2);
+  assert.equal(analysis.actions[0].action, 'Send the book to the participant');
+  assert.equal(analysis.actions[0].owner, '');
+});
+
+test('a meeting that settled nothing says so instead of padding', () => {
+  const summary = transcriptSummaryMarkdown({ overview: 'An introductory call.' });
+  assert.match(summary, /Nothing was agreed as an action in this meeting/);
+  assert.match(summary, /Nothing was settled in this meeting/);
+  // Empty context sections are omitted rather than filled with placeholders.
+  assert.doesNotMatch(summary, /## Company context/);
 });
 
 test('only relevant passages from shared transcripts are retrieved', () => {
