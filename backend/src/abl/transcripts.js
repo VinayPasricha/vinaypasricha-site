@@ -106,9 +106,15 @@ export function transcriptSummaryMarkdown(analysis = {}) {
 }
 
 export async function analyseTranscript({ participant, transcript }) {
+  // Every model call in service.js routes its config through gcfg(), which
+  // turns off Flash's internal thinking. This one did not, so the reasoning
+  // was drawn from the same maxOutputTokens budget as the answer and a long
+  // meeting could exhaust it mid-JSON. A full meeting also needs more room
+  // than 3000 tokens across nine keys.
+  const thinking = /flash/i.test(SUMMARY_MODEL) ? { thinkingConfig: { thinkingBudget: 0 } } : {};
   const raw = await completeModel({
     model: SUMMARY_MODEL,
-    generationConfig: { temperature: 0.1, maxOutputTokens: 3000 },
+    generationConfig: { temperature: 0.1, maxOutputTokens: 8000, ...thinking },
     system: `You turn a private one-on-one meeting transcript into factual course context for AI for Business Leaders.
 Use only statements grounded in the transcript. Do not infer missing facts or turn suggestions into decisions.
 Distinguish what was discussed from what was actually agreed. Keep every item concise and useful in later participant conversations.
@@ -120,7 +126,15 @@ Return strict JSON only with these keys:
     }],
   });
   const parsed = extractJson(raw);
-  if (!parsed || typeof parsed !== 'object') throw new Error('The transcript summary could not be generated. Please try again.');
+  if (!parsed || typeof parsed !== 'object') {
+    // Log what actually came back: "please try again" alone gives whoever is
+    // looking at the server no way to tell a truncation from a refusal.
+    console.error('[abl] transcript summary was not JSON —',
+      `${raw.length} chars, transcript ${String(transcript || '').length} chars.`,
+      'Start:', JSON.stringify(raw.slice(0, 200)),
+      'End:', JSON.stringify(raw.slice(-200)));
+    throw new Error('The transcript summary could not be generated. Please try again.');
+  }
   return normaliseTranscriptAnalysis(parsed);
 }
 

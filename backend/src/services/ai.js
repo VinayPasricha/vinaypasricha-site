@@ -128,7 +128,21 @@ export async function completeModel({ system, messages, model: modelName, genera
   }
   const result = await namedModel(modelName).generateContent(request);
   const candidate = result?.response?.candidates?.[0];
-  return (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('') || '';
+  const text = (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('') || '';
+  // A truncated or filtered response also arrives as empty text. Without the
+  // reason attached, every caller can only report "it did not work", so say
+  // which it was: MAX_TOKENS means the budget ran out (on a thinking model the
+  // reasoning is drawn from the same budget), SAFETY/RECITATION means blocked.
+  if (!text) {
+    const reason = candidate?.finishReason || result?.response?.promptFeedback?.blockReason || 'no candidate';
+    const err = new Error(`The model returned nothing (${reason}).`);
+    err.finishReason = reason;
+    throw err;
+  }
+  if (candidate?.finishReason && candidate.finishReason !== 'STOP') {
+    console.warn(`[ai] ${modelName || MODEL} finished as ${candidate.finishReason} — output may be incomplete.`);
+  }
+  return text;
 }
 
 export const aiInfo = { project: PROJECT, location: LOCATION, model: MODEL, researchModel: RESEARCH_MODEL };
