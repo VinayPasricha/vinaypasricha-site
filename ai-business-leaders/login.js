@@ -6,6 +6,22 @@
   var status = document.getElementById('formStatus');
   var emailInput = document.getElementById('email');
   var codeInput = document.getElementById('code');
+  var welcome = document.getElementById('loginWelcome');
+  var RETURNING_KEY = 'abl_has_signed_in_v1';
+
+  function returningParticipant() {
+    try { return localStorage.getItem(RETURNING_KEY) === 'true'; }
+    catch (e) { return false; }
+  }
+
+  function rememberParticipant() {
+    try { localStorage.setItem(RETURNING_KEY, 'true'); }
+    catch (e) {}
+  }
+
+  if (welcome && returningParticipant()) {
+    welcome.innerHTML = 'Welcome back to your <em>AI leadership journey.</em>';
+  }
 
   function message(text, bad) {
     status.textContent = text || '';
@@ -38,6 +54,7 @@
       participant: result.data.participant,
       saved_at: new Date().toISOString()
     }));
+    rememberParticipant();
     location.replace(result.data.workspace);
     return true;
   }
