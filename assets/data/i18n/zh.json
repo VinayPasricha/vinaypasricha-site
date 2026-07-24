@@ -2,7 +2,7 @@
   "_comment": "Simplified Chinese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "zh",
   "lang_native": "中文",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "涌现的探索者",
     "Now": "当下",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "在两个<em>黎明</em>之间\n      <span class=\"sm\">— 一部小说，<em>创作中</em></span>",
     "— a work of fiction, <em>in progress</em>": "— 一部小说，<em>创作中</em>",
     "Running <em>a live cohort.</em>": "正在开展<em>一个现场班次。</em>",
-    "Enter to continue · Shift+Enter for a new line": "按 Enter 键继续 · 按 Shift+Enter 键换行"
+    "Enter to continue · Shift+Enter for a new line": "按 Enter 键继续 · 按 Shift+Enter 键换行",
+    "Enter Your Course Workspace <b>→</b>": "进入您的课程工作区 &#8594;",
+    "Private cohort · Harvard OPM alumni": "私密小组 · Harvard OPM 校友",
+    "Build Your Company Brain. Lead AI with Clarity.": "构建您的公司大脑。清晰地引领 AI。",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "一次为期五周的实践之旅，以找出您最薄弱的执行环节，选择合适的 AI 项目，并为您的公司构建一份90天蓝图。",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "五周 · 五个实际成果 · 一份90天蓝图"
   }
 }

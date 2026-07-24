@@ -2,7 +2,7 @@
   "_comment": "Kannada translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "kn",
   "lang_native": "ಕನ್ನಡ",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "ಉದ್ಭವದ ಅನ್ವೇಷಕ",
     "Now": "ಈಗ",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "ಎರಡು <em>ಉಷೆಗಳ</em> ನಡುವೆ\n      <span class=\"sm\">— ಒಂದು ಕಾಲ್ಪನಿಕ ಕೃತಿ, <em>ಪ್ರಗತಿಯಲ್ಲಿದೆ</em></span>",
     "— a work of fiction, <em>in progress</em>": "— ಒಂದು ಕಾಲ್ಪನಿಕ ಕೃತಿ, <em>ಪ್ರಗತಿಯಲ್ಲಿದೆ</em>",
     "Running <em>a live cohort.</em>": "ನಡೆಸಲಾಗುತ್ತಿದೆ <em>ಒಂದು ಲೈವ್ ತಂಡವನ್ನು.</em>",
-    "Enter to continue · Shift+Enter for a new line": "ಮುಂದುವರಿಯಲು Enter ಒತ್ತಿ · ಹೊಸ ಸಾಲಿಗಾಗಿ Shift+Enter"
+    "Enter to continue · Shift+Enter for a new line": "ಮುಂದುವರಿಯಲು Enter ಒತ್ತಿ · ಹೊಸ ಸಾಲಿಗಾಗಿ Shift+Enter",
+    "Enter Your Course Workspace <b>→</b>": "ನಿಮ್ಮ ಕೋರ್ಸ್ ಕಾರ್ಯಕ್ಷೇತ್ರವನ್ನು ಪ್ರವೇಶಿಸಿ <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "ಖಾಸಗಿ ಕೋಹೋರ್ಟ್ · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "ನಿಮ್ಮ ಕಂಪನಿಯ ಮೆದುಳನ್ನು ನಿರ್ಮಿಸಿ. ಸ್ಪಷ್ಟತೆಯೊಂದಿಗೆ AI ಅನ್ನು ಮುನ್ನಡೆಸಿ.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "ನಿಮ್ಮ ದುರ್ಬಲ ಕಾರ್ಯಗತಗೊಳಿಸುವಿಕೆಯ ಕೊಂಡಿಯನ್ನು ಗುರುತಿಸಲು, ಸರಿಯಾದ AI ಯೋಜನೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಮತ್ತು ನಿಮ್ಮ ಕಂಪನಿಗೆ 90-ದಿನಗಳ ನೀಲನಕ್ಷೆಯನ್ನು ನಿರ್ಮಿಸಲು ಒಂದು ಪ್ರಾಯೋಗಿಕ ಐದು ವಾರಗಳ ಪಯಣ.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "ಐದು ವಾರಗಳು · ಐದು ಪ್ರಾಯೋಗಿಕ ಗೆಲುವುಗಳು · ಒಂದು 90-ದಿನಗಳ ನೀಲನಕ್ಷೆ"
   }
 }

@@ -2,7 +2,7 @@
   "_comment": "French translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "fr",
   "lang_native": "Français",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "Explorateur de l'Émergence",
     "Now": "Maintenant",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "Entre Deux <em>Aubes</em>\n      <span class=\"sm\">— une œuvre de fiction, <em>en cours</em></span>",
     "— a work of fiction, <em>in progress</em>": "— une œuvre de fiction, <em>en cours</em>",
     "Running <em>a live cohort.</em>": "Animation d'<em>une cohorte en direct.</em>",
-    "Enter to continue · Shift+Enter for a new line": "Entrée pour continuer · Maj+Entrée pour un retour à la ligne"
+    "Enter to continue · Shift+Enter for a new line": "Entrée pour continuer · Maj+Entrée pour un retour à la ligne",
+    "Enter Your Course Workspace <b>→</b>": "Accédez à votre espace de cours <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "Cohorte privée · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "Construisez le Cerveau de Votre Entreprise. Dirigez l'IA avec Clarté.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "Un parcours pratique de cinq semaines pour identifier votre maillon faible d'exécution, choisir le bon projet d'IA et élaborer un Plan d'Action sur 90 jours pour votre entreprise.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "Cinq semaines · Cinq réussites concrètes · Un Plan d'Action sur 90 jours"
   }
 }

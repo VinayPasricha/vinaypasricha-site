@@ -2,7 +2,7 @@
   "_comment": "Japanese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ja",
   "lang_native": "日本語",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "エマージェンスの探求者",
     "Now": "今",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "二つの<em>夜明け</em>の間\n      <span class=\"sm\">— フィクション作品、<em>執筆中</em></span>",
     "— a work of fiction, <em>in progress</em>": "— フィクション作品、<em>執筆中</em>",
     "Running <em>a live cohort.</em>": "<em>ライブコホート</em>を実施中。",
-    "Enter to continue · Shift+Enter for a new line": "Enterで続行 · Shift+Enterで改行"
+    "Enter to continue · Shift+Enter for a new line": "Enterで続行 · Shift+Enterで改行",
+    "Enter Your Course Workspace <b>→</b>": "コースワークスペースに入る<b>→</b>",
+    "Private cohort · Harvard OPM alumni": "プライベートコホート · ハーバードOPM卒業生",
+    "Build Your Company Brain. Lead AI with Clarity.": "自社の頭脳を構築する。明晰さをもってAIを主導する。",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "実行における最も脆弱な箇所を特定し、適切なAIプロジェクトを選定し、貴社のための90日間ブループリントを構築するための実践的な5週間の旅です。",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "5週間 · 5つの実践的な成果 · 1つの90日間ブループリント"
   }
 }

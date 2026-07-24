@@ -2,7 +2,7 @@
   "_comment": "Korean translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ko",
   "lang_native": "한국어",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "출현의 탐구자",
     "Now": "지금",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "두 <em>새벽</em> 사이\n      <span class=\"sm\">— 소설, <em>진행 중</em></span>",
     "— a work of fiction, <em>in progress</em>": "— 소설, <em>진행 중</em>",
     "Running <em>a live cohort.</em>": "<em>라이브 코호트</em> 운영 중.",
-    "Enter to continue · Shift+Enter for a new line": "계속하려면 Enter · 새 줄을 위해 Shift+Enter"
+    "Enter to continue · Shift+Enter for a new line": "계속하려면 Enter · 새 줄을 위해 Shift+Enter",
+    "Enter Your Course Workspace <b>→</b>": "강의 워크스페이스 접속 <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "프라이빗 코호트 · 하버드 OPM 동문",
+    "Build Your Company Brain. Lead AI with Clarity.": "회사 두뇌를 구축하세요. 명확하게 AI를 이끄세요.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "가장 약한 실행 고리를 식별하고, 올바른 AI 프로젝트를 선택하며, 귀사를 위한 90일 청사진을 구축하는 실용적인 5주 여정.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "5주 · 5가지 실용적인 성과 · 하나의 90일 청사진"
   }
 }

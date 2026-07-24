@@ -2,7 +2,7 @@
   "_comment": "Spanish translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "es",
   "lang_native": "Español",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "Explorador de la Emergencia",
     "Now": "Ahora",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "Entre Dos <em>Amaneceres</em>\n      <span class=\"sm\">— una obra de ficción, <em>en progreso</em></span>",
     "— a work of fiction, <em>in progress</em>": "— una obra de ficción, <em>en progreso</em>",
     "Running <em>a live cohort.</em>": "Impartiendo <em>una cohorte en vivo.</em>",
-    "Enter to continue · Shift+Enter for a new line": "Enter para continuar · Shift+Enter para una nueva línea"
+    "Enter to continue · Shift+Enter for a new line": "Enter para continuar · Shift+Enter para una nueva línea",
+    "Enter Your Course Workspace <b>→</b>": "Acceda a su Espacio de Trabajo del Curso <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "Cohorte privada · alumnos de Harvard OPM",
+    "Build Your Company Brain. Lead AI with Clarity.": "Construya el Cerebro de su Empresa. Lidere la IA con Claridad.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "Un viaje práctico de cinco semanas para identificar su eslabón más débil en la ejecución, elegir el proyecto de IA adecuado y construir un Plan de 90 Días para su empresa.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "Cinco semanas · Cinco logros prácticos · Un Plan de 90 Días"
   }
 }

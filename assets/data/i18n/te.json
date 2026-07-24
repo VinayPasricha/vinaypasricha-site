@@ -2,7 +2,7 @@
   "_comment": "Telugu translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "te",
   "lang_native": "తెలుగు",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "ఆవిర్భావ అన్వేషకుడు",
     "Now": "ఇప్పుడు",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "రెండు <em>వేకువల</em> మధ్య\n      <span class=\"sm\">— ఒక కల్పిత రచన, <em>పురోగతిలో ఉంది</em></span>",
     "— a work of fiction, <em>in progress</em>": "— ఒక కల్పిత రచన, <em>పురోగతిలో ఉంది</em>",
     "Running <em>a live cohort.</em>": "నడుస్తున్నది <em>ఒక ప్రత్యక్ష కోహోర్ట్.</em>",
-    "Enter to continue · Shift+Enter for a new line": "కొనసాగించడానికి Enter నొక్కండి · కొత్త లైన్ కోసం Shift+Enter"
+    "Enter to continue · Shift+Enter for a new line": "కొనసాగించడానికి Enter నొక్కండి · కొత్త లైన్ కోసం Shift+Enter",
+    "Enter Your Course Workspace <b>→</b>": "మీ కోర్సు వర్క్‌స్పేస్‌లోకి ప్రవేశించండి <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "ప్రత్యేక బృందం · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "మీ కంపెనీ మేధస్సును రూపొందించండి. స్పష్టతతో AIకి నాయకత్వం వహించండి.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "మీ బలహీనమైన అమలు లింక్‌ను గుర్తించడానికి, సరైన AI ప్రాజెక్ట్‌ను ఎంచుకోవడానికి మరియు మీ కంపెనీ కోసం 90-రోజుల బ్లూప్రింట్‌ను నిర్మించడానికి ఒక ఆచరణాత్మక ఐదు వారాల ప్రయాణం.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "ఐదు వారాలు · ఐదు ఆచరణాత్మక విజయాలు · ఒక 90-రోజుల బ్లూప్రింట్"
   }
 }

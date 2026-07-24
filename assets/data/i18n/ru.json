@@ -2,7 +2,7 @@
   "_comment": "Russian translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ru",
   "lang_native": "Русский",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "Исследователь возникающего",
     "Now": "Сейчас",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "Между двух <em>рассветов</em>\n      <span class=\"sm\">— художественное произведение, <em>в процессе написания</em></span>",
     "— a work of fiction, <em>in progress</em>": "— художественное произведение, <em>в процессе написания</em>",
     "Running <em>a live cohort.</em>": "Проведение <em>живой когорты.</em>",
-    "Enter to continue · Shift+Enter for a new line": "Enter для продолжения · Shift+Enter для новой строки"
+    "Enter to continue · Shift+Enter for a new line": "Enter для продолжения · Shift+Enter для новой строки",
+    "Enter Your Course Workspace <b>→</b>": "Перейти в рабочее пространство курса <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "Закрытая когорта · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "Создайте интеллектуальное ядро вашей компании. Управляйте ИИ с ясностью.",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "Практический пятинедельный путь, чтобы выявить ваше самое слабое звено в исполнении, выбрать правильный проект ИИ и создать 90-дневный план для вашей компании.",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "Пять недель · Пять практических достижений · Один 90-дневный план"
   }
 }

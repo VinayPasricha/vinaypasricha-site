@@ -2,7 +2,7 @@
   "_comment": "Bengali translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "bn",
   "lang_native": "বাংলা",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "উদ্ভবের অনুসন্ধানকারী",
     "Now": "এখন",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "দুই <em>ভোরের</em> মাঝে\n      <span class=\"sm\">— একটি কল্পকাহিনী, <em>চলমান</em></span>",
     "— a work of fiction, <em>in progress</em>": "— একটি কল্পকাহিনী, <em>চলমান</em>",
     "Running <em>a live cohort.</em>": "পরিচালিত হচ্ছে <em>একটি লাইভ কোহর্ট।</em>",
-    "Enter to continue · Shift+Enter for a new line": "চালিয়ে যেতে এন্টার টিপুন · নতুন লাইনের জন্য Shift+Enter টিপুন"
+    "Enter to continue · Shift+Enter for a new line": "চালিয়ে যেতে এন্টার টিপুন · নতুন লাইনের জন্য Shift+Enter টিপুন",
+    "Enter Your Course Workspace <b>→</b>": "আপনার কোর্স ওয়ার্কস্পেসে প্রবেশ করুন <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "ব্যক্তিগত কোহর্ট · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "আপনার কোম্পানির ব্রেন তৈরি করুন। স্পষ্টতার সাথে AI পরিচালনা করুন।",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "আপনার কোম্পানির সবচেয়ে দুর্বল কার্যনির্বাহী লিঙ্ক চিহ্নিত করতে, সঠিক AI প্রকল্প বেছে নিতে এবং আপনার কোম্পানির জন্য একটি 90-দিনের কর্মপরিকল্পনা তৈরি করতে একটি ব্যবহারিক পাঁচ সপ্তাহের যাত্রা।",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "পাঁচ সপ্তাহ · পাঁচটি ব্যবহারিক অর্জন · একটি 90-দিনের কর্মপরিকল্পনা"
   }
 }

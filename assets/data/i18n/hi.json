@@ -2,7 +2,7 @@
   "_comment": "Hindi translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "hi",
   "lang_native": "हिन्दी",
-  "updated_at": "2026-07-19",
+  "updated_at": "2026-07-24",
   "strings": {
     "Explorer of Emergence": "उद्भव के अन्वेषक",
     "Now": "अभी",
@@ -922,6 +922,11 @@
     "Between Two <em>Dawns</em>\n      <span class=\"sm\">— a work of fiction, <em>in progress</em></span>": "दो <em>भोरों</em> के बीच\n      <span class=\"sm\">— एक काल्पनिक कृति, <em>प्रगति पर</em></span>",
     "— a work of fiction, <em>in progress</em>": "— एक काल्पनिक कृति, <em>प्रगति पर</em>",
     "Running <em>a live cohort.</em>": "एक <em>लाइव कोहॉर्ट</em> का संचालन।",
-    "Enter to continue · Shift+Enter for a new line": "जारी रखने के लिए एंटर दबाएँ · नई पंक्ति के लिए शिफ्ट+एंटर दबाएँ"
+    "Enter to continue · Shift+Enter for a new line": "जारी रखने के लिए एंटर दबाएँ · नई पंक्ति के लिए शिफ्ट+एंटर दबाएँ",
+    "Enter Your Course Workspace <b>→</b>": "अपने कोर्स वर्कस्पेस में प्रवेश करें <b>→</b>",
+    "Private cohort · Harvard OPM alumni": "निजी समूह · Harvard OPM alumni",
+    "Build Your Company Brain. Lead AI with Clarity.": "अपनी कंपनी का मस्तिष्क विकसित करें। स्पष्टता के साथ AI का नेतृत्व करें।",
+    "A practical five-week journey to identify your weakest execution link, choose the right AI project and build a 90-Day Blueprint for your company.": "अपनी सबसे कमज़ोर निष्पादन कड़ी को पहचानने, सही AI परियोजना का चुनाव करने और अपनी कंपनी के लिए एक 90-दिवसीय ब्लूप्रिंट बनाने हेतु एक व्यावहारिक पाँच-सप्ताह की यात्रा।",
+    "Five weeks · Five practical wins · One 90-Day Blueprint": "पाँच सप्ताह · पाँच व्यावहारिक जीत · एक 90-दिवसीय ब्लूप्रिंट"
   }
 }
