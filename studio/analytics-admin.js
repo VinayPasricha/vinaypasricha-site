@@ -51,6 +51,7 @@
         Array.prototype.forEach.call(document.querySelectorAll('#range button'), function (x) { x.classList.toggle('on', x === b); });
         var r = await api(days);
         if (r.ok) render(r.data); else toast('Failed to load');
+        loadChannels(); // channel split follows the selected range too
       };
     });
   }
@@ -368,24 +369,33 @@
   }
 
   // ---- channels (branded short links) ----
+  function chStat(v, label, strong) {
+    return '<div style="min-width:56px;text-align:right">' +
+      '<div style="font-family:var(--serif,Georgia);font-size:' + (strong ? '19px' : '16px') + ';color:' + (strong ? 'var(--ink)' : 'var(--ink-2)') + '">' + num(v) + '</div>' +
+      '<div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">' + label + '</div></div>';
+  }
   function channelRow(c) {
     var link = location.origin + '/go/' + c.slug;
     var sub = [c.destination && c.destination !== '/' ? '→ ' + esc(c.destination) : '→ home',
       c.campaign ? 'campaign: ' + esc(c.campaign) : ''].filter(Boolean).join(' · ');
-    return '<div class="ch-row" style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--rule-soft,#eee)">' +
-      '<div style="min-width:120px"><div style="font-family:var(--serif,Georgia);font-size:15px">' + esc(c.label) + '</div>' +
+    var hasStats = (c.visitors != null);
+    var stats = hasStats
+      ? chStat(c.clicks, 'clicks', true) + chStat(c.visitors, 'visitors', true) + chStat(c.sessions, 'sessions') + chStat(c.signups, 'signups')
+      : chStat(c.clicks, 'clicks', true);
+    return '<div class="ch-row" style="display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--rule-soft,#eee)">' +
+      '<div style="min-width:110px"><div style="font-family:var(--serif,Georgia);font-size:15px">' + esc(c.label) + '</div>' +
         '<div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">' + sub + '</div></div>' +
       '<code style="flex:1;min-width:0;font-family:var(--mono);font-size:12.5px;background:var(--paper-2,#f4f1ea);padding:7px 10px;border-radius:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(link) + '</code>' +
       '<button class="ch-copy" data-link="' + esc(link) + '" style="font-family:var(--mono);font-size:11px;border:1px solid var(--rule);background:none;border-radius:4px;padding:6px 10px;cursor:pointer">Copy</button>' +
-      '<div style="min-width:70px;text-align:right"><div style="font-family:var(--serif,Georgia);font-size:18px">' + num(c.clicks) + '</div><div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">clicks</div></div>' +
-      '<button class="ch-del" data-slug="' + esc(c.slug) + '" title="Delete channel" style="border:none;background:none;color:var(--ink-4,#aaa);font-size:15px;cursor:pointer">✕</button>' +
+      stats +
+      '<button class="ch-del" data-slug="' + esc(c.slug) + '" title="Delete channel" style="border:none;background:none;color:var(--ink-4,#aaa);font-size:15px;cursor:pointer;margin-left:4px">✕</button>' +
     '</div>';
   }
 
   async function loadChannels() {
     var box = $('ch-list');
     if (!box) return;
-    var res = await fetch('/api/analytics/channels', { headers: { 'Content-Type': 'application/json' } });
+    var res = await fetch('/api/analytics/channels?days=' + days, { headers: { 'Content-Type': 'application/json' } });
     var body = {}; try { body = await res.json(); } catch (e) {}
     var list = (body && body.channels) || [];
     if (!list.length) { box.innerHTML = '<p class="muted" style="color:var(--ink-3);font-style:italic">No channels yet. Add one above — e.g. Instagram — and share the /go/ link.</p>'; return; }

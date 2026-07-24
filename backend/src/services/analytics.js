@@ -660,6 +660,42 @@ export async function deleteChannel(slug) {
   return true;
 }
 
+// Each channel with its click count (raw /go/ hits) split against what those
+// clicks actually produced: distinct visitors, sessions, and known people who
+// landed tagged with utm_source=<slug> in the window. Clicks > visitors is
+// normal (repeat clicks, bots); visitors near clicks means real people.
+export async function channelStats({ days = 30 } = {}) {
+  const channels = await listChannels();
+  if (!channels.length) return [];
+  const span = Math.max(1, Math.min(365, parseInt(days, 10) || 30));
+  const sinceDay = dayKeys(span)[0];
+  let events = [];
+  try { events = await fetchEvents(sinceDay, 20000); } catch (e) { events = []; }
+
+  const stat = {};
+  for (const c of channels) stat[c.slug] = { visitors: new Set(), sessions: new Set(), people: new Set(), views: 0 };
+  for (const e of events) {
+    const src = e.utm && e.utm.source;
+    const bucket = src && stat[src];
+    if (!bucket) continue;
+    if (e.visitorId) bucket.visitors.add(e.visitorId);
+    if (e.sessionId) bucket.sessions.add(e.sessionId);
+    if (e.personId) bucket.people.add(e.personId);
+    if (e.type === 'pageview') bucket.views += 1;
+  }
+  return channels.map((c) => {
+    const b = stat[c.slug];
+    return {
+      ...c,
+      days: span,
+      visitors: b.visitors.size,
+      sessions: b.sessions.size,
+      signups: b.people.size,
+      views: b.views,
+    };
+  });
+}
+
 // Resolve a /go/<slug> click: count it, then return the destination with the
 // UTM tags appended. Returns null when the slug is unknown (caller sends home).
 export async function resolveChannelClick(slug) {

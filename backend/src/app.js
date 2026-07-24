@@ -27,7 +27,7 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
-import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, listChannels, createChannel, deleteChannel, resolveChannelClick } from './services/analytics.js';
+import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, listChannels, channelStats, createChannel, deleteChannel, resolveChannelClick } from './services/analytics.js';
 import crypto from 'node:crypto';
 
 // First-party analytics: a tiny tracker script is injected into every served
@@ -399,7 +399,10 @@ export function createApp() {
   // Admin CRUD; the redirect itself is public (below, before the HTML handlers).
   app.get('/api/analytics/channels', requireAdmin, async (req, res) => {
     try {
-      res.json({ ok: true, channels: await listChannels() });
+      // With ?days, return each channel's clicks split against visitors /
+      // sessions / signups for that window; without it, just the list.
+      const channels = req.query.days ? await channelStats({ days: req.query.days }) : await listChannels();
+      res.json({ ok: true, channels });
     } catch (err) {
       res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
     }
