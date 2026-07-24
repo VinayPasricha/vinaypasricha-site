@@ -16,6 +16,10 @@ export const COLLECTIONS = {
   conversations: 'conversations',   // every AI chat + its result, tagged by runtime
   leads: 'leads',                   // emails / contacts captured anywhere on the site
   companyProfiles: 'companyProfiles', // published Organizational Frequency pages, keyed by slug
+  // First-party website analytics — one document per tracked event, plus a
+  // rolled-up document per known person.
+  analyticsEvents: 'analytics_events',
+  analyticsPeople: 'analytics_people',
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
   ablParticipants: 'abl_participants',
