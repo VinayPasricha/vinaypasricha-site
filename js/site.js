@@ -302,4 +302,18 @@ const ANALYTICS = {
       }
     }
   });
+
+  // The course banner is a single stable doorway. Returning participants go
+  // straight back to their saved workspace; everyone else sees passwordless
+  // email sign-in. The login page revalidates expired access.
+  document.querySelectorAll('[data-course-entry]').forEach((entry) => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('abl_participant_access_v1') || 'null');
+      if (saved?.token && saved?.workspace) {
+        entry.href = saved.workspace;
+        const label = entry.querySelector('[data-course-entry-label]');
+        if (label) label.childNodes[0].nodeValue = 'Return to Your Course Workspace ';
+      }
+    } catch (e) {}
+  });
 })();

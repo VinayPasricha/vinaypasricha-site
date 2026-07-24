@@ -11,7 +11,11 @@ import { VertexAI } from '@google-cloud/vertexai';
 const PROJECT =
   process.env.GOOGLE_CLOUD_PROJECT ||
   process.env.GCLOUD_PROJECT ||
-  process.env.GCP_PROJECT;
+  process.env.GCP_PROJECT ||
+  // Cloud Run does not guarantee that a project-id environment variable is
+  // present, even though its service account credentials are available. This
+  // is the non-secret GCP project that owns the deployed Vertex AI endpoint.
+  'project-65b6724f-5ba8-4e67-bf3';
 const LOCATION = process.env.VERTEX_LOCATION || 'us-central1';
 const MODEL = process.env.VERTEX_MODEL || 'gemini-2.5-flash';
 // The heavy, grounded company research uses a stronger model (Pro) for deeper
@@ -124,7 +128,21 @@ export async function completeModel({ system, messages, model: modelName, genera
   }
   const result = await namedModel(modelName).generateContent(request);
   const candidate = result?.response?.candidates?.[0];
-  return (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('') || '';
+  const text = (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('') || '';
+  // A truncated or filtered response also arrives as empty text. Without the
+  // reason attached, every caller can only report "it did not work", so say
+  // which it was: MAX_TOKENS means the budget ran out (on a thinking model the
+  // reasoning is drawn from the same budget), SAFETY/RECITATION means blocked.
+  if (!text) {
+    const reason = candidate?.finishReason || result?.response?.promptFeedback?.blockReason || 'no candidate';
+    const err = new Error(`The model returned nothing (${reason}).`);
+    err.finishReason = reason;
+    throw err;
+  }
+  if (candidate?.finishReason && candidate.finishReason !== 'STOP') {
+    console.warn(`[ai] ${modelName || MODEL} finished as ${candidate.finishReason} — output may be incomplete.`);
+  }
+  return text;
 }
 
 export const aiInfo = { project: PROJECT, location: LOCATION, model: MODEL, researchModel: RESEARCH_MODEL };

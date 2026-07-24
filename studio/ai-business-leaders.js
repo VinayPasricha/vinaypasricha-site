@@ -11,6 +11,7 @@
   // Restore the window scroll after re-renders settle, so buttons never jump the page.
   function restoreY(y) { requestAnimationFrame(function () { window.scrollTo(0, y); requestAnimationFrame(function () { window.scrollTo(0, y); }); }); }
   function fmtDate(v) { if (!v) return '—'; var d = new Date(v); return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  function fmtBytes(v) { var n = Number(v || 0); if (n < 1024) return n + ' B'; if (n < 1024 * 1024) return Math.round(n / 1024) + ' KB'; return (n / (1024 * 1024)).toFixed(1) + ' MB'; }
   function md(src) {
     var lines = String(src || '').replace(/\r/g, '').split('\n'), out = '', inList = false;
     function inl(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); }
@@ -34,14 +35,87 @@
   }
 
   var detailId = null;
+  var params = new URLSearchParams(location.search);
+  var participantPageId = params.get('participant');
+  var participantPage = !!participantPageId;
+  var snapshotAutoAttempted = false;
+
+  // ---- sorting ----
+  // The list arrives in the order the API returns it. Clicking a column header
+  // sorts by it; clicking the same header again reverses. The choice is kept in
+  // localStorage so it survives navigating into a participant and back. Sorting
+  // only reorders the rows — it does not change how a row opens.
+  var lastList = [];
+  var SORT_STORAGE = 'abl_studio_sort_v1';
+  var sortKey = '';
+  var sortDir = 1;
+
+  try {
+    var savedSort = JSON.parse(localStorage.getItem(SORT_STORAGE) || '{}');
+    if (savedSort && savedSort.key) { sortKey = String(savedSort.key); sortDir = savedSort.dir === -1 ? -1 : 1; }
+  } catch (e) {}
+
+  function sortValue(p) {
+    if (sortKey === 'message_count') return Number(p.message_count || 0);
+    if (sortKey === 'created_at') return String(p.created_at || '');
+    if (sortKey === 'status') return STATUS_LABEL[p.status] || p.status || '';
+    return String(p[sortKey] || '');
+  }
+
+  function sortedList(list) {
+    var out = (list || []).slice();
+    if (!sortKey) return out;
+    out.sort(function (a, b) {
+      var av = sortValue(a), bv = sortValue(b);
+      if (typeof av === 'number') return (av - bv) * sortDir;
+      // created_at is an ISO string, so a plain comparison already orders it.
+      if (sortKey === 'created_at') return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
+      return av.localeCompare(bv, undefined, { sensitivity: 'base' }) * sortDir;
+    });
+    return out;
+  }
+
+  function renderSortHeaders() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tbl th.sortable'), function (th) {
+      var key = th.getAttribute('data-sort');
+      var active = key === sortKey;
+      th.classList.toggle('sorted', active);
+      var label = th.textContent.replace(/[\s↑↓]+$/, '');
+      th.innerHTML = esc(label) + (active ? '<span class="arrow">' + (sortDir === 1 ? '↑' : '↓') + '</span>' : '');
+    });
+  }
+
+  function wireSorting() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tbl th.sortable'), function (th) {
+      th.onclick = function () {
+        var key = th.getAttribute('data-sort');
+        if (sortKey === key) sortDir = -sortDir;
+        // Date and message count are most useful highest-first.
+        else { sortKey = key; sortDir = (key === 'created_at' || key === 'message_count') ? -1 : 1; }
+        try { localStorage.setItem(SORT_STORAGE, JSON.stringify({ key: sortKey, dir: sortDir })); } catch (e) {}
+        renderList(lastList);
+      };
+    });
+  }
 
   // ---- auth ----
   async function boot() {
     var r = await api('/participants');
     if (r.status === 401 || r.status === 503) { showLogin(); return; }
     $('main').style.display = 'block';
+    if (participantPage) {
+      $('listView').style.display = 'none';
+      await openDetail(participantPageId, false);
+      if (params.get('autoResearch') === '1') {
+        history.replaceState({}, '', '/studio/ai-business-leaders?participant=' + encodeURIComponent(participantPageId));
+        autoResearch(participantPageId);
+      }
+      return;
+    }
     renderList(r.data || []);
+    wireSorting();
     wireCreate();
+    wireBulkCreate();
   }
   function showLogin() {
     $('login').style.display = 'block';
@@ -54,7 +128,10 @@
   }
 
   // ---- list ----
-  async function refresh() { var r = await api('/participants'); if (r.ok) renderList(r.data || []); }
+  async function refresh() {
+    if (participantPage) return;
+    var r = await api('/participants'); if (r.ok) renderList(r.data || []);
+  }
 
   // Show the meeting brief inline, right below the participant's row.
   async function toggleBrief(id, btn) {
@@ -77,7 +154,12 @@
   async function removeParticipant(id, name) {
     if (!window.confirm('Delete "' + (name || 'this participant') + '" and all their chats, research, and outputs?\n\nThis cannot be undone.')) return;
     var r = await api('/participants/' + id, { method: 'DELETE' });
-    if (r.ok) { toast('Deleted'); if (detailId === id) { $('detail').innerHTML = ''; detailId = null; } await refresh(); }
+    if (r.ok) {
+      toast('Deleted');
+      if (participantPage) { location.href = '/studio/ai-business-leaders'; return; }
+      if (detailId === id) { $('detail').innerHTML = ''; detailId = null; }
+      await refresh();
+    }
     else toast(r.error || 'Delete failed');
   }
   function renderStats(list) {
@@ -104,13 +186,16 @@
       stat(avgRating ? avgRating + '★' : '—', 'Avg rating');
   }
   function renderList(list) {
-    $('pcount').textContent = '· ' + list.length;
-    renderStats(list);
-    $('rows').innerHTML = list.map(function (p, i) {
+    lastList = list || [];
+    var rows = sortedList(lastList);
+    $('pcount').textContent = '· ' + rows.length;
+    renderStats(rows);
+    renderSortHeaders();
+    $('rows').innerHTML = rows.map(function (p, i) {
       var isNew = p.status === 'completed' && !p.reviewed;
       return '<tr data-id="' + p.id + '"' + (isNew ? ' class="new-row"' : '') + '>' +
         '<td class="sub">' + (i + 1) + '</td>' +
-        '<td><div class="nm">' + esc(p.name) + (isNew ? ' <span class="newpill">🟢 New</span>' : '') + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
+        '<td><div class="nm"><a class="participant-name" href="/studio/ai-business-leaders?participant=' + encodeURIComponent(p.id) + '">' + esc(p.name) + '</a>' + (isNew ? ' <span class="newpill">🟢 New</span>' : '') + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
         '<td>' + esc(p.company_name) + '</td>' +
         '<td><span class="pill">' + esc(STATUS_LABEL[p.status] || p.status) + '</span></td>' +
         '<td class="sub">' + fmtDate(p.created_at) + '</td>' +
@@ -120,7 +205,10 @@
         '<td><button class="del" data-del="' + p.id + '" data-nm="' + esc(p.name) + '" title="Delete participant">✕</button></td></tr>';
     }).join('') || '<tr><td colspan="9" class="muted">No participants yet.</td></tr>';
     Array.prototype.forEach.call($('rows').querySelectorAll('tr[data-id]'), function (tr) {
-      tr.onclick = function () { openDetail(tr.getAttribute('data-id'), true); };
+      tr.onclick = function (event) {
+        if (event.target.closest('button, a')) return;
+        location.href = '/studio/ai-business-leaders?participant=' + encodeURIComponent(tr.getAttribute('data-id'));
+      };
     });
     Array.prototype.forEach.call($('rows').querySelectorAll('.del'), function (b) {
       b.onclick = function (e) { e.stopPropagation(); removeParticipant(b.getAttribute('data-del'), b.getAttribute('data-nm')); };
@@ -140,8 +228,37 @@
       var r = await api('/participants', { method: 'POST', body: JSON.stringify(body) });
       if (!r.ok) { toast(r.error || 'Failed'); return; }
       ['n-name', 'n-company', 'n-role', 'n-email', 'n-website', 'n-industry'].forEach(function (i) { $(i).value = ''; });
-      toast('Created'); await refresh(); await openDetail(r.data.id, true);
-      if (auto) autoResearch(r.data.id);
+      toast('Created');
+      location.href = '/studio/ai-business-leaders?participant=' + encodeURIComponent(r.data.id) + (auto ? '&autoResearch=1' : '');
+    };
+  }
+
+  function wireBulkCreate() {
+    var button = $('bulkCreateBtn');
+    if (!button) return;
+    button.onclick = async function () {
+      var lines = $('bulkParticipants').value.split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean);
+      var participants = lines.map(function (line) {
+        var cells = line.split(/\t|,/).map(function (cell) { return cell.trim(); }).filter(Boolean);
+        var emailIndex = cells.findIndex(function (cell) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cell); });
+        if (emailIndex < 0) return { email: line };
+        return {
+          email: cells[emailIndex],
+          name: emailIndex > 0 ? cells[0] : '',
+          company_name: cells[emailIndex + 1] || '',
+          role_title: cells[emailIndex + 2] || ''
+        };
+      });
+      if (!participants.length) { toast('Add participant emails first'); return; }
+      button.disabled = true; button.textContent = 'Preloading…'; $('bulkStatus').textContent = '';
+      var r = await api('/participants/bulk', { method: 'POST', body: JSON.stringify({ participants: participants }) });
+      button.disabled = false; button.textContent = 'Preload participants';
+      if (!r.ok) { toast(r.error || 'Import failed'); return; }
+      var d = r.data || {};
+      $('bulkStatus').textContent = (d.created || 0) + ' added · ' + (d.updated || 0) + ' updated' + ((d.skipped || 0) ? ' · ' + d.skipped + ' skipped' : '');
+      $('bulkParticipants').value = '';
+      toast('Participant emails preloaded');
+      await refresh();
     };
   }
 
@@ -169,6 +286,118 @@
     if (pp && pp.status === 'completed' && !pp.reviewed) {
       api('/participants/' + id, { method: 'PATCH', body: JSON.stringify({ reviewed: true }) }).then(function () { refresh(); });
     }
+    var snapshot = (r.data.outputs || []).find(function (output) { return output.output_type === 'admin_participant_snapshot'; });
+    if (participantPage && (!snapshot || r.data.snapshot_stale) && !snapshotAutoAttempted) {
+      snapshotAutoAttempted = true;
+      generateAdminSnapshot(id, true);
+    }
+  }
+
+  function modeLabel(mode) {
+    return {
+      participant: 'AI Journey', qa: 'Admin QA', ved: 'Weakest Execution Link',
+      siv: 'First AI Project', continuing: 'Ongoing AI Journey',
+    }[mode] || String(mode || 'Conversation').replace(/_/g, ' ');
+  }
+
+  function outputLabel(type) {
+    return {
+      course_preparation_brief: 'Course Preparation Brief',
+      use_case_map: 'AI Opportunity & Use-Case Map',
+      strategy_note: 'Personalised AI Strategy Note',
+      share_summary: 'Participant-approved summary',
+      vinay_meeting_brief: 'Vinay meeting brief',
+      ved_report: 'Execution Constraint Report',
+      siv_report: 'First AI Project Decision Report',
+      leadership_blueprint: '90-Day AI Leadership Blueprint',
+    }[type] || String(type || 'Output').replace(/_/g, ' ');
+  }
+
+  function renderMemory(memory) {
+    var fields = (memory && memory.fields) || {};
+    var items = Object.keys(fields).filter(function (key) {
+      return fields[key] && (!Array.isArray(fields[key]) || fields[key].length);
+    }).map(function (key) {
+      var value = Array.isArray(fields[key]) ? fields[key].join('; ') : fields[key];
+      return '<div class="memory-item"><strong>' + esc(key.replace(/_/g, ' ')) + '</strong><span>' + esc(value) + '</span></div>';
+    }).join('');
+    var note = memory && memory.participant_note
+      ? '<div class="memory-item"><strong>Participant correction / note</strong><span>' + esc(memory.participant_note) + '</span></div>' : '';
+    return items || note ? '<div class="memory-grid">' + items + note + '</div>' : '<span class="muted">No confirmed Course Memory has been captured yet.</span>';
+  }
+
+  function renderConversations(conversations) {
+    if (!(conversations || []).length) return '<span class="muted">No agent conversations have started yet.</span>';
+    return conversations.map(function (conversation) {
+      var messages = (conversation.messages || []).map(function (message) {
+        var role = message.role === 'assistant' ? 'assistant' : message.role === 'admin' ? 'admin' : 'user';
+        return '<div class="message ' + role + '"><span class="message-role">' + esc(role) + '</span>' + esc(message.content) + '</div>';
+      }).join('') || '<span class="muted">This conversation has been opened but contains no messages.</span>';
+      return '<details class="conversation"><summary><strong>' + esc(modeLabel(conversation.mode)) + '</strong> · ' +
+        (conversation.messages || []).length + ' messages · ' + esc(conversation.current_stage || conversation.status || 'not started') +
+        '</summary><div style="margin-top:8px">' + messages + '</div></details>';
+    }).join('');
+  }
+
+  function renderOutputs(outputs) {
+    var visible = (outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; });
+    if (!visible.length) return '<span class="muted">No reports or course outputs have been generated yet.</span>';
+    return visible.map(function (output) {
+      var content = output.reviewed_content_markdown || output.content_markdown || '';
+      return '<details class="conversation"><summary><strong>' + esc(outputLabel(output.output_type)) + '</strong> · ' +
+        fmtDate(output.updated_at || output.created_at) + '</summary><div class="brief-inline">' + md(content) +
+        '<div style="margin-top:10px"><a class="viewbrief" href="/ai-business-leaders/pdf/' + encodeURIComponent(output.id) +
+        '" target="_blank" rel="noopener">Open printable / PDF ↗</a></div></div></details>';
+    }).join('');
+  }
+
+  function renderAdminSnapshot(d) {
+    var snapshot = (d.outputs || []).find(function (output) { return output.output_type === 'admin_participant_snapshot'; });
+    var content = snapshot ? (snapshot.reviewed_content_markdown || snapshot.content_markdown || '') : '';
+    var conversationMessages = (d.conversations || []).reduce(function (sum, conversation) {
+      return sum + (conversation.messages || []).length;
+    }, 0);
+    var researchReady = !!(d.research && (d.research.research_dossier || Object.keys(d.research.structured_context || {}).length));
+    var state = !snapshot ? 'Preparing first snapshot…' : d.snapshot_stale ? 'New information available · refreshing…' : 'Current as of ' + fmtDate(snapshot.updated_at || snapshot.created_at);
+    return '<div class="card snapshot-card"><div class="snapshot-head"><div><div class="snapshot-kicker">Private admin view</div>' +
+      '<h4 style="margin:0;font-family:var(--serif);font-size:24px;letter-spacing:0;text-transform:none;color:var(--ink)">Participant Admin Snapshot</h4>' +
+      '<p class="muted" id="snapshotStatus" style="margin:5px 0 0">' + esc(state) + '</p></div>' +
+      '<button class="btn accent" id="snapshotBtn">' + (snapshot ? 'Refresh snapshot' : 'Generate snapshot') + '</button></div>' +
+      '<div class="evidence-strip"><span class="evidence-chip">' + (researchReady ? '✓' : '○') + ' Company research</span>' +
+      '<span class="evidence-chip">' + conversationMessages + ' agent messages</span>' +
+      '<span class="evidence-chip">' + (d.notes || []).length + ' meetings</span>' +
+      '<span class="evidence-chip">' + (d.assets || []).length + ' uploaded assets</span>' +
+      '<span class="evidence-chip">' + ((d.outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; }).length) + ' course outputs</span></div>' +
+      (content ? '<div class="snapshot-content">' + md(content) + '</div>' :
+        '<div class="muted" style="padding:24px 0 6px">Reading the participant’s research, conversations, meetings and files to create the first one-page briefing…</div>') +
+      '</div>';
+  }
+
+  function renderEvidenceDossier(d) {
+    return '<details class="dossier-section"><summary><span>Course Memory</span><span>' +
+      Object.keys((d.memory && d.memory.fields) || {}).length + ' confirmed fields</span></summary><div class="dossier-body">' +
+      renderMemory(d.memory) + '</div></details>' +
+      '<details class="dossier-section"><summary><span>Agent conversations</span><span>' +
+      (d.conversations || []).length + ' conversation streams</span></summary><div class="dossier-body">' +
+      renderConversations(d.conversations) + '</div></details>' +
+      '<details class="dossier-section"><summary><span>Reports &amp; generated outputs</span><span>' +
+      ((d.outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; }).length) +
+      ' outputs</span></summary><div class="dossier-body">' + renderOutputs(d.outputs) + '</div></details>';
+  }
+
+  async function generateAdminSnapshot(id, automatic) {
+    var button = $('snapshotBtn');
+    var status = $('snapshotStatus');
+    if (button) { button.disabled = true; button.textContent = 'Refreshing…'; }
+    if (status) status.textContent = 'Synthesising all participant evidence…';
+    var r = await api('/participants/' + id + '/admin-snapshot', { method: 'POST' });
+    if (r.ok) {
+      if (!automatic) toast('Admin snapshot refreshed');
+      await openDetail(id, false);
+    } else {
+      if (button) { button.disabled = false; button.textContent = 'Try again'; }
+      if (status) status.textContent = r.error || 'The snapshot could not be refreshed.';
+    }
   }
 
   function renderDetail(d) {
@@ -177,11 +406,14 @@
     var link = origin + '/ai-business-leaders/s/' + p.slug;
 
     $('detail').innerHTML =
+      (participantPage ? '<a class="dossier-back" href="/studio/ai-business-leaders">← All participants</a>' : '') +
       '<div class="detail"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
         '<h3 style="margin:0">' + esc(p.name) + ' · <span style="font-style:italic;color:var(--ink-2)">' + esc(p.company_name) + '</span></h3>' +
         '<div style="display:flex;align-items:center;gap:10px"><span class="pill">' + esc(STATUS_LABEL[p.status] || p.status) + '</span>' +
         '<button class="btn danger" id="deleteBtn">Delete</button></div></div>' +
         (p.feedback_rating ? '<div class="fbline">Participant rated this <strong>' + p.feedback_rating + '/5 ★</strong>' + (p.feedback_comment ? ' — “' + esc(p.feedback_comment) + '”' : '') + '</div>' : '') +
+        renderAdminSnapshot(d) +
+        renderEvidenceDossier(d) +
 
       // Research
       '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
@@ -201,18 +433,66 @@
         '<label class="fld">Sources / notes</label><textarea class="ipt auto" id="r-sources" rows="2">' + esc((d.research && d.research.sources_notes) || '') + '</textarea>' +
         '<button class="btn" id="saveResearch" style="margin-top:12px">Save research</button></div>' +
 
-      // Approve + link
-      '<div class="card"><h4>2 · Approve &amp; share the link</h4>' +
+      // Generate the participant page before adding later meeting context.
+      '<div class="card"><h4>2 · Participant page &amp; private link</h4>' +
         (p.link_approved
-          ? '<div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
-          : '<p class="muted">Approve to activate this participant\'s private link, then send it to them.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Approve link</button>') +
+          ? '<p class="muted">The participant page is ready. The participant may speak with the first agent before or after your one-on-one meeting.</p><div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
+          : '<p class="muted">Generate the participant page and private link. This creates their permanent Studio record; first-agent interaction is optional.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Generate participant page &amp; link</button>') +
       '</div>' +
+
+      (p.link_approved ?
+      // Physical meetings and full transcripts
+      '<div class="card"><h4>3 · Participant context — meetings &amp; transcripts</h4>' +
+        '<p class="muted">Upload or paste the full one-on-one transcript. The original stays private. AI creates a draft summary for you to review before any course agent can use it.</p>' +
+        '<div class="grid2"><div><label class="fld">Title</label><input class="ipt" id="noteTitle" placeholder="One-on-one meeting · 21 July"></div>' +
+        '<div><label class="fld">Meeting date</label><input class="ipt" id="noteDate" type="date"></div></div>' +
+        '<div class="transcript-box"><label class="fld">Meeting transcript</label><textarea class="ipt" id="noteContent" rows="9" placeholder="Paste the complete transcript here, or upload a file below…"></textarea>' +
+        '<div class="transcript-actions">' +
+          '<input type="file" id="noteFile" accept=".txt,.md,.docx,.pdf,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="font-size:12px">' +
+          '<button class="btn" id="saveNote">Create draft summary</button><span id="noteStatus" class="muted"></span>' +
+        '</div></div>' +
+        '<div id="noteList" style="margin-top:16px">' + ((d.notes || []).map(function (note) {
+          var isTranscript = note.source_kind === 'transcript';
+          var isDraft = note.review_status === 'draft';
+          var status = isDraft ? 'Draft — review required' : 'Approved for course AI';
+          return '<div class="note-row"><div style="display:flex;justify-content:space-between;gap:12px"><div><strong>' + esc(note.title || 'Meeting summary') + '</strong>' +
+            '<div class="note-meta">' + fmtDate(note.occurred_at) + ' · ' + (isTranscript ? 'AI-processed transcript' : 'Meeting summary') + ' · ' + status + ' · Participant: ' + (note.share_with_participant ? 'shared' : 'private') + '</div></div>' +
+            '<div><button class="viewbrief" data-note-edit="' + esc(note.id) + '">Edit summary</button><button class="del" data-note-del="' + esc(note.id) + '" title="Delete meeting record">✕</button></div></div>' +
+            '<div class="note-copy" data-note-copy="' + esc(note.id) + '">' + esc(note.content || '') + '</div>' +
+            '<textarea class="ipt note-edit-box" data-note-editor="' + esc(note.id) + '" hidden>' + esc(note.content || '') + '</textarea>' +
+            (isDraft
+              ? '<div class="transcript-actions"><label style="font-size:12px;color:var(--ink-2)"><input type="checkbox" data-note-share="' + esc(note.id) + '" style="accent-color:var(--accent)"> Also share this summary with the participant</label><button class="btn accent" data-note-approve="' + esc(note.id) + '">Approve for course AI</button></div>'
+              : '<div class="transcript-actions"><button class="btn ghost" data-note-participant="' + esc(note.id) + '" data-shared="' + (note.share_with_participant ? 'true' : 'false') + '">' + (note.share_with_participant ? 'Stop sharing with participant' : 'Share summary with participant') + '</button></div>') +
+            (note.raw_transcript ? '<details class="transcript-original"><summary>View original private transcript</summary><pre>' + esc(note.raw_transcript) + '</pre></details>' : '') + '</div>';
+        }).join('') || '<span class="muted">No meetings or transcripts added yet.</span>') + '</div>' +
+      '</div>' +
+
+      // Participant-submitted files
+      '<div class="card"><h4>4 · Participant assets</h4>' +
+        '<p class="muted">Keep PDFs, Word documents, presentations, spreadsheets and other materials submitted by this participant on their private page. Files remain admin-only. Where text can be extracted, you may approve it for the course AI.</p>' +
+        '<div class="grid2"><div><label class="fld">Asset title</label><input class="ipt" id="assetTitle" placeholder="Strategy note, process document, presentation…"></div>' +
+        '<div><label class="fld">File</label><input class="ipt" type="file" id="assetFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.csv,.jpg,.jpeg,.png"></div></div>' +
+        '<label class="fld">Description / why it matters (optional)</label><textarea class="ipt" id="assetDescription" rows="2" placeholder="Add any guidance that will help you or the AI interpret this file correctly."></textarea>' +
+        '<div class="transcript-actions"><button class="btn" id="uploadAsset">Upload participant asset</button><span id="assetStatus" class="muted"></span></div>' +
+        '<div id="assetList" style="margin-top:16px">' + ((d.assets || []).map(function (asset) {
+          var approved = asset.review_status === 'approved';
+          var readable = asset.extraction_status === 'extracted' && !!asset.extracted_text;
+          var status = approved ? 'Approved for course AI' : (readable ? 'Stored privately · awaiting AI approval' : 'Stored privately · admin reference only');
+          return '<div class="asset-row"><div class="asset-main"><strong>' + esc(asset.title || asset.file_name) + '</strong>' +
+            '<div class="note-meta">' + esc(asset.file_name) + ' · ' + fmtBytes(asset.byte_size) + ' · ' + status + '</div>' +
+            (asset.description ? '<div class="asset-description">' + esc(asset.description) + '</div>' : '') + '</div>' +
+            '<div class="asset-actions"><a class="viewbrief" href="/api/abl/participants/' + encodeURIComponent(p.id) + '/assets/' + encodeURIComponent(asset.id) + '/download">Download</a>' +
+            (!approved && readable ? '<button class="btn accent" data-asset-approve="' + esc(asset.id) + '">Approve for course AI</button>' : '') +
+            '<button class="del" data-asset-del="' + esc(asset.id) + '" title="Delete participant file">✕</button></div></div>';
+        }).join('') || '<span class="muted">No participant assets uploaded yet.</span>') + '</div>' +
+      '</div>' :
+      '<div class="card context-pending"><h4>3 · Participant context &amp; assets</h4><p class="muted">Meeting summaries, transcripts and participant files will appear here as soon as the participant page and link are generated. A first-agent conversation is not required.</p></div>') +
 
       // Brief
       (function () {
         var brief = (d.outputs || []).filter(function (o) { return o.output_type === 'vinay_meeting_brief'; })[0];
         var bmd = brief ? (brief.reviewed_content_markdown || brief.content_markdown || '') : '';
-        return '<div class="card"><h4>3 · Vinay meeting brief (private)</h4>' +
+        return '<div class="card"><h4>' + (p.link_approved ? '5' : '4') + ' · Vinay meeting brief (private)</h4>' +
           '<button class="btn" id="briefBtn">' + (brief ? 'Regenerate brief' : 'Generate Vinay brief') + '</button>' +
           (brief ? ' <a class="row-actions" href="/ai-business-leaders/pdf/' + brief.id + '" target="_blank" rel="noopener" style="margin-left:10px">Open printable / PDF ↗</a>' : '') +
           '<div id="briefOut" class="muted" style="margin-top:10px"></div>' +
@@ -234,6 +514,8 @@
 
   function wireDetail(d) {
     var p = d.participant;
+    var snapshotButton = $('snapshotBtn');
+    if (snapshotButton) snapshotButton.onclick = function () { generateAdminSnapshot(p.id, false); };
     // Grow every research field to fit its full content so nothing is clipped.
     Array.prototype.forEach.call(document.querySelectorAll('.ipt.auto'), function (t) {
       autosize(t);
@@ -265,6 +547,145 @@
       $('briefBtn').disabled = false;
       if (r.ok) { $('briefOut').textContent = 'Brief generated.'; await refresh(); await openDetail(p.id); restoreY(y); } else $('briefOut').textContent = r.error || 'Failed';
     };
+
+    var noteFile = $('noteFile');
+    if (noteFile) noteFile.onchange = async function () {
+      var file = noteFile.files && noteFile.files[0];
+      if (!file) return;
+      if (!/\.(txt|md|docx|pdf)$/i.test(file.name)) { $('noteStatus').textContent = 'Please use a .txt, .md, .docx or .pdf transcript.'; return; }
+      if (file.size > 6 * 1024 * 1024) { $('noteStatus').textContent = 'Transcript files must be smaller than 6 MB.'; noteFile.value = ''; return; }
+      if (/\.(txt|md)$/i.test(file.name)) $('noteContent').value = await file.text();
+      else $('noteContent').value = '';
+      if (!$('noteTitle').value) $('noteTitle').value = file.name.replace(/\.(txt|md|docx|pdf)$/i, '');
+      $('noteStatus').textContent = /\.(txt|md)$/i.test(file.name) ? 'Transcript loaded. Review it, then process.' : 'File ready to process securely.';
+    };
+    function fileBase64(file) {
+      if (!file) return Promise.resolve('');
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(String(reader.result || '').split(',')[1] || ''); };
+        reader.onerror = function () { reject(new Error('Could not read file')); };
+        reader.readAsDataURL(file);
+      });
+    }
+    var saveNote = $('saveNote');
+    if (saveNote) saveNote.onclick = async function () {
+      var content = $('noteContent').value.trim();
+      var file = noteFile && noteFile.files && noteFile.files[0];
+      if (!content && !file) { $('noteStatus').textContent = 'Paste or upload a transcript first.'; return; }
+      var y = window.pageYOffset;
+      saveNote.disabled = true; saveNote.textContent = 'Processing…'; $('noteStatus').textContent = 'Reading transcript and creating a private draft summary…';
+      var r;
+      try {
+        r = await api('/participants/' + p.id + '/transcripts', { method: 'POST', body: JSON.stringify({
+        title: $('noteTitle').value.trim() || 'One-on-one meeting', transcript_text: content,
+        file_base64: content ? '' : await fileBase64(file), source_name: (file && file.name) || 'Pasted transcript',
+        occurred_at: $('noteDate').value ? new Date($('noteDate').value + 'T12:00:00').toISOString() : new Date().toISOString()
+        }) });
+      } catch (error) { r = { ok: false, error: error.message }; }
+      saveNote.disabled = false; saveNote.textContent = 'Create draft summary';
+      if (r.ok) { toast('Draft summary ready for review'); await openDetail(p.id); restoreY(y); }
+      else $('noteStatus').textContent = r.error || 'Could not process the transcript.';
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-edit]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-edit');
+        var copy = document.querySelector('[data-note-copy="' + id + '"]');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        if (editor.hidden) {
+          editor.hidden = false; copy.hidden = true; button.textContent = 'Save edited summary'; editor.focus(); return;
+        }
+        var content = editor.value.trim();
+        if (!content) { toast('The summary cannot be empty'); return; }
+        button.disabled = true; button.textContent = 'Saving…';
+        var r = await api('/participants/' + p.id + '/notes/' + id, { method: 'PATCH', body: JSON.stringify({ content: content }) });
+        button.disabled = false;
+        if (r.ok) { toast('Summary updated'); await openDetail(p.id); }
+        else { button.textContent = 'Save edited summary'; toast(r.error || 'Could not update summary'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-approve]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-approve');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        var content = editor.value.trim();
+        if (!content) { toast('Review the summary before approving it'); return; }
+        var share = document.querySelector('[data-note-share="' + id + '"]');
+        button.disabled = true; button.textContent = 'Approving…';
+        var r = await api('/participants/' + p.id + '/notes/' + id + '/approve', { method: 'POST', body: JSON.stringify({
+          content: content, share_with_participant: !!(share && share.checked)
+        }) });
+        if (r.ok) { toast('Approved for all course agents'); await openDetail(p.id); }
+        else { button.disabled = false; button.textContent = 'Approve for course AI'; toast(r.error || 'Could not approve summary'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-participant]'), function (button) {
+      button.onclick = async function () {
+        var id = button.getAttribute('data-note-participant');
+        var editor = document.querySelector('[data-note-editor="' + id + '"]');
+        var sharing = button.getAttribute('data-shared') !== 'true';
+        button.disabled = true;
+        var r = await api('/participants/' + p.id + '/notes/' + id, { method: 'PATCH', body: JSON.stringify({
+          content: editor.value.trim(), share_with_participant: sharing
+        }) });
+        if (r.ok) { toast(sharing ? 'Summary shared with participant' : 'Participant sharing stopped'); await openDetail(p.id); }
+        else { button.disabled = false; toast(r.error || 'Could not update participant visibility'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-note-del]'), function (button) {
+      button.onclick = async function () {
+        if (!window.confirm('Delete this meeting transcript and summary?')) return;
+        var y = window.pageYOffset;
+        var r = await api('/participants/' + p.id + '/notes/' + button.getAttribute('data-note-del'), { method: 'DELETE' });
+        if (r.ok) { toast('Meeting record deleted'); await openDetail(p.id); restoreY(y); }
+        else toast(r.error || 'Could not delete');
+      };
+    });
+
+    var assetFile = $('assetFile');
+    if (assetFile) assetFile.onchange = function () {
+      var file = assetFile.files && assetFile.files[0];
+      if (!file) return;
+      if (file.size > 6 * 1024 * 1024) { $('assetStatus').textContent = 'Participant files must be smaller than 6 MB.'; assetFile.value = ''; return; }
+      if (!$('assetTitle').value) $('assetTitle').value = file.name.replace(/\.[^.]+$/, '');
+      $('assetStatus').textContent = 'Ready to upload privately.';
+    };
+    var uploadAsset = $('uploadAsset');
+    if (uploadAsset) uploadAsset.onclick = async function () {
+      var file = assetFile && assetFile.files && assetFile.files[0];
+      if (!file) { $('assetStatus').textContent = 'Choose a participant file first.'; return; }
+      var y = window.pageYOffset;
+      uploadAsset.disabled = true; uploadAsset.textContent = 'Uploading…'; $('assetStatus').textContent = 'Saving this file to the participant page…';
+      var r;
+      try {
+        r = await api('/participants/' + p.id + '/assets', { method: 'POST', body: JSON.stringify({
+          title: $('assetTitle').value.trim() || file.name,
+          description: $('assetDescription').value.trim(),
+          file_name: file.name,
+          file_base64: await fileBase64(file)
+        }) });
+      } catch (error) { r = { ok: false, error: error.message }; }
+      uploadAsset.disabled = false; uploadAsset.textContent = 'Upload participant asset';
+      if (r.ok) { toast('Participant asset uploaded'); await openDetail(p.id); restoreY(y); }
+      else $('assetStatus').textContent = r.error || 'Could not upload the participant file.';
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-asset-approve]'), function (button) {
+      button.onclick = async function () {
+        button.disabled = true; button.textContent = 'Approving…';
+        var r = await api('/participants/' + p.id + '/assets/' + button.getAttribute('data-asset-approve') + '/approve', { method: 'POST' });
+        if (r.ok) { toast('Asset approved for all course agents'); await openDetail(p.id); }
+        else { button.disabled = false; button.textContent = 'Approve for course AI'; toast(r.error || 'Could not approve asset'); }
+      };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-asset-del]'), function (button) {
+      button.onclick = async function () {
+        if (!window.confirm('Delete this participant file?')) return;
+        var y = window.pageYOffset;
+        var r = await api('/participants/' + p.id + '/assets/' + button.getAttribute('data-asset-del'), { method: 'DELETE' });
+        if (r.ok) { toast('Participant file deleted'); await openDetail(p.id); restoreY(y); }
+        else toast(r.error || 'Could not delete participant file');
+      };
+    });
   }
 
   boot();

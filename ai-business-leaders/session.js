@@ -62,8 +62,11 @@
 
   async function apiFetch(path, init) {
     try {
-      var res = await fetch('/api/abl' + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, init || {}));
+      var options = Object.assign({}, init || {});
+      options.headers = window.AblAuth.headers(Object.assign({ 'Content-Type': 'application/json' }, (init && init.headers) || {}));
+      var res = await fetch('/api/abl' + path, options);
       var body = {}; try { body = await res.json(); } catch (e) {}
+      if (res.status === 401) { window.AblAuth.clear(); window.AblAuth.login(); }
       return { ok: res.ok && body.ok !== false, data: body.data, error: body.error, status: res.status };
     } catch (e) {
       // Network blip — return a soft failure so the UI recovers instead of hanging.

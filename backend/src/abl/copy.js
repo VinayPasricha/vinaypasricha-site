@@ -63,6 +63,9 @@ export const REWARD_TITLES = {
   course_preparation_brief: 'Course Preparation Brief',
   use_case_map: 'AI Opportunity & Use-Case Map',
   strategy_note: 'Personalised AI Strategy Note + 90-Day Direction',
+  ved_report: 'Execution Constraint Report',
+  siv_report: 'My First AI Project Decision Report',
+  leadership_blueprint: '90-Day AI Leadership Blueprint',
 };
 
 export const MAX_MESSAGES_DEFAULT = 200;

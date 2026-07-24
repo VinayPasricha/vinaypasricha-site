@@ -6,8 +6,46 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import PDFDocument from 'pdfkit';
 import * as repo from './store.js';
-import { agentTurn, generateOutput, rewardTypeForDepth, researchCompany, openingTurn, generateRewardBundle } from './service.js';
+import {
+  agentTurn,
+  generateOutput,
+  generateAdminSnapshot,
+  rewardTypeForDepth,
+  researchCompany,
+  openingTurn,
+  generateRewardBundle,
+  generateSivReport,
+  generateVedReport,
+  generateLeadershipBlueprint,
+  runtimeOpeningTurn,
+  RUNTIME_OPENING_VERSION,
+} from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
+import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
+import { buildCourseMemory } from './memory.js';
+import { analyseTranscript, extractTranscript, transcriptSummaryMarkdown } from './transcripts.js';
+import {
+  decodeParticipantAsset,
+  extractParticipantAssetText,
+  participantAssetMime,
+  supportedParticipantAsset,
+} from './assets.js';
+import {
+  bearerToken,
+  codeExpiry,
+  createLoginCode,
+  createOpaqueParticipantToken,
+  createParticipantToken,
+  deliverLoginCode,
+  hashLoginCode,
+  hashParticipantToken,
+  isPreviewEnvironment,
+  normalizeEmail,
+  participantTokenExpiry,
+  validEmail,
+  verifyLoginCode,
+  verifyParticipantToken,
+} from './auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -104,10 +142,136 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   const chatLimit = mk({ windowMs: 60000, max: 25 });     // participant chat turns
   const rewardLimit = mk({ windowMs: 60000, max: 6 });    // reward/summary generation
   const researchLimit = mk({ windowMs: 60000, max: 12 }); // grounded auto-research
+  const authRequestLimit = mk({ windowMs: 60000, max: 5 });
+  const authVerifyLimit = mk({ windowMs: 60000, max: 12 });
   const isAuthed = (req) => (typeof studioAuthed === 'function' ? studioAuthed(req) : false);
+  const participantPayload = async (req) => {
+    const token = bearerToken(req);
+    const signed = verifyParticipantToken(token);
+    if (signed) return signed;
+    if (!token.startsWith('ablr.')) return null;
+    const saved = await repo.getParticipantSession(hashParticipantToken(token));
+    if (!saved || Number.isNaN(Date.parse(saved.expires_at)) || Date.parse(saved.expires_at) <= Date.now()) return null;
+    return { sub: saved.participant_id, slug: saved.slug };
+  };
 
   // -------------------------------------------------------------------------
-  // Participant experience (public — the slug is the key)
+  // Participant passwordless sign-in
+  // -------------------------------------------------------------------------
+  app.post('/api/abl/auth/request', authRequestLimit, async (req, res) => {
+    try {
+      const email = normalizeEmail(req.body && req.body.email);
+      if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
+      let p = await repo.getParticipantByEmail(email);
+      // Keep one staging-only participant deterministic so repeated design and
+      // sign-in tests cannot be blocked by an older disabled/draft record.
+      if (isPreviewEnvironment() && email === 'vinay@wlci.in') {
+        if (!p) {
+          p = await repo.createParticipant({
+            name: 'Vinay Pasricha', company_name: 'GoodSpace AI', email,
+            role_title: 'Founder & CEO', company_website: 'https://goodspace.ai',
+          });
+        }
+        p = await repo.updateParticipant(p.id, {
+          email,
+          email_normalized: email,
+          login_enabled: true,
+          link_approved: true,
+          status: 'link_ready',
+          approved_at: p.approved_at || new Date().toISOString(),
+        });
+      }
+      if (!p || p.login_enabled === false) {
+        return fail(res, 'This email is not registered for the course. Please contact Vinay at Vinay@goodspace.ai to get access.', 403);
+      }
+      const generic = { message: 'Your sign-in code is on its way.' };
+      const code = createLoginCode();
+      await repo.saveAuthCode(email, {
+        participant_id: p.id,
+        code_hash: hashLoginCode(email, code),
+        expires_at: codeExpiry(),
+      });
+      const delivery = await deliverLoginCode({ email, code, name: p.name });
+      return ok(res, {
+        ...generic,
+        preview_code: delivery.preview && isPreviewEnvironment() ? code : undefined,
+      });
+    } catch (e) {
+      console.error('[abl] auth request error:', e.message);
+      return fail(res, 'The sign-in code could not be sent. Please try again shortly.', 503);
+    }
+  });
+
+  app.post('/api/abl/auth/verify', authVerifyLimit, async (req, res) => {
+    try {
+      const email = normalizeEmail(req.body && req.body.email);
+      const code = String((req.body && req.body.code) || '').replace(/\s/g, '');
+      if (!validEmail(email) || !/^\d{6}$/.test(code)) return fail(res, 'Enter the six-digit code from your email.');
+      const saved = await repo.getAuthCode(email);
+      const expired = !saved || Number.isNaN(Date.parse(saved.expires_at)) || Date.parse(saved.expires_at) <= Date.now();
+      const exhausted = saved && Number(saved.attempts || 0) >= 5;
+      if (expired || exhausted || !verifyLoginCode(email, code, saved && saved.code_hash)) {
+        if (saved) await repo.incrementAuthAttempts(email);
+        return fail(res, 'That code is incorrect or has expired.', 401);
+      }
+      let p = await repo.getParticipant(saved.participant_id);
+      if (!p || p.login_enabled === false || normalizeEmail(p.email) !== email) {
+        return fail(res, 'This course access is not active.', 403);
+      }
+      // Presence in the preloaded participant list is the access decision.
+      // Verified email ownership activates older draft records automatically.
+      if (!p.link_approved) {
+        p = await repo.updateParticipant(p.id, {
+          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
+        });
+      }
+      let token = createParticipantToken(p);
+      if (!token) {
+        token = createOpaqueParticipantToken();
+        await repo.saveParticipantSession(hashParticipantToken(token), {
+          participant_id: p.id, slug: p.slug, expires_at: participantTokenExpiry(),
+        });
+      }
+      await repo.consumeAuthCode(email);
+      await repo.touchActivity(p.id);
+      return ok(res, {
+        token,
+        participant: { name: p.name, company_name: p.company_name, email: p.email },
+        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
+        expires_in_days: 30,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.get('/api/abl/auth/status', async (req, res) => {
+    try {
+      const payload = await participantPayload(req);
+      if (!payload) return fail(res, 'Sign-in required.', 401);
+      const p = await repo.getParticipant(payload.sub);
+      if (!p || p.slug !== payload.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
+      return ok(res, {
+        participant: { name: p.name, company_name: p.company_name, email: p.email },
+        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // All participant APIs now require the short-lived bearer issued above. The
+  // page shells remain reachable so a missing/expired sign-in can redirect to
+  // the friendly login screen rather than exposing participant data.
+  app.use('/api/abl/session/:slug', async (req, res, next) => {
+    try {
+      const payload = await participantPayload(req);
+      if (!payload || payload.slug !== req.params.slug) return fail(res, 'Sign-in required.', 401);
+      const p = await repo.getParticipant(payload.sub);
+      if (!p || p.slug !== req.params.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
+      req.ablParticipant = p;
+      return next();
+    } catch (e) { return oops(res, e); }
+  });
+
+  // -------------------------------------------------------------------------
+  // Participant experience
   // -------------------------------------------------------------------------
   app.get('/api/abl/session/:slug', async (req, res) => {
     try {
@@ -125,8 +289,17 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         if (opening && opening.say) messages.push({ role: 'assistant', content: opening.say, options: opening.options || [], at: new Date().toISOString() });
       }
       const outputs = await repo.getOutputs(p.id);
-      const reward = outputs.find((o) => o.output_type !== 'vinay_meeting_brief' && o.output_type !== 'share_summary') || null;
+      const reward = outputs.find((o) => ['course_preparation_brief', 'use_case_map', 'strategy_note'].includes(o.output_type)) || null;
       const share = outputs.find((o) => o.output_type === 'share_summary') || null;
+      const [vedSession, sivSession, continuingSession, memory] = await Promise.all([
+        repo.getSession(p.id, 'ved'),
+        repo.getSession(p.id, 'siv'),
+        repo.getSession(p.id, 'continuing'),
+        buildCourseMemory(p),
+      ]);
+      const vedReport = outputs.find((o) => o.output_type === 'ved_report') || null;
+      const sivReport = outputs.find((o) => o.output_type === 'siv_report') || null;
+      const blueprint = outputs.find((o) => o.output_type === 'leadership_blueprint') || null;
       return ok(res, {
         participant: { name: p.name, company_name: p.company_name, role_title: p.role_title,
           status: p.status, current_stage: p.current_stage, message_count: p.message_count, max_messages: p.max_messages,
@@ -136,6 +309,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
         messages,
         reward: reward ? { id: reward.id, type: reward.output_type, markdown: reward.content_markdown } : null,
         share: share ? { id: share.id, markdown: share.reviewed_content_markdown ?? share.content_markdown, approved: share.participant_approved } : null,
+        runtimes: {
+          ved: { started: !!(vedSession && vedSession.consent_given), complete: !!vedReport },
+          siv: { started: !!(sivSession && sivSession.selected_depth), complete: !!sivReport },
+          continuing: { started: !!(continuingSession && continuingSession.consent_given), complete: false },
+        },
+        memory,
+        blueprint: blueprint ? { id: blueprint.id, markdown: blueprint.content_markdown } : null,
       });
     } catch (e) { return oops(res, e); }
   });
@@ -232,6 +412,218 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   });
 
   // -------------------------------------------------------------------------
+  // Course-specific thinking tools (same participant link, separate sessions)
+  // -------------------------------------------------------------------------
+  const runtimeMode = (value) => (value === 'siv' || value === 'ved' || value === 'continuing' ? value : null);
+
+  app.get('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
+      let storedMessages = (await repo.listMessages(session.id))
+        .filter((m) => m.role === 'user' || m.role === 'assistant');
+      const hasUserAnswer = storedMessages.some((m) => m.role === 'user');
+      const staleUnansweredOpening = started && storedMessages.length && !hasUserAnswer &&
+        storedMessages.every((m) => !m.metadata || m.metadata.runtime_opening_version !== RUNTIME_OPENING_VERSION);
+      if (staleUnansweredOpening) {
+        await repo.deleteMessages(storedMessages.map((m) => m.id));
+        storedMessages = [];
+      }
+      const messages = storedMessages
+        .filter((m) => m.role === 'user' || m.role === 'assistant')
+        .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
+          options: (m.metadata && m.metadata.options) || [],
+          selection_mode: (m.metadata && m.metadata.selection_mode) || 'single',
+          stage: (m.metadata && m.metadata.stage) || '' }));
+      // Self-heal a session that was marked started by an older revision but
+      // never received its opening agent turn.
+      if (started && !messages.length) {
+        const opening = await runtimeOpeningTurn({ participant: p, session, mode });
+        if (opening && opening.reply) messages.push({
+          role: 'assistant', content: opening.reply, options: opening.options || [],
+          selection_mode: opening.selectionMode || 'single', at: new Date().toISOString(),
+        });
+      }
+      const report = await repo.getLatestOutput(p.id, mode === 'continuing' ? 'leadership_blueprint' : mode + '_report');
+      return ok(res, {
+        mode,
+        config: COURSE_RUNTIME_MODES[mode],
+        participant: { name: p.name, company_name: p.company_name, role_title: p.role_title },
+        started,
+        depth: mode === 'siv' ? session.selected_depth : null,
+        message_count: p.message_count || 0,
+        max_messages: p.max_messages || 200,
+        messages,
+        report: report ? { id: report.id, markdown: report.content_markdown } : null,
+        memory: await buildCourseMemory(p),
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      const session = await repo.getOrCreateSession(p.id, mode);
+
+      if (mode === 'siv') {
+        const depth = String((req.body && req.body.depth) || '');
+        if (!['fast', 'standard', 'deep'].includes(depth)) return fail(res, 'Choose a valid depth.');
+        const updated = await repo.updateSession(session.id, { selected_depth: depth, consent_given: true });
+        const existing = await repo.listMessages(updated.id);
+        const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
+        return ok(res, { started: true, depth: updated.selected_depth,
+          reply: opening && opening.reply, options: (opening && opening.options) || [],
+          selection_mode: (opening && opening.selectionMode) || 'multi' });
+      }
+
+      const updated = await repo.updateSession(session.id, { consent_given: true });
+      const existing = await repo.listMessages(updated.id);
+      const opening = existing.length ? null : await runtimeOpeningTurn({ participant: p, session: updated, mode });
+      return ok(res, { started: true, reply: opening && opening.reply,
+        options: (opening && opening.options) || [], selection_mode: (opening && opening.selectionMode) || 'single' });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/message', chatLimit, async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const msg = String((req.body && req.body.message) || '').trim();
+      if (!msg) return fail(res, 'Empty message');
+      if (msg.length > 6000) return fail(res, 'Message too long');
+
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      if ((p.message_count || 0) >= (p.max_messages || 200)) {
+        return fail(res, 'You have used your included course AI allowance. Please message the course admin if you need it extended.', 429);
+      }
+
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const started = mode === 'siv' ? !!session.selected_depth : !!session.consent_given;
+      if (!started) return fail(res, 'Start this course conversation before sending a message.', 400);
+      const turn = await agentTurn({ participant: p, session, userMessage: msg, mode });
+      return ok(res, {
+        reply: turn.reply,
+        options: turn.options || [],
+        selection_mode: turn.selectionMode || 'single',
+        stage: turn.stage || '',
+        message_count: turn.messageCount,
+        max_messages: p.max_messages || 200,
+        soft_warn: turn.messageCount >= SOFT_WARN_AT,
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/report', rewardLimit, async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Session not found', 404);
+      if (!p.link_approved) return fail(res, 'This session is not active yet.', 403);
+      const session = await repo.getOrCreateSession(p.id, mode);
+      if (mode === 'siv' && !session.selected_depth) return fail(res, 'Start the examination before generating a report.');
+      if (mode === 'ved' && !session.consent_given) return fail(res, 'Start the diagnostic before generating a report.');
+      if (mode === 'continuing' && !session.consent_given) return fail(res, 'Start a check-in before updating the blueprint.');
+      const userTurns = (await repo.listMessages(session.id)).filter((m) => m.role === 'user').length;
+      if (userTurns < 2) return fail(res, 'Go a little further into the conversation before generating your report.');
+
+      const report = mode === 'siv' ? await generateSivReport(p)
+        : mode === 'ved' ? await generateVedReport(p) : await generateLeadershipBlueprint(p);
+      return ok(res, { report });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/runtime/:mode/restart', async (req, res) => {
+    try {
+      const mode = runtimeMode(req.params.mode);
+      if (!mode) return fail(res, 'Unknown course runtime', 404);
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const session = await repo.getOrCreateSession(p.id, mode);
+      const messages = await repo.listMessages(session.id);
+      const usedTurns = messages.filter((message) => message.role === 'user').length;
+      await repo.deleteMessages(messages.map((message) => message.id));
+      await repo.updateSession(session.id, {
+        consent_given: false, selected_depth: null, current_stage: null,
+        running_summary: null, summary_reviewed: false,
+      });
+      if (usedTurns) await repo.updateParticipant(p.id, { message_count: Math.max(0, (p.message_count || 0) - usedTurns) });
+      if (mode === 'ved') {
+        await Promise.all([
+          repo.deleteOutput(p.id, 'ved_report'), repo.deleteOutput(p.id, 'leadership_blueprint'),
+          repo.upsertMemory(p.id, { fields: { desired_output: '', execution_sequence: '', ved_constraint: '', ved_correction: '', ved_measurement: '' } }),
+        ]);
+      } else if (mode === 'siv') {
+        await Promise.all([
+          repo.deleteOutput(p.id, 'siv_report'), repo.deleteOutput(p.id, 'leadership_blueprint'),
+          repo.upsertMemory(p.id, { fields: { candidate_projects: '', company_brain: '', selected_project: '', baseline: '', target: '', owner: '', value_case: '', guardrails: '' } }),
+        ]);
+      }
+      return ok(res, { restarted: true, preserved: 'verified company context and other conversations' });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // Shared participant-visible memory. A concise correction or priority can be
+  // added without forcing the participant to restart any conversation.
+  app.get('/api/abl/session/:slug/memory', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      return ok(res, await buildCourseMemory(p));
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/session/:slug/memory', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const note = String((req.body && req.body.participant_note) || '').trim();
+      if (note.length > 6000) return fail(res, 'Please keep this note under 6,000 characters.');
+      await repo.upsertMemory(p.id, { participant_note: note });
+      return ok(res, await buildCourseMemory(p));
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/session/:slug/blueprint', rewardLimit, async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const [ved, siv] = await Promise.all([
+        repo.getLatestOutput(p.id, 'ved_report'), repo.getLatestOutput(p.id, 'siv_report'),
+      ]);
+      if (!ved || !siv) return fail(res, 'Complete the VED and SIV reports before building the combined blueprint.', 409);
+      return ok(res, { report: await generateLeadershipBlueprint(p) });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/session/:slug/blueprint', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p || !p.link_approved) return fail(res, 'Session not found', 404);
+      const markdown = String((req.body && req.body.markdown) || '').trim();
+      if (!markdown || markdown.length > 30000) return fail(res, 'Blueprint text is empty or too long.');
+      const existing = await repo.getLatestOutput(p.id, 'leadership_blueprint');
+      const saved = await repo.saveOutput({
+        participant_id: p.id, session_id: existing && existing.session_id,
+        output_type: 'leadership_blueprint', content_markdown: markdown,
+      });
+      return ok(res, { id: saved.id, markdown: saved.content_markdown });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // -------------------------------------------------------------------------
   // Admin (studio-gated)
   // -------------------------------------------------------------------------
   app.get('/api/abl/participants', requireAdmin, async (req, res) => {
@@ -246,9 +638,55 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const p = await repo.createParticipant({
         name: b.name.trim(), company_name: b.company_name.trim(), email: b.email,
         role_title: b.role_title, company_website: b.company_website, industry: b.industry,
-        geography: b.geography, business_model: b.business_model,
+        geography: b.geography, business_model: b.business_model, login_enabled: b.login_enabled,
       });
       return ok(res, p, 201);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/bulk', requireAdmin, async (req, res) => {
+    try {
+      const entries = Array.isArray(req.body && req.body.participants) ? req.body.participants.slice(0, 250) : [];
+      if (!entries.length) return fail(res, 'Add at least one participant email.');
+      const result = { created: 0, updated: 0, skipped: 0, errors: [] };
+      const titleCase = (value) => String(value || '').replace(/[._-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim();
+      for (let i = 0; i < entries.length; i += 1) {
+        const row = entries[i] || {};
+        const email = normalizeEmail(row.email);
+        if (!validEmail(email)) { result.errors.push(`Row ${i + 1}: invalid email`); result.skipped += 1; continue; }
+        const existing = await repo.getParticipantByEmail(email);
+        if (existing) {
+          await repo.updateParticipant(existing.id, {
+            email,
+            email_normalized: email,
+            login_enabled: true,
+            link_approved: true,
+            status: existing.status === 'draft' ? 'link_ready' : existing.status,
+            approved_at: existing.approved_at || new Date().toISOString(),
+            ...(row.name ? { name: String(row.name).trim() } : {}),
+            ...(row.company_name ? { company_name: String(row.company_name).trim() } : {}),
+            ...(row.role_title ? { role_title: String(row.role_title).trim() } : {}),
+          });
+          result.updated += 1;
+          continue;
+        }
+        const local = email.split('@')[0];
+        const domain = email.split('@')[1].split('.')[0];
+        const p = await repo.createParticipant({
+          name: String(row.name || titleCase(local) || 'Course participant').trim(),
+          company_name: String(row.company_name || titleCase(domain) || 'To confirm').trim(),
+          email,
+          role_title: row.role_title ? String(row.role_title).trim() : null,
+          login_enabled: true,
+        });
+        await repo.updateParticipant(p.id, {
+          link_approved: true,
+          status: 'link_ready',
+          approved_at: new Date().toISOString(),
+        });
+        result.created += 1;
+      }
+      return ok(res, result, 201);
     } catch (e) { return oops(res, e); }
   });
 
@@ -256,15 +694,42 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs] = await Promise.all([
-        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id),
+      const [research, qa, outputs, memory, notes, assets, sessions] = await Promise.all([
+        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }),
+        repo.listNotes(p.id), repo.listAssets(p.id), repo.listSessions(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs });
+      const conversations = await Promise.all(sessions.map(async (session) => ({
+        ...session,
+        messages: (await repo.listMessages(session.id))
+          .filter((message) => ['user', 'assistant', 'admin'].includes(message.role)),
+      })));
+      const snapshot = outputs.find((output) => output.output_type === 'admin_participant_snapshot') || null;
+      const evidenceDates = [
+        p.updated_at, research && research.updated_at, memory && memory.updated_at,
+        ...notes.map((note) => note.updated_at || note.created_at),
+        ...assets.map((asset) => asset.updated_at || asset.created_at),
+        ...conversations.flatMap((conversation) => [
+          conversation.updated_at, ...conversation.messages.map((message) => message.created_at),
+        ]),
+        ...outputs.filter((output) => output.output_type !== 'admin_participant_snapshot')
+          .map((output) => output.updated_at || output.created_at),
+      ].filter(Boolean).map((value) => Date.parse(value)).filter(Number.isFinite);
+      const evidenceUpdatedAt = evidenceDates.length ? new Date(Math.max(...evidenceDates)).toISOString() : p.updated_at;
+      const snapshotTime = snapshot ? Date.parse(snapshot.updated_at || snapshot.created_at) : 0;
+      const snapshotStale = !snapshot || (!!evidenceUpdatedAt && snapshotTime < Date.parse(evidenceUpdatedAt));
+      return ok(res, {
+        participant: p, research, qa, outputs, memory, notes, assets, conversations,
+        snapshot_stale: snapshotStale, evidence_updated_at: evidenceUpdatedAt,
+      });
     } catch (e) { return oops(res, e); }
   });
 
   app.patch('/api/abl/participants/:id', requireAdmin, async (req, res) => {
-    try { return ok(res, await repo.updateParticipant(req.params.id, req.body || {})); } catch (e) { return oops(res, e); }
+    try {
+      const patch = { ...(req.body || {}) };
+      if (Object.prototype.hasOwnProperty.call(patch, 'email')) patch.email_normalized = normalizeEmail(patch.email);
+      return ok(res, await repo.updateParticipant(req.params.id, patch));
+    } catch (e) { return oops(res, e); }
   });
 
   app.delete('/api/abl/participants/:id', requireAdmin, async (req, res) => {
@@ -277,6 +742,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
       const r = await researchCompany(p);
+      if (!r.grounded) return fail(res, r.error || 'Verified company research was not completed.', 502);
       return ok(res, r);
     } catch (e) { return oops(res, e); }
   });
@@ -323,6 +789,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
 
   app.post('/api/abl/participants/:id/approve', requireAdmin, async (req, res) => {
     try {
+      const current = await repo.getParticipant(req.params.id);
+      if (!current) return fail(res, 'Not found', 404);
+      const research = await repo.getResearch(req.params.id);
+      const context = (research && research.structured_context) || {};
+      if (!current.company_website || !research || !research.research_dossier || !(context.products || context.customers)) {
+        return fail(res, 'Complete verified company research, including the official website, before approving this link.', 409);
+      }
       const p = await repo.updateParticipant(req.params.id, { link_approved: true, status: 'link_ready', approved_at: new Date().toISOString() });
       return ok(res, p);
     } catch (e) { return oops(res, e); }
@@ -337,10 +810,183 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     } catch (e) { return oops(res, e); }
   });
 
+  app.post('/api/abl/participants/:id/admin-snapshot', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const markdown = await generateAdminSnapshot(p);
+      return ok(res, { markdown });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/notes', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding meeting context.', 409);
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'Add a meeting or conversation summary first.');
+      const note = await repo.addNote(p.id, {
+        title: req.body.title, content, source_name: req.body.source_name,
+        visibility: req.body.visibility, occurred_at: req.body.occurred_at,
+      });
+      return ok(res, note, 201);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/transcripts', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding meeting context.', 409);
+      const extracted = await extractTranscript(req.body || {});
+      const analysis = await analyseTranscript({ participant: p, transcript: extracted.text });
+      const note = await repo.addNote(p.id, {
+        title: req.body.title || 'One-on-one meeting',
+        content: transcriptSummaryMarkdown(analysis),
+        raw_transcript: extracted.text,
+        source_kind: 'transcript',
+        structured_context: analysis,
+        transcript_truncated: extracted.truncated,
+        source_name: req.body.source_name,
+        visibility: 'private',
+        review_status: 'draft',
+        share_with_participant: false,
+        occurred_at: req.body.occurred_at,
+        processed_at: new Date().toISOString(),
+      });
+      return ok(res, note, 201);
+    } catch (e) {
+      if (/transcript|\.txt|\.md|\.docx|\.pdf|6 MB/i.test(String(e && e.message))) return fail(res, e.message, 400);
+      return oops(res, e);
+    }
+  });
+
+  app.delete('/api/abl/participants/:id/notes/:noteId', requireAdmin, async (req, res) => {
+    try {
+      const deleted = await repo.deleteNote(req.params.id, req.params.noteId);
+      if (!deleted) return fail(res, 'Note not found', 404);
+      return ok(res, { deleted: true });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/participants/:id/notes/:noteId', requireAdmin, async (req, res) => {
+    try {
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'The Course Memory summary cannot be empty.');
+      const patch = { content };
+      if (Object.prototype.hasOwnProperty.call(req.body || {}, 'share_with_participant')) {
+        patch.share_with_participant = !!req.body.share_with_participant;
+      }
+      const note = await repo.updateNote(req.params.id, req.params.noteId, patch);
+      if (!note) return fail(res, 'Note not found', 404);
+      return ok(res, note);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/notes/:noteId/approve', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const content = String((req.body && req.body.content) || '').trim();
+      if (!content) return fail(res, 'Review the summary before approving it.');
+      const note = await repo.updateNote(req.params.id, req.params.noteId, {
+        content,
+        visibility: 'course_memory',
+        review_status: 'approved',
+        approved_at: new Date().toISOString(),
+        share_with_participant: !!(req.body && req.body.share_with_participant),
+      });
+      if (!note) return fail(res, 'Meeting record not found', 404);
+      return ok(res, note);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/assets', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      if (!p.link_approved) return fail(res, 'Generate the participant page and link before adding files.', 409);
+      const fileName = String((req.body && req.body.file_name) || '').trim();
+      if (!supportedParticipantAsset(fileName)) {
+        return fail(res, 'Upload a PDF, Word, PowerPoint, Excel, text, CSV or image file.');
+      }
+      const buffer = decodeParticipantAsset(req.body && req.body.file_base64);
+      const extracted = await extractParticipantAssetText(fileName, buffer);
+      const asset = await repo.addAsset(p.id, {
+        title: req.body.title || fileName,
+        description: req.body.description,
+        file_name: fileName,
+        mime_type: participantAssetMime(fileName),
+        buffer,
+        extracted_text: extracted.text,
+        extractable: extracted.extractable,
+        extraction_error: extracted.extraction_error,
+        context_truncated: extracted.truncated,
+      });
+      return ok(res, asset, 201);
+    } catch (e) {
+      if (/uploaded file|Participant files|Upload a PDF/i.test(String(e && e.message))) return fail(res, e.message, 400);
+      return oops(res, e);
+    }
+  });
+
+  app.get('/api/abl/participants/:id/assets/:assetId/download', requireAdmin, async (req, res) => {
+    try {
+      const result = await repo.getAssetBuffer(req.params.id, req.params.assetId);
+      if (!result) return fail(res, 'File not found', 404);
+      const safeName = String(result.asset.file_name || 'participant-file').replace(/["\r\n]/g, '_');
+      res.setHeader('Content-Type', result.asset.mime_type || 'application/octet-stream');
+      res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`);
+      res.setHeader('Content-Length', String(result.buffer.length));
+      res.setHeader('Cache-Control', 'private, no-store');
+      return res.send(result.buffer);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/assets/:assetId/approve', requireAdmin, async (req, res) => {
+    try {
+      const current = await repo.getAsset(req.params.id, req.params.assetId);
+      if (!current) return fail(res, 'File not found', 404);
+      if (!current.extracted_text) return fail(res, 'This file is stored safely, but its text cannot be read by the course AI.', 409);
+      const asset = await repo.updateAsset(req.params.id, req.params.assetId, { review_status: 'approved' });
+      return ok(res, asset);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.delete('/api/abl/participants/:id/assets/:assetId', requireAdmin, async (req, res) => {
+    try {
+      const deleted = await repo.deleteAsset(req.params.id, req.params.assetId);
+      if (!deleted) return fail(res, 'File not found', 404);
+      return ok(res, { deleted: true });
+    } catch (e) { return oops(res, e); }
+  });
+
   // -------------------------------------------------------------------------
   // Pages (served dynamically so links carry a slug / id)
   // -------------------------------------------------------------------------
   let sessionShell = null;
+  let workspaceShell = null;
+  let courseRuntimeShell = null;
+  app.get('/ai-business-leaders/workspace/:slug/:mode', (req, res, next) => {
+    try {
+      if (!runtimeMode(req.params.mode)) return next();
+      if (courseRuntimeShell == null) courseRuntimeShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'course-runtime.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'private, no-store');
+      return res.send(courseRuntimeShell);
+    } catch (e) { return next(); }
+  });
+
+  app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
+    try {
+      if (workspaceShell == null) workspaceShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'private, no-store');
+      return res.send(workspaceShell);
+    } catch (e) { return next(); }
+  });
+
   app.get('/ai-business-leaders/s/:slug', (req, res, next) => {
     try {
       if (sessionShell == null) sessionShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'session.html'), 'utf8');
@@ -354,9 +1000,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const out = await repo.getOutput(req.params.outputId);
       if (!out) return next();
-      if (out.output_type === 'vinay_meeting_brief' && !isAuthed(req)) return res.status(403).send('This document is private.');
+      if (['vinay_meeting_brief', 'admin_participant_snapshot'].includes(out.output_type) && !isAuthed(req)) {
+        return res.status(403).send('This document is private.');
+      }
       const p = await repo.getParticipant(out.participant_id);
-      const title = REWARD_TITLES[out.output_type] || (out.output_type === 'vinay_meeting_brief' ? 'Meeting Brief' : 'Summary');
+      const title = REWARD_TITLES[out.output_type]
+        || (out.output_type === 'vinay_meeting_brief' ? 'Meeting Brief'
+          : out.output_type === 'admin_participant_snapshot' ? 'Admin Participant Snapshot' : 'Summary');
       const md = out.reviewed_content_markdown || out.content_markdown || '';
       const who = ((p && p.name) || '') + (p && p.company_name ? ' · ' + p.company_name : '');
       let date = '';
@@ -373,7 +1023,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!out) return next();
       // The private meeting brief is Vinay-only — everything else (participant
       // reward + share summary) is fine to view via the unguessable id.
-      if (out.output_type === 'vinay_meeting_brief' && !isAuthed(req)) {
+      if (['vinay_meeting_brief', 'admin_participant_snapshot'].includes(out.output_type) && !isAuthed(req)) {
         return res.status(403).send('This document is private.');
       }
       const p = await repo.getParticipant(out.participant_id);
