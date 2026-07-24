@@ -620,6 +620,94 @@ export async function generateOutput(participant, type, modelName) {
   return md;
 }
 
+function bounded(value, limit) {
+  return String(value || '').trim().slice(0, limit);
+}
+
+// A private, living one-page briefing for the Studio. Unlike the participant
+// outputs, this deliberately considers every admin-visible evidence stream:
+// research, all agent conversations, meetings (including private drafts),
+// shared Course Memory, generated outputs and uploaded participant files.
+export async function generateAdminSnapshot(participant) {
+  const [research, memory, notes, assets, sessions, outputs] = await Promise.all([
+    repo.getResearch(participant.id),
+    repo.getMemory(participant.id),
+    repo.listNotes(participant.id),
+    repo.listAssets(participant.id),
+    repo.listSessions(participant.id),
+    repo.getOutputs(participant.id),
+  ]);
+  const conversations = await Promise.all(sessions.map(async (session) => ({
+    mode: session.mode,
+    stage: session.current_stage,
+    status: session.status,
+    messages: (await repo.listMessages(session.id))
+      .filter((message) => ['user', 'assistant', 'admin'].includes(message.role))
+      .map((message) => `${String(message.role).toUpperCase()}: ${bounded(message.content, 5000)}`)
+      .join('\n'),
+  })));
+  const evidence = {
+    participant: {
+      name: participant.name, company: participant.company_name, role: participant.role_title,
+      industry: participant.industry, geography: participant.geography,
+      business_model: participant.business_model, status: participant.status,
+    },
+    research: {
+      structured_context: (research && research.structured_context) || {},
+      dossier: bounded(research && research.research_dossier, 14000),
+    },
+    course_memory: (memory && memory.fields) || {},
+    participant_note: bounded(memory && memory.participant_note, 4000),
+    meetings: notes.slice(0, 12).map((note) => ({
+      title: note.title, date: note.occurred_at, review_status: note.review_status,
+      visibility: note.visibility, summary: bounded(note.content, 7000),
+      transcript_excerpt: bounded(note.raw_transcript, 10000),
+    })),
+    uploaded_assets: assets.slice(0, 16).map((asset) => ({
+      title: asset.title, file_name: asset.file_name, description: asset.description,
+      review_status: asset.review_status, extraction_status: asset.extraction_status,
+      text: bounded(asset.extracted_text, 7000),
+    })),
+    agent_conversations: conversations.map((conversation) => ({
+      ...conversation, messages: bounded(conversation.messages, 26000),
+    })),
+    generated_outputs: outputs
+      .filter((output) => output.output_type !== 'admin_participant_snapshot')
+      .slice(0, 12)
+      .map((output) => ({
+        type: output.output_type,
+        content: bounded(output.reviewed_content_markdown || output.content_markdown, 9000),
+      })),
+  };
+  const system = `You are preparing a private executive briefing for the administrator of Vinay Pasricha's AI for Business Leaders course.
+Synthesize only the supplied evidence. Never invent a fact. If sources conflict, explicitly flag the conflict and prefer the participant's own latest statement. Treat preliminary research as provisional. Treat unapproved meeting drafts and files as private admin evidence, not confirmed truth.
+
+Write a crisp one-page briefing in clean markdown, no tables, under 750 words. Use exactly these sections:
+## Where we are now
+## Participant and company
+## What matters most
+## AI opportunity taking shape
+## Decisions and commitments
+## Risks, constraints and missing information
+## Course progress and evidence
+## Recommended next admin action
+
+The opening section must give the administrator the honest current state in 3-5 bullets. Distinguish what is confirmed, inferred and still unknown. End with one specific next admin action, not a generic list.`;
+  const md = await completeModel({
+    system,
+    messages: [{ role: 'user', content: `Here is the complete participant evidence:\n\n${JSON.stringify(evidence)}` }],
+    model: CHAT_MODEL,
+    generationConfig: gcfg(CHAT_MODEL, { maxOutputTokens: 2500, temperature: 0.2 }),
+  });
+  await repo.saveOutput({
+    participant_id: participant.id,
+    session_id: null,
+    output_type: 'admin_participant_snapshot',
+    content_markdown: md,
+  });
+  return md;
+}
+
 // The participant's reward + the share-summary, generated IN PARALLEL so the
 // "prepare my summary" step is roughly half the wait. The reward uses the Pro
 // model (headline deliverable); the share-summary uses the fast model.

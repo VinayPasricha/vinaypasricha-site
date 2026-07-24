@@ -9,6 +9,7 @@ import * as repo from './store.js';
 import {
   agentTurn,
   generateOutput,
+  generateAdminSnapshot,
   rewardTypeForDepth,
   researchCompany,
   openingTurn,
@@ -693,10 +694,33 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs, memory, notes, assets] = await Promise.all([
-        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }), repo.listNotes(p.id), repo.listAssets(p.id),
+      const [research, qa, outputs, memory, notes, assets, sessions] = await Promise.all([
+        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }),
+        repo.listNotes(p.id), repo.listAssets(p.id), repo.listSessions(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs, memory, notes, assets });
+      const conversations = await Promise.all(sessions.map(async (session) => ({
+        ...session,
+        messages: (await repo.listMessages(session.id))
+          .filter((message) => ['user', 'assistant', 'admin'].includes(message.role)),
+      })));
+      const snapshot = outputs.find((output) => output.output_type === 'admin_participant_snapshot') || null;
+      const evidenceDates = [
+        p.updated_at, research && research.updated_at, memory && memory.updated_at,
+        ...notes.map((note) => note.updated_at || note.created_at),
+        ...assets.map((asset) => asset.updated_at || asset.created_at),
+        ...conversations.flatMap((conversation) => [
+          conversation.updated_at, ...conversation.messages.map((message) => message.created_at),
+        ]),
+        ...outputs.filter((output) => output.output_type !== 'admin_participant_snapshot')
+          .map((output) => output.updated_at || output.created_at),
+      ].filter(Boolean).map((value) => Date.parse(value)).filter(Number.isFinite);
+      const evidenceUpdatedAt = evidenceDates.length ? new Date(Math.max(...evidenceDates)).toISOString() : p.updated_at;
+      const snapshotTime = snapshot ? Date.parse(snapshot.updated_at || snapshot.created_at) : 0;
+      const snapshotStale = !snapshot || (!!evidenceUpdatedAt && snapshotTime < Date.parse(evidenceUpdatedAt));
+      return ok(res, {
+        participant: p, research, qa, outputs, memory, notes, assets, conversations,
+        snapshot_stale: snapshotStale, evidence_updated_at: evidenceUpdatedAt,
+      });
     } catch (e) { return oops(res, e); }
   });
 
@@ -783,6 +807,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!p) return fail(res, 'Not found', 404);
       const md = await generateOutput(p, 'vinay_meeting_brief');
       return ok(res, { markdown: md });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/participants/:id/admin-snapshot', requireAdmin, async (req, res) => {
+    try {
+      const p = await repo.getParticipant(req.params.id);
+      if (!p) return fail(res, 'Not found', 404);
+      const markdown = await generateAdminSnapshot(p);
+      return ok(res, { markdown });
     } catch (e) { return oops(res, e); }
   });
 
@@ -967,9 +1000,13 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const out = await repo.getOutput(req.params.outputId);
       if (!out) return next();
-      if (out.output_type === 'vinay_meeting_brief' && !isAuthed(req)) return res.status(403).send('This document is private.');
+      if (['vinay_meeting_brief', 'admin_participant_snapshot'].includes(out.output_type) && !isAuthed(req)) {
+        return res.status(403).send('This document is private.');
+      }
       const p = await repo.getParticipant(out.participant_id);
-      const title = REWARD_TITLES[out.output_type] || (out.output_type === 'vinay_meeting_brief' ? 'Meeting Brief' : 'Summary');
+      const title = REWARD_TITLES[out.output_type]
+        || (out.output_type === 'vinay_meeting_brief' ? 'Meeting Brief'
+          : out.output_type === 'admin_participant_snapshot' ? 'Admin Participant Snapshot' : 'Summary');
       const md = out.reviewed_content_markdown || out.content_markdown || '';
       const who = ((p && p.name) || '') + (p && p.company_name ? ' · ' + p.company_name : '');
       let date = '';
@@ -986,7 +1023,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (!out) return next();
       // The private meeting brief is Vinay-only — everything else (participant
       // reward + share summary) is fine to view via the unguessable id.
-      if (out.output_type === 'vinay_meeting_brief' && !isAuthed(req)) {
+      if (['vinay_meeting_brief', 'admin_participant_snapshot'].includes(out.output_type) && !isAuthed(req)) {
         return res.status(403).send('This document is private.');
       }
       const p = await repo.getParticipant(out.participant_id);

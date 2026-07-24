@@ -35,12 +35,25 @@
   }
 
   var detailId = null;
+  var params = new URLSearchParams(location.search);
+  var participantPageId = params.get('participant');
+  var participantPage = !!participantPageId;
+  var snapshotAutoAttempted = false;
 
   // ---- auth ----
   async function boot() {
     var r = await api('/participants');
     if (r.status === 401 || r.status === 503) { showLogin(); return; }
     $('main').style.display = 'block';
+    if (participantPage) {
+      $('listView').style.display = 'none';
+      await openDetail(participantPageId, false);
+      if (params.get('autoResearch') === '1') {
+        history.replaceState({}, '', '/studio/ai-business-leaders?participant=' + encodeURIComponent(participantPageId));
+        autoResearch(participantPageId);
+      }
+      return;
+    }
     renderList(r.data || []);
     wireCreate();
     wireBulkCreate();
@@ -56,7 +69,10 @@
   }
 
   // ---- list ----
-  async function refresh() { var r = await api('/participants'); if (r.ok) renderList(r.data || []); }
+  async function refresh() {
+    if (participantPage) return;
+    var r = await api('/participants'); if (r.ok) renderList(r.data || []);
+  }
 
   // Show the meeting brief inline, right below the participant's row.
   async function toggleBrief(id, btn) {
@@ -79,7 +95,12 @@
   async function removeParticipant(id, name) {
     if (!window.confirm('Delete "' + (name || 'this participant') + '" and all their chats, research, and outputs?\n\nThis cannot be undone.')) return;
     var r = await api('/participants/' + id, { method: 'DELETE' });
-    if (r.ok) { toast('Deleted'); if (detailId === id) { $('detail').innerHTML = ''; detailId = null; } await refresh(); }
+    if (r.ok) {
+      toast('Deleted');
+      if (participantPage) { location.href = '/studio/ai-business-leaders'; return; }
+      if (detailId === id) { $('detail').innerHTML = ''; detailId = null; }
+      await refresh();
+    }
     else toast(r.error || 'Delete failed');
   }
   function renderStats(list) {
@@ -112,7 +133,7 @@
       var isNew = p.status === 'completed' && !p.reviewed;
       return '<tr data-id="' + p.id + '"' + (isNew ? ' class="new-row"' : '') + '>' +
         '<td class="sub">' + (i + 1) + '</td>' +
-        '<td><div class="nm">' + esc(p.name) + (isNew ? ' <span class="newpill">🟢 New</span>' : '') + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
+        '<td><div class="nm"><a class="participant-name" href="/studio/ai-business-leaders?participant=' + encodeURIComponent(p.id) + '">' + esc(p.name) + '</a>' + (isNew ? ' <span class="newpill">🟢 New</span>' : '') + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
         '<td>' + esc(p.company_name) + '</td>' +
         '<td><span class="pill">' + esc(STATUS_LABEL[p.status] || p.status) + '</span></td>' +
         '<td class="sub">' + fmtDate(p.created_at) + '</td>' +
@@ -122,7 +143,10 @@
         '<td><button class="del" data-del="' + p.id + '" data-nm="' + esc(p.name) + '" title="Delete participant">✕</button></td></tr>';
     }).join('') || '<tr><td colspan="9" class="muted">No participants yet.</td></tr>';
     Array.prototype.forEach.call($('rows').querySelectorAll('tr[data-id]'), function (tr) {
-      tr.onclick = function () { openDetail(tr.getAttribute('data-id'), true); };
+      tr.onclick = function (event) {
+        if (event.target.closest('button, a')) return;
+        location.href = '/studio/ai-business-leaders?participant=' + encodeURIComponent(tr.getAttribute('data-id'));
+      };
     });
     Array.prototype.forEach.call($('rows').querySelectorAll('.del'), function (b) {
       b.onclick = function (e) { e.stopPropagation(); removeParticipant(b.getAttribute('data-del'), b.getAttribute('data-nm')); };
@@ -142,8 +166,8 @@
       var r = await api('/participants', { method: 'POST', body: JSON.stringify(body) });
       if (!r.ok) { toast(r.error || 'Failed'); return; }
       ['n-name', 'n-company', 'n-role', 'n-email', 'n-website', 'n-industry'].forEach(function (i) { $(i).value = ''; });
-      toast('Created'); await refresh(); await openDetail(r.data.id, true);
-      if (auto) autoResearch(r.data.id);
+      toast('Created');
+      location.href = '/studio/ai-business-leaders?participant=' + encodeURIComponent(r.data.id) + (auto ? '&autoResearch=1' : '');
     };
   }
 
@@ -200,6 +224,118 @@
     if (pp && pp.status === 'completed' && !pp.reviewed) {
       api('/participants/' + id, { method: 'PATCH', body: JSON.stringify({ reviewed: true }) }).then(function () { refresh(); });
     }
+    var snapshot = (r.data.outputs || []).find(function (output) { return output.output_type === 'admin_participant_snapshot'; });
+    if (participantPage && (!snapshot || r.data.snapshot_stale) && !snapshotAutoAttempted) {
+      snapshotAutoAttempted = true;
+      generateAdminSnapshot(id, true);
+    }
+  }
+
+  function modeLabel(mode) {
+    return {
+      participant: 'AI Journey', qa: 'Admin QA', ved: 'Weakest Execution Link',
+      siv: 'First AI Project', continuing: 'Ongoing AI Journey',
+    }[mode] || String(mode || 'Conversation').replace(/_/g, ' ');
+  }
+
+  function outputLabel(type) {
+    return {
+      course_preparation_brief: 'Course Preparation Brief',
+      use_case_map: 'AI Opportunity & Use-Case Map',
+      strategy_note: 'Personalised AI Strategy Note',
+      share_summary: 'Participant-approved summary',
+      vinay_meeting_brief: 'Vinay meeting brief',
+      ved_report: 'Execution Constraint Report',
+      siv_report: 'First AI Project Decision Report',
+      leadership_blueprint: '90-Day AI Leadership Blueprint',
+    }[type] || String(type || 'Output').replace(/_/g, ' ');
+  }
+
+  function renderMemory(memory) {
+    var fields = (memory && memory.fields) || {};
+    var items = Object.keys(fields).filter(function (key) {
+      return fields[key] && (!Array.isArray(fields[key]) || fields[key].length);
+    }).map(function (key) {
+      var value = Array.isArray(fields[key]) ? fields[key].join('; ') : fields[key];
+      return '<div class="memory-item"><strong>' + esc(key.replace(/_/g, ' ')) + '</strong><span>' + esc(value) + '</span></div>';
+    }).join('');
+    var note = memory && memory.participant_note
+      ? '<div class="memory-item"><strong>Participant correction / note</strong><span>' + esc(memory.participant_note) + '</span></div>' : '';
+    return items || note ? '<div class="memory-grid">' + items + note + '</div>' : '<span class="muted">No confirmed Course Memory has been captured yet.</span>';
+  }
+
+  function renderConversations(conversations) {
+    if (!(conversations || []).length) return '<span class="muted">No agent conversations have started yet.</span>';
+    return conversations.map(function (conversation) {
+      var messages = (conversation.messages || []).map(function (message) {
+        var role = message.role === 'assistant' ? 'assistant' : message.role === 'admin' ? 'admin' : 'user';
+        return '<div class="message ' + role + '"><span class="message-role">' + esc(role) + '</span>' + esc(message.content) + '</div>';
+      }).join('') || '<span class="muted">This conversation has been opened but contains no messages.</span>';
+      return '<details class="conversation"><summary><strong>' + esc(modeLabel(conversation.mode)) + '</strong> · ' +
+        (conversation.messages || []).length + ' messages · ' + esc(conversation.current_stage || conversation.status || 'not started') +
+        '</summary><div style="margin-top:8px">' + messages + '</div></details>';
+    }).join('');
+  }
+
+  function renderOutputs(outputs) {
+    var visible = (outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; });
+    if (!visible.length) return '<span class="muted">No reports or course outputs have been generated yet.</span>';
+    return visible.map(function (output) {
+      var content = output.reviewed_content_markdown || output.content_markdown || '';
+      return '<details class="conversation"><summary><strong>' + esc(outputLabel(output.output_type)) + '</strong> · ' +
+        fmtDate(output.updated_at || output.created_at) + '</summary><div class="brief-inline">' + md(content) +
+        '<div style="margin-top:10px"><a class="viewbrief" href="/ai-business-leaders/pdf/' + encodeURIComponent(output.id) +
+        '" target="_blank" rel="noopener">Open printable / PDF ↗</a></div></div></details>';
+    }).join('');
+  }
+
+  function renderAdminSnapshot(d) {
+    var snapshot = (d.outputs || []).find(function (output) { return output.output_type === 'admin_participant_snapshot'; });
+    var content = snapshot ? (snapshot.reviewed_content_markdown || snapshot.content_markdown || '') : '';
+    var conversationMessages = (d.conversations || []).reduce(function (sum, conversation) {
+      return sum + (conversation.messages || []).length;
+    }, 0);
+    var researchReady = !!(d.research && (d.research.research_dossier || Object.keys(d.research.structured_context || {}).length));
+    var state = !snapshot ? 'Preparing first snapshot…' : d.snapshot_stale ? 'New information available · refreshing…' : 'Current as of ' + fmtDate(snapshot.updated_at || snapshot.created_at);
+    return '<div class="card snapshot-card"><div class="snapshot-head"><div><div class="snapshot-kicker">Private admin view</div>' +
+      '<h4 style="margin:0;font-family:var(--serif);font-size:24px;letter-spacing:0;text-transform:none;color:var(--ink)">Participant Admin Snapshot</h4>' +
+      '<p class="muted" id="snapshotStatus" style="margin:5px 0 0">' + esc(state) + '</p></div>' +
+      '<button class="btn accent" id="snapshotBtn">' + (snapshot ? 'Refresh snapshot' : 'Generate snapshot') + '</button></div>' +
+      '<div class="evidence-strip"><span class="evidence-chip">' + (researchReady ? '✓' : '○') + ' Company research</span>' +
+      '<span class="evidence-chip">' + conversationMessages + ' agent messages</span>' +
+      '<span class="evidence-chip">' + (d.notes || []).length + ' meetings</span>' +
+      '<span class="evidence-chip">' + (d.assets || []).length + ' uploaded assets</span>' +
+      '<span class="evidence-chip">' + ((d.outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; }).length) + ' course outputs</span></div>' +
+      (content ? '<div class="snapshot-content">' + md(content) + '</div>' :
+        '<div class="muted" style="padding:24px 0 6px">Reading the participant’s research, conversations, meetings and files to create the first one-page briefing…</div>') +
+      '</div>';
+  }
+
+  function renderEvidenceDossier(d) {
+    return '<details class="dossier-section"><summary><span>Course Memory</span><span>' +
+      Object.keys((d.memory && d.memory.fields) || {}).length + ' confirmed fields</span></summary><div class="dossier-body">' +
+      renderMemory(d.memory) + '</div></details>' +
+      '<details class="dossier-section"><summary><span>Agent conversations</span><span>' +
+      (d.conversations || []).length + ' conversation streams</span></summary><div class="dossier-body">' +
+      renderConversations(d.conversations) + '</div></details>' +
+      '<details class="dossier-section"><summary><span>Reports &amp; generated outputs</span><span>' +
+      ((d.outputs || []).filter(function (output) { return output.output_type !== 'admin_participant_snapshot'; }).length) +
+      ' outputs</span></summary><div class="dossier-body">' + renderOutputs(d.outputs) + '</div></details>';
+  }
+
+  async function generateAdminSnapshot(id, automatic) {
+    var button = $('snapshotBtn');
+    var status = $('snapshotStatus');
+    if (button) { button.disabled = true; button.textContent = 'Refreshing…'; }
+    if (status) status.textContent = 'Synthesising all participant evidence…';
+    var r = await api('/participants/' + id + '/admin-snapshot', { method: 'POST' });
+    if (r.ok) {
+      if (!automatic) toast('Admin snapshot refreshed');
+      await openDetail(id, false);
+    } else {
+      if (button) { button.disabled = false; button.textContent = 'Try again'; }
+      if (status) status.textContent = r.error || 'The snapshot could not be refreshed.';
+    }
   }
 
   function renderDetail(d) {
@@ -208,11 +344,14 @@
     var link = origin + '/ai-business-leaders/s/' + p.slug;
 
     $('detail').innerHTML =
+      (participantPage ? '<a class="dossier-back" href="/studio/ai-business-leaders">← All participants</a>' : '') +
       '<div class="detail"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
         '<h3 style="margin:0">' + esc(p.name) + ' · <span style="font-style:italic;color:var(--ink-2)">' + esc(p.company_name) + '</span></h3>' +
         '<div style="display:flex;align-items:center;gap:10px"><span class="pill">' + esc(STATUS_LABEL[p.status] || p.status) + '</span>' +
         '<button class="btn danger" id="deleteBtn">Delete</button></div></div>' +
         (p.feedback_rating ? '<div class="fbline">Participant rated this <strong>' + p.feedback_rating + '/5 ★</strong>' + (p.feedback_comment ? ' — “' + esc(p.feedback_comment) + '”' : '') + '</div>' : '') +
+        renderAdminSnapshot(d) +
+        renderEvidenceDossier(d) +
 
       // Research
       '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
@@ -313,6 +452,8 @@
 
   function wireDetail(d) {
     var p = d.participant;
+    var snapshotButton = $('snapshotBtn');
+    if (snapshotButton) snapshotButton.onclick = function () { generateAdminSnapshot(p.id, false); };
     // Grow every research field to fit its full content so nothing is clipped.
     Array.prototype.forEach.call(document.querySelectorAll('.ipt.auto'), function (t) {
       autosize(t);

@@ -171,6 +171,13 @@ export async function getSession(participantId, mode) {
   return docs[0];
 }
 
+export async function listSessions(participantId) {
+  const snap = await col(COLLECTIONS.ablSessions).where('participant_id', '==', participantId).get();
+  const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  rows.sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+  return rows;
+}
+
 export async function getOrCreateSession(participantId, mode) {
   const existing = await getSession(participantId, mode);
   if (existing) return existing;
