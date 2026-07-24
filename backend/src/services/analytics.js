@@ -594,3 +594,89 @@ export async function personTimeline(pkey, { limit = 400 } = {}) {
     events,
   };
 }
+
+// ---- Traffic channels (branded short links for social / marketing) ----
+// A channel is a named short link: /go/<slug> redirects to a destination page,
+// tagged with utm_source=<slug> so the existing attribution counts the visit.
+// The click itself is also counted on the channel doc (reliable even if the
+// landing page's tracker is blocked). Admin-managed from the Analytics room.
+function channelSlug(v) {
+  return str(v, 40).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+}
+
+// Reduce any destination to a same-origin path, so /go/<slug> can never become
+// an open redirect. Strips absolute URLs to their path, then collapses leading
+// slashes/backslashes so "//evil.com" or "/\\evil.com" can't escape the origin.
+export function sanitizeChannelDest(destination) {
+  let dest = str(destination, 500) || '/';
+  if (/^https?:\/\//i.test(dest)) {
+    try { const u = new URL(dest); dest = (u.pathname || '/') + (u.search || ''); } catch (e) { dest = '/'; }
+  }
+  if (!dest.startsWith('/')) dest = '/' + dest;
+  return dest.replace(/^[/\\]+/, '/');
+}
+
+export async function listChannels() {
+  const snap = await db.collection(COLLECTIONS.analyticsChannels).get().catch(() => null);
+  if (!snap) return [];
+  return snap.docs
+    .map((d) => {
+      const v = d.data() || {};
+      return {
+        slug: d.id,
+        label: v.label || d.id,
+        destination: v.destination || '/',
+        medium: v.medium || 'social',
+        campaign: v.campaign || '',
+        clicks: v.clicks || 0,
+        created_at: v.created_at || null,
+        last_click_at: v.last_click_at || null,
+      };
+    })
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+}
+
+export async function createChannel({ label, slug, destination, medium, campaign } = {}) {
+  const s = channelSlug(slug || label);
+  if (!s) throw new Error('A channel name is required.');
+  const dest = sanitizeChannelDest(destination);
+  const doc = {
+    label: str(label, 80) || s,
+    destination: dest,
+    medium: str(medium, 40) || 'social',
+    campaign: str(campaign, 60),
+    created_at: new Date().toISOString(),
+  };
+  // merge:true so editing a channel keeps its accumulated click count.
+  await db.collection(COLLECTIONS.analyticsChannels).doc(s).set(doc, { merge: true });
+  const saved = await db.collection(COLLECTIONS.analyticsChannels).doc(s).get();
+  return { slug: s, ...(saved.data() || doc) };
+}
+
+export async function deleteChannel(slug) {
+  const s = channelSlug(slug);
+  if (!s) return false;
+  await db.collection(COLLECTIONS.analyticsChannels).doc(s).delete();
+  return true;
+}
+
+// Resolve a /go/<slug> click: count it, then return the destination with the
+// UTM tags appended. Returns null when the slug is unknown (caller sends home).
+export async function resolveChannelClick(slug) {
+  const s = channelSlug(slug);
+  if (!s) return null;
+  const ref = db.collection(COLLECTIONS.analyticsChannels).doc(s);
+  const snap = await ref.get().catch(() => null);
+  if (!snap || !snap.exists) return null;
+  const v = snap.data() || {};
+  // Await the count so it is reliable — Cloud Run throttles CPU after the
+  // response, so a fire-and-forget write could be dropped.
+  await ref.update({ clicks: FieldValue.increment(1), last_click_at: new Date().toISOString() }).catch(() => {});
+  // Re-assert the on-site guard at redirect time, so even a channel stored
+  // before the sanitiser (or edited directly) can never redirect off-domain.
+  const dest = sanitizeChannelDest(v.destination);
+  const sep = dest.includes('?') ? '&' : '?';
+  const utm = `utm_source=${encodeURIComponent(s)}&utm_medium=${encodeURIComponent(v.medium || 'social')}` +
+    (v.campaign ? `&utm_campaign=${encodeURIComponent(v.campaign)}` : '');
+  return dest + sep + utm;
+}

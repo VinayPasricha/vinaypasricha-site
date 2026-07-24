@@ -27,7 +27,7 @@ import {
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
-import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats } from './services/analytics.js';
+import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, listChannels, createChannel, deleteChannel, resolveChannelClick } from './services/analytics.js';
 import crypto from 'node:crypto';
 
 // First-party analytics: a tiny tracker script is injected into every served
@@ -392,6 +392,44 @@ export function createApp() {
       res.json({ ok: true, ...(await pageStats(req.query.path, { days: req.query.days })) });
     } catch (err) {
       res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+
+  // Traffic channels — branded short links (/go/<slug>) for the social team.
+  // Admin CRUD; the redirect itself is public (below, before the HTML handlers).
+  app.get('/api/analytics/channels', requireAdmin, async (req, res) => {
+    try {
+      res.json({ ok: true, channels: await listChannels() });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+  app.post('/api/analytics/channels', requireAdmin, async (req, res) => {
+    try {
+      res.json({ ok: true, channel: await createChannel(req.body || {}) });
+    } catch (err) {
+      res.status(400).json({ ok: false, error: err.message });
+    }
+  });
+  app.delete('/api/analytics/channels/:slug', requireAdmin, async (req, res) => {
+    try {
+      await deleteChannel(req.params.slug);
+      res.json({ ok: true });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: 'server_error', detail: err.message });
+    }
+  });
+
+  // Public branded short link: /go/<slug> counts the click and redirects to the
+  // channel's destination, tagged so the tracker attributes the visit. Unknown
+  // slugs fall through to the home page. Registered before the HTML handlers so
+  // the tracker-injection catch-all never sees it.
+  app.get('/go/:slug', async (req, res) => {
+    try {
+      const target = await resolveChannelClick(req.params.slug);
+      return res.redirect(302, target || '/');
+    } catch (e) {
+      return res.redirect(302, '/');
     }
   });
 

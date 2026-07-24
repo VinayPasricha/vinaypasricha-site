@@ -20,6 +20,7 @@ export const COLLECTIONS = {
   // rolled-up document per known person.
   analyticsEvents: 'analytics_events',
   analyticsPeople: 'analytics_people',
+  analyticsChannels: 'analytics_channels', // named short links (/go/<slug>) for traffic sources
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
   ablParticipants: 'abl_participants',

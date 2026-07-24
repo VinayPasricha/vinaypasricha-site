@@ -273,6 +273,22 @@
     </div>
 
     <div class="an-sec">
+      <h2>Channels — links for the social team</h2>
+      <p class="sec-sub">Make one <strong>branded link per channel</strong> for whoever runs your social. They post <code>vinaypasricha.com/go/&lt;name&gt;</code>; every click is counted here and tagged so it also shows under <strong>Top sources</strong> above. No UTM tags to hand-type.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:18px">
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Channel<br>
+          <input id="ch-label" type="text" placeholder="Instagram" style="margin-top:4px;width:150px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Sends visitors to<br>
+          <input id="ch-dest" type="text" placeholder="/ (home)" value="/" style="margin-top:4px;width:170px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Campaign <span style="opacity:.6">(optional)</span><br>
+          <input id="ch-campaign" type="text" placeholder="jul-launch" style="margin-top:4px;width:130px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <button id="ch-add" style="font-family:var(--mono);font-size:12px;background:var(--accent,#b45309);color:#fff;border:none;border-radius:5px;padding:9px 16px;cursor:pointer">Add channel</button>
+        <span id="ch-status" style="font-size:12px;color:var(--ink-3)"></span>
+      </div>
+      <div id="ch-list"></div>
+    </div>
+
+    <div class="an-sec">
       <h2>Audience — who they are</h2>
       <p class="sec-sub">Approximate <strong>country</strong> (from the visitor's timezone — never IP), <strong>browser</strong>, <strong>operating system</strong>, and how many are <strong>new</strong> vs <strong>returning</strong>.</p>
       <div class="nvr" style="margin-bottom:16px">

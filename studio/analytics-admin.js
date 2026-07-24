@@ -31,6 +31,8 @@
     $('main').style.display = 'block';
     wireRange();
     if (r.ok) render(r.data); else toast(r.data.error || 'Failed to load');
+    wireChannels();
+    loadChannels();
   }
   function showLogin() {
     $('login').style.display = 'block';
@@ -363,6 +365,69 @@
     bars('pgRefs', b.topReferrers, function (k) { return k === 'direct' ? 'Direct / none' : k; });
     bars('pgCountries', b.topCountries, function (k) { return k; });
     $('pgclose').onclick = function () { panel.innerHTML = ''; };
+  }
+
+  // ---- channels (branded short links) ----
+  function channelRow(c) {
+    var link = location.origin + '/go/' + c.slug;
+    var sub = [c.destination && c.destination !== '/' ? '→ ' + esc(c.destination) : '→ home',
+      c.campaign ? 'campaign: ' + esc(c.campaign) : ''].filter(Boolean).join(' · ');
+    return '<div class="ch-row" style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--rule-soft,#eee)">' +
+      '<div style="min-width:120px"><div style="font-family:var(--serif,Georgia);font-size:15px">' + esc(c.label) + '</div>' +
+        '<div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">' + sub + '</div></div>' +
+      '<code style="flex:1;min-width:0;font-family:var(--mono);font-size:12.5px;background:var(--paper-2,#f4f1ea);padding:7px 10px;border-radius:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(link) + '</code>' +
+      '<button class="ch-copy" data-link="' + esc(link) + '" style="font-family:var(--mono);font-size:11px;border:1px solid var(--rule);background:none;border-radius:4px;padding:6px 10px;cursor:pointer">Copy</button>' +
+      '<div style="min-width:70px;text-align:right"><div style="font-family:var(--serif,Georgia);font-size:18px">' + num(c.clicks) + '</div><div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">clicks</div></div>' +
+      '<button class="ch-del" data-slug="' + esc(c.slug) + '" title="Delete channel" style="border:none;background:none;color:var(--ink-4,#aaa);font-size:15px;cursor:pointer">✕</button>' +
+    '</div>';
+  }
+
+  async function loadChannels() {
+    var box = $('ch-list');
+    if (!box) return;
+    var res = await fetch('/api/analytics/channels', { headers: { 'Content-Type': 'application/json' } });
+    var body = {}; try { body = await res.json(); } catch (e) {}
+    var list = (body && body.channels) || [];
+    if (!list.length) { box.innerHTML = '<p class="muted" style="color:var(--ink-3);font-style:italic">No channels yet. Add one above — e.g. Instagram — and share the /go/ link.</p>'; return; }
+    box.innerHTML = list.map(channelRow).join('');
+    Array.prototype.forEach.call(box.querySelectorAll('.ch-copy'), function (b) {
+      b.onclick = function () {
+        var link = b.getAttribute('data-link');
+        (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () {
+          b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1400);
+        }, function () { window.prompt('Copy this link:', link); });
+      };
+    });
+    Array.prototype.forEach.call(box.querySelectorAll('.ch-del'), function (b) {
+      b.onclick = async function () {
+        if (!window.confirm('Delete this channel link? Its click history is lost, but visits it already brought are kept under Top sources.')) return;
+        await fetch('/api/analytics/channels/' + encodeURIComponent(b.getAttribute('data-slug')), { method: 'DELETE' });
+        loadChannels();
+      };
+    });
+  }
+
+  function wireChannels() {
+    var add = $('ch-add');
+    if (!add) return;
+    add.onclick = async function () {
+      var label = ($('ch-label').value || '').trim();
+      if (!label) { $('ch-status').textContent = 'Name the channel first.'; return; }
+      add.disabled = true; $('ch-status').textContent = 'Adding…';
+      var res = await fetch('/api/analytics/channels', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label: label, destination: ($('ch-dest').value || '/').trim(), campaign: ($('ch-campaign').value || '').trim() }),
+      });
+      var body = {}; try { body = await res.json(); } catch (e) {}
+      add.disabled = false;
+      if (res.ok && body.ok !== false) {
+        $('ch-label').value = ''; $('ch-campaign').value = ''; $('ch-dest').value = '/';
+        $('ch-status').textContent = '';
+        loadChannels();
+      } else {
+        $('ch-status').textContent = (body && body.error) || 'Could not add channel.';
+      }
+    };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
