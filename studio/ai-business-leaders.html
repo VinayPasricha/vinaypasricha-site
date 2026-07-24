@@ -28,6 +28,10 @@
     .btn.ghost { background: none; color: var(--accent); border: 1px solid var(--rule); }
     .tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
     .tbl th { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+    .tbl th.sortable { cursor: pointer; user-select: none; }
+    .tbl th.sortable:hover { color: var(--accent); }
+    .tbl th.sortable .arrow { opacity: .55; margin-left: 3px; }
+    .tbl th.sorted { color: var(--accent); }
     .tbl td { padding: 11px 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
     .tbl tr:hover td { background: var(--paper-3); cursor: pointer; }
     .tbl .nm { font-family: var(--serif); font-size: 15px; }
@@ -175,7 +179,14 @@
       <h2>Participants <span id="pcount" class="sub" style="font-family:var(--mono);color:var(--ink-3)"></span></h2>
       <div class="stats" id="stats"></div>
       <table class="tbl"><thead><tr>
-        <th>#</th><th>Name</th><th>Company</th><th>Status</th><th>Date</th><th>Link</th><th>Msgs</th><th>Brief</th><th></th>
+        <th>#</th>
+        <th class="sortable" data-sort="name">Name</th>
+        <th class="sortable" data-sort="company_name">Company</th>
+        <th class="sortable" data-sort="status">Status</th>
+        <th class="sortable" data-sort="created_at">Date</th>
+        <th>Link</th>
+        <th class="sortable" data-sort="message_count">Msgs</th>
+        <th>Brief</th><th></th>
       </tr></thead><tbody id="rows"></tbody></table>
     </div>
     </div>

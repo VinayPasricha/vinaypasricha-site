@@ -40,6 +40,64 @@
   var participantPage = !!participantPageId;
   var snapshotAutoAttempted = false;
 
+  // ---- sorting ----
+  // The list arrives in the order the API returns it. Clicking a column header
+  // sorts by it; clicking the same header again reverses. The choice is kept in
+  // localStorage so it survives navigating into a participant and back. Sorting
+  // only reorders the rows — it does not change how a row opens.
+  var lastList = [];
+  var SORT_STORAGE = 'abl_studio_sort_v1';
+  var sortKey = '';
+  var sortDir = 1;
+
+  try {
+    var savedSort = JSON.parse(localStorage.getItem(SORT_STORAGE) || '{}');
+    if (savedSort && savedSort.key) { sortKey = String(savedSort.key); sortDir = savedSort.dir === -1 ? -1 : 1; }
+  } catch (e) {}
+
+  function sortValue(p) {
+    if (sortKey === 'message_count') return Number(p.message_count || 0);
+    if (sortKey === 'created_at') return String(p.created_at || '');
+    if (sortKey === 'status') return STATUS_LABEL[p.status] || p.status || '';
+    return String(p[sortKey] || '');
+  }
+
+  function sortedList(list) {
+    var out = (list || []).slice();
+    if (!sortKey) return out;
+    out.sort(function (a, b) {
+      var av = sortValue(a), bv = sortValue(b);
+      if (typeof av === 'number') return (av - bv) * sortDir;
+      // created_at is an ISO string, so a plain comparison already orders it.
+      if (sortKey === 'created_at') return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
+      return av.localeCompare(bv, undefined, { sensitivity: 'base' }) * sortDir;
+    });
+    return out;
+  }
+
+  function renderSortHeaders() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tbl th.sortable'), function (th) {
+      var key = th.getAttribute('data-sort');
+      var active = key === sortKey;
+      th.classList.toggle('sorted', active);
+      var label = th.textContent.replace(/[\s↑↓]+$/, '');
+      th.innerHTML = esc(label) + (active ? '<span class="arrow">' + (sortDir === 1 ? '↑' : '↓') + '</span>' : '');
+    });
+  }
+
+  function wireSorting() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tbl th.sortable'), function (th) {
+      th.onclick = function () {
+        var key = th.getAttribute('data-sort');
+        if (sortKey === key) sortDir = -sortDir;
+        // Date and message count are most useful highest-first.
+        else { sortKey = key; sortDir = (key === 'created_at' || key === 'message_count') ? -1 : 1; }
+        try { localStorage.setItem(SORT_STORAGE, JSON.stringify({ key: sortKey, dir: sortDir })); } catch (e) {}
+        renderList(lastList);
+      };
+    });
+  }
+
   // ---- auth ----
   async function boot() {
     var r = await api('/participants');
@@ -55,6 +113,7 @@
       return;
     }
     renderList(r.data || []);
+    wireSorting();
     wireCreate();
     wireBulkCreate();
   }
@@ -127,9 +186,12 @@
       stat(avgRating ? avgRating + '★' : '—', 'Avg rating');
   }
   function renderList(list) {
-    $('pcount').textContent = '· ' + list.length;
-    renderStats(list);
-    $('rows').innerHTML = list.map(function (p, i) {
+    lastList = list || [];
+    var rows = sortedList(lastList);
+    $('pcount').textContent = '· ' + rows.length;
+    renderStats(rows);
+    renderSortHeaders();
+    $('rows').innerHTML = rows.map(function (p, i) {
       var isNew = p.status === 'completed' && !p.reviewed;
       return '<tr data-id="' + p.id + '"' + (isNew ? ' class="new-row"' : '') + '>' +
         '<td class="sub">' + (i + 1) + '</td>' +
