@@ -347,7 +347,7 @@ a{color:inherit;text-decoration:none}
 
 .hero-logo{
   position: relative;
-  width: 178px;
+  width: 250px;
   flex: 0 0 auto;
   pointer-events: none;
   user-select: none;
@@ -1945,7 +1945,7 @@ a{color:inherit;text-decoration:none}
     margin-bottom: 38px;
   }
   .hero-logo{
-    width: 142px;
+    width: 190px;
   }
   .hero .moniker{
     margin-bottom: 0;
@@ -2057,7 +2057,7 @@ a{color:inherit;text-decoration:none}
     gap: 20px;
     margin-bottom: 38px;
   }
-  .hero-logo{ width: 164px; }
+  .hero-logo{ width: 210px; }
   .hero .moniker{
     padding-left: 0;
     border-left: 0;
