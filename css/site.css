@@ -352,7 +352,11 @@ a{color:inherit;text-decoration:none}
   pointer-events: none;
   user-select: none;
   opacity: .96;
-  perspective: 700px;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  transform-origin: 50% 55%;
+  will-change: transform;
+  animation: logo-depth-pulse 2.8s ease-in-out infinite;
 }
 .hero-logo::after{
   content: "";
@@ -370,20 +374,37 @@ a{color:inherit;text-decoration:none}
   width: 100%;
   height: auto;
   filter: drop-shadow(0 10px 12px rgba(39, 27, 12, .10));
-  transform-origin: 50% 58%;
+  transform-origin: 50% 55%;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
   will-change: transform;
-  animation: logo-orbit 6s ease-in-out infinite;
+  animation: logo-tilt-and-turn 8s linear infinite;
 }
 
-@keyframes logo-orbit {
-  0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(-5deg) rotateZ(-.5deg); }
-  25%      { transform: translateY(-5px) rotateX(2deg) rotateY(2deg) rotateZ(.3deg); }
-  50%      { transform: translateY(-8px) rotateX(-1deg) rotateY(7deg) rotateZ(.7deg); }
-  75%      { transform: translateY(-4px) rotateX(-2deg) rotateY(1deg) rotateZ(0deg); }
+@keyframes logo-tilt-and-turn {
+  0% {
+    transform: translateZ(4px) rotateX(13deg) rotateY(-14deg) rotateZ(0deg);
+  }
+  25% {
+    transform: translateZ(22px) rotateX(7deg) rotateY(12deg) rotateZ(90deg);
+  }
+  50% {
+    transform: translateZ(34px) rotateX(-11deg) rotateY(16deg) rotateZ(180deg);
+  }
+  75% {
+    transform: translateZ(20px) rotateX(-6deg) rotateY(-12deg) rotateZ(270deg);
+  }
+  100% {
+    transform: translateZ(4px) rotateX(13deg) rotateY(-14deg) rotateZ(360deg);
+  }
+}
+@keyframes logo-depth-pulse {
+  0%, 100% { transform: scale(.96); }
+  50%      { transform: scale(1.07); }
 }
 @keyframes logo-shadow-breathe {
   0%, 100% { opacity: .38; transform: scaleX(.90); }
-  50%      { opacity: .18; transform: scaleX(.72); }
+  50%      { opacity: .16; transform: scaleX(.70); }
 }
 
 .hero .moniker{
@@ -2125,6 +2146,7 @@ textarea:focus-visible {
   }
   .now-rotator .item { transition: none !important; }
   .hero-logo img,
+  .hero-logo,
   .hero-logo::after { animation: none !important; }
 }
 
