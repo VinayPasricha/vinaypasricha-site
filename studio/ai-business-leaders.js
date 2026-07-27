@@ -175,6 +175,7 @@
     var p = d.participant, sc = (d.research && d.research.structured_context) || {};
     var origin = location.origin;
     var link = origin + '/ai-business-leaders/s/' + p.slug;
+    var courseLink = origin + '/ai-business-leaders/course/' + p.slug;
 
     $('detail').innerHTML =
       '<div class="detail"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px">' +
@@ -204,7 +205,8 @@
       // Approve + link
       '<div class="card"><h4>2 · Approve &amp; share the link</h4>' +
         (p.link_approved
-          ? '<div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy participant link</button>'
+          ? '<label class="fld">Preparation interview</label><div class="linkbox" id="linkBox">' + esc(link) + '</div><button class="btn ghost" id="copyLink" style="margin-top:10px">Copy preparation link</button>' +
+            '<label class="fld" style="margin-top:14px">Five-session course workspace</label><div class="linkbox" id="courseLinkBox">' + esc(courseLink) + '</div><button class="btn ghost" id="copyCourseLink" style="margin-top:10px">Copy course workspace link</button>'
           : '<p class="muted">Approve to activate this participant\'s private link, then send it to them.</p><button class="btn accent" id="approveBtn" style="margin-top:8px">Approve link</button>') +
       '</div>' +
 
@@ -218,6 +220,38 @@
           '<div id="briefOut" class="muted" style="margin-top:10px"></div>' +
           (bmd ? '<div class="brief-inline" style="margin-top:12px;border-top:1px solid var(--rule);padding-top:12px">' + md(bmd) + '</div>' : '') +
           '</div>';
+      })() +
+
+      // Course Initiative Builder — admin view of the participant's cumulative work.
+      (function () {
+        var b = d.builder || { sessions: {}, completed_sessions: [], completion_percent: 0 };
+        var ss = b.sessions || {}, current = Math.max(1, Math.min(5, b.current_session || 1));
+        var titles = ['','Candidate workflow','Leverage Case','Company Brain workflow','Pilot Reality Sheet','Board pitch & commitment'];
+        var wins = [
+          '', 'Named a candidate workflow', 'Built a provisional Leverage Case',
+          'Mapped the future workflow', 'Defined pilot boundary and controls', 'Built a peer-tested leadership initiative'
+        ];
+        var completed = b.completed_sessions || [];
+        var initiative = (d.outputs || []).filter(function (o) { return o.output_type === 'ai_leadership_initiative'; })[0];
+        var labels = {
+          candidate_workflow: 'Candidate workflow', where_work_breaks: 'Where work breaks', business_consequence: 'Business consequence',
+          company_brain_hypothesis: 'Company Brain hypothesis', problem_sentence: 'Problem', baseline: 'Baseline',
+          owner_human_line: 'Owner / human line', decision: 'Decision', memory: 'Memory', reasoning: 'Reasoning',
+          action: 'Action', feedback: 'Feedback', pilot_boundary: 'Pilot boundary', ownership: 'Ownership',
+          risk_tier: 'Risk tier', pitch_evidence: 'Day-30 / Day-90 evidence', commitment_72h: '72-hour commitment'
+        };
+        var focus = ss[String(current)] || {};
+        var rows = Object.keys(labels).filter(function (k) { return focus[k] && typeof focus[k] === 'string'; }).map(function (k) {
+          return '<div style="padding:8px 0;border-bottom:1px solid var(--rule-soft)"><div class="sub">' + esc(labels[k]) + '</div><div style="font-size:13.5px;line-height:1.5;margin-top:2px">' + esc(focus[k]) + '</div></div>';
+        }).join('');
+        return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h4 style="margin:0">4 · AI Leadership Initiative Builder</h4>' +
+          '<span class="pill ' + ((b.completion_percent || 0) >= 80 ? 'on' : '') + '">' + (b.completion_percent || 0) + '% complete</span></div>' +
+          '<div style="height:5px;background:var(--rule-soft);border-radius:4px;overflow:hidden;margin:12px 0 14px"><div style="height:100%;width:' + (b.completion_percent || 0) + '%;background:var(--accent)"></div></div>' +
+          '<div class="grid2"><div><div class="sub">Current section</div><div style="font-family:var(--serif);font-size:17px;margin-top:3px">Session ' + current + ' · ' + esc(titles[current]) + '</div></div>' +
+          '<div><div class="sub">Completed outputs</div><div style="font-size:13px;margin-top:3px">' + (completed.length ? completed.map(function (n) { return esc(wins[n]); }).join(' · ') : 'No session output completed yet') + '</div></div></div>' +
+          (rows ? '<div style="margin-top:14px">' + rows + '</div>' : '<p class="muted" style="margin-top:14px">No Builder answers yet. The participant can begin from the course workspace at any session.</p>') +
+          '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="row-actions" href="' + esc(courseLink) + '" target="_blank" rel="noopener">Open participant workspace ↗</a>' +
+          (initiative ? '<a class="row-actions" href="/ai-business-leaders/pdf/' + initiative.id + '" target="_blank" rel="noopener">Open latest 90-day charter ↗</a>' : '') + '</div></div>';
       })() +
       '</div>';
 
@@ -257,6 +291,8 @@
     if (ap) ap.onclick = async function () { var y = window.pageYOffset; var r = await api('/participants/' + p.id + '/approve', { method: 'POST' }); if (r.ok) { toast('Link approved'); await refresh(); await openDetail(p.id); restoreY(y); } else toast(r.error || 'Failed'); };
     var cp = $('copyLink');
     if (cp) cp.onclick = function () { navigator.clipboard.writeText($('linkBox').textContent).then(function () { toast('Link copied'); }); };
+    var ccp = $('copyCourseLink');
+    if (ccp) ccp.onclick = function () { navigator.clipboard.writeText($('courseLinkBox').textContent).then(function () { toast('Course workspace link copied'); }); };
 
     $('briefBtn').onclick = async function () {
       var y = window.pageYOffset;
