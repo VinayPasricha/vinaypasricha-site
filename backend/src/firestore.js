@@ -35,4 +35,5 @@ export const COLLECTIONS = {
   ablMessages: collectionName('abl_messages'),
   ablOutputs: collectionName('abl_outputs'),
   ablQa: collectionName('abl_qa'),
+  ablBuilders: collectionName('abl_builders'),
 };
