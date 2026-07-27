@@ -215,7 +215,8 @@
   }
   function exploreHTML() {
     var cards = [
-      { href: '/books', kicker: 'The bookshelf', title: 'The Books', desc: 'Six books on decisions, AI, execution, and the direction of civilizations.', cta: 'Browse the books', feat: true },
+      { href: '/ai-business-leaders/course/' + encodeURIComponent(SLUG), kicker: 'Your course workspace', title: 'Initiative Builder', desc: 'Build one leader-owned AI initiative across the five live sessions. Your work saves automatically.', cta: 'Open my workspace', feat: true },
+      { href: '/books', kicker: 'The bookshelf', title: 'The Books', desc: 'Six books on decisions, AI, execution, and the direction of civilizations.', cta: 'Browse the books', feat: false },
       { href: '/', kicker: 'The full site', title: 'vinaypasricha.com', desc: 'Essays, talks, the Signal, and everything else Vinay is building.', cta: 'Explore the site', feat: false }
     ];
     return '<div class="explore"><div class="explore-h">Where to next</div>' +
@@ -326,7 +327,7 @@
 
     if (S.view === 'done') {
       html += '<h1 class="abl-title" style="margin-top:28px">Thank you.</h1>' +
-        '<p class="abl-copy">Your summary has been shared with Vinay, and your session is saved. He’ll use it to make your one-on-one as useful as possible.</p>' +
+        '<p class="abl-copy">Your summary has been shared with Vinay, and your preparation session is saved. Your five-session Initiative Builder is now ready whenever you want to use it.</p>' +
         bookingHTML() +
         (S.reward ? '<a class="link-btn" style="display:inline-block;margin-top:16px;text-decoration:none" href="/ai-business-leaders/pdf/' + encodeURIComponent(S.reward.id) + '" target="_blank" rel="noopener">Download your ' + esc(REWARD_TITLES[S.reward.type] || 'document') + ' (PDF) ↓</a>' : '') +
         feedbackHTML() +
