@@ -21,6 +21,7 @@
   --rule-soft: #e9e1c9;
   --accent:    #8a2510;   /* deep cinnabar — used sparingly */
   --accent-2:  #c7a55a;   /* warm gold — used even more sparingly */
+  --brand-amber: #ffa726;  /* Signal × Spacetime lattice current */
 
   /* Type — premium editorial + clean sans + monospace meta */
   --serif: "Newsreader", "Noto Serif", Georgia, serif;
@@ -51,6 +52,12 @@ html,body{
 body{overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
+
+/* Signal × Spacetime's single site-wide text-link hover accent.
+   Card links and button-shaped links retain their existing treatments. */
+body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([class*="cta"]):not(.path-row):not(.shelf-book):hover{
+  color: var(--brand-amber) !important;
+}
 
 ::selection{background:var(--accent);color:var(--paper)}
 
@@ -473,7 +480,7 @@ a{color:inherit;text-decoration:none}
   font-family: var(--serif);
   font-style: italic;
   font-size: 22px;
-  color: #ff8a67;
+  color: var(--brand-amber);
   line-height: 1;
 }
 .hero .invitation .text{
@@ -543,6 +550,7 @@ a{color:inherit;text-decoration:none}
   flex-direction: column;
 }
 .path-row{
+  --conversation-color: var(--ink-3);
   display: grid;
   grid-template-columns: 56px 1fr auto;
   gap: 36px;
@@ -554,21 +562,47 @@ a{color:inherit;text-decoration:none}
   cursor: pointer;
   position: relative;
 }
+.path-row:nth-child(1){ --conversation-color: #e11431; }
+.path-row:nth-child(2){ --conversation-color: #c9133a; }
+.path-row:nth-child(3){ --conversation-color: #b3123f; }
+.path-row:nth-child(4){ --conversation-color: #c61a74; }
+.path-row:nth-child(5){ --conversation-color: #d922a8; }
+.path-row:nth-child(6){ --conversation-color: #aa26be; }
+.path-row:nth-child(7){ --conversation-color: #7a2bd4; }
+.path-row:nth-child(8){ --conversation-color: #4f39da; }
+.path-row:nth-child(9){ --conversation-color: #2447e0; }
+.path-row:nth-child(10){ --conversation-color: #296aef; }
+.path-row:nth-child(11){ --conversation-color: #2e8eff; }
+.path-row:nth-child(12){ --conversation-color: #3d9bff; }
+.path-row::after{
+  content: "";
+  position: absolute;
+  right: 12px;
+  bottom: -1px;
+  left: 12px;
+  height: 1px;
+  background: color-mix(in srgb, var(--conversation-color), white 25%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
 .path-row:hover{
   padding-left: 32px;
 }
-.path-row:hover .pr-num{ color: var(--accent); }
-.path-row:hover .pr-quote{ color: var(--accent); }
+.path-row:hover::after{ transform: scaleX(1); }
+.path-row:hover .pr-num{
+  color: color-mix(in srgb, var(--conversation-color), white 25%);
+}
 .path-row:hover .pr-arrow{
   transform: translateX(10px);
-  color: var(--accent);
+  color: color-mix(in srgb, var(--conversation-color), white 25%);
 }
 
 .pr-num{
   font-family: var(--serif);
   font-style: italic;
   font-size: 28px;
-  color: var(--ink-3);
+  color: var(--conversation-color);
   line-height: 1;
   font-weight: 400;
   transition: color .2s;
@@ -625,6 +659,42 @@ a{color:inherit;text-decoration:none}
   color: var(--ink-3);
   text-align: right;
   transition: transform .25s, color .2s;
+}
+
+/* The amber lattice current appears only as section hairlines and glyphs. */
+.brand-section-divider{
+  position: relative;
+  width: min(calc(100% - (2 * var(--gutter))), 1180px);
+  height: 1px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: rgba(255, 167, 38, .35);
+}
+.brand-system .bookshelf,
+.brand-system .aside-presence{
+  border-top: 0;
+  border-bottom: 0;
+}
+.brand-section-divider::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 167, 38, .9) 46%,
+    rgba(255, 167, 38, .9) 54%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.brand-section-divider.is-pulsing::after{
+  animation: amber-divider-sweep 1.2s ease-out forwards;
+}
+@keyframes amber-divider-sweep{
+  0%{ transform: translateX(-100%); opacity: 1; }
+  100%{ transform: translateX(100%); opacity: 0; }
 }
 
 /* The "or just browse" escape hatch */
@@ -2140,6 +2210,7 @@ textarea:focus-visible {
   }
   .now-rotator .item { transition: none !important; }
   .logo3d > img { transition: none !important; }
+  .brand-section-divider::after { display: none !important; }
 }
 
 /* ============================================================
