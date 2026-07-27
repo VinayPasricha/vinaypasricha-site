@@ -103,6 +103,22 @@ const ANALYTICS = {
     window.addEventListener('scroll', update, { passive: true });
   }
 
+  // ---------- Signal × Spacetime amber section dividers ----------
+  // Each separator receives one left-to-right pulse the first time it enters
+  // view. Reduced-motion visitors keep the static amber hairline.
+  const amberDividers = document.querySelectorAll('.brand-section-divider');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (amberDividers.length && !reduceMotion.matches) {
+    const dividerObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-pulsing');
+        dividerObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.15 });
+    amberDividers.forEach((divider) => dividerObserver.observe(divider));
+  }
+
   // ---------- Language switcher ----------
   const langSwitch = document.querySelector('.lang-switch');
   if (langSwitch) {

@@ -5,10 +5,12 @@
   "type": "module",
   "description": "vinaypasricha.com — automation scripts (build, translation pack refresh, etc).",
   "scripts": {
+    "dev": "vite",
     "translate": "node scripts/translate-pack.mjs",
     "translate:dry": "node scripts/translate-pack.mjs --dry-run"
   },
   "devDependencies": {
-    "jsdom": "^25.0.1"
+    "jsdom": "^25.0.1",
+    "vite": "^6.1.0"
   }
 }
