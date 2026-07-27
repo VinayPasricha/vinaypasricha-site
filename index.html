@@ -116,8 +116,17 @@
 <section class="hero">
 
   <div class="hero-identity">
-    <div class="hero-logo" aria-hidden="true">
-      <img src="assets/images/vinay-signal-spacetime-mark.png" alt="">
+    <div
+      class="hero-logo"
+      data-signal-spacetime-logo
+      role="img"
+      aria-label="Signal × Spacetime: a living signal ring suspended over a glowing gravity-well lattice"
+    >
+      <img
+        class="hero-logo-fallback"
+        src="assets/images/vinay-signal-spacetime-mark.png"
+        alt=""
+      >
     </div>
 
     <div class="moniker">
@@ -459,6 +468,7 @@
 
 <script src="js/site.js"></script>
 <script src="js/i18n.js"></script>
+<script type="module" src="js/signal-spacetime-logo.js"></script>
 
   <script src="/js/claude-bridge.js"></script>
 </body>
