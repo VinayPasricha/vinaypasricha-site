@@ -17,6 +17,7 @@ async function htmlPages(directory = root) {
     if (
       relative.startsWith("_explorations") ||
       relative.startsWith(path.join("library", "civilization", "source")) ||
+      relative === path.join("library", "civilization", "cover-standalone.html") ||
       relative.split(path.sep).some((segment) =>
         [".git", "node_modules"].includes(segment)
       )
