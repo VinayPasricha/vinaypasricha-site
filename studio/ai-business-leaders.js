@@ -47,8 +47,9 @@
   // only reorders the rows — it does not change how a row opens.
   var lastList = [];
   var SORT_STORAGE = 'abl_studio_sort_v1';
-  var sortKey = '';
+  var sortKey = 'name';
   var sortDir = 1;
+  var searchQuery = '';
 
   try {
     var savedSort = JSON.parse(localStorage.getItem(SORT_STORAGE) || '{}');
@@ -114,6 +115,7 @@
     }
     renderList(r.data || []);
     wireSorting();
+    wireSearch();
     wireCreate();
     wireBulkCreate();
   }
@@ -188,9 +190,22 @@
   function renderList(list) {
     lastList = list || [];
     var rows = sortedList(lastList);
+    if (searchQuery) {
+      rows = rows.filter(function (p) {
+        return [p.name, p.company_name, p.role_title, p.email]
+          .map(function (value) { return String(value || '').toLowerCase(); })
+          .join(' ')
+          .indexOf(searchQuery) !== -1;
+      });
+    }
     $('pcount').textContent = '· ' + rows.length;
     renderStats(rows);
     renderSortHeaders();
+    if ($('participantSearchCount')) {
+      $('participantSearchCount').textContent = searchQuery
+        ? rows.length + ' of ' + lastList.length + ' participants'
+        : (sortKey === 'name' && sortDir === 1 ? 'A–Z' : 'Sorted');
+    }
     $('rows').innerHTML = rows.map(function (p, i) {
       var isNew = p.status === 'completed' && !p.reviewed;
       return '<tr data-id="' + p.id + '"' + (isNew ? ' class="new-row"' : '') + '>' +
@@ -203,7 +218,7 @@
         '<td class="sub">' + (p.message_count || 0) + '/' + (p.max_messages || 200) + '</td>' +
         '<td>' + (p.vinay_brief_status === 'generated' ? '<button class="viewbrief" data-vb="' + p.id + '">View ↓</button>' : '<span class="muted">—</span>') + '</td>' +
         '<td><button class="del" data-del="' + p.id + '" data-nm="' + esc(p.name) + '" title="Delete participant">✕</button></td></tr>';
-    }).join('') || '<tr><td colspan="9" class="muted">No participants yet.</td></tr>';
+    }).join('') || '<tr><td colspan="9" class="muted">' + (searchQuery ? 'No participants match your search.' : 'No participants yet.') + '</td></tr>';
     Array.prototype.forEach.call($('rows').querySelectorAll('tr[data-id]'), function (tr) {
       tr.onclick = function (event) {
         if (event.target.closest('button, a')) return;
@@ -216,6 +231,22 @@
     Array.prototype.forEach.call($('rows').querySelectorAll('.viewbrief'), function (b) {
       b.onclick = function (e) { e.stopPropagation(); toggleBrief(b.getAttribute('data-vb'), b); };
     });
+  }
+
+  function wireSearch() {
+    var input = $('participantSearch');
+    var clear = $('participantSearchClear');
+    if (!input || !clear) return;
+    input.oninput = function () {
+      searchQuery = input.value.trim().toLowerCase();
+      renderList(lastList);
+    };
+    clear.onclick = function () {
+      input.value = '';
+      searchQuery = '';
+      renderList(lastList);
+      input.focus();
+    };
   }
 
   function wireCreate() {
