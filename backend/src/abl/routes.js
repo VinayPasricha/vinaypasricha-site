@@ -54,6 +54,22 @@ function hasBuilderValue(v) {
   if (v && typeof v === 'object') return Object.values(v).some(hasBuilderValue);
   return v === true || (typeof v === 'number' && Number.isFinite(v));
 }
+function builderText(v, fallback = 'Needs confirmation', max = 720) {
+  if (!hasBuilderValue(v)) return fallback;
+  let out = '';
+  if (Array.isArray(v)) {
+    out = v.filter(hasBuilderValue).map((x) => builderText(x, '', max)).filter(Boolean).join(', ');
+  } else if (v && typeof v === 'object') {
+    out = Object.entries(v).filter(([, value]) => hasBuilderValue(value)).map(([key, value]) => {
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      return `${label}: ${builderText(value, '', max)}`;
+    }).join(' · ');
+  } else {
+    out = String(v).trim();
+  }
+  if (!out) return fallback;
+  return out.length > max ? `${out.slice(0, max - 1).trim()}…` : out;
+}
 function builderProgress(sessions) {
   const completed = [];
   let answered = 0, total = 0;
@@ -69,26 +85,30 @@ function builderProgress(sessions) {
 function builderMarkdown(p, sessions) {
   const s1 = sessions['1'] || {}, s2 = sessions['2'] || {}, s3 = sessions['3'] || {};
   const s4 = sessions['4'] || {}, s5 = sessions['5'] || {};
-  const txt = (v, fallback = 'Needs confirmation') => hasBuilderValue(v) ? String(v) : fallback;
+  const txt = (v, fallback = 'Needs confirmation', max = 720) => builderText(v, fallback, max);
   const boundary = s3.boundaries || {}, op = s4.operational_boundary || {}, evidence = s4.evidence || {};
+  const initiativeName = txt(s1.candidate_workflow || s2.problem_sentence, 'My First AI Leadership Initiative', 120);
   return `# My First AI Leadership Initiative
 
 **${p.name || 'Participant'}${p.company_name ? ` · ${p.company_name}` : ''}**
 
 ## Page 1 · Leadership Case
 
-### Initiative
-${txt(s2.problem_sentence || s1.candidate_workflow)}
+### Initiative name
+${initiativeName}
 
-### Recurring problem and consequence
-${txt(s2.problem_sentence)}
+### Recurring problem, consequence and why now
+${txt(s2.problem_sentence || s1.where_work_breaks)}
 
-${txt(s1.business_consequence)}
+**Business consequence:** ${txt(s1.business_consequence)}
 
-### Company Brain breakdown
-${txt(s1.company_brain_hypothesis)}
+**Value bucket and baseline:** ${txt(s2.value_bucket)} · ${txt(s2.baseline)}
 
-### Workflow change
+**Decision and evidence needed:** ${txt(s2.decision)} · ${txt(s2.evidence_needed)}
+
+### Company Brain breakdown and proposed AI role
+${txt(s5.pitch_brain || s1.company_brain_hypothesis)}
+
 **Memory:** ${txt(s3.memory)}
 
 **Reasoning:** ${txt(s3.reasoning)}
@@ -97,30 +117,48 @@ ${txt(s1.company_brain_hypothesis)}
 
 **Feedback:** ${txt(s3.feedback)}
 
-### AI / human boundary
+### Workflow change and human boundary
+**Current workflow:** ${txt(s3.current_steps)}
+
+**Future workflow:** ${txt(s5.pitch_workflow || `${txt(s3.memory, '', 180)} ${txt(s3.reasoning, '', 180)} ${txt(s3.action, '', 180)} ${txt(s3.feedback, '', 180)}`)}
+
+**Exception path:** ${txt(s3.exception_path)}
+
 **Automate:** ${txt(boundary.automate)}
 
 **Assist:** ${txt(boundary.assist)}
 
 **Escalate:** ${txt(boundary.escalate)}
 
-### Human responsibility
-${txt(s2.owner_human_line || s4.ownership)}
+### Human responsibility and capability retained
+**Owner and decision rights:** ${txt(s2.owner_human_line || s4.ownership)}
+
+**Build / Buy / Partner:** ${txt(s3.build_buy_partner)}
+
+**Capability retained:** ${txt(s2.strategic_value || s3.build_buy_partner)}
+
+<!-- pagebreak -->
 
 ## Page 2 · 90-Day Pilot Charter
 
 ### Pilot scope and users
 ${txt(s4.pilot_boundary)}
 
-### Baseline and Day-90 target
-${txt(s2.baseline)}
+### Build / Buy / Partner and economics
+**Route and vendor-exit test:** ${txt(s3.build_buy_partner)}
 
-${txt(evidence.outcome && evidence.outcome.day90)}
+**Economics:** ${txt(s4.economics)}
 
-### Data boundary
-${txt(s2.available_data || s4.data_boundary)}
+### Baseline, Day-30 evidence and Day-90 targets
+**Outcome:** ${txt(evidence.outcome)}
 
-### Operational guardrails
+**Adoption:** ${txt(evidence.adoption)}
+
+**Safety:** ${txt(evidence.safety)}
+
+### Data, AI / human boundary and controls
+**Data:** ${txt(s4.data_boundary || s2.available_data)}
+
 **AI may:** ${txt(op.allowed)}
 
 **AI may not:** ${txt(op.not_allowed)}
@@ -132,10 +170,20 @@ ${txt(s2.available_data || s4.data_boundary)}
 ### Risk and control
 **Risk tier:** ${txt(s4.risk_tier)}
 
-${txt(s4.control_recovery)}
+**Control and recovery:** ${txt(s4.control_recovery)}
 
-### Evidence and decision
-**Day 30:** ${txt(s5.pitch_evidence)}
+**Owner and team:** ${txt(s4.ownership)}
+
+### 90-day path and decision rules
+**Days 1–15 · Diagnose:** confirm the problem, baseline, data, owner and proceed / investigate / wait decision.
+
+**Days 16–30 · Design:** finalise the workflow, human line, pilot boundary, controls, users and go / no-go evidence.
+
+**Days 31–75 · Build and Run:** configure the contained pilot, review outcome, adoption, safety and economics weekly, and correct exceptions.
+
+**Days 76–90 · Decide:** compare the evidence with the pre-agreed rules and scale, fix or stop.
+
+**Day-30 evidence:** ${txt(s5.pitch_evidence || s4.weekly_question)}
 
 **Scale if:** ${txt(s5.scale_if)}
 
@@ -179,7 +227,8 @@ function mdToHtml(md) {
     let m;
     if (isRow(l)) { closeList(); tbuf.push(l); continue; }
     flushTable();
-    if ((m = l.match(/^######\s+(.*)/))) { closeList(); html += `<h6>${inline(m[1])}</h6>`; }
+    if (/^<!--\s*pagebreak\s*-->$/i.test(l.trim())) { closeList(); html += '<div class="page-break" aria-hidden="true"></div>'; }
+    else if ((m = l.match(/^######\s+(.*)/))) { closeList(); html += `<h6>${inline(m[1])}</h6>`; }
     else if ((m = l.match(/^###\s+(.*)/))) { closeList(); html += `<h3>${inline(m[1])}</h3>`; }
     else if ((m = l.match(/^##\s+(.*)/))) { closeList(); html += `<h2>${inline(m[1])}</h2>`; }
     else if ((m = l.match(/^#\s+(.*)/))) { closeList(); html += `<h1>${inline(m[1])}</h1>`; }
@@ -222,7 +271,8 @@ function streamPdf(res, { title, who, date, md, filename }) {
   const lines = String(md || '').replace(/\r/g, '').split('\n');
   for (const raw of lines) {
     const l = raw.replace(/\s+$/, ''); let m;
-    if ((m = l.match(/^#\s+(.*)/))) { doc.moveDown(0.4).fillColor(INK).font('Times-Bold').fontSize(17).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.2); }
+    if (/^<!--\s*pagebreak\s*-->$/i.test(l.trim())) { doc.addPage(); }
+    else if ((m = l.match(/^#\s+(.*)/))) { doc.moveDown(0.4).fillColor(INK).font('Times-Bold').fontSize(17).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.2); }
     else if ((m = l.match(/^##\s+(.*)/))) { doc.moveDown(0.45).fillColor(ACCENT).font('Helvetica-Bold').fontSize(11).text(m[1].replace(/\*\*/g, '').toUpperCase(), { characterSpacing: 1 }); doc.moveDown(0.2); }
     else if ((m = l.match(/^###\s+(.*)/))) { doc.moveDown(0.3).fillColor(INK).font('Times-Bold').fontSize(12.5).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.1); }
     else if (/^(-{3,}|_{3,})$/.test(l)) { doc.moveDown(0.3); }
@@ -413,7 +463,11 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const markdown = builderMarkdown(p, (builder && builder.sessions) || {});
       const output = await repo.saveOutput({
         participant_id: p.id, output_type: 'ai_leadership_initiative',
-        content_markdown: markdown, content_json: { builder_updated_at: builder && builder.updated_at },
+        content_markdown: markdown,
+        content_json: {
+          builder_updated_at: builder && builder.updated_at,
+          sessions: (builder && builder.sessions) || {},
+        },
       });
       return ok(res, { id: output.id, markdown });
     } catch (e) { return oops(res, e); }
@@ -592,7 +646,8 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   table.mdt{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}.mdt th,.mdt td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}.mdt th{background:#fff;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
   .bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid var(--rule);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
   .bar button{font:600 12px/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:0;border-radius:3px;padding:9px 16px;cursor:pointer}
-  @media print{.bar{display:none}.wrap{padding-top:24px}body{background:#fff}}
+  .page-break{border-top:1px dashed var(--rule);margin:28px 0}
+  @media print{.bar{display:none}.wrap{padding-top:24px}body{background:#fff}.page-break{break-before:page;page-break-before:always;border:0;margin:0}}
 </style></head><body>
 <div class="bar"><span class="kicker">AI for Business Leaders</span><button onclick="window.print()">Download PDF ↓</button></div>
 <div class="wrap" style="padding-top:80px">
