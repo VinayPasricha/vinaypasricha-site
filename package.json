@@ -6,7 +6,8 @@
   "description": "vinaypasricha.com — automation scripts (build, translation pack refresh, etc).",
   "scripts": {
     "translate": "node scripts/translate-pack.mjs",
-    "translate:dry": "node scripts/translate-pack.mjs --dry-run"
+    "translate:dry": "node scripts/translate-pack.mjs --dry-run",
+    "test:abl-course": "node scripts/test-abl-course.mjs"
   },
   "devDependencies": {
     "jsdom": "^25.0.1"
