@@ -91,6 +91,11 @@
     .asset-actions .btn { padding: 7px 10px; font-size: 10px; }
     .participant-name { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; }
     .participant-name:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .participant-search { display:flex; align-items:center; gap:10px; margin:0 0 14px; }
+    .participant-search .ipt { flex:1; }
+    .participant-search-count { font-family:var(--mono); font-size:10px; color:var(--ink-3); white-space:nowrap; }
+    .participant-search-clear { background:none; border:1px solid var(--rule); color:var(--ink-2); border-radius:4px; padding:8px 10px; cursor:pointer; font-family:var(--mono); font-size:10px; }
+    .participant-search-clear:hover { border-color:var(--accent); color:var(--accent); }
     .dossier-back { display: inline-flex; align-items: center; gap: 7px; margin: 8px 0 18px; color: var(--accent); text-decoration: none; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; }
     .snapshot-card { border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--rule)); background: linear-gradient(145deg, var(--paper), var(--paper-2)); }
     .snapshot-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
@@ -186,6 +191,11 @@
     <div class="abl-sec">
       <h2>Participants <span id="pcount" class="sub" style="font-family:var(--mono);color:var(--ink-3)"></span></h2>
       <div class="stats" id="stats"></div>
+      <div class="participant-search">
+        <input class="ipt" id="participantSearch" type="search" placeholder="Search by name, company, role or email" aria-label="Search participants">
+        <span class="participant-search-count" id="participantSearchCount">A–Z</span>
+        <button class="participant-search-clear" id="participantSearchClear" type="button">Clear</button>
+      </div>
       <table class="tbl"><thead><tr>
         <th>#</th>
         <th class="sortable" data-sort="name">Name</th>
