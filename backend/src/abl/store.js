@@ -197,6 +197,28 @@ export async function upsertQa(participantId, input) {
   return { id: participantId, ...row };
 }
 
+// ---- cumulative AI Leadership Initiative Builder -------------------------
+// One document per participant. It deliberately stays independent of the
+// optional preparation conversation so nobody is blocked from course work.
+export async function getBuilder(participantId) {
+  return docData(await col(COLLECTIONS.ablBuilders).doc(participantId).get());
+}
+export async function upsertBuilder(participantId, input) {
+  const ref = col(COLLECTIONS.ablBuilders).doc(participantId);
+  const existing = await ref.get();
+  const row = {
+    participant_id: participantId,
+    sessions: input.sessions || {},
+    current_session: input.current_session || 1,
+    completed_sessions: input.completed_sessions || [],
+    completion_percent: input.completion_percent || 0,
+    updated_at: nowISO(),
+  };
+  if (!existing.exists) row.created_at = nowISO();
+  await ref.set(row, { merge: true });
+  return docData(await ref.get());
+}
+
 // ---- delete (cascade) ------------------------------------------------------
 // Remove a participant and everything belonging to them.
 export async function deleteParticipant(id) {
@@ -207,6 +229,7 @@ export async function deleteParticipant(id) {
   }
   refs.push(col(COLLECTIONS.ablResearch).doc(id));
   refs.push(col(COLLECTIONS.ablQa).doc(id));
+  refs.push(col(COLLECTIONS.ablBuilders).doc(id));
   refs.push(col(COLLECTIONS.ablParticipants).doc(id));
   let batch = db.batch(), n = 0;
   for (const ref of refs) {
