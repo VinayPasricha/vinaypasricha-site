@@ -11,10 +11,14 @@ test("homepage mounts the real Signal × Spacetime scene", async () => {
     read("css/site.css"),
   ]);
 
-  assert.match(html, /data-signal-spacetime-logo/);
+  assert.match(html, /id="logo3d" class="hero-logo logo3d"/);
+  assert.match(
+    html,
+    /alt="Signal × Spacetime — the mark of Vinay Pasricha"/
+  );
   assert.match(html, /type="module" src="js\/signal-spacetime-logo\.js"/);
   assert.match(css, /#15151a/);
-  assert.match(css, /\.hero-logo-canvas/);
+  assert.match(css, /\.logo3d canvas/);
   assert.doesNotMatch(css, /logo-tilt-and-turn/);
 });
 
@@ -29,7 +33,14 @@ test("scene contains every specified moving layer", async () => {
   assert.match(source, /wheel\.rotation\.y = -t \* 0\.05/);
   assert.match(source, /grid\.rotation\.y = t \* 0\.04/);
   assert.match(source, /\(t \* 0\.14 \+ spark\.phase\) % 1/);
-  assert.match(source, /requestAnimationFrame\(animate\)/);
+  assert.match(source, /requestIdleCallback/);
+  assert.match(source, /IntersectionObserver/);
+  assert.match(source, /navigator\.hardwareConcurrency <= 2/);
+  assert.match(source, /await import\(/);
+  assert.match(source, /renderer\.setAnimationLoop/);
+  assert.match(source, /document\.hidden/);
+  assert.match(source, /new ResizeObserver/);
+  assert.doesNotMatch(source, /^import \* as THREE/m);
 });
 
 test("scene preserves the six-color signal and amber current", async () => {
