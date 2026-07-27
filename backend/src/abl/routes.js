@@ -18,6 +18,141 @@ const fail = (res, error, code = 400) => res.status(code).json({ ok: false, erro
 function oops(res, e) { console.error('[abl] route error:', (e && e.stack) || e); return res.status(500).json({ ok: false, error: 'Server error' }); }
 const noLimit = (req, res, next) => next();
 
+const BUILDER_FIELDS = {
+  1: ['candidate_workflow', 'people_systems', 'where_work_breaks', 'business_consequence', 'current_ai_use', 'company_brain_hypothesis'],
+  2: ['problem_sentence', 'recurrence', 'value_bucket', 'baseline', 'pilot_tests', 'strategic_value', 'available_data',
+    'non_ai_alternative', 'owner_human_line', 'decision', 'evidence_needed'],
+  3: ['current_steps', 'exception_path', 'memory', 'reasoning', 'action', 'feedback', 'boundaries',
+    'build_buy_partner', 'critical_assumption'],
+  4: ['pilot_boundary', 'ownership', 'old_work_removed', 'new_behaviour', 'data_boundary', 'risk_tier',
+    'operational_boundary', 'control_recovery', 'evidence', 'economics', 'weekly_question', 'premortem'],
+  5: ['pitch_problem', 'pitch_brain', 'pitch_workflow', 'pitch_control', 'pitch_evidence', 'commitment_72h',
+    'day30_review_date', 'day30_review_with', 'scale_if', 'fix_if', 'stop_if'],
+};
+const COMPLETION_KEYS = {
+  1: ['candidate_workflow', 'where_work_breaks', 'business_consequence', 'company_brain_hypothesis'],
+  2: ['problem_sentence', 'baseline', 'owner_human_line', 'decision'],
+  3: ['memory', 'reasoning', 'action', 'feedback', 'boundaries'],
+  4: ['pilot_boundary', 'ownership', 'risk_tier', 'operational_boundary', 'evidence'],
+  5: ['pitch_problem', 'pitch_workflow', 'pitch_control', 'pitch_evidence', 'commitment_72h'],
+};
+function cleanBuilderValue(v, depth = 0) {
+  if (depth > 4) return null;
+  if (typeof v === 'string') return v.trim().slice(0, 12000);
+  if (typeof v === 'boolean' || typeof v === 'number') return v;
+  if (Array.isArray(v)) return v.slice(0, 30).map((x) => cleanBuilderValue(x, depth + 1));
+  if (v && typeof v === 'object') {
+    const out = {};
+    Object.keys(v).slice(0, 40).forEach((k) => { out[String(k).slice(0, 80)] = cleanBuilderValue(v[k], depth + 1); });
+    return out;
+  }
+  return null;
+}
+function hasBuilderValue(v) {
+  if (typeof v === 'string') return v.trim().length > 0;
+  if (Array.isArray(v)) return v.some(hasBuilderValue);
+  if (v && typeof v === 'object') return Object.values(v).some(hasBuilderValue);
+  return v === true || (typeof v === 'number' && Number.isFinite(v));
+}
+function builderProgress(sessions) {
+  const completed = [];
+  let answered = 0, total = 0;
+  for (let n = 1; n <= 5; n++) {
+    const data = sessions[String(n)] || {};
+    const keys = COMPLETION_KEYS[n];
+    const done = keys.filter((k) => hasBuilderValue(data[k])).length;
+    answered += done; total += keys.length;
+    if (done === keys.length) completed.push(n);
+  }
+  return { completed, percent: total ? Math.round(answered / total * 100) : 0 };
+}
+function builderMarkdown(p, sessions) {
+  const s1 = sessions['1'] || {}, s2 = sessions['2'] || {}, s3 = sessions['3'] || {};
+  const s4 = sessions['4'] || {}, s5 = sessions['5'] || {};
+  const txt = (v, fallback = 'Needs confirmation') => hasBuilderValue(v) ? String(v) : fallback;
+  const boundary = s3.boundaries || {}, op = s4.operational_boundary || {}, evidence = s4.evidence || {};
+  return `# My First AI Leadership Initiative
+
+**${p.name || 'Participant'}${p.company_name ? ` · ${p.company_name}` : ''}**
+
+## Page 1 · Leadership Case
+
+### Initiative
+${txt(s2.problem_sentence || s1.candidate_workflow)}
+
+### Recurring problem and consequence
+${txt(s2.problem_sentence)}
+
+${txt(s1.business_consequence)}
+
+### Company Brain breakdown
+${txt(s1.company_brain_hypothesis)}
+
+### Workflow change
+**Memory:** ${txt(s3.memory)}
+
+**Reasoning:** ${txt(s3.reasoning)}
+
+**Action:** ${txt(s3.action)}
+
+**Feedback:** ${txt(s3.feedback)}
+
+### AI / human boundary
+**Automate:** ${txt(boundary.automate)}
+
+**Assist:** ${txt(boundary.assist)}
+
+**Escalate:** ${txt(boundary.escalate)}
+
+### Human responsibility
+${txt(s2.owner_human_line || s4.ownership)}
+
+## Page 2 · 90-Day Pilot Charter
+
+### Pilot scope and users
+${txt(s4.pilot_boundary)}
+
+### Baseline and Day-90 target
+${txt(s2.baseline)}
+
+${txt(evidence.outcome && evidence.outcome.day90)}
+
+### Data boundary
+${txt(s2.available_data || s4.data_boundary)}
+
+### Operational guardrails
+**AI may:** ${txt(op.allowed)}
+
+**AI may not:** ${txt(op.not_allowed)}
+
+**Human approval:** ${txt(op.human_approve)}
+
+**Always escalate:** ${txt(op.escalate)}
+
+### Risk and control
+**Risk tier:** ${txt(s4.risk_tier)}
+
+${txt(s4.control_recovery)}
+
+### Evidence and decision
+**Day 30:** ${txt(s5.pitch_evidence)}
+
+**Scale if:** ${txt(s5.scale_if)}
+
+**Fix if:** ${txt(s5.fix_if)}
+
+**Stop if:** ${txt(s5.stop_if)}
+
+### Dated commitment
+**Within 72 hours:** ${txt(s5.commitment_72h)}
+
+**Day-30 sponsor review:** ${txt(s5.day30_review_date)} with ${txt(s5.day30_review_with)}
+
+---
+
+*Working draft generated from the participant's cumulative Initiative Builder. Any “Needs confirmation” item remains an explicit open decision.*`;
+}
+
 // tiny markdown -> HTML for the printable document view (server-side)
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -231,6 +366,59 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     } catch (e) { return oops(res, e); }
   });
 
+  // Cumulative five-session workspace. Optional by design: it does not depend
+  // on preparation-session completion and never hard-blocks later sessions.
+  app.get('/api/abl/course/:slug', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const builder = await repo.getBuilder(p.id);
+      return ok(res, {
+        participant: { name: p.name, company_name: p.company_name, role_title: p.role_title, slug: p.slug },
+        builder: builder || { sessions: {}, current_session: 1, completed_sessions: [], completion_percent: 0 },
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/course/:slug', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const n = Math.max(1, Math.min(5, parseInt(req.body && req.body.session, 10) || 1));
+      const incoming = (req.body && req.body.data) || {};
+      const current = await repo.getBuilder(p.id);
+      const sessions = { ...((current && current.sessions) || {}) };
+      const clean = {};
+      BUILDER_FIELDS[n].forEach((k) => { if (Object.prototype.hasOwnProperty.call(incoming, k)) clean[k] = cleanBuilderValue(incoming[k]); });
+      sessions[String(n)] = { ...(sessions[String(n)] || {}), ...clean, updated_at: new Date().toISOString() };
+      const progress = builderProgress(sessions);
+      const saved = await repo.upsertBuilder(p.id, {
+        sessions, current_session: n, completed_sessions: progress.completed, completion_percent: progress.percent,
+      });
+      await repo.updateParticipant(p.id, {
+        course_current_session: n, course_completion_percent: progress.percent, course_last_activity_at: new Date().toISOString(),
+      });
+      return ok(res, saved);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/course/:slug/charter', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const builder = await repo.getBuilder(p.id);
+      const markdown = builderMarkdown(p, (builder && builder.sessions) || {});
+      const output = await repo.saveOutput({
+        participant_id: p.id, output_type: 'ai_leadership_initiative',
+        content_markdown: markdown, content_json: { builder_updated_at: builder && builder.updated_at },
+      });
+      return ok(res, { id: output.id, markdown });
+    } catch (e) { return oops(res, e); }
+  });
+
   // -------------------------------------------------------------------------
   // Admin (studio-gated)
   // -------------------------------------------------------------------------
@@ -256,10 +444,10 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs] = await Promise.all([
-        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id),
+      const [research, qa, outputs, builder] = await Promise.all([
+        repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), repo.getBuilder(p.id),
       ]);
-      return ok(res, { participant: p, research, qa, outputs });
+      return ok(res, { participant: p, research, qa, outputs, builder });
     } catch (e) { return oops(res, e); }
   });
 
@@ -346,6 +534,15 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       if (sessionShell == null) sessionShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'session.html'), 'utf8');
       res.set('Content-Type', 'text/html; charset=utf-8');
       return res.send(sessionShell);
+    } catch (e) { return next(); }
+  });
+
+  let courseShell = null;
+  app.get('/ai-business-leaders/course/:slug', (req, res, next) => {
+    try {
+      if (courseShell == null) courseShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'course.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      return res.send(courseShell);
     } catch (e) { return next(); }
   });
 
