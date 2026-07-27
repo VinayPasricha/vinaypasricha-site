@@ -87,6 +87,46 @@ if (mount) {
         group.rotation.x = 0.3;
         scene.add(group);
 
+        const hero = mount.closest(".hero");
+        const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+        const parallaxEnabled = Boolean(hero) && !coarsePointer;
+        let targetRotationX = 0.3;
+        let targetRotationY = 0;
+
+        const handlePointerMove = (event) => {
+          const rect = hero.getBoundingClientRect();
+          const nx = THREE.MathUtils.clamp(
+            ((event.clientX - rect.left) / rect.width) * 2 - 1,
+            -1,
+            1
+          );
+          const ny = THREE.MathUtils.clamp(
+            ((event.clientY - rect.top) / rect.height) * 2 - 1,
+            -1,
+            1
+          );
+          targetRotationY = nx * 0.1;
+          targetRotationX = 0.3 + ny * 0.06;
+        };
+
+        const handlePointerLeave = () => {
+          targetRotationX = 0.3;
+          targetRotationY = 0;
+        };
+
+        if (parallaxEnabled) {
+          hero.addEventListener("pointermove", handlePointerMove, {
+            passive: true,
+          });
+          hero.addEventListener("pointerleave", handlePointerLeave);
+        }
+
+        const removeParallaxListeners = () => {
+          if (!parallaxEnabled) return;
+          hero.removeEventListener("pointermove", handlePointerMove);
+          hero.removeEventListener("pointerleave", handlePointerLeave);
+        };
+
         scene.add(new THREE.HemisphereLight(0xffffff, 0x66666f, 0.6));
         const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
         keyLight.position.set(4, 6, 5);
@@ -259,8 +299,25 @@ if (mount) {
         };
 
         const startedAt = performance.now();
+        let surgeStartedAt = null;
         const renderFrame = (now) => {
           const t = (now - startedAt) / 1000;
+
+          if (surgeStartedAt === null && !document.hidden) {
+            surgeStartedAt = now;
+          }
+          const surgeProgress =
+            surgeStartedAt === null
+              ? 1
+              : Math.min(1, Math.max(0, (now - surgeStartedAt) / 2200));
+          const surgeActive = surgeProgress < 1;
+          const barSwell =
+            surgeActive && surgeProgress > 0.55
+              ? 0.22 *
+                Math.sin(
+                  (Math.PI * (surgeProgress - 0.55)) / 0.45
+                )
+              : 0;
 
           bars.forEach((bar) => {
             const { hot, ph } = bar.userData;
@@ -268,7 +325,8 @@ if (mount) {
               0.14 +
               (hot ? 0.5 : 0.34) *
                 Math.pow(0.5 + 0.5 * Math.sin(ph + t * 1.5), 1.6) +
-              0.07 * Math.sin(ph * 2.3 - t * 0.9);
+              0.07 * Math.sin(ph * 2.3 - t * 0.9) +
+              barSwell;
           });
 
           signalMaterials.forEach((material, k) => {
@@ -280,18 +338,37 @@ if (mount) {
             0.7 + 0.4 * (0.5 + 0.5 * Math.sin(t * 2));
 
           gridRingMaterials.forEach((material, k) => {
-            material.emissiveIntensity =
+            const normalThrob =
               0.35 +
               0.8 *
                 Math.pow(
                   0.5 + 0.5 * Math.sin(t * 1.6 - k * 0.85),
                   2.2
                 );
+            const surge =
+              surgeActive
+                ? 2.6 *
+                  Math.pow(
+                    Math.max(
+                      0,
+                      1 -
+                        Math.abs(surgeProgress * 8 - k - 1) /
+                          1.6
+                    ),
+                    2
+                  )
+                : 0;
+            material.emissiveIntensity = Math.max(normalThrob, surge);
           });
           spokeMaterial.emissiveIntensity =
             0.35 + 0.3 * (0.5 + 0.5 * Math.sin(t * 1.6));
-          sparkMaterial.emissiveIntensity =
+          const normalSparkIntensity =
             1.2 + 0.5 * (0.5 + 0.5 * Math.sin(t * 3.2));
+          sparkMaterial.emissiveIntensity =
+            normalSparkIntensity *
+            (surgeActive
+              ? 1 + 2 * Math.sin(Math.PI * surgeProgress)
+              : 1);
 
           sparks.forEach((spark) => {
             setSparkPosition(spark, (t * 0.14 + spark.phase) % 1);
@@ -299,6 +376,10 @@ if (mount) {
 
           wheel.rotation.y = -t * 0.05;
           grid.rotation.y = t * 0.04;
+          group.rotation.x +=
+            (targetRotationX - group.rotation.x) * 0.045;
+          group.rotation.y +=
+            (targetRotationY - group.rotation.y) * 0.045;
           renderer.render(scene, camera);
         };
 
@@ -351,6 +432,7 @@ if (mount) {
 
         const restoreFallback = () => {
           renderer.setAnimationLoop(null);
+          removeParallaxListeners();
           if (!mount.querySelector("img")) {
             const fallbackImage = document.createElement("img");
             fallbackImage.src =
@@ -374,6 +456,7 @@ if (mount) {
           "pagehide",
           () => {
             renderer.setAnimationLoop(null);
+            removeParallaxListeners();
             resizeObserver.disconnect();
             animationObserver.disconnect();
             document.removeEventListener(
