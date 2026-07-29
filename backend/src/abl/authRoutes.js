@@ -1,9 +1,9 @@
 // Passwordless participant sign-in for AI for Business Leaders.
 //
-// The flow is deliberately small: a participant types the email Vinay already
-// preloaded, receives a six-digit code, and exchanges it for a 30-day token.
-// Presence in the participant list IS the access decision — there is no
-// separate password or invite state to keep in sync.
+// The participant types the email already held in Studio, receives a six-digit
+// code, and exchanges it for a 30-day bearer session. A participant must first
+// be invited/approved in Studio; merely existing in the directory grants no
+// access and the request endpoint never reveals whether an email is registered.
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -18,10 +18,15 @@ import {
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const ok = (res, data, code = 200) => res.status(code).json({ ok: true, data });
 const fail = (res, error, code = 400) => res.status(code).json({ ok: false, error });
+const GENERIC_REQUEST_MESSAGE = 'If this email has active course access, a six-digit sign-in code is on its way.';
+
+function participantCanSignIn(p) {
+  if (!p || p.login_enabled === false) return false;
+  return !!p.link_approved || p.invite_status === 'invited' || p.invite_status === 'active';
+}
 
 // Resolve the signed-in participant from the Authorization header. Signed
-// tokens verify locally; opaque tokens (no signing secret configured) are
-// looked up in the session collection.
+// tokens verify locally; opaque tokens are looked up in the session collection.
 async function participantPayload(req) {
   const token = bearerToken(req);
   if (!token) return null;
@@ -37,15 +42,18 @@ export function registerAuthRoutes(app, { rateLimit }) {
   const requestLimit = rateLimit({ windowMs: 60000, max: 6 });
   const verifyLimit = rateLimit({ windowMs: 60000, max: 12 });
 
-  // Step 1 — the participant types their course email; we email a code.
+  // Step 1 — request a code. The response is deliberately identical for an
+  // unknown, uninvited or active email so the participant directory cannot be
+  // discovered by probing this endpoint.
   app.post('/api/abl/auth/request', requestLimit, async (req, res) => {
     try {
       const email = normalizeEmail(req.body && req.body.email);
       if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
       const p = await repo.getParticipantByEmail(email);
-      if (!p || p.login_enabled === false) {
-        return fail(res, 'This email is not registered for the course. Please contact Vinay at Vinay@goodspace.ai to get access.', 403);
+      if (!participantCanSignIn(p)) {
+        return ok(res, { message: GENERIC_REQUEST_MESSAGE });
       }
+
       const code = createLoginCode();
       await repo.saveAuthCode(email, {
         participant_id: p.id,
@@ -54,10 +62,9 @@ export function registerAuthRoutes(app, { rateLimit }) {
       });
       const delivery = await deliverLoginCode({ email, code, name: p.name });
       return ok(res, {
-        message: 'Your sign-in code is on its way.',
-        // On a developer machine with no mail provider the code is returned so
-        // the flow stays testable. Never on a deployed service — there a
-        // missing RESEND_API_KEY fails loudly instead of exposing the code.
+        message: GENERIC_REQUEST_MESSAGE,
+        // Developer machines can display the code. No deployed service—staging
+        // included—ever receives it in the response.
         preview_code: delivery.preview && isLocalEnvironment() ? code : undefined,
       });
     } catch (e) {
@@ -79,17 +86,13 @@ export function registerAuthRoutes(app, { rateLimit }) {
         if (saved) await repo.incrementAuthAttempts(email);
         return fail(res, 'That code is incorrect or has expired.', 401);
       }
-      let p = await repo.getParticipant(saved.participant_id);
-      if (!p || p.login_enabled === false || normalizeEmail(p.email) !== email) {
+
+      const p = await repo.getParticipant(saved.participant_id);
+      if (!participantCanSignIn(p) || normalizeEmail(p.email) !== email) {
+        await repo.consumeAuthCode(email);
         return fail(res, 'This course access is not active.', 403);
       }
-      // Presence in the preloaded participant list is the access decision.
-      // Verified email ownership activates older draft records automatically.
-      if (!p.link_approved) {
-        p = await repo.updateParticipant(p.id, {
-          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
-        });
-      }
+
       let token = createParticipantToken(p);
       if (!token) {
         token = createOpaqueParticipantToken();
@@ -98,7 +101,7 @@ export function registerAuthRoutes(app, { rateLimit }) {
         });
       }
       await repo.consumeAuthCode(email);
-      await repo.touchActivity(p.id);
+      await repo.updateParticipant(p.id, { invite_status: 'active', last_activity_at: new Date().toISOString() });
       return ok(res, {
         token,
         participant: { name: p.name, company_name: p.company_name, email: p.email },
@@ -111,15 +114,14 @@ export function registerAuthRoutes(app, { rateLimit }) {
     }
   });
 
-  // Does this device still hold a valid session? Used by the workspace shell.
+  // Does this device still hold a valid session? Used by the sign-in page and
+  // the homepage banner to resume the correct private workspace.
   app.get('/api/abl/auth/status', async (req, res) => {
     try {
       const payload = await participantPayload(req);
       if (!payload) return fail(res, 'Sign-in required.', 401);
       const p = await repo.getParticipant(payload.sub);
-      if (!p || p.slug !== payload.slug || p.login_enabled === false || !p.link_approved) {
-        return fail(res, 'Sign-in required.', 401);
-      }
+      if (!participantCanSignIn(p) || p.slug !== payload.slug) return fail(res, 'Sign-in required.', 401);
       return ok(res, {
         participant: { name: p.name, company_name: p.company_name, email: p.email },
         workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
@@ -135,6 +137,7 @@ export function registerAuthRoutes(app, { rateLimit }) {
     try {
       if (loginShell == null) loginShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'login.html'), 'utf8');
       res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'private, no-store');
       return res.send(loginShell);
     } catch (e) { return next(); }
   });
