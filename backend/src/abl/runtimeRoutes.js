@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import * as repo from './store.js';
 import {
   agentTurn, runtimeOpeningTurn, generateSivReport, generateVedReport,
-  generateLeadershipBlueprint, RUNTIME_OPENING_VERSION,
+  generateLeadershipBlueprint, RUNTIME_OPENING_VERSION, usableOptions,
 } from './service.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
 import { buildCourseMemory } from './memory.js';
@@ -51,7 +51,9 @@ export function registerRuntimeRoutes(app, { rateLimit }) {
         .filter((m) => m.role === 'user' || m.role === 'assistant');
       const messages = storedMessages.map((m) => ({
         role: m.role, content: m.content, at: m.created_at,
-        options: (m.metadata && m.metadata.options) || [],
+        // Stored options are filtered on the way out too, so turns saved before
+        // the rule existed cannot keep offering unclickable answers.
+        options: usableOptions((m.metadata && m.metadata.options) || []),
         selection_mode: (m.metadata && m.metadata.selection_mode) || 'single',
         stage: (m.metadata && m.metadata.stage) || '',
       }));

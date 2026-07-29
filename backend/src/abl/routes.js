@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import PDFDocument from 'pdfkit';
 import * as repo from './store.js';
-import { agentTurn, generateOutput, rewardTypeForDepth, researchCompany, openingTurn, generateRewardBundle } from './service.js';
+import { agentTurn, generateOutput, rewardTypeForDepth, researchCompany, openingTurn, generateRewardBundle, usableOptions } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -302,7 +302,9 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const session = await repo.getOrCreateSession(p.id, 'participant');
       const messages = (await repo.listMessages(session.id))
         .filter((m) => m.role === 'user' || m.role === 'assistant')
-        .map((m) => ({ role: m.role, content: m.content, at: m.created_at, options: (m.metadata && m.metadata.options) || [] }));
+        // Filter stored options as well as freshly generated ones: a turn saved
+        // before the rule existed still offers answers nobody can click.
+        .map((m) => ({ role: m.role, content: m.content, at: m.created_at, options: usableOptions((m.metadata && m.metadata.options) || []) }));
       // Once a journey is chosen + consent given, open with the agent's greeting
       // so the participant is never staring at an empty box.
       if (!messages.length && session.consent_given && session.selected_depth) {
