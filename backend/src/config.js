@@ -28,4 +28,12 @@ export const config = {
   // header or `?token=`. If empty, those endpoints are CLOSED (fail-safe),
   // never open. Set ADMIN_TOKEN on Cloud Run.
   adminToken: optional('ADMIN_TOKEN', ''),
+
+  // Passwordless participant access. In production set ABL_AUTH_SECRET to a
+  // long random value and provide a Resend key/from-address for delivery.
+  // ADMIN_TOKEN is retained as a backwards-compatible signing fallback so an
+  // existing Cloud Run service can enable the feature without a migration.
+  ablAuthSecret: optional('ABL_AUTH_SECRET', optional('ADMIN_TOKEN', '')),
+  resendApiKey: optional('RESEND_API_KEY', ''),
+  ablFromEmail: optional('ABL_FROM_EMAIL', 'AI for Business Leaders <course@vinaypasricha.com>'),
 };

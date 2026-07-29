@@ -1,8 +1,9 @@
 // Entry point: start the HTTP server. Firestore connects lazily on first use,
 // so there is no database connection step here.
 import { config } from './config.js';
-import { createApp } from './app.js';
+import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
+import { registerAuthRoutes } from './abl/authRoutes.js';
 
 const app = createApp();
 
@@ -13,6 +14,7 @@ const app = createApp();
 const stack = app._router && app._router.stack;
 const before = stack ? stack.length : 0;
 registerWorkspaceRoutes(app);
+registerAuthRoutes(app, { rateLimit });
 if (stack) {
   const added = stack.splice(before);
   let insertAt = stack.findIndex((layer) => !layer.route && String(layer.regexp || '').includes('^\\/api\\/?(?=\\/|$)'));

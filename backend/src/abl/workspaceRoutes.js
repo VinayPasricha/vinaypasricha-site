@@ -2,8 +2,14 @@
 // This module is intentionally independent of the preparation-agent routes so
 // course materials, cohorts and assignments never become hard gates.
 import crypto from 'node:crypto';
+import path from 'node:path';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { db, COLLECTIONS } from '../firestore.js';
 import * as ablRepo from './store.js';
+
+// Repo root is three levels up from backend/src/abl -> serves the workspace shell.
+const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
 const nowISO = () => new Date().toISOString();
 const uuid = () => crypto.randomUUID();
@@ -98,6 +104,18 @@ function sanitiseAnnouncement(b) {
 }
 
 export function registerWorkspaceRoutes(app) {
+  // ---- Participant workspace page (served dynamically so the link carries a slug)
+  // Studio's invite hands out /ai-business-leaders/workspace/<slug>; nothing else
+  // serves that path, so without this the personalised workspace never loads.
+  let workspaceShell = null;
+  app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
+    try {
+      if (workspaceShell == null) workspaceShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace-preview.html'), 'utf8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      return res.send(workspaceShell);
+    } catch (e) { return next(); }
+  });
+
   // ---- Participant-facing workspace ---------------------------------------
   app.get('/api/abl/workspace/:slug', async (req, res) => {
     try {

@@ -39,4 +39,8 @@ export const COLLECTIONS = {
   ablAssignments: collectionName('abl_assignments'),
   ablSubmissions: collectionName('abl_submissions'),
   ablAnnouncements: collectionName('abl_announcements'),
+  // Passwordless participant sign-in: short-lived email codes, and the
+  // long-lived session records issued once a code is verified.
+  ablAuthCodes: collectionName('abl_auth_codes'),
+  ablParticipantSessions: collectionName('abl_participant_sessions'),
 };
