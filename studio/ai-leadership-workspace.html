@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vinay Studio — AI Leadership Workspace</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/studio/ai-leadership-workspace.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
+</head>
+<body>
+  <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open Studio menu">☰</button>
+  <div class="studio-shell">
+    <aside class="studio-sidebar">
+      <div class="studio-brand">
+        <small>Vinay Studio</small>
+        <strong>AI Leadership Workspace</strong>
+        <span>Participants, cohorts, materials and communication.</span>
+      </div>
+      <nav class="studio-nav">
+        <button class="active" data-page="home"><b>⌂</b>Studio home</button>
+        <button data-page="participants"><b>01</b>Manage participants <span class="count" id="navParticipants">0</span></button>
+        <button data-page="cohorts"><b>02</b>Manage cohorts <span class="count" id="navCohorts">0</span></button>
+        <button data-page="materials"><b>03</b>Publish material <span class="count" id="navMaterials">0</span></button>
+        <button data-page="assignments"><b>04</b>Review assignments <span class="count" id="navAssignments">0</span></button>
+        <button data-page="announcements"><b>05</b>Send announcement <span class="count" id="navAnnouncements">0</span></button>
+      </nav>
+      <nav class="studio-nav" style="margin-top:28px;border-top:1px solid rgba(255,255,255,.1);padding-top:14px">
+        <button type="button" id="openOldStudio"><b>↗</b>Preparation Studio</button>
+        <button type="button" id="refreshAll"><b>↻</b>Refresh data</button>
+      </nav>
+    </aside>
+
+    <main class="studio-main">
+      <section class="studio-page" data-page-view="home">
+        <div class="page-head"><div><small>Simple control centre</small><h1>Vinay Studio</h1></div><p>Upload once, assign once, publish once—and every relevant participant workspace updates automatically.</p></div>
+        <div class="quick-grid">
+          <button class="quick-card" data-page="participants"><b>01</b><strong>Manage participants</strong><span>Add, invite, assign or move people.</span></button>
+          <button class="quick-card" data-page="cohorts"><b>02</b><strong>Manage cohorts</strong><span>Dates, session links and membership.</span></button>
+          <button class="quick-card" data-page="materials"><b>03</b><strong>Publish course material</strong><span>Cases, slides, manual, recordings and reading.</span></button>
+          <button class="quick-card" data-page="assignments"><b>04</b><strong>Review assignments</strong><span>See drafts, submissions and add a comment.</span></button>
+          <button class="quick-card" data-page="announcements"><b>05</b><strong>Send an announcement</strong><span>Publish to cohorts, selected people or everyone.</span></button>
+        </div>
+        <div class="stat-grid" id="stats"></div>
+        <div class="panel"><div class="panel-head"><div><h2>Current cohorts</h2><p>Open a cohort to see dates and participants.</p></div><button class="btn ghost" data-page="cohorts">Manage cohorts</button></div><div class="cards" id="homeCohorts"></div></div>
+        <div class="panel"><div class="panel-head"><div><h2>Recently published</h2><p>Latest materials and announcements visible to participants.</p></div><button class="btn ghost" data-page="materials">Publish material</button></div><div class="cards" id="recentPublished"></div></div>
+      </section>
+
+      <section class="studio-page" data-page-view="participants" hidden>
+        <div class="page-head"><div><small>One permanent record per person</small><h1>Participants</h1></div><p>Add one person or paste a list. A participant can move cohorts without losing any work.</p></div>
+        <div class="panel"><div class="panel-head"><div><h2>Add participants</h2><p>Paste one participant per line: Name, email, phone. Company and role are optional.</p></div></div>
+          <div class="grid2"><div class="field"><label>Participant list</label><textarea id="bulkParticipants" placeholder="Aashni Shah, aashni@example.com, +91 98195 55755&#10;Raghav Sharma, raghav@example.com, +91 98731 72449"></textarea></div>
+          <div><div class="field"><label>Assign to cohort</label><select id="bulkCohort"></select></div><p class="empty">Leave Unassigned when you have not yet decided the cohort.</p><div class="form-actions"><button class="btn accent" id="addParticipants">Add participants</button><span class="form-status" id="participantFormStatus"></span></div></div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h2>Master participant directory</h2><p>Name, email, phone, cohort and invitation status.</p></div><input id="participantSearch" placeholder="Search participants" style="max-width:260px;padding:9px 11px;border:1px solid var(--s-rule);border-radius:4px;background:transparent"></div><div class="table-wrap"><table class="tbl"><thead><tr><th>Participant</th><th>Contact</th><th>Company</th><th>Cohort</th><th>Status</th><th>Actions</th></tr></thead><tbody id="participantRows"></tbody></table></div></div>
+      </section>
+
+      <section class="studio-page" data-page-view="cohorts" hidden>
+        <div class="page-head"><div><small>Simple and flexible</small><h1>Cohorts</h1></div><p>Create a cohort, add five session dates and links, then assign participants from the master directory.</p></div>
+        <div class="panel"><div class="panel-head"><div><h2>Create cohort</h2><p>Only the name is required. Session details may be added later.</p></div></div>
+          <div class="grid3"><div class="field"><label>Cohort name</label><input id="cohortName" placeholder="Cohort 1 · Friday 11:30 AM"></div><div class="field"><label>Description</label><input id="cohortDescription" placeholder="HBS OPM alumni · India"></div><div class="field"><label>Current session</label><select id="cohortCurrent"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div></div>
+          <div class="grid5" style="margin-top:12px" id="sessionEditors"></div>
+          <div class="form-actions"><button class="btn accent" id="createCohort">Create cohort</button><span class="form-status" id="cohortFormStatus"></span></div>
+        </div>
+        <div class="cards" id="cohortCards" style="margin-top:18px"></div>
+      </section>
+
+      <section class="studio-page" data-page-view="materials" hidden>
+        <div class="page-head"><div><small>Cases, manual, slides, recordings and reading</small><h1>Course materials</h1></div><p>Publish to everyone, selected cohorts or selected participants. Participants see each item in the correct session and permanent library.</p></div>
+        <div class="panel"><div class="panel-head"><div><h2>Add material</h2><p>Version 1 stores a link to the file or video. Files already on the website, Drive, YouTube or another secure host can be used.</p></div></div>
+          <div class="grid3"><div class="field"><label>Title</label><input id="materialTitle" placeholder="Meridian Decision Brief"></div><div class="field"><label>Type</label><select id="materialType"><option value="case">Case study</option><option value="manual">Course manual</option><option value="presentation">Presentation</option><option value="recording">Session recording</option><option value="reading">Recommended reading</option><option value="template">Template</option><option value="resource">Additional resource</option></select></div><div class="field"><label>Session</label><select id="materialSession"><option value="0">Library / all course</option><option value="1">Session 1</option><option value="2">Session 2</option><option value="3">Session 3</option><option value="4">Session 4</option><option value="5">Session 5</option></select></div></div>
+          <div class="grid3" style="margin-top:12px"><div class="field"><label>When it appears</label><select id="materialPhase"><option value="before">Before the session</option><option value="during">During the session</option><option value="after">After the session</option><option value="library">Library only</option></select></div><div class="field"><label>Audience</label><select id="materialAudience"><option value="all">Everyone</option><option value="cohorts">Selected cohort</option></select></div><div class="field"><label>Cohort</label><select id="materialCohort"></select></div></div>
+          <div class="grid2" style="margin-top:12px"><div class="field"><label>File or video link</label><input id="materialUrl" placeholder="https://..."></div><div class="field"><label>Visibility</label><select id="materialStatus"><option value="draft">Draft</option><option value="published">Publish now</option><option value="scheduled">Schedule</option><option value="hidden">Hidden</option></select></div></div>
+          <div class="grid2" style="margin-top:12px"><div class="field"><label>Description</label><textarea id="materialDescription" placeholder="What this item is and why the participant should open it."></textarea></div><div class="field"><label>Publish date and time (only for scheduled)</label><input id="materialPublishAt" type="datetime-local"></div></div>
+          <div class="form-actions"><button class="btn accent" id="publishMaterial">Save material</button><span class="form-status" id="materialFormStatus"></span></div>
+        </div>
+        <div class="cards" id="materialCards" style="margin-top:18px"></div>
+      </section>
+
+      <section class="studio-page" data-page-view="assignments" hidden>
+        <div class="page-head"><div><small>Simple participant work</small><h1>Assignments</h1></div><p>Publish an assignment, then review drafts and submissions. No grades or complex workflow.</p></div>
+        <div class="panel"><div class="panel-head"><div><h2>Create assignment</h2><p>Participants can type a response and add an optional file or Drive link.</p></div></div>
+          <div class="grid3"><div class="field"><label>Title</label><input id="assignmentTitle" placeholder="My AI-Assisted Operating Rhythm"></div><div class="field"><label>Session</label><select id="assignmentSession"><option value="1">Session 1</option><option value="2">Session 2</option><option value="3">Session 3</option><option value="4">Session 4</option><option value="5">Session 5</option></select></div><div class="field"><label>Cohort</label><select id="assignmentCohort"></select></div></div>
+          <div class="grid2" style="margin-top:12px"><div class="field"><label>Instructions</label><textarea id="assignmentInstructions"></textarea></div><div><div class="field"><label>Due date</label><input id="assignmentDueAt" type="datetime-local"></div><div class="field" style="margin-top:12px"><label>Visibility</label><select id="assignmentStatus"><option value="draft">Draft</option><option value="published">Publish now</option><option value="scheduled">Schedule</option></select></div></div></div>
+          <div class="form-actions"><button class="btn accent" id="createAssignment">Save assignment</button><span class="form-status" id="assignmentFormStatus"></span></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h2>Published assignments</h2></div></div><div class="cards" id="assignmentCards"></div></div>
+        <div class="panel"><div class="panel-head"><div><h2>Participant submissions</h2><p>Open the participant’s response and leave one short private comment.</p></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>Participant</th><th>Assignment</th><th>Status</th><th>Submitted</th><th>Response</th></tr></thead><tbody id="submissionRows"></tbody></table></div></div>
+      </section>
+
+      <section class="studio-page" data-page-view="announcements" hidden>
+        <div class="page-head"><div><small>Publish and notify</small><h1>Announcements</h1></div><p>Post to a cohort or everyone. The item appears inside each participant’s workspace with a direct link.</p></div>
+        <div class="panel"><div class="panel-head"><div><h2>New announcement</h2><p>Email and direct WhatsApp delivery are not yet connected; Version 1 publishes inside the workspace and prepares the message text.</p></div></div>
+          <div class="grid3"><div class="field"><label>Title</label><input id="announcementTitle" placeholder="Session 1 case is now available"></div><div class="field"><label>Audience</label><select id="announcementAudience"><option value="all">Everyone</option><option value="cohorts">Selected cohort</option></select></div><div class="field"><label>Cohort</label><select id="announcementCohort"></select></div></div>
+          <div class="grid2" style="margin-top:12px"><div class="field"><label>Message</label><textarea id="announcementMessage"></textarea></div><div><div class="field"><label>Optional direct link</label><input id="announcementLink" placeholder="https://..."></div><div class="field" style="margin-top:12px"><label>Visibility</label><select id="announcementStatus"><option value="published">Publish now</option><option value="draft">Draft</option><option value="scheduled">Schedule</option></select></div><div class="field" style="margin-top:12px"><label>Publish date and time</label><input id="announcementPublishAt" type="datetime-local"></div></div></div>
+          <div class="form-actions"><button class="btn accent" id="publishAnnouncement">Publish announcement</button><button class="btn ghost" id="copyWhatsApp">Copy WhatsApp message</button><span class="form-status" id="announcementFormStatus"></span></div>
+        </div>
+        <div class="cards" id="announcementCards" style="margin-top:18px"></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="/studio/ai-leadership-workspace.js"></script>
+</body>
+</html>
