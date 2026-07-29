@@ -51,13 +51,25 @@ WHAT TO ASK FOR (in order, naturally, one at a time):
 
 THEN DRAFT.
 
+NEVER (these are absolute):
+- Never repeat a question you have already asked. If an answer is vague, ask a DIFFERENT, sharper question.
+- Never present Vinay as available for hire, and never ask a visitor whether they want to "hire Vinay". He is not for hire in any form: not as an employee, contractor, consultant, freelancer, advisor-for-fee or speaker-for-fee. Do not offer to check, negotiate, or pass on such an approach.
+- Never quote or discuss fees, rates, availability or a calendar. You do not have them.
+- Never commit Vinay to anything — no meetings, calls, replies, timelines or introductions. You relay a message; that is all.
+- Never speak as Vinay or claim to know his opinion on something he has not published.
+
+RECRUITING AND HIRING — route it, do not negotiate it:
+- Wants help hiring / recruiting / sourcing candidates → "That's what GoodSpace AI does — goodspace.ai." Do not ask which kind of hiring first.
+- Wants to recruit Vinay, or offer him a role, seat or engagement → "He's full-time on his own work." Then stop that thread.
+- Is a vendor, agency or candidate wanting to be hired BY Vinay or GoodSpace → "Careers and vendor approaches go through GoodSpace AI directly — goodspace.ai."
+- If, and only if, the message is genuinely unreadable between these, ask one plain question: "Are you hiring for your own company, or approaching Vinay about a role?" Never phrase it as an offer.
+
 REDIRECTS (decline briefly, no lecture):
 - Sales pitches → "Vinay doesn't take sales conversations through me."
 - "Pick your brain" with no specific question → "What's the specific question?"
-- Recruiters trying to hire him → "He's full-time on his own work."
-- Companies wanting to be hired BY Vinay → "Try GoodSpace AI directly — goodspace.ai."
 - Questions his books cover → name the book, suggest reading it first.
 - Vague "love to connect" → "What would you actually like to talk about?"
+- Asks to call or meet → "I can pass a message, not book time. What is it about?"
 
 DRAFT FORMAT — when you have name, email, and a clear reason, end your turn with:
 
@@ -228,6 +240,61 @@ Before the JSON, ONE line: "Here's what I'll send to Vinay. Edit anything that i
     await assistantTurn(false);
   }
 
+  // -----------------------------------------------------------
+  // Guardrails
+  // -----------------------------------------------------------
+  // A system prompt is an instruction, not a guarantee — the model has already
+  // been seen repeating its opening question verbatim and asking a visitor
+  // whether they wanted to "hire Vinay". These checks run on every reply and
+  // do not depend on the model choosing to comply.
+
+  // Offers Vinay himself up for hire, or invents terms only he can give.
+  const FORBIDDEN_REPLY = [
+    /\bhire\s+(?:vinay|him)\b/i,
+    /\bvinay(?:'s|s)?\s+(?:rate|fee|price|availability|calendar)\b/i,
+    /\b(?:i|we)\s+(?:can|will)\s+(?:book|schedule|arrange|set\s+up)\s+(?:a\s+)?(?:call|meeting|time)\b/i,
+  ];
+  const HIRING_HELP = /\b(?:recruit|recruiting|recruitment|hiring|hire|candidates?|sourcing|talent)\b/i;
+
+  function normalise(text) {
+    return String(text || '').toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  // The question a turn ends on, which is the part that must not repeat. The
+  // model re-asks the same thing inside different surrounding words, so
+  // comparing whole messages is not enough.
+  function trailingQuestion(text) {
+    const asked = String(text || '').match(/[^.!?]*\?/g);
+    return asked && asked.length ? normalise(asked[asked.length - 1]) : '';
+  }
+
+  // Did the model just ask something it has already asked?
+  function repeatsEarlierTurn(text) {
+    const now = normalise(text);
+    const nowAsk = trailingQuestion(text);
+    if (!now) return false;
+    return state.messages.some((m) => {
+      if (m.role !== 'assistant') return false;
+      if (normalise(m.content) === now) return true;
+      const earlierAsk = trailingQuestion(m.content);
+      return !!nowAsk && earlierAsk === nowAsk;
+    });
+  }
+
+  // Returns a safe replacement when a reply breaks a rule, or null when it is
+  // fine. Kept deliberately blunt: a short, on-voice line beats a bad turn.
+  function guardReply(text, lastUserMessage) {
+    if (FORBIDDEN_REPLY.some((re) => re.test(text))) {
+      return HIRING_HELP.test(String(lastUserMessage || ''))
+        ? "That's what GoodSpace AI does — goodspace.ai. If it's something else you want to reach Vinay about, tell me what."
+        : "I can pass a message to Vinay, not arrange his time. What is it about?";
+    }
+    if (repeatsEarlierTurn(text)) {
+      return 'Say a little more — what specifically do you want Vinay to know or decide?';
+    }
+    return null;
+  }
+
   async function assistantTurn(isOpening) {
     elSendBtn.disabled = true;
     showThinking();
@@ -260,7 +327,28 @@ Before the JSON, ONE line: "Here's what I'll send to Vinay. Edit anything that i
       const { visible, draft } = parseDraft(reply);
 
       if (visible) {
-        state.messages.push({ role: 'assistant', content: visible });
+        // A drafted email is the visitor's own words, so only the conversational
+        // turn is guarded. One retry first — a regenerated turn is better than a
+        // canned one — then the fixed replacement if it offends again.
+        const lastUser = [...state.messages].reverse().find((m) => m.role === 'user');
+        let safe = visible;
+        let replacement = isOpening ? null : guardReply(safe, lastUser && lastUser.content);
+        if (replacement && !draft) {
+          const retry = await window.claude.complete({
+            system: SYSTEM_PROMPT,
+            messages: messages.concat([{
+              role: 'user',
+              content: '(Your previous reply broke a rule: it either repeated a question you had already asked, or treated Vinay as available for hire, for a fee, or for a booked call. Answer again in one or two sentences. Ask something you have not asked. Do not present Vinay as available.)',
+            }]),
+          }).catch(() => '');
+          const retryVisible = parseDraft(retry || '').visible;
+          if (retryVisible && !guardReply(retryVisible, lastUser && lastUser.content)) {
+            safe = retryVisible;
+            replacement = null;
+          }
+        }
+        if (replacement) safe = replacement;
+        state.messages.push({ role: 'assistant', content: safe });
         renderThread();
       }
 
