@@ -90,6 +90,14 @@
   <main class="course-shell" id="app">
     <p style="font-family:var(--mono);color:var(--ink-3)">Loading your course workspace…</p>
   </main>
+  <script>
+    (function () {
+      var path = location.pathname.replace(/\/+$/, '');
+      if (path === '/ai-business-leaders/course' || path === '/ai-business-leaders/course.html') {
+        location.replace('/ai-business-leaders/login');
+      }
+    })();
+  </script>
   <script src="/ai-business-leaders/course.js"></script>
 </body>
 </html>
