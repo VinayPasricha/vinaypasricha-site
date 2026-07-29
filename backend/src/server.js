@@ -6,6 +6,7 @@ import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
 import { registerAuthRoutes } from './abl/authRoutes.js';
 import { registerRuntimeRoutes } from './abl/runtimeRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
+import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
@@ -28,6 +29,21 @@ if (stack) {
   });
   if (firstParticipantApi < 0) firstParticipantApi = 0;
   stack.splice(firstParticipantApi, 0, ...guardLayers);
+
+  // The original HTML shells predate passwordless sign-in. Serve equivalent
+  // shells with auth-client.js inserted before their existing JavaScript, and
+  // place them before the original dynamic routes so they win the match.
+  const pageStart = stack.length;
+  registerSecureParticipantPages(app);
+  const securePageLayers = stack.splice(pageStart);
+  let firstParticipantPage = stack.findIndex((layer) => {
+    const routePath = layer.route && layer.route.path;
+    return routePath === '/ai-business-leaders/s/:slug' || routePath === '/ai-business-leaders/course/:slug';
+  });
+  if (firstParticipantPage < 0) firstParticipantPage = 0;
+  stack.splice(firstParticipantPage, 0, ...securePageLayers);
+} else {
+  registerSecureParticipantPages(app);
 }
 
 // createApp installs the site's static handler and JSON API 404 before returning.
