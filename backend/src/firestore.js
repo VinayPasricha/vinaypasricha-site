@@ -22,13 +22,11 @@ if (!/^[A-Za-z0-9_-]*$/.test(collectionPrefix)) {
 }
 const collectionName = (name) => `${collectionPrefix}${name}`;
 
-// Collection names — the two "folders" the whole site writes to.
+// Collection names used by the site and the AI for Business Leaders workspace.
 export const COLLECTIONS = {
-  conversations: collectionName('conversations'),   // every AI chat + its result, tagged by runtime
-  leads: collectionName('leads'),                   // emails / contacts captured anywhere on the site
-  companyProfiles: collectionName('companyProfiles'), // published Organizational Frequency pages, keyed by slug
-  // AI for Business Leaders (ABL) — its own set of collections, kept separate
-  // from the site's general chat data.
+  conversations: collectionName('conversations'),
+  leads: collectionName('leads'),
+  companyProfiles: collectionName('companyProfiles'),
   ablParticipants: collectionName('abl_participants'),
   ablResearch: collectionName('abl_research'),
   ablSessions: collectionName('abl_sessions'),
@@ -36,4 +34,9 @@ export const COLLECTIONS = {
   ablOutputs: collectionName('abl_outputs'),
   ablQa: collectionName('abl_qa'),
   ablBuilders: collectionName('abl_builders'),
+  ablCohorts: collectionName('abl_cohorts'),
+  ablMaterials: collectionName('abl_materials'),
+  ablAssignments: collectionName('abl_assignments'),
+  ablSubmissions: collectionName('abl_submissions'),
+  ablAnnouncements: collectionName('abl_announcements'),
 };
