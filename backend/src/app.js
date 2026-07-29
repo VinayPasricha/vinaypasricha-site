@@ -132,10 +132,14 @@ export function createApp() {
   // (whose forwarded host is already vinaypasricha.com).
   const CANONICAL_HOST = 'vinaypasricha.com';
   const ALT_HOST = /(\.run\.app|\.web\.app|\.firebaseapp\.com)$/;
+  // Keep branch-deployed staging services reachable on their own hostname so
+  // reviewers are not redirected to production. Cloud Run exposes the service
+  // name through K_SERVICE.
+  const IS_STAGING_SERVICE = /(^|-)staging($|-)/i.test(process.env.K_SERVICE || '');
   app.use((req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next();
     const eff = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
-    if (eff && eff !== CANONICAL_HOST && (ALT_HOST.test(eff) || eff === 'www.' + CANONICAL_HOST)) {
+    if (!IS_STAGING_SERVICE && eff && eff !== CANONICAL_HOST && (ALT_HOST.test(eff) || eff === 'www.' + CANONICAL_HOST)) {
       return res.redirect(301, 'https://' + CANONICAL_HOST + req.originalUrl);
     }
     next();
