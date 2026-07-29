@@ -165,6 +165,20 @@ export async function upsertResearch(participantId, input) {
 }
 
 // ---- sessions & messages ---------------------------------------------------
+export async function getSession(participantId, mode) {
+  const snap = await col(COLLECTIONS.ablSessions)
+    .where('participant_id', '==', participantId).where('mode', '==', mode).get();
+  if (snap.empty) return null;
+  const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  docs.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  return docs[0];
+}
+export async function listSessions(participantId) {
+  const snap = await col(COLLECTIONS.ablSessions).where('participant_id', '==', participantId).get();
+  const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  rows.sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+  return rows;
+}
 export async function getOrCreateSession(participantId, mode) {
   const snap = await col(COLLECTIONS.ablSessions)
     .where('participant_id', '==', participantId).where('mode', '==', mode).get();
@@ -192,6 +206,17 @@ export async function listMessages(sessionId) {
   const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   rows.sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
   return rows;
+}
+// Restarting a runtime clears its transcript; batched so a long conversation
+// cannot exceed Firestore's per-batch write limit.
+export async function deleteMessages(ids) {
+  const cleanIds = Array.from(new Set((ids || []).filter(Boolean)));
+  for (let offset = 0; offset < cleanIds.length; offset += 450) {
+    const batch = db.batch();
+    cleanIds.slice(offset, offset + 450).forEach((id) => batch.delete(col(COLLECTIONS.ablMessages).doc(id)));
+    await batch.commit();
+  }
+  return { deleted: cleanIds.length };
 }
 export async function addMessage(m) {
   const id = uuid();
@@ -221,6 +246,33 @@ export async function getLatestOutput(participantId, type) {
 export async function getOutput(id) {
   return docData(await col(COLLECTIONS.ablOutputs).doc(id).get());
 }
+
+// ---- shared Course Memory --------------------------------------------------
+// One document per participant, carried across every course runtime so the SIV
+// and VED conversations never re-ask what another one already established.
+export async function getMemory(participantId) {
+  return docData(await col(COLLECTIONS.ablMemory).doc(participantId).get());
+}
+export async function upsertMemory(participantId, input) {
+  const current = await getMemory(participantId);
+  const fields = { ...((current && current.fields) || {}), ...((input && input.fields) || {}) };
+  const row = {
+    participant_id: participantId,
+    fields,
+    participant_note: input && Object.prototype.hasOwnProperty.call(input, 'participant_note')
+      ? String(input.participant_note || '').slice(0, 6000)
+      : ((current && current.participant_note) || ''),
+    updated_at: nowISO(),
+  };
+  await col(COLLECTIONS.ablMemory).doc(participantId).set(row, { merge: true });
+  return { id: participantId, ...row };
+}
+
+// Meeting notes and uploaded assets are not part of this branch's workspace.
+// The runtime engine reads them when they exist, so answer with an empty list
+// rather than making every caller guard for a missing collection.
+export async function listNotes() { return []; }
+export async function listAssets() { return []; }
 export async function saveOutput(o) {
   const existing = await getLatestOutput(o.participant_id, o.output_type);
   if (existing) {

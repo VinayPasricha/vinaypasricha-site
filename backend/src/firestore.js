@@ -33,6 +33,9 @@ export const COLLECTIONS = {
   ablMessages: collectionName('abl_messages'),
   ablOutputs: collectionName('abl_outputs'),
   ablQa: collectionName('abl_qa'),
+  // Shared Course Memory: what each participant has established, reused by
+  // every course runtime so none of them re-asks a settled question.
+  ablMemory: collectionName('abl_memory'),
   ablBuilders: collectionName('abl_builders'),
   ablCohorts: collectionName('abl_cohorts'),
   ablMaterials: collectionName('abl_materials'),

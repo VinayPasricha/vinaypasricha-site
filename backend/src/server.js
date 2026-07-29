@@ -4,6 +4,7 @@ import { config } from './config.js';
 import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
 import { registerAuthRoutes } from './abl/authRoutes.js';
+import { registerRuntimeRoutes } from './abl/runtimeRoutes.js';
 
 const app = createApp();
 
@@ -15,6 +16,7 @@ const stack = app._router && app._router.stack;
 const before = stack ? stack.length : 0;
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
+registerRuntimeRoutes(app, { rateLimit });
 if (stack) {
   const added = stack.splice(before);
   let insertAt = stack.findIndex((layer) => !layer.route && String(layer.regexp || '').includes('^\\/api\\/?(?=\\/|$)'));
