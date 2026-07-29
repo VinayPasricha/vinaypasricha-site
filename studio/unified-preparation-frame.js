@@ -1,10 +1,12 @@
-/* Hide the legacy preparation chrome when it is embedded in the unified Studio. */
+/* Keep the preparation room inside the unified Studio and remove duplicate chrome. */
 (function () {
   'use strict';
   function attach() {
     var frame = document.querySelector('.preparation-frame');
     if (!frame || frame.dataset.embedWired === 'true') return;
     frame.dataset.embedWired = 'true';
+    var target = '/studio/ai-business-leaders-preparation?embedded=1';
+    if (frame.getAttribute('src') !== target) frame.setAttribute('src', target);
     frame.addEventListener('load', function () {
       try {
         var doc = frame.contentDocument;
