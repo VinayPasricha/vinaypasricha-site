@@ -27,5 +27,40 @@
     localStorage.removeItem(KEY);
   }
 
+  function isProtectedCourseRequest(input) {
+    try {
+      var raw = typeof input === 'string' ? input : (input && input.url) || '';
+      var url = new URL(raw, location.origin);
+      if (url.origin !== location.origin) return false;
+      var path = url.pathname;
+      if (path.indexOf('/api/abl/auth/') === 0) return false;
+      if (path.indexOf('/api/abl/workspace/admin/') === 0) return false;
+      return /^\/api\/abl\/(session|course|workspace)\//.test(path);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Older course pages use their own fetch helpers. Wrapping same-origin private
+  // course requests here means every one of them now carries the verified token
+  // without duplicating security code in each page.
+  var nativeFetch = window.fetch.bind(window);
+  window.fetch = function (input, init) {
+    var options = Object.assign({}, init || {});
+    var protectedRequest = isProtectedCourseRequest(input);
+    if (protectedRequest) {
+      var h = new Headers(options.headers || {});
+      if (token()) h.set('Authorization', 'Bearer ' + token());
+      options.headers = h;
+    }
+    return nativeFetch(input, options).then(function (response) {
+      if (protectedRequest && response.status === 401) {
+        clear();
+        setTimeout(login, 0);
+      }
+      return response;
+    });
+  };
+
   window.AblAuth = { key: KEY, read: read, token: token, headers: headers, login: login, clear: clear };
 }());
