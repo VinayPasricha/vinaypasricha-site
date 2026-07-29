@@ -1,6 +1,6 @@
 {
   "release": "signal-spacetime-homepage-redesign",
-  "source_commit": "b39555c2bab3a787e5baa13270b4a719f7fd4bef",
-  "deployment_requested_at": "2026-07-29T13:20:00Z",
-  "verification": "full-homepage-with-harvard-opm-banner"
+  "source_commit": "9e474935db67d73fc5e2b5f7849501052af3a2c0",
+  "deployment_requested_at": "2026-07-29T07:18:57Z",
+  "verification": "full-homepage-with-harvard-opm-banner-and-isolated-preview"
 }
