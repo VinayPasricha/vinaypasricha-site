@@ -42,14 +42,28 @@ const FIVE_OPTION_FALLBACKS = [
   'Something else — let me explain.',
 ];
 
+// An option is a one-click answer, so anything the participant would still have
+// to fill in makes it unusable — "[my main responsibility]" cannot be clicked.
+// The same goes for an option written as an instruction back to them.
+const UNUSABLE_OPTION = /\b(?:X|Y|TBD)\b|_{2,}|\[[^\]]*\]|\([^)]*\b(?:your|my|insert|specify|name of)\b[^)]*\)|<[^>]*>|insert detail/i;
+const INSTRUCTION_OPTION = /^(?:tell me|describe|walk me|choose|select|please describe)\b/i;
+
+// Applied to every runtime, whatever its option count. This filter used to run
+// only on the five-option conversations, so the course-preparation agent — the
+// one with three options — shipped bracketed placeholders straight to the page.
+export function usableOptions(options) {
+  return Array.isArray(options)
+    ? options.filter((item) => typeof item === 'string' && item.trim())
+      .filter((item) => !UNUSABLE_OPTION.test(item))
+      .filter((item) => !INSTRUCTION_OPTION.test(item.trim()))
+    : [];
+}
+
 function fillFiveOptions(options) {
   const custom = FIVE_OPTION_FALLBACKS[FIVE_OPTION_FALLBACKS.length - 1];
-  const out = Array.isArray(options)
-    ? options.filter((item) => item.toLowerCase() !== custom.toLowerCase())
-      .filter((item) => !/\b(?:X|Y|TBD)\b|_{2,}|\[[^\]]+\]|<[^>]+>|insert detail/i.test(item))
-      .filter((item) => !/^(?:tell me|describe|walk me|choose|select|please describe)\b/i.test(item.trim()))
-      .slice(0, 4)
-    : [];
+  const out = usableOptions(options)
+    .filter((item) => item.toLowerCase() !== custom.toLowerCase())
+    .slice(0, 4);
   for (const fallback of FIVE_OPTION_FALLBACKS.slice(0, 4)) {
     if (out.length >= 4) break;
     if (!out.some((item) => item.toLowerCase() === fallback.toLowerCase())) out.push(fallback);
@@ -64,9 +78,10 @@ async function converse(system, messages, { optionCount = 3 } = {}) {
   const parse = (raw) => {
     const j = extractJson(raw) || {};
     const say = (typeof j.say === 'string' ? j.say : '').trim();
-    const options = Array.isArray(j.options)
-      ? j.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()).slice(0, optionCount)
-      : [];
+    // Drop unusable options here, before the count is checked, so a turn whose
+    // options were placeholders is regenerated rather than shipped short.
+    const options = usableOptions(Array.isArray(j.options) ? j.options.map((o) => String(o || '').trim()) : [])
+      .slice(0, optionCount);
     const selectionMode = j.selection_mode === 'multi' ? 'multi' : 'single';
     return { say, options, stage: typeof j.stage === 'string' ? j.stage : '',
       memory: sanitiseMemoryFields(j.memory), selectionMode, raw };
@@ -89,7 +104,7 @@ async function converse(system, messages, { optionCount = 3 } = {}) {
     const optionShape = Array(optionCount).fill('...').map((item) => `"${item}"`).join(',');
     const nudge = messages.concat([{
       role: 'user',
-      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}],"stage":"current milestone id","memory":{},"selection_mode":"single"} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit. Each option must be the participant's answer, never an instruction such as "Tell me", "Describe" or "Walk me through". Preserve the correct stage, newly confirmed memory and selection mode from your intended answer.`,
+      content: `Reply again as STRICT JSON only — {"say":"...","options":[${optionShape}],"stage":"current milestone id","memory":{},"selection_mode":"single"} — with no prose outside the JSON and no code fences. Keep the same message in "say". "options" MUST contain exactly ${optionCount} distinct, concise, first-person answers this participant might select and edit. Each option must be the participant's answer, never an instruction such as "Tell me", "Describe" or "Walk me through", and must be complete as written — no brackets such as [my role], no X, Y, TBD, blanks or "insert detail" for them to fill in. Preserve the correct stage, newly confirmed memory and selection mode from your intended answer.`,
     }]);
     const retry = parse(await call(nudge));
     if (retry.options.length > out.options.length || (!out.say && retry.say)) {
