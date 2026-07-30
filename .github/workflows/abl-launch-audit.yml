@@ -1,0 +1,26 @@
+name: AI Course Launch Audit
+
+on:
+  push:
+    branches:
+      - agent/ai-course-staging
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  launch-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out staging branch
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check five-session course structure
+        run: npm run test:abl-course
+      - name: Check launch-critical participant and Studio paths
+        run: npm run test:abl-launch
