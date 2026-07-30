@@ -44,12 +44,15 @@ includes(login, 'six-digit sign-in code', 'participant login clearly uses OTP');
 includes(server, "layer.name === 'serveStatic'", 'participant routes are inserted ahead of express.static');
 includes(server, 'extensionless paths such as /ai-business-leaders/login', 'route-order rationale is documented');
 
-// Studio must fail closed when secrets are missing.
+// Studio must fail closed and anonymous Studio UI must be redirected safely.
 excludes(workspace, "|| 'vik123'", 'new Studio API has no built-in fallback passphrase');
 includes(workspace, "if (!passphrase) return ''", 'missing workspace Studio passphrase fails closed');
 includes(workspace, 'cookieAllowed || tokenAllowed', 'workspace Studio accepts only configured credentials');
 includes(server, 'studio_not_configured', 'central Studio is blocked when its passphrase is absent');
 includes(server, "!String(process.env.STUDIO_PASSPHRASE || '').trim()", 'Cloud Run requires an explicit Studio passphrase');
+includes(server, 'function explicitStudioHash()', 'server has an explicit Studio cookie hash');
+includes(server, "res.setHeader('Location', '/studio/login')", 'anonymous Studio UI uses an explicit safe redirect');
+includes(server, "layer.name === 'expressInit'", 'Studio UI guard runs after Express initialisation');
 
 // Participant chrome must never render or reintroduce the private Studio control.
 includes(focusedRoute, 'hidden aria-hidden="true" tabindex="-1"', 'Studio control is removed before participant HTML is sent');
