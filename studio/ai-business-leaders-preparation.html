@@ -18,6 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="/studio/abl-intelligence.css">
   <style>
     .abl-wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
     .abl-sec { margin: 26px 0; }
@@ -79,21 +80,19 @@
     #login input { width: 100%; margin: 10px 0; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 4px; font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
-  </style>
+  </style>
 </head>
 <body class="studio-body">
   <header class="studio-topbar">
     <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— AI for Business Leaders preparation</span></div>
     <div class="st-right"><a class="st-link" href="ai-leadership-workspace.html">← Unified Studio</a></div>
   </header>
-
   <div id="login" style="display:none">
     <h2 style="font-family:var(--serif);font-size:22px">Studio access</h2>
     <input class="ipt" type="password" id="pw" placeholder="Passphrase">
     <button class="btn" id="loginBtn">Enter →</button>
     <p id="loginErr" class="muted" style="display:none;margin-top:8px">That wasn't it.</p>
   </div>
-
   <main class="abl-wrap" id="main" style="display:none">
     <div class="abl-sec">
       <h2>New participant</h2>
@@ -113,20 +112,18 @@
       <label class="fld" style="margin-top:12px"><input type="checkbox" id="n-auto" checked style="accent-color:var(--accent)"> Auto-research the company on create (web-grounded)</label>
       <button class="btn accent" id="createBtn" style="margin-top:10px">+ Create participant</button>
     </div>
-
-    <div class="abl-sec">
+    <div class="abl-sec" id="listView">
       <h2>Participants <span id="pcount" class="sub" style="font-family:var(--mono);color:var(--ink-3)"></span></h2>
       <div class="stats" id="stats"></div>
       <table class="tbl"><thead><tr>
         <th>#</th><th>Name</th><th>Company</th><th>Status</th><th>Date</th><th>Link</th><th>Msgs</th><th>Brief</th><th></th>
       </tr></thead><tbody id="rows"></tbody></table>
     </div>
-
     <div id="detail"></div>
   </main>
-
   <div class="toast" id="toast"></div>
   <script src="ai-business-leaders.js"></script>
+  <script src="/studio/participant-intelligence.js"></script>
   <script src="preparation-embed.js"></script>
 </body>
 </html>
