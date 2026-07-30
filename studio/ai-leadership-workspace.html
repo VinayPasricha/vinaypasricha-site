@@ -69,7 +69,7 @@
       </section>
 
       <section class="studio-page" data-page-view="materials" hidden>
-        <div class="page-head"><div><small>Cases, manual, slides, recordings and reading</small><h1>Course materials</h1></div><p>Publish to everyone, selected cohorts or selected participants. Participants see each item in the correct session and permanent library.</p></div>
+        <div class="page-head"><div><small>Cases, manual, slides, recordings and reading</small><h1>Course materials</h1></div><p>Publish to everyone, selected cohorts or selected participants. Published material is archived rather than permanently erased.</p></div>
         <div class="panel"><div class="panel-head"><div><h2>Add material</h2><p>Version 1 stores a link to the file or video. Files already on the website, Drive, YouTube or another secure host can be used.</p></div></div>
           <div class="grid3"><div class="field"><label>Title</label><input id="materialTitle" placeholder="Meridian Decision Brief"></div><div class="field"><label>Type</label><select id="materialType"><option value="case">Case study</option><option value="manual">Course manual</option><option value="presentation">Presentation</option><option value="recording">Session recording</option><option value="reading">Recommended reading</option><option value="template">Template</option><option value="resource">Additional resource</option></select></div><div class="field"><label>Session</label><select id="materialSession"><option value="0">Library / all course</option><option value="1">Session 1</option><option value="2">Session 2</option><option value="3">Session 3</option><option value="4">Session 4</option><option value="5">Session 5</option></select></div></div>
           <div class="grid3" style="margin-top:12px"><div class="field"><label>When it appears</label><select id="materialPhase"><option value="before">Before the session</option><option value="during">During the session</option><option value="after">After the session</option><option value="library">Library only</option></select></div><div class="field"><label>Audience</label><select id="materialAudience"><option value="all">Everyone</option><option value="cohorts">Selected cohort</option></select></div><div class="field"><label>Cohort</label><select id="materialCohort"></select></div></div>
@@ -81,13 +81,13 @@
       </section>
 
       <section class="studio-page" data-page-view="assignments" hidden>
-        <div class="page-head"><div><small>Simple participant work</small><h1>Assignments</h1></div><p>Publish an assignment, then review drafts and submissions. No grades or complex workflow.</p></div>
+        <div class="page-head"><div><small>Simple participant work</small><h1>Assignments</h1></div><p>Published assignments and anything containing participant work are archived, never permanently deleted.</p></div>
         <div class="panel"><div class="panel-head"><div><h2>Create assignment</h2><p>Participants can type a response and add an optional file or Drive link.</p></div></div>
           <div class="grid3"><div class="field"><label>Title</label><input id="assignmentTitle" placeholder="My AI-Assisted Operating Rhythm"></div><div class="field"><label>Session</label><select id="assignmentSession"><option value="1">Session 1</option><option value="2">Session 2</option><option value="3">Session 3</option><option value="4">Session 4</option><option value="5">Session 5</option></select></div><div class="field"><label>Cohort</label><select id="assignmentCohort"></select></div></div>
           <div class="grid2" style="margin-top:12px"><div class="field"><label>Instructions</label><textarea id="assignmentInstructions"></textarea></div><div><div class="field"><label>Due date</label><input id="assignmentDueAt" type="datetime-local"></div><div class="field" style="margin-top:12px"><label>Visibility</label><select id="assignmentStatus"><option value="draft">Draft</option><option value="published">Publish now</option><option value="scheduled">Schedule</option></select></div></div></div>
           <div class="form-actions"><button class="btn accent" id="createAssignment">Save assignment</button><span class="form-status" id="assignmentFormStatus"></span></div>
         </div>
-        <div class="panel"><div class="panel-head"><div><h2>Published assignments</h2></div></div><div class="cards" id="assignmentCards"></div></div>
+        <div class="panel"><div class="panel-head"><div><h2>Assignments and archive</h2></div></div><div class="cards" id="assignmentCards"></div></div>
         <div class="panel"><div class="panel-head"><div><h2>Participant submissions</h2><p>Open the participant’s response and leave one short private comment.</p></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>Participant</th><th>Assignment</th><th>Status</th><th>Submitted</th><th>Response</th></tr></thead><tbody id="submissionRows"></tbody></table></div></div>
       </section>
 
@@ -104,6 +104,7 @@
   </div>
   <div class="toast" id="toast"></div>
   <script src="/studio/ai-leadership-workspace.js"></script>
+  <script src="/studio/safe-archive-controls.js"></script>
   <script src="/studio/unified-abl-studio.js"></script>
   <script src="/studio/unified-preparation-frame.js"></script>
 </body>
