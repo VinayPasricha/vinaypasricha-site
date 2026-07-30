@@ -13,12 +13,15 @@ const excludes = (source, text, label) => assert.ok(!source.includes(text), labe
   'ai-business-leaders/participant-only-nav.js',
   'ai-business-leaders/participant-inner-nav.js',
   'ai-business-leaders/workspace-home-focus.js',
+  'ai-business-leaders/assignment-upload-ui.js',
+  'ai-business-leaders/assignment-upload.css',
   'backend/src/abl/authRoutes.js',
   'backend/src/abl/participantGuard.js',
   'backend/src/abl/securePageRoutes.js',
   'backend/src/abl/focusedWorkspaceRoute.js',
   'backend/src/abl/workspaceRoutes.js',
   'backend/src/abl/safeArchiveRoutes.js',
+  'backend/src/abl/assignmentUploadRoutes.js',
   'studio/safe-archive-controls.js',
 ].forEach(mustExist);
 
@@ -27,6 +30,9 @@ const guard = read('backend/src/abl/participantGuard.js');
 const auth = read('backend/src/abl/authRoutes.js');
 const workspace = read('backend/src/abl/workspaceRoutes.js');
 const safeArchive = read('backend/src/abl/safeArchiveRoutes.js');
+const uploads = read('backend/src/abl/assignmentUploadRoutes.js');
+const uploadUi = read('ai-business-leaders/assignment-upload-ui.js');
+const backendPackage = read('backend/package.json');
 const studioShell = read('studio/ai-leadership-workspace.html');
 const archiveControls = read('studio/safe-archive-controls.js');
 const focusedRoute = read('backend/src/abl/focusedWorkspaceRoute.js');
@@ -102,14 +108,29 @@ includes(workspace, "return fail(res, 'Email already exists', 409)", 'participan
 includes(server, 'registerSafeArchiveRoutes(app)', 'safe archive routes are registered');
 assert.ok(server.indexOf('registerSafeArchiveRoutes(app)') < server.indexOf('registerWorkspaceRoutes(app)'), 'safe archive routes run before legacy DELETE handlers');
 includes(safeArchive, "status: 'hidden'", 'archived content is removed from active publishing without erasure');
-includes(safeArchive, "participant draft or submission exists", 'assignment work forces archival');
-includes(safeArchive, "participant entitlement exists", 'previously received content forces archival');
+includes(safeArchive, 'participant draft or submission exists', 'assignment work forces archival');
+includes(safeArchive, 'participant entitlement exists', 'previously received content forces archival');
 includes(safeArchive, 'deleted_draft: true', 'only unused drafts may be permanently deleted');
 includes(studioShell, '/studio/safe-archive-controls.js', 'Studio loads the safe archive controls');
 includes(archiveControls, 'Delete unused draft', 'Studio distinguishes draft deletion from archival');
 includes(archiveControls, 'Archived safely', 'Studio confirms safe archival to the operator');
 
+// Assignment files must be private, validated and available to both participant and Studio.
+includes(backendPackage, '@google-cloud/storage', 'backend installs private object storage support');
+includes(server, 'registerAssignmentUploadRoutes(app)', 'assignment upload routes are registered');
+assert.ok(server.indexOf('registerAssignmentUploadRoutes(app)') < server.indexOf('registerWorkspaceRoutes(app)'), 'assignment uploads run before legacy workspace handlers');
+includes(uploads, 'MAX_BYTES = 15 * 1024 * 1024', 'assignment file size is bounded');
+includes(uploads, 'signatureMatches', 'assignment upload verifies file signatures');
+includes(uploads, 'assignmentVisible', 'participant may upload only to an available assignment');
+includes(uploads, "Cache-Control', 'private, no-store", 'uploaded files are never publicly cached');
+includes(uploads, '/api/abl/workspace/admin/submissions/:id/file', 'Studio has an authenticated file retrieval route');
+includes(focusedRoute, 'assignment-upload.css', 'participant workspace loads assignment upload styling');
+includes(focusedRoute, 'assignment-upload-ui.js', 'participant workspace loads assignment upload controls');
+includes(uploadUi, 'No assignment is available yet.', 'blank assignment screen has a clear empty state');
+includes(uploadUi, 'Maximum 15 MB', 'participant sees the upload limit');
+includes(uploadUi, 'Save the draft or submit when ready.', 'participant sees the post-upload next step');
+
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, cohort-safe persistence, safe archiving, focused home and session wiring.');
+console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, cohort-safe persistence, safe archiving, private assignment uploads, focused home and session wiring.');
