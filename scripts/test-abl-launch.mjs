@@ -40,6 +40,10 @@ includes(auth, 'participantCanSignIn', 'Studio invite state gates OTP access');
 includes(auth, 'GENERIC_REQUEST_MESSAGE', 'OTP request does not disclose participant membership');
 includes(login, 'six-digit sign-in code', 'participant login clearly uses OTP');
 
+// Private participant routes must run before generic static serving.
+includes(server, "layer.name === 'serveStatic'", 'participant routes are inserted ahead of express.static');
+includes(server, 'extensionless paths such as /ai-business-leaders/login', 'route-order rationale is documented');
+
 // Studio must fail closed when secrets are missing.
 excludes(workspace, "|| 'vik123'", 'new Studio API has no built-in fallback passphrase');
 includes(workspace, "if (!passphrase) return ''", 'missing workspace Studio passphrase fails closed');
@@ -53,6 +57,12 @@ includes(focusedRoute, 'participant-only-nav.js', 'participant-only chrome is al
 excludes(participantChrome, '>Vinay Studio<', 'participant chrome contains no visible Studio label');
 excludes(participantChrome, 'id="studioMode"', 'participant chrome cannot recreate the Studio switch');
 includes(participantChrome, '← Workspace Home', 'every internal workspace screen gets a home return');
+
+// The actual workspace, not just a separate mock, must have a working mobile drawer.
+includes(participantChrome, 'workspaceMenuToggle', 'real participant workspace has a mobile menu button');
+includes(participantChrome, 'participant-menu-open', 'real participant workspace controls drawer state');
+includes(participantChrome, 'participantDrawerOverlay', 'real participant workspace has a tap-outside overlay');
+includes(participantChrome, "event.key === 'Escape'", 'mobile drawer supports Escape close');
 
 // External participant tools must also return home and carry auth.
 includes(securePages, 'auth-client.js', 'preparation and Builder pages receive authentication');
@@ -69,4 +79,4 @@ includes(workspace, 'session_date', 'current session date is exposed for adaptiv
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, privacy, navigation, Studio security, focused home and session wiring.');
+console.log('AI for Business Leaders launch audit passed: access, route ordering, privacy, mobile navigation, Studio security, focused home and session wiring.');
