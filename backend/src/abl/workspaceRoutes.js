@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { db, COLLECTIONS } from '../firestore.js';
 import * as ablRepo from './store.js';
 import { sendAnnouncementEmails, emailConfigured } from './announcementMail.js';
+import { decodePdfUpload, uploadMaterialPdf, streamMaterialFile, deleteMaterialFile } from '../services/materialStorage.js';
 
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const nowISO = () => new Date().toISOString();
@@ -90,6 +91,7 @@ function sanitiseMaterial(b) {
     type: cleanText(b.type || 'resource', 40), phase: cleanText(b.phase || 'before', 30),
     session_number: Math.max(0, Math.min(5, parseInt(b.session_number, 10) || 0)),
     source_url: cleanText(b.source_url, 3000), file_name: cleanText(b.file_name, 260),
+    file_key: cleanText(b.file_key, 200), // GCS object key for an uploaded PDF (never sent to participants)
     audience: ['all', 'cohorts', 'participants'].includes(b.audience) ? b.audience : 'all',
     cohort_ids: cleanArray(b.cohort_ids), participant_ids: cleanArray(b.participant_ids),
     status: ['draft', 'published', 'scheduled', 'hidden'].includes(b.status) ? b.status : 'draft',
@@ -156,7 +158,14 @@ export function registerWorkspaceRoutes(app) {
           last_activity_at: p.course_last_activity_at || p.last_activity_at || null,
         },
         cohort: participantCohort(cohort),
-        materials: materials.filter((m) => visibleTo(m, p)),
+        // An uploaded PDF is served only through the slug-gated file endpoint;
+        // point source_url there and never expose the storage key.
+        materials: materials.filter((m) => visibleTo(m, p)).map((m) => {
+          const { file_key, ...rest } = m;
+          return file_key
+            ? { ...rest, source_url: '/api/abl/workspace/' + encodeURIComponent(p.slug) + '/materials/' + m.id + '/file' }
+            : rest;
+        }),
         assignments: visibleAssignments.map((a) => ({ ...a, submission: byAssignment[a.id] || null })),
         announcements: announcements.filter((a) => visibleTo(a, p)),
         builder: builder || { sessions: {}, current_session: 1, completed_sessions: [], completion_percent: 0 },
@@ -165,6 +174,27 @@ export function registerWorkspaceRoutes(app) {
     } catch (e) {
       console.error('[abl-workspace] participant load', e);
       return fail(res, 'Server error', 500);
+    }
+  });
+
+  // Download an uploaded course-material PDF. Gated exactly like the material
+  // list: the participant is resolved by slug, their workspace must be active,
+  // and the material must be visible to them (publish status + audience). The
+  // bytes are streamed from the private bucket — the file has no public URL.
+  app.get('/api/abl/workspace/:slug/materials/:id/file', async (req, res) => {
+    try {
+      // participantApiGuard has already verified the signed-in participant owns
+      // this slug and attached them here — the file is as gated as the workspace.
+      const p = req.ablParticipant;
+      if (!p || !p.link_approved) return fail(res, 'Sign-in required.', 401);
+      const material = docData(await col(COLLECTIONS.ablMaterials).doc(String(req.params.id)).get());
+      if (!material || !visibleTo(material, p)) return fail(res, 'Material not available.', 404);
+      if (!material.file_key) return fail(res, 'This material has no uploaded file.', 404);
+      const streamed = await streamMaterialFile(material.file_key, res, { fileName: material.file_name || material.title });
+      if (!streamed && !res.headersSent) return fail(res, 'The file could not be found.', 404);
+    } catch (e) {
+      console.error('[abl-workspace] material file', e);
+      if (!res.headersSent) return fail(res, 'Server error', 500);
     }
   });
 
@@ -255,13 +285,26 @@ export function registerWorkspaceRoutes(app) {
   app.delete('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablCohorts, req.params.id)));
 
   app.get('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablMaterials)));
+  // Upload a PDF for a material. Returns a storage key the admin form then saves
+  // on the material record; the file itself is never public.
+  app.post('/api/abl/workspace/admin/materials/upload', requireStudio, async (req, res) => {
+    try {
+      const buffer = decodePdfUpload(req.body && req.body.data);
+      const saved = await uploadMaterialPdf({ buffer, fileName: (req.body && req.body.file_name) || 'material.pdf' });
+      return ok(res, { file_key: saved.file_key, file_name: cleanText((req.body && req.body.file_name) || 'material.pdf', 260) });
+    } catch (e) { return fail(res, e.message || 'The file could not be uploaded.'); }
+  });
   app.post('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => {
     const row = sanitiseMaterial(req.body || {});
     if (!row.title) return fail(res, 'Material title is required');
     return ok(res, await saveDoc(COLLECTIONS.ablMaterials, null, row), 201);
   });
   app.patch('/api/abl/workspace/admin/materials/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablMaterials, req.params.id, sanitiseMaterial(req.body || {}))));
-  app.delete('/api/abl/workspace/admin/materials/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablMaterials, req.params.id)));
+  app.delete('/api/abl/workspace/admin/materials/:id', requireStudio, async (req, res) => {
+    const existing = docData(await col(COLLECTIONS.ablMaterials).doc(String(req.params.id)).get());
+    if (existing && existing.file_key) deleteMaterialFile(existing.file_key); // best-effort
+    return ok(res, await deleteDoc(COLLECTIONS.ablMaterials, req.params.id));
+  });
 
   app.get('/api/abl/workspace/admin/assignments', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablAssignments)));
   app.post('/api/abl/workspace/admin/assignments', requireStudio, async (req, res) => {

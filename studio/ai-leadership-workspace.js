@@ -27,6 +27,23 @@
     if (!response.ok || body.ok === false) throw new Error(body.error || 'Request failed');
     return body.data;
   }
+  function fileSelected(id) {
+    var el = $(id);
+    return !!(el && el.files && el.files[0]);
+  }
+  // Read a chosen PDF as a data URL and upload it; returns { file_key, file_name }.
+  async function uploadPdf(id) {
+    var file = $(id).files[0];
+    if (file.size > 8 * 1024 * 1024) throw new Error('That PDF is larger than 8 MB.');
+    if (file.type ? file.type !== 'application/pdf' : !/\.pdf$/i.test(file.name)) throw new Error('Only PDF files can be uploaded.');
+    var dataUrl = await new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result)); };
+      r.onerror = function () { reject(new Error('The file could not be read.')); };
+      r.readAsDataURL(file);
+    });
+    return api('/materials/upload', { method: 'POST', body: JSON.stringify({ data: dataUrl, file_name: file.name }) });
+  }
   function cohortName(id) {
     var c = state.cohorts.find(function (x) { return x.id === id; });
     return c ? c.name : 'Unassigned';
@@ -238,12 +255,23 @@
       if (!$('materialTitle').value.trim()) { mstatus.textContent = 'Add a title first.'; return; }
       if (audience === 'cohorts' && !cohort) { mstatus.textContent = 'Choose a cohort, or set the audience to Everyone.'; return; }
       if ($('materialStatus').value === 'scheduled' && !$('materialPublishAt').value) { mstatus.textContent = 'Pick a publish date and time to schedule it.'; return; }
-      var body = { title: $('materialTitle').value, type: $('materialType').value, session_number: Number($('materialSession').value), phase: $('materialPhase').value,
-        source_url: $('materialUrl').value, description: $('materialDescription').value, status: $('materialStatus').value,
-        publish_at: $('materialPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
-      var button = this, status = $('materialFormStatus'); button.disabled = true; status.textContent = 'Saving…';
-      try { await api('/materials', { method: 'POST', body: JSON.stringify(body) }); status.textContent = 'Material saved.'; ['materialTitle','materialUrl','materialDescription','materialPublishAt'].forEach(function (id) { $(id).value = ''; }); await load(); }
-      catch (e) { status.textContent = e.message; }
+      if (!$('materialUrl').value.trim() && !fileSelected('materialFile')) { mstatus.textContent = 'Add a link or upload a PDF.'; return; }
+      var button = this; button.disabled = true; mstatus.textContent = 'Saving…';
+      try {
+        var uploaded = null;
+        if (fileSelected('materialFile')) { mstatus.textContent = 'Uploading PDF…'; uploaded = await uploadPdf('materialFile'); }
+        var body = { title: $('materialTitle').value, type: $('materialType').value, session_number: Number($('materialSession').value), phase: $('materialPhase').value,
+          source_url: $('materialUrl').value, description: $('materialDescription').value, status: $('materialStatus').value,
+          publish_at: $('materialPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [],
+          file_key: uploaded ? uploaded.file_key : '', file_name: uploaded ? uploaded.file_name : '' };
+        await api('/materials', { method: 'POST', body: JSON.stringify(body) });
+        mstatus.textContent = 'Material saved.';
+        ['materialTitle','materialUrl','materialDescription','materialPublishAt'].forEach(function (id) { $(id).value = ''; });
+        if ($('materialFile')) $('materialFile').value = '';
+        if ($('materialFileStatus')) $('materialFileStatus').textContent = '';
+        await load();
+      }
+      catch (e) { mstatus.textContent = e.message; }
       button.disabled = false;
     };
 
