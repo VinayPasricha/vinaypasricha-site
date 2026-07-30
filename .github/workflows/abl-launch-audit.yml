@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 20
     env:
       ABL_STAGING_BASE_URL: https://vinay-site-staging-349140108061.asia-south1.run.app
-      ABL_EXPECTED_RELEASE: abl-course-staging-20260730-0126
+      ABL_EXPECTED_RELEASE: abl-course-staging-20260730-0133
       ABL_DEPLOY_WAIT_SECONDS: '720'
     steps:
       - name: Check out audited commit
