@@ -44,6 +44,22 @@
     return html + state.cohorts.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === selected ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('');
   }
 
+  // ---- form guards ----
+  // Show a field only when its controlling <select> has a qualifying value, and
+  // run once on load so the default state is right. Hides the wrapping .field
+  // so its label goes too. Keeps contradictory choices (e.g. Everyone + a
+  // cohort) off the screen entirely.
+  function bindConditional(controlId, targetId, showWhen) {
+    var ctrl = $(controlId), target = $(targetId);
+    if (!ctrl || !target) return;
+    var field = target.closest('.field') || target;
+    function apply() { field.style.display = showWhen(ctrl.value) ? '' : 'none'; }
+    ctrl.addEventListener('change', apply);
+    apply();
+  }
+  var isCohorts = function (v) { return v === 'cohorts'; };
+  var isScheduled = function (v) { return v === 'scheduled'; };
+
   function showPage(name) {
     Array.prototype.forEach.call(document.querySelectorAll('[data-page-view]'), function (page) { page.hidden = page.getAttribute('data-page-view') !== name; });
     Array.prototype.forEach.call(document.querySelectorAll('.studio-nav [data-page]'), function (b) { b.classList.toggle('active', b.getAttribute('data-page') === name); });
@@ -203,6 +219,7 @@
     };
 
     $('createCohort').onclick = async function () {
+      if (!$('cohortName').value.trim()) { $('cohortFormStatus').textContent = 'Give the cohort a name first.'; return; }
       var sessions = {};
       [1,2,3,4,5].forEach(function (n) {
         var date = $('cohortSessionDate' + n).value, link = $('cohortSessionLink' + n).value.trim();
@@ -217,7 +234,10 @@
     };
 
     $('publishMaterial').onclick = async function () {
-      var audience = $('materialAudience').value, cohort = $('materialCohort').value;
+      var audience = $('materialAudience').value, cohort = $('materialCohort').value, mstatus = $('materialFormStatus');
+      if (!$('materialTitle').value.trim()) { mstatus.textContent = 'Add a title first.'; return; }
+      if (audience === 'cohorts' && !cohort) { mstatus.textContent = 'Choose a cohort, or set the audience to Everyone.'; return; }
+      if ($('materialStatus').value === 'scheduled' && !$('materialPublishAt').value) { mstatus.textContent = 'Pick a publish date and time to schedule it.'; return; }
       var body = { title: $('materialTitle').value, type: $('materialType').value, session_number: Number($('materialSession').value), phase: $('materialPhase').value,
         source_url: $('materialUrl').value, description: $('materialDescription').value, status: $('materialStatus').value,
         publish_at: $('materialPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
@@ -229,6 +249,8 @@
 
     $('createAssignment').onclick = async function () {
       var cohort = $('assignmentCohort').value;
+      if (!$('assignmentTitle').value.trim()) { $('assignmentFormStatus').textContent = 'Add a title first.'; return; }
+      if ($('assignmentStatus').value === 'scheduled' && !$('assignmentDueAt').value) { $('assignmentFormStatus').textContent = 'Set a due date to schedule it.'; return; }
       var body = { title: $('assignmentTitle').value, instructions: $('assignmentInstructions').value, session_number: Number($('assignmentSession').value), due_at: $('assignmentDueAt').value || null,
         audience: cohort ? 'cohorts' : 'all', cohort_ids: cohort ? [cohort] : [], status: $('assignmentStatus').value };
       var button = this, status = $('assignmentFormStatus'); button.disabled = true; status.textContent = 'Saving…';
@@ -238,7 +260,11 @@
     };
 
     $('publishAnnouncement').onclick = async function () {
-      var audience = $('announcementAudience').value, cohort = $('announcementCohort').value;
+      var audience = $('announcementAudience').value, cohort = $('announcementCohort').value, astatus = $('announcementFormStatus');
+      if (!$('announcementTitle').value.trim()) { astatus.textContent = 'Add a title first.'; return; }
+      if (!$('announcementMessage').value.trim()) { astatus.textContent = 'Write a message first.'; return; }
+      if (audience === 'cohorts' && !cohort) { astatus.textContent = 'Choose a cohort, or set the audience to Everyone.'; return; }
+      if ($('announcementStatus').value === 'scheduled' && !$('announcementPublishAt').value) { astatus.textContent = 'Pick a publish date and time to schedule it.'; return; }
       var body = { title: $('announcementTitle').value, message: $('announcementMessage').value, link_url: $('announcementLink').value, status: $('announcementStatus').value,
         publish_at: $('announcementPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
       var button = this, status = $('announcementFormStatus'); button.disabled = true; status.textContent = 'Publishing…';
@@ -263,6 +289,14 @@
       if (navigator.clipboard) await navigator.clipboard.writeText(text);
       toast('WhatsApp message copied');
     };
+
+    // Conditional fields: a cohort picker only when the audience is a cohort,
+    // and a publish date only when scheduling. Runs once now so the defaults
+    // (Everyone / Publish now) start with those fields hidden.
+    bindConditional('materialAudience', 'materialCohort', isCohorts);
+    bindConditional('announcementAudience', 'announcementCohort', isCohorts);
+    bindConditional('materialStatus', 'materialPublishAt', isScheduled);
+    bindConditional('announcementStatus', 'announcementPublishAt', isScheduled);
   }
 
   async function load() {
