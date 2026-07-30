@@ -5,7 +5,6 @@
   var participantId = params.get('participant');
   if (!participantId) return;
   var installing = false;
-  var observer = null;
 
   function esc(value) {
     return String(value == null ? '' : value)
@@ -57,10 +56,9 @@
     installing = true;
     try {
       var detail = await api('/api/abl/participants/' + encodeURIComponent(participantId));
-      if (document.getElementById('participantIntelCard')) return;
+      if (document.getElementById('participantIntelCard') || !snapshot.isConnected) return;
       var participant = detail.participant || {};
       snapshot.insertAdjacentHTML('afterend', cardMarkup(participant.name, participant.company_name));
-      if (observer) observer.disconnect();
       var thread = await api('/api/abl/intelligence/participants/' + encodeURIComponent(participantId) + '/thread');
       renderMessages(thread.messages || []);
       var question = document.getElementById('participantIntelQuestion');
@@ -88,7 +86,7 @@
       installing = false;
     }
   }
-  observer = new MutationObserver(function(){
+  var observer = new MutationObserver(function(){
     var snapshot = document.querySelector('.snapshot-card');
     if (snapshot) install(snapshot).catch(function(error){ console.error('[participant-intelligence]', error); });
   });
