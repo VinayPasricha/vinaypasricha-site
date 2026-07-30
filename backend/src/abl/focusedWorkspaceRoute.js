@@ -1,6 +1,6 @@
 // Serves the participant workspace with the focused adaptive home layered on top.
-// Registered before the legacy workspace shell route so the slug remains private
-// and every real participant sees one clear next action rather than a catalogue.
+// The private Studio control is removed in the server-rendered shell, not hidden
+// later by JavaScript, so participants never see it even during loading or errors.
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -11,11 +11,16 @@ let shell = null;
 function focusedShell() {
   if (shell != null) return shell;
   const base = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace-preview.html'), 'utf8');
-  shell = base.replace(
-    '</body>',
-    '<script src="/ai-business-leaders/workspace-home-focus.js"></script>' +
-    '<script src="/ai-business-leaders/participant-only-nav.js"></script></body>'
-  );
+  shell = base
+    .replace(
+      '<button id="studioMode">Vinay Studio</button>',
+      '<button id="studioMode" type="button" hidden aria-hidden="true" tabindex="-1">Vinay Studio</button>'
+    )
+    .replace(
+      '</body>',
+      '<script src="/ai-business-leaders/workspace-home-focus.js"></script>' +
+      '<script src="/ai-business-leaders/participant-only-nav.js"></script></body>'
+    );
   return shell;
 }
 
