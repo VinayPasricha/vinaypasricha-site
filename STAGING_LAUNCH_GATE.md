@@ -15,7 +15,7 @@ These must pass in GitHub Actions:
 - `npm run test:abl-course`
 - `npm run test:abl-launch`
 
-The launch audit checks participant authentication, cross-workspace protection, Studio privacy, return navigation, invitation rules, focused homepage, and current-session meeting-link wiring.
+The launch audit checks participant authentication, cross-workspace protection, Studio privacy, return navigation, invitation rules, focused homepage, current-session meeting-link wiring, cohort-safe persistence, safe archiving and private assignment uploads.
 
 ## Required deployed-staging smoke test
 
@@ -38,7 +38,12 @@ The launch audit checks participant authentication, cross-workspace protection, 
 - [ ] The adaptive `Do this now` action points to the correct next step.
 - [ ] The current session displays the correct date and Google Meet link for that cohort.
 - [ ] Missing material links show a safe unavailable state rather than a dead button.
-- [ ] Draft assignment saves, survives refresh, and submits successfully.
+- [ ] When no assignment is published, the participant sees a clear unavailable message rather than a blank screen.
+- [ ] A participant can upload an allowed PDF, Word, PowerPoint or image file of 15 MB or less.
+- [ ] A disguised or unsupported file is rejected.
+- [ ] Participant A cannot retrieve Participant B's uploaded assignment.
+- [ ] An uploaded file remains available after saving a draft, submitting and refreshing.
+- [ ] Draft assignment text saves, survives refresh, and submits successfully.
 - [ ] Notebook and 90-Day Initiative edits survive refresh.
 - [ ] Layout works at 360 px, 390 px, tablet width, and desktop width.
 
@@ -51,16 +56,18 @@ The launch audit checks participant authentication, cross-workspace protection, 
 - [ ] Send Invite activates only the intended participant and points to secure sign-in.
 - [ ] Cohort reassignment does not delete participant work.
 - [ ] Current session and all five dates/meeting links save correctly.
-- [ ] Material draft, preview, publish, hide, and delete actions behave correctly.
-- [ ] Assignment publish and participant submission review work.
+- [ ] Material draft, preview, publish, hide, archive and unused-draft deletion behave correctly.
+- [ ] Assignment publish, safe archive, participant submission review and uploaded-file download work.
 - [ ] Announcement publishing targets only the selected audience.
 
 ### Persistence and isolation
 
 - [ ] Staging writes only to staging-prefixed Firestore collections.
+- [ ] Assignment files are stored only in the private staging upload bucket.
+- [ ] The Cloud Run service account can create, read and replace objects in that bucket.
 - [ ] Refreshing any saved participant page preserves server data.
-- [ ] Participant records, submissions, and materials do not leak between accounts or cohorts.
-- [ ] No participant or Studio page is cached publicly.
+- [ ] Participant records, submissions, files and materials do not leak between accounts or cohorts.
+- [ ] No participant, uploaded file or Studio page is cached publicly.
 
 ## Required staging configuration
 
@@ -70,6 +77,7 @@ The launch audit checks participant authentication, cross-workspace protection, 
 - [ ] `RESEND_API_KEY`
 - [ ] `ABL_FROM_EMAIL`
 - [ ] `FIRESTORE_COLLECTION_PREFIX=staging_`
+- [ ] `ABL_UPLOAD_BUCKET` pointing to a private staging-only Google Cloud Storage bucket
 
 ## Launch decision
 
