@@ -44,6 +44,12 @@ includes(login, 'six-digit sign-in code', 'participant login clearly uses OTP');
 includes(server, "layer.name === 'serveStatic'", 'participant routes are inserted ahead of express.static');
 includes(server, 'extensionless paths such as /ai-business-leaders/login', 'route-order rationale is documented');
 
+// Each live response used for sign-off must identify its exact deployed revision.
+includes(server, "app.get('/api/abl/deployment'", 'dynamic deployment identity endpoint exists');
+includes(server, "res.setHeader('X-ABL-Release'", 'release header is available on guarded responses');
+includes(server, "res.setHeader('X-ABL-Revision'", 'Cloud Run revision header is available on guarded responses');
+includes(server, 'K_REVISION', 'deployment identity reads the active Cloud Run revision');
+
 // Studio must fail closed and anonymous Studio UI must be redirected safely.
 excludes(workspace, "|| 'vik123'", 'new Studio API has no built-in fallback passphrase');
 includes(workspace, "if (!passphrase) return ''", 'missing workspace Studio passphrase fails closed');
@@ -82,4 +88,4 @@ includes(workspace, 'session_date', 'current session date is exposed for adaptiv
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, route ordering, privacy, mobile navigation, Studio security, focused home and session wiring.');
+console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, focused home and session wiring.');
