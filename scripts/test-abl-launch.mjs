@@ -18,12 +18,17 @@ const excludes = (source, text, label) => assert.ok(!source.includes(text), labe
   'backend/src/abl/securePageRoutes.js',
   'backend/src/abl/focusedWorkspaceRoute.js',
   'backend/src/abl/workspaceRoutes.js',
+  'backend/src/abl/safeArchiveRoutes.js',
+  'studio/safe-archive-controls.js',
 ].forEach(mustExist);
 
 const server = read('backend/src/server.js');
 const guard = read('backend/src/abl/participantGuard.js');
 const auth = read('backend/src/abl/authRoutes.js');
 const workspace = read('backend/src/abl/workspaceRoutes.js');
+const safeArchive = read('backend/src/abl/safeArchiveRoutes.js');
+const studioShell = read('studio/ai-leadership-workspace.html');
+const archiveControls = read('studio/safe-archive-controls.js');
 const focusedRoute = read('backend/src/abl/focusedWorkspaceRoute.js');
 const focusedHome = read('ai-business-leaders/workspace-home-focus.js');
 const participantChrome = read('ai-business-leaders/participant-only-nav.js');
@@ -93,7 +98,18 @@ includes(workspace, "visibleTo(a, p, 'assignment_entitlements') || Boolean(byAss
 includes(workspace, 'existingSubmission', 'a saved assignment remains editable after reassignment');
 includes(workspace, "return fail(res, 'Email already exists', 409)", 'participant email edits reject duplicates');
 
+// Published content and participant work must never be destructively deleted.
+includes(server, 'registerSafeArchiveRoutes(app)', 'safe archive routes are registered');
+assert.ok(server.indexOf('registerSafeArchiveRoutes(app)') < server.indexOf('registerWorkspaceRoutes(app)'), 'safe archive routes run before legacy DELETE handlers');
+includes(safeArchive, "status: 'hidden'", 'archived content is removed from active publishing without erasure');
+includes(safeArchive, "participant draft or submission exists", 'assignment work forces archival');
+includes(safeArchive, "participant entitlement exists", 'previously received content forces archival');
+includes(safeArchive, 'deleted_draft: true', 'only unused drafts may be permanently deleted');
+includes(studioShell, '/studio/safe-archive-controls.js', 'Studio loads the safe archive controls');
+includes(archiveControls, 'Delete unused draft', 'Studio distinguishes draft deletion from archival');
+includes(archiveControls, 'Archived safely', 'Studio confirms safe archival to the operator');
+
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, cohort-safe persistence, focused home and session wiring.');
+console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, cohort-safe persistence, safe archiving, focused home and session wiring.');
