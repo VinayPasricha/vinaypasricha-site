@@ -1,5 +1,7 @@
-.lw-upload-box{margin-top:16px;padding:16px;border:1px dashed var(--rule);border-radius:5px;background:rgba(255,255,255,.3)}
-.lw-upload-box>label{display:block;margin-bottom:9px;color:var(--ink);font:500 12px/1.3 var(--sans)}
+.lw-upload-box{margin-top:16px;padding:16px;border:1px dashed var(--rule);border-radius:5px;background:rgba(255,255,255,.3);transition:border-color .18s ease,background .18s ease}
+.lw-upload-box.dragging{border-color:var(--accent);background:rgba(180,71,45,.07)}
+.lw-upload-box>label{display:block;margin-bottom:5px;color:var(--ink);font:500 12px/1.3 var(--sans)}
+.lw-upload-prompt{margin-bottom:9px;color:var(--muted);font:400 11px/1.4 var(--sans)}
 .lw-upload-box input[type=file]{width:100%;margin:0;padding:10px;border:1px solid var(--rule);background:var(--paper-soft);font:400 12px/1.4 var(--sans)}
 .lw-upload-box small{display:block;margin-top:7px;color:var(--faint);font:400 9px/1.45 var(--mono)}
 .lw-uploaded-file{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 12px;border:1px solid rgba(100,115,99,.35);border-radius:4px;background:rgba(100,115,99,.08)}
