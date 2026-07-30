@@ -12,6 +12,25 @@ import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
 const app = createApp();
 const stack = app._router && app._router.stack;
 
+// Launch hardening: the older central Studio gate contains a development fallback
+// passphrase. On every Cloud Run deployment, refuse all Studio UI/login traffic
+// unless STUDIO_PASSPHRASE has been explicitly configured. This middleware is
+// moved to the front of the stack, so a guessed cookie cannot bypass it.
+if (stack) {
+  const hardeningStart = stack.length;
+  app.use((req, res, next) => {
+    const pathname = String(req.url || '').split('?')[0];
+    const studioRequest = pathname === '/studio' || pathname.startsWith('/studio/') || pathname.startsWith('/api/studio/');
+    if (process.env.K_SERVICE && studioRequest && !String(process.env.STUDIO_PASSPHRASE || '').trim()) {
+      if (pathname.startsWith('/api/')) return res.status(503).json({ error: 'studio_not_configured' });
+      return res.status(503).send('Vinay Studio is temporarily unavailable because its private access key is not configured.');
+    }
+    return next();
+  });
+  const hardeningLayers = stack.splice(hardeningStart);
+  stack.splice(0, 0, ...hardeningLayers);
+}
+
 // createApp already contains the original preparation and Initiative Builder
 // endpoints. Insert one authentication guard immediately before the first of
 // those participant routes. It also protects workspace and runtime routes added
@@ -32,8 +51,8 @@ if (stack) {
   stack.splice(firstParticipantApi, 0, ...guardLayers);
 
   // The original HTML shells predate passwordless sign-in. Serve equivalent
-  // shells with auth-client.js inserted before their existing JavaScript, and
-  // place them before the original dynamic routes so they win the match.
+  // shells with auth-client.js and Workspace Home navigation inserted before
+  // their existing JavaScript, and place them before the original routes.
   const pageStart = stack.length;
   registerSecureParticipantPages(app);
   const securePageLayers = stack.splice(pageStart);
@@ -66,5 +85,6 @@ app.listen(config.port, () => {
   console.log(`[server] listening on port ${config.port}`);
   console.log('[server] storage: Firestore (including AI Leadership Workspace collections)');
   console.log('[server] participant access: passwordless email verification required');
+  console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
   console.log(`[server] conversations expire after ${config.conversationTtlDays} days (via Firestore TTL policy)`);
 });
