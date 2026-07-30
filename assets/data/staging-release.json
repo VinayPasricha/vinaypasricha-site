@@ -1,6 +1,6 @@
 {
-  "release": "abl-course-staging-20260730-0110",
-  "contains_all_changes_through": "b69ad169dc1d9753f7fbd5f8db779e84767d69e0",
-  "deployment_requested_at": "2026-07-30T01:10:00Z",
-  "verification": "AI course launch gate: live HTTP security plus Chrome at 360px, 390px and desktop"
+  "release": "abl-course-staging-20260730-0117",
+  "contains_all_changes_through": "3d040362011704f3bf66468aecfafaa56635f6c3",
+  "deployment_requested_at": "2026-07-30T01:17:00Z",
+  "verification": "AI course launch gate after private-route ordering fix and real mobile drawer"
 }
