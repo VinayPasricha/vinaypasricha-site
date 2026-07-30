@@ -3,6 +3,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { chromium } from 'playwright-core';
 
 const base = String(process.env.ABL_STAGING_BASE_URL || '').replace(/\/$/, '');
+const baseUrl = new URL(base);
 assert.ok(base.startsWith('https://'), 'ABL_STAGING_BASE_URL must be an https URL');
 
 const chromeCandidates = [
@@ -29,7 +30,19 @@ async function openPreview(viewport, name) {
     hasTouch: viewport.width <= 600,
     deviceScaleFactor: 1,
   });
+  // Use the same Cloud Run traffic-affinity value as the live HTTP audit so the
+  // browser cannot bounce to an older revision after the deployment gate passes.
+  await context.addCookies([{
+    name: 'GOOGAPPUID', value: '731', domain: baseUrl.hostname, path: '/',
+    secure: true, httpOnly: false, sameSite: 'Lax',
+  }]);
+
   const page = await context.newPage();
+  const deployment = await page.request.get(`${base}/api/abl/deployment?browserAudit=${Date.now()}`);
+  assert.equal(deployment.status(), 200, `${name}: dynamic deployment endpoint must load`);
+  const deploymentBody = await deployment.json();
+  assert.ok(deploymentBody.data?.revision && deploymentBody.data.revision !== 'local', `${name}: Cloud Run revision must be identified`);
+
   await page.goto(`${base}/ai-business-leaders/focused-workspace-preview?browserAudit=${Date.now()}`, {
     waitUntil: 'networkidle',
     timeout: 45000,
