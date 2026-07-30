@@ -328,10 +328,30 @@ export function registerWorkspaceRoutes(app) {
     const stamped = result.sent > 0
       ? await saveDoc(COLLECTIONS.ablAnnouncements, saved.id, {
         email_sent_at: nowISO(), email_sent_count: result.sent, email_failed_count: result.failed,
+        email_failed_ids: result.failedIds || [],
       })
       : saved;
     return ok(res, { ...stamped, email: result });
   }
+
+  // Resend an announcement to the recipients a prior send missed (rate-limited
+  // or transient failures), without re-mailing everyone who already received it.
+  app.post('/api/abl/workspace/admin/announcements/:id/resend', requireStudio, async (req, res) => {
+    try {
+      const saved = docData(await col(COLLECTIONS.ablAnnouncements).doc(String(req.params.id)).get());
+      if (!saved) return fail(res, 'Announcement not found', 404);
+      const onlyIds = Array.isArray(saved.email_failed_ids) ? saved.email_failed_ids.filter(Boolean) : [];
+      const origin = `${req.protocol}://${req.get('host')}`;
+      const result = await sendAnnouncementEmails(saved, { origin, onlyIds: onlyIds.length ? onlyIds : undefined });
+      const stamped = await saveDoc(COLLECTIONS.ablAnnouncements, saved.id, {
+        email_sent_at: saved.email_sent_at || nowISO(),
+        email_sent_count: (saved.email_sent_count || 0) + result.sent,
+        email_failed_count: result.failed,
+        email_failed_ids: result.failedIds || [],
+      });
+      return ok(res, { ...stamped, email: result });
+    } catch (e) { return fail(res, e.message || 'Resend failed', 500); }
+  });
 
   app.post('/api/abl/workspace/admin/announcements', requireStudio, async (req, res) => {
     const row = sanitiseAnnouncement(req.body || {});

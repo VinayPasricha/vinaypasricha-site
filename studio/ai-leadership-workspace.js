@@ -246,8 +246,28 @@
 
   function renderAnnouncements() {
     $('announcementCards').innerHTML = state.announcements.length ? state.announcements.map(function (a) {
-      return '<article class="entity-card"><span class="meta">' + esc(a.audience || 'all') + (a.audience === 'cohorts' ? ' · ' + esc(cohortName((a.cohort_ids || [])[0])) : '') + '</span><h3>' + esc(a.title) + '</h3><p>' + esc(a.message) + '</p><p><span class="pill ' + esc(a.status) + '">' + esc(a.status) + '</span> · ' + esc(fmtDate(a.publish_at || a.updated_at)) + '</p></article>';
+      var failed = a.email_failed_count || 0;
+      var delivery = a.email_sent_at
+        ? '<p class="sub">Emailed ' + (a.email_sent_count || 0) + (failed ? ' · <span style="color:#b4472d;font-weight:600">' + failed + ' not delivered</span>' : '') + '</p>'
+        : '';
+      var resend = failed
+        ? '<div class="actions"><button class="btn small" data-resend="' + esc(a.id) + '">Resend to ' + failed + ' who missed it</button><span class="form-status" data-resend-status="' + esc(a.id) + '"></span></div>'
+        : '';
+      return '<article class="entity-card"><span class="meta">' + esc(a.audience || 'all') + (a.audience === 'cohorts' ? ' · ' + esc(cohortName((a.cohort_ids || [])[0])) : '') + '</span><h3>' + esc(a.title) + '</h3><p>' + esc(a.message) + '</p><p><span class="pill ' + esc(a.status) + '">' + esc(a.status) + '</span> · ' + esc(fmtDate(a.publish_at || a.updated_at)) + '</p>' + delivery + resend + '</article>';
     }).join('') : '<p class="empty">No announcements yet.</p>';
+    Array.prototype.forEach.call($('announcementCards').querySelectorAll('[data-resend]'), function (b) {
+      b.onclick = async function () {
+        var id = b.getAttribute('data-resend');
+        var st = $('announcementCards').querySelector('[data-resend-status="' + id + '"]');
+        b.disabled = true; if (st) st.textContent = 'Resending…';
+        try {
+          var r = await api('/announcements/' + id + '/resend', { method: 'POST', body: '{}' });
+          var m = r && r.email;
+          toast(m ? ('Resent ' + (m.sent || 0) + (m.failed ? ' · ' + m.failed + ' still failed' : ' — all delivered')) : 'Resent');
+          await load();
+        } catch (e) { b.disabled = false; if (st) st.textContent = e.message; }
+      };
+    });
   }
 
   function refreshCohortSelects() {
