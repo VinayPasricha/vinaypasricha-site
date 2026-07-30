@@ -66,9 +66,11 @@ if (stack) {
   registerSecureParticipantPages(app);
 }
 
-// createApp installs the site's static handler and JSON API 404 before returning.
-// Register the focused participant shell first so it wins the workspace route,
-// followed by the data, sign-in and guided-conversation routes.
+// createApp installs generic translation/static handlers and the JSON API 404
+// before returning. Register the focused participant shell, data, sign-in and
+// guided-conversation routes, then move them ahead of express.static. Otherwise
+// extensionless paths such as /ai-business-leaders/login are served as public
+// static files before their private no-store route can run.
 const before = stack ? stack.length : 0;
 registerFocusedWorkspaceRoute(app);
 registerWorkspaceRoutes(app);
@@ -76,7 +78,10 @@ registerAuthRoutes(app, { rateLimit });
 registerRuntimeRoutes(app, { rateLimit });
 if (stack) {
   const added = stack.splice(before);
-  let insertAt = stack.findIndex((layer) => !layer.route && String(layer.regexp || '').includes('^\\/api\\/?(?=\\/|$)'));
+  let insertAt = stack.findIndex((layer) => layer.name === 'serveStatic');
+  if (insertAt < 0) {
+    insertAt = stack.findIndex((layer) => !layer.route && String(layer.regexp || '').includes('^\\/api\\/?(?=\\/|$)'));
+  }
   if (insertAt < 0) insertAt = Math.max(0, stack.length - 1);
   stack.splice(insertAt, 0, ...added);
 }
