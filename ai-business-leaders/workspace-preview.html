@@ -196,14 +196,21 @@ async function bootLive(){
   let main=document.getElementById('main');
   /* The participant arrives here from the sign-in page. Without a session on
      this device, send them back to it rather than showing a bare workspace. */
+  // A Studio admin can open any workspace with ?admin=1 — the API authorises
+  // them by their Studio cookie, so no participant sign-in is needed here.
+  let adminView=new URLSearchParams(location.search).get('admin')==='1';
   let saved=window.AblAuth&&window.AblAuth.read();
-  if(!saved||!saved.token){window.AblAuth.login();return}
+  if(!adminView&&(!saved||!saved.token)){window.AblAuth.login();return}
   // The mock's banner promises changes stay in this browser. In a real
   // workspace they do not — they are saved to the participant's record.
   let demoBanner=document.querySelector('.demo');
   if(demoBanner)demoBanner.remove();
-  document.querySelector('.switch').innerHTML='<button id="ablSignOut">Sign out</button>';
-  document.getElementById('ablSignOut').onclick=()=>{window.AblAuth.clear();location.replace('/ai-business-leaders/login')};
+  if(adminView){
+    document.querySelector('.switch').innerHTML='<a href="/studio/ai-leadership-workspace" class="btn" style="text-decoration:none">← Back to Studio</a>';
+  }else{
+    document.querySelector('.switch').innerHTML='<button id="ablSignOut">Sign out</button>';
+    document.getElementById('ablSignOut').onclick=()=>{window.AblAuth.clear();location.replace('/ai-business-leaders/login')};
+  }
   main.innerHTML='<p class="eyebrow">Your workspace</p><h1>Opening your workspace…</h1>';
   try{
     let r=await fetch('/api/abl/workspace/'+encodeURIComponent(ABL_SLUG),{headers:window.AblAuth.headers({Accept:'application/json'})});
@@ -211,6 +218,7 @@ async function bootLive(){
     if(!r.ok||body.ok===false)throw new Error(body.error||'This workspace could not be opened.');
     S=fromApi(body.data);
     render();
+    if(adminView&&!document.getElementById('adminBanner')){var ab=document.createElement('div');ab.id='adminBanner';ab.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.25)';ab.textContent='Admin preview · viewing '+((S.participants[0]&&S.participants[0].name)||'participant')+'’s workspace';document.body.appendChild(ab);}
   }catch(e){
     main.innerHTML='<p class="eyebrow">Your workspace</p><h1>We could not open this workspace</h1><p class="lede">'+esc(e.message)+'</p><p><a class="btn" href="/ai-business-leaders/login">Sign in again →</a></p>';
   }
