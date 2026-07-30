@@ -1,6 +1,5 @@
 // AI for Business Leaders — lifelong participant workspace + simple Studio API.
-// This module is intentionally independent of the preparation-agent routes so
-// course materials, cohorts and assignments never become hard gates.
+// Course materials, cohorts and assignments remain optional and never gate attendance.
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -8,9 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { db, COLLECTIONS } from '../firestore.js';
 import * as ablRepo from './store.js';
 
-// Repo root is three levels up from backend/src/abl -> serves the workspace shell.
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-
 const nowISO = () => new Date().toISOString();
 const uuid = () => crypto.randomUUID();
 const col = (name) => db.collection(name);
@@ -29,13 +26,17 @@ function parseCookies(req) {
   return out;
 }
 function studioHash() {
-  const passphrase = process.env.STUDIO_PASSPHRASE || 'vik123';
+  const passphrase = String(process.env.STUDIO_PASSPHRASE || '').trim();
+  if (!passphrase) return '';
   return crypto.createHash('sha256').update('studio:' + passphrase).digest('hex');
 }
 function requireStudio(req, res, next) {
   const cookie = parseCookies(req).__session;
   const token = req.get('x-admin-token') || (req.query && req.query.token) || '';
-  if (cookie === studioHash() || (process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)) return next();
+  const expectedCookie = studioHash();
+  const cookieAllowed = !!expectedCookie && cookie === expectedCookie;
+  const tokenAllowed = !!process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN;
+  if (cookieAllowed || tokenAllowed) return next();
   return res.status(401).json({ ok: false, error: 'unauthorized' });
 }
 
@@ -69,6 +70,18 @@ function visibleTo(item, participant) {
   if (audience === 'cohorts') return cleanArray(item.cohort_ids).includes(String(participant.cohort_id || ''));
   if (audience === 'participants') return cleanArray(item.participant_ids).includes(String(participant.id));
   return false;
+}
+function participantCohort(cohort) {
+  if (!cohort) return null;
+  const current = Math.max(1, Math.min(5, parseInt(cohort.current_session, 10) || 1));
+  const sessions = cohort.sessions && typeof cohort.sessions === 'object' ? cohort.sessions : {};
+  const session = sessions[String(current)] || sessions[current] || {};
+  return {
+    ...cohort,
+    current_session: current,
+    meeting_url: cleanText(session.meeting_url || cohort.meeting_url, 3000) || null,
+    session_date: session.date || null,
+  };
 }
 function sanitiseMaterial(b) {
   return {
@@ -104,9 +117,7 @@ function sanitiseAnnouncement(b) {
 }
 
 export function registerWorkspaceRoutes(app) {
-  // ---- Participant workspace page (served dynamically so the link carries a slug)
-  // Studio's invite hands out /ai-business-leaders/workspace/<slug>; nothing else
-  // serves that path, so without this the personalised workspace never loads.
+  // Legacy fallback shell. The focused participant route is registered first and normally wins.
   let workspaceShell = null;
   app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
     try {
@@ -116,7 +127,6 @@ export function registerWorkspaceRoutes(app) {
     } catch (e) { return next(); }
   });
 
-  // ---- Participant-facing workspace ---------------------------------------
   app.get('/api/abl/workspace/:slug', async (req, res) => {
     try {
       const p = await ablRepo.getParticipantBySlug(req.params.slug);
@@ -144,7 +154,7 @@ export function registerWorkspaceRoutes(app) {
           invite_status: p.invite_status || (journeyStarted ? 'active' : 'invited'), journey_started: journeyStarted,
           last_activity_at: p.course_last_activity_at || p.last_activity_at || null,
         },
-        cohort,
+        cohort: participantCohort(cohort),
         materials: materials.filter((m) => visibleTo(m, p)),
         assignments: visibleAssignments.map((a) => ({ ...a, submission: byAssignment[a.id] || null })),
         announcements: announcements.filter((a) => visibleTo(a, p)),
@@ -179,7 +189,6 @@ export function registerWorkspaceRoutes(app) {
     }
   });
 
-  // ---- Simple Studio dashboard --------------------------------------------
   app.get('/api/abl/workspace/admin/dashboard', requireStudio, async (req, res) => {
     try {
       const [participants, cohorts, materials, assignments, announcements, submissions] = await Promise.all([
@@ -190,7 +199,6 @@ export function registerWorkspaceRoutes(app) {
     } catch (e) { console.error('[abl-workspace] dashboard', e); return fail(res, 'Server error', 500); }
   });
 
-  // Participants: one permanent record, simple cohort reassignment and invite.
   app.post('/api/abl/workspace/admin/participants/bulk', requireStudio, async (req, res) => {
     try {
       const rows = Array.isArray(req.body && req.body.participants) ? req.body.participants.slice(0, 300) : [];
@@ -199,8 +207,8 @@ export function registerWorkspaceRoutes(app) {
       for (const row of rows) {
         const name = cleanText(row.name, 160), email = cleanText(row.email, 320).toLowerCase(), phone = cleanText(row.phone, 50);
         if (!name || !email) { skipped.push({ name, email, reason: 'Name and email required' }); continue; }
-        const dup = await col(COLLECTIONS.ablParticipants).where('email', '==', email).limit(1).get();
-        if (!dup.empty) { skipped.push({ name, email, reason: 'Email already exists' }); continue; }
+        const existing = await ablRepo.getParticipantByEmail(email);
+        if (existing) { skipped.push({ name, email, reason: 'Email already exists' }); continue; }
         const p = await ablRepo.createParticipant({ name, company_name: cleanText(row.company_name, 180) || 'To be added', email, role_title: cleanText(row.role_title, 180) || null });
         const saved = await ablRepo.updateParticipant(p.id, { phone: phone || null, cohort_id: cohortId, invite_status: 'not_invited' });
         created.push(saved);
@@ -216,6 +224,7 @@ export function registerWorkspaceRoutes(app) {
       ['name', 'email', 'phone', 'company_name', 'role_title', 'cohort_id', 'invite_status'].forEach((k) => {
         if (Object.prototype.hasOwnProperty.call(b, k)) patch[k] = b[k] == null ? null : cleanText(b[k], k === 'email' ? 320 : 240);
       });
+      if (patch.email) patch.email = patch.email.toLowerCase();
       return ok(res, await ablRepo.updateParticipant(req.params.id, patch));
     } catch (e) { return fail(res, 'Server error', 500); }
   });
@@ -224,12 +233,13 @@ export function registerWorkspaceRoutes(app) {
     try {
       const p = await ablRepo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Participant not found', 404);
+      if (!cleanText(p.email, 320)) return fail(res, 'Add the participant email before inviting them.');
       const saved = await ablRepo.updateParticipant(p.id, { invite_status: 'invited', link_approved: true, approved_at: nowISO() });
-      return ok(res, { participant: saved, activation_url: `${req.protocol}://${req.get('host')}/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}` });
+      const loginUrl = `${req.protocol}://${req.get('host')}/ai-business-leaders/login`;
+      return ok(res, { participant: saved, activation_url: loginUrl, login_url: loginUrl });
     } catch (e) { return fail(res, 'Server error', 500); }
   });
 
-  // Cohorts.
   app.get('/api/abl/workspace/admin/cohorts', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablCohorts)));
   app.post('/api/abl/workspace/admin/cohorts', requireStudio, async (req, res) => {
     const b = req.body || {};
@@ -243,7 +253,6 @@ export function registerWorkspaceRoutes(app) {
   app.patch('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablCohorts, req.params.id, req.body || {})));
   app.delete('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablCohorts, req.params.id)));
 
-  // Materials.
   app.get('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablMaterials)));
   app.post('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => {
     const row = sanitiseMaterial(req.body || {});
@@ -253,7 +262,6 @@ export function registerWorkspaceRoutes(app) {
   app.patch('/api/abl/workspace/admin/materials/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablMaterials, req.params.id, sanitiseMaterial(req.body || {}))));
   app.delete('/api/abl/workspace/admin/materials/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablMaterials, req.params.id)));
 
-  // Assignments and submissions.
   app.get('/api/abl/workspace/admin/assignments', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablAssignments)));
   app.post('/api/abl/workspace/admin/assignments', requireStudio, async (req, res) => {
     const row = sanitiseAssignment(req.body || {});
@@ -265,7 +273,6 @@ export function registerWorkspaceRoutes(app) {
   app.get('/api/abl/workspace/admin/submissions', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablSubmissions)));
   app.patch('/api/abl/workspace/admin/submissions/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablSubmissions, req.params.id, { admin_comment: cleanText(req.body && req.body.admin_comment, 5000) })));
 
-  // Announcements.
   app.get('/api/abl/workspace/admin/announcements', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablAnnouncements)));
   app.post('/api/abl/workspace/admin/announcements', requireStudio, async (req, res) => {
     const row = sanitiseAnnouncement(req.body || {});
