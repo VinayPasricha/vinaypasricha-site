@@ -85,7 +85,15 @@ includes(focusedHome, 'Your saved work', 'participant home preserves access to s
 includes(workspace, 'session.meeting_url', 'current session meeting link is selected from the cohort schedule');
 includes(workspace, 'session_date', 'current session date is exposed for adaptive behaviour');
 
+// Cohort changes must preserve only content already received, not future old-cohort content.
+includes(workspace, 'material_entitlements', 'participant material access is snapshotted before a cohort move');
+includes(workspace, 'assignment_entitlements', 'participant assignment access is snapshotted before a cohort move');
+includes(workspace, 'cohort_history', 'cohort reassignment history is retained');
+includes(workspace, "visibleTo(a, p, 'assignment_entitlements') || Boolean(byAssignment[a.id])", 'existing assignment work remains visible after reassignment');
+includes(workspace, 'existingSubmission', 'a saved assignment remains editable after reassignment');
+includes(workspace, "return fail(res, 'Email already exists', 409)", 'participant email edits reject duplicates');
+
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, focused home and session wiring.');
+console.log('AI for Business Leaders launch audit passed: access, revision identity, route ordering, privacy, mobile navigation, Studio security, cohort-safe persistence, focused home and session wiring.');
