@@ -13,7 +13,8 @@ function focusedShell() {
   const base = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace-preview.html'), 'utf8');
   shell = base.replace(
     '</body>',
-    '<script src="/ai-business-leaders/workspace-home-focus.js"></script></body>'
+    '<script src="/ai-business-leaders/workspace-home-focus.js"></script>' +
+    '<script src="/ai-business-leaders/participant-only-nav.js"></script></body>'
   );
   return shell;
 }
@@ -29,7 +30,7 @@ export function registerFocusedWorkspaceRoute(app) {
     }
   });
 
-  // A no-login design route for rapid review on staging.
+  // A no-login participant-only design route for rapid review on staging.
   app.get('/ai-business-leaders/focused-workspace-preview', (req, res, next) => {
     try {
       res.set('Content-Type', 'text/html; charset=utf-8');
