@@ -15,7 +15,7 @@ permissions:
 jobs:
   launch-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Check out audited commit
         uses: actions/checkout@v4
@@ -25,6 +25,8 @@ jobs:
           node-version: '24'
       - name: Check five-session course structure
         run: npm run test:abl-course
+      - name: Install the backend dependencies used by the container
+        run: npm --prefix backend install --omit=dev
       - name: Validate container Studio hardening transformation
         run: node scripts/harden-studio-gate.mjs
       - name: Check patched server syntax
