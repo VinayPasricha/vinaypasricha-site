@@ -17,9 +17,14 @@ function focusedShell() {
       '<button id="studioMode" type="button" hidden aria-hidden="true" tabindex="-1">Vinay Studio</button>'
     )
     .replace(
+      '</head>',
+      '<link rel="stylesheet" href="/ai-business-leaders/assignment-upload.css"></head>'
+    )
+    .replace(
       '</body>',
       '<script src="/ai-business-leaders/workspace-home-focus.js"></script>' +
-      '<script src="/ai-business-leaders/participant-only-nav.js"></script></body>'
+      '<script src="/ai-business-leaders/participant-only-nav.js"></script>' +
+      '<script src="/ai-business-leaders/assignment-upload-ui.js"></script></body>'
     );
   return shell;
 }
