@@ -25,6 +25,8 @@ jobs:
           node-version: '24'
       - name: Check five-session course structure
         run: npm run test:abl-course
+      - name: Validate container Studio hardening transformation
+        run: node scripts/harden-studio-gate.mjs
       - name: Check launch-critical participant and Studio paths
         run: npm run test:abl-launch
 
