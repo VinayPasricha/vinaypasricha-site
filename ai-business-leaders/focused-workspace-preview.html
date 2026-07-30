@@ -17,10 +17,17 @@
       try {
         var doc = this.contentDocument;
         if (!doc || doc.getElementById('focusedHomeLayer')) return;
-        var script = doc.createElement('script');
-        script.id = 'focusedHomeLayer';
-        script.src = './workspace-home-focus.js';
-        doc.body.appendChild(script);
+
+        var focus = doc.createElement('script');
+        focus.id = 'focusedHomeLayer';
+        focus.src = './workspace-home-focus.js';
+        focus.onload = function () {
+          var participantOnly = doc.createElement('script');
+          participantOnly.id = 'participantOnlyLayer';
+          participantOnly.src = './participant-only-nav.js';
+          doc.body.appendChild(participantOnly);
+        };
+        doc.body.appendChild(focus);
       } catch (e) {
         document.body.innerHTML = '<p style="font-family:Arial;padding:24px">The preview could not be opened.</p>';
       }
