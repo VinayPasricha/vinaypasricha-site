@@ -8,6 +8,7 @@ const child = spawn(process.execPath, ['backend/src/server.js'], {
     ...process.env,
     PORT: String(port),
     K_SERVICE: 'vinay-site-staging',
+    K_REVISION: 'vinay-site-staging-local-audit',
     STUDIO_PASSPHRASE: 'launch-audit-private-key',
     ADMIN_TOKEN: 'launch-audit-admin-token',
     ABL_AUTH_SECRET: 'launch-audit-participant-secret',
@@ -44,10 +45,18 @@ try {
   const health = await fetch(`${base}/api/health`);
   assert.equal(health.status, 200, 'local container-equivalent health endpoint must work');
 
+  const deployment = await fetch(`${base}/api/abl/deployment`);
+  assert.equal(deployment.status, 200, 'dynamic deployment endpoint must work');
+  const deploymentBody = await deployment.json();
+  assert.ok(deploymentBody.data?.release && deploymentBody.data.release !== 'unknown', 'deployment endpoint must expose the course release');
+  assert.equal(deploymentBody.data?.revision, 'vinay-site-staging-local-audit', 'deployment endpoint must expose the active revision');
+
   const studio = await fetch(`${base}/studio/ai-leadership-workspace`, { redirect: 'manual' });
   assert.equal(studio.status, 302, `anonymous Studio request must redirect, received ${studio.status}`);
   assert.equal(studio.headers.get('location'), '/studio/login', 'Studio redirect must point to private login');
   assert.match(String(studio.headers.get('cache-control') || ''), /no-store/i, 'Studio redirect must not be cached');
+  assert.equal(studio.headers.get('x-abl-release'), deploymentBody.data.release, 'Studio redirect must identify its release');
+  assert.equal(studio.headers.get('x-abl-revision'), 'vinay-site-staging-local-audit', 'Studio redirect must identify its revision');
 
   const status = await fetch(`${base}/api/studio/status`);
   assert.equal(status.status, 200, 'Studio status endpoint must work');
@@ -55,7 +64,7 @@ try {
   assert.equal(statusBody.authed, false, 'anonymous request must not be Studio authenticated');
   assert.equal(statusBody.enabled, true, 'configured Studio must report enabled');
 
-  console.log('Container-equivalent server startup passed: health, Studio redirect and Studio status.');
+  console.log('Container-equivalent server startup passed: deployment identity, health, Studio redirect and Studio status.');
 } finally {
   stop();
 }
