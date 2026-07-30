@@ -1,6 +1,6 @@
 {
-  "release": "signal-spacetime-homepage-redesign",
-  "source_commit": "9e474935db67d73fc5e2b5f7849501052af3a2c0",
-  "deployment_requested_at": "2026-07-29T07:18:57Z",
-  "verification": "full-homepage-with-harvard-opm-banner-and-isolated-preview"
+  "release": "abl-course-staging-20260730-0110",
+  "contains_all_changes_through": "b69ad169dc1d9753f7fbd5f8db779e84767d69e0",
+  "deployment_requested_at": "2026-07-30T01:10:00Z",
+  "verification": "AI course launch gate: live HTTP security plus Chrome at 360px, 390px and desktop"
 }
