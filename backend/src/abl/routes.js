@@ -84,7 +84,9 @@ function mdToHtml(md) {
     let m;
     if (isRow(l)) { closeList(); tbuf.push(l); continue; }
     flushTable();
-    if ((m = l.match(/^######\s+(.*)/))) { closeList(); html += `<h6>${inline(m[1])}</h6>`; }
+    // The generated 90-day charter marks where a printed page should break.
+    if (/^<!--\s*pagebreak\s*-->$/i.test(l.trim())) { closeList(); html += '<div class="page-break" aria-hidden="true"></div>'; }
+    else if ((m = l.match(/^######\s+(.*)/))) { closeList(); html += `<h6>${inline(m[1])}</h6>`; }
     else if ((m = l.match(/^###\s+(.*)/))) { closeList(); html += `<h3>${inline(m[1])}</h3>`; }
     else if ((m = l.match(/^##\s+(.*)/))) { closeList(); html += `<h2>${inline(m[1])}</h2>`; }
     else if ((m = l.match(/^#\s+(.*)/))) { closeList(); html += `<h1>${inline(m[1])}</h1>`; }
@@ -127,7 +129,9 @@ function streamPdf(res, { title, who, date, md, filename }) {
   const lines = String(md || '').replace(/\r/g, '').split('\n');
   for (const raw of lines) {
     const l = raw.replace(/\s+$/, ''); let m;
-    if ((m = l.match(/^#\s+(.*)/))) { doc.moveDown(0.4).fillColor(INK).font('Times-Bold').fontSize(17).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.2); }
+    // The generated 90-day charter marks where a printed page should break.
+    if (/^<!--\s*pagebreak\s*-->$/i.test(l.trim())) { doc.addPage(); }
+    else if ((m = l.match(/^#\s+(.*)/))) { doc.moveDown(0.4).fillColor(INK).font('Times-Bold').fontSize(17).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.2); }
     else if ((m = l.match(/^##\s+(.*)/))) { doc.moveDown(0.45).fillColor(ACCENT).font('Helvetica-Bold').fontSize(11).text(m[1].replace(/\*\*/g, '').toUpperCase(), { characterSpacing: 1 }); doc.moveDown(0.2); }
     else if ((m = l.match(/^###\s+(.*)/))) { doc.moveDown(0.3).fillColor(INK).font('Times-Bold').fontSize(12.5).text(m[1].replace(/\*\*/g, '')); doc.moveDown(0.1); }
     else if (/^(-{3,}|_{3,})$/.test(l)) { doc.moveDown(0.3); }
@@ -841,9 +845,11 @@ app.get('/api/abl/course/:slug', async (req, res) => {
     try {
       const p = await repo.getParticipant(req.params.id);
       if (!p) return fail(res, 'Not found', 404);
-      const [research, qa, outputs, memory, notes, assets, sessions] = await Promise.all([
+      const [research, qa, outputs, memory, notes, assets, sessions, builder] = await Promise.all([
         repo.getResearch(p.id), repo.getQa(p.id), repo.getOutputs(p.id), buildCourseMemory(p, { includePrivate: true }),
         repo.listNotes(p.id), repo.listAssets(p.id), repo.listSessions(p.id),
+        // The Initiative Builder record backs the Studio's Builder evidence view.
+        repo.getBuilder(p.id),
       ]);
       const conversations = await Promise.all(sessions.map(async (session) => ({
         ...session,
@@ -866,6 +872,7 @@ app.get('/api/abl/course/:slug', async (req, res) => {
       const snapshotStale = !snapshot || (!!evidenceUpdatedAt && snapshotTime < Date.parse(evidenceUpdatedAt));
       return ok(res, {
         participant: p, research, qa, outputs, memory, notes, assets, conversations,
+        builder: builder || { sessions: {}, current_session: 1, completed_sessions: [], completion_percent: 0 },
         snapshot_stale: snapshotStale, evidence_updated_at: evidenceUpdatedAt,
       });
     } catch (e) { return oops(res, e); }
@@ -1177,7 +1184,8 @@ app.get('/api/abl/course/:slug', async (req, res) => {
   table.mdt{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}.mdt th,.mdt td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}.mdt th{background:#fff;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
   .bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid var(--rule);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
   .bar button{font:600 12px/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:0;border-radius:3px;padding:9px 16px;cursor:pointer}
-  @media print{.bar{display:none}.wrap{padding-top:24px}body{background:#fff}}
+  .page-break{border-top:1px dashed var(--rule);margin:28px 0}
+  @media print{.bar{display:none}.wrap{padding-top:24px}body{background:#fff}.page-break{break-before:page;page-break-before:always;border:0;margin:0}}
 </style></head><body>
 <div class="bar"><span class="kicker">AI for Business Leaders</span><button onclick="window.print()">Download PDF ↓</button></div>
 <div class="wrap" style="padding-top:80px">

@@ -193,28 +193,41 @@
       '<div class="abl-title">' + esc(p.name) + (p.company_name ? ' · ' + esc(p.company_name) : '') + '</div></div>' + steps;
   }
 
-  // Invitations back into the main site so the participant can keep exploring.
-  var CALENDLY_URL = 'https://calendly.com/vinay-goodspace/30min';
-  function bookingHTML() {
+  // Preparation is the first of three guided conversations, so the done screen
+  // hands the participant straight to the next two rather than asking them to
+  // book time. Order matters: VED finds the constraint, SIV then chooses the
+  // project to aim at it.
+  function nextRuntimesHTML() {
+    var runtimes = [
+      {
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(SLUG) + '/ved',
+        kicker: '02 · VED — Vinay’s Execution Doctrine',
+        title: 'Find My Weakest <em>Execution Link</em>',
+        desc: 'Trace an important outcome through its sequence, constraints, capacity and handoffs to find the one link governing performance now.',
+        out: 'You leave with an Execution Constraint Map.',
+      },
+      {
+        href: '/ai-business-leaders/workspace/' + encodeURIComponent(SLUG) + '/siv',
+        kicker: '03 · SIV — Socratic, Iterative, Vinay',
+        title: 'Choose My First <em>AI Project</em>',
+        desc: 'Bring your candidate AI projects into the open and test value, feasibility, risk, readiness and timing before choosing where to begin.',
+        out: 'You leave with a First-Project Decision Artefact.',
+      },
+    ];
     return '<div class="booking">' +
-      '<div class="booking-h">Book your 1:1 with Vinay</div>' +
-      '<p class="booking-sub">Pick a time that suits you — your summary will be waiting for him when you meet.</p>' +
-      '<div id="calendly-embed" style="min-width:320px;height:660px"></div>' +
-      '<a class="link-btn" href="' + CALENDLY_URL + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;text-decoration:none">Or open the scheduler in a new tab →</a>' +
-      '</div>';
-  }
-  // The page renders its content dynamically, so Calendly's auto-scan has usually
-  // already run by the time the embed exists — initialise it by hand once the
-  // widget script has loaded (poll briefly, since it loads async).
-  function initCalendly() {
-    var el = document.getElementById('calendly-embed');
-    if (!el || el.getAttribute('data-inited')) return;
-    (function go(tries) {
-      if (window.Calendly && window.Calendly.initInlineWidget) {
-        el.setAttribute('data-inited', '1');
-        window.Calendly.initInlineWidget({ url: CALENDLY_URL + '?hide_gdpr_banner=1', parentElement: el });
-      } else if (tries < 50) { setTimeout(function () { go(tries + 1); }, 200); }
-    })(0);
+      '<div class="booking-h">Continue your AI Journey</div>' +
+      '<p class="booking-sub">Preparation is the first of three guided conversations. Both of the next two use everything you just established — you will not be asked any of it again.</p>' +
+      '<div class="explore-grid" style="margin-top:16px">' +
+      runtimes.map(function (r) {
+        return '<a class="ex-card feat" href="' + r.href + '">' +
+          '<div class="ex-k">' + esc(r.kicker) + '</div>' +
+          '<div class="ex-t">' + r.title + '</div>' +
+          '<div class="ex-d">' + esc(r.desc) + '</div>' +
+          '<div class="ex-d" style="opacity:.8">' + esc(r.out) + '</div>' +
+          '<div class="ex-cta">Start this conversation<span class="ex-arrow">→</span></div>' +
+          '</a>';
+      }).join('') +
+      '</div></div>';
   }
   function exploreHTML() {
     var cards = [
@@ -331,7 +344,7 @@
     if (S.view === 'done') {
       html += '<h1 class="abl-title" style="margin-top:28px">Thank you.</h1>' +
         '<p class="abl-copy">Your summary has been shared with Vinay, and your preparation session is saved. Your five-session Initiative Builder is now ready whenever you want to use it.</p>' +
-        bookingHTML() +
+        nextRuntimesHTML() +
         (S.reward ? '<a class="link-btn" style="display:inline-block;margin-top:16px;text-decoration:none" href="/ai-business-leaders/pdf/' + encodeURIComponent(S.reward.id) + '" target="_blank" rel="noopener">Download your ' + esc(REWARD_TITLES[S.reward.type] || 'document') + ' (PDF) ↓</a>' : '') +
         feedbackHTML() +
         exploreHTML() +
@@ -372,9 +385,7 @@
       try { ta.focus({ preventScroll: true }); } catch (e) { ta.focus(); }
       ta.selectionStart = ta.value.length;
     }
-    var sb = document.getElementById('sendBtn'); if (sb) sb.onclick = function () { send(); };
-    if (document.getElementById('calendly-embed')) initCalendly();
-    var fn = document.getElementById('finish'); if (fn) fn.onclick = finish;
+    var sb = document.getElementById('sendBtn'); if (sb) sb.onclick = function () { send(); };    var fn = document.getElementById('finish'); if (fn) fn.onclick = finish;
     var rf = document.getElementById('retryFinish'); if (rf) rf.onclick = finish;
     var rr = document.getElementById('rerun'); if (rr) rr.onclick = function () { send(S.pendingText, true); };
     Array.prototype.forEach.call(document.querySelectorAll('.opt'), function (b) {

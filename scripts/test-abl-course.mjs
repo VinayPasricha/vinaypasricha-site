@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+// Normalise line endings: the assertions below match multi-line source patterns
+// with \n, so a CRLF checkout would fail them on content that is in fact correct.
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const course = read('ai-business-leaders/course.js');
 const shell = read('ai-business-leaders/course.html');
 const routes = read('backend/src/abl/routes.js');

@@ -530,6 +530,73 @@
           (bmd ? '<div class="brief-inline" style="margin-top:12px;border-top:1px solid var(--rule);padding-top:12px">' + md(bmd) + '</div>' : '') +
           '</div>';
       })() +
+(function () {
+        var b = d.builder || { sessions: {}, completed_sessions: [], completion_percent: 0 };
+        // Self-contained: this card was brought over from the course branch, whose
+        // detail view defined courseLink further up.
+        var courseLink = '/ai-business-leaders/course/' + encodeURIComponent(d.participant.slug);
+        var ss = b.sessions || {}, current = Math.max(1, Math.min(5, b.current_session || 1));
+        var titles = ['','Candidate workflow','Leverage Case','Company Brain workflow','Pilot Reality Sheet','Board pitch & commitment'];
+        var wins = [
+          '', 'Named a candidate workflow', 'Built a provisional Leverage Case',
+          'Mapped the future workflow', 'Defined pilot boundary and controls', 'Built a peer-tested leadership initiative'
+        ];
+        var completed = b.completed_sessions || [];
+        var initiative = (d.outputs || []).filter(function (o) { return o.output_type === 'ai_leadership_initiative'; })[0];
+        var labels = {
+          candidate_workflow:'Candidate workflow', people_systems:'People and systems', where_work_breaks:'Where work breaks',
+          business_consequence:'Business consequence', current_ai_use:'Current personal AI use', company_brain_hypothesis:'Company Brain hypothesis',
+          problem_sentence:'Problem sentence', recurrence:'Recurrence and proof', value_bucket:'Value bucket', baseline:'Baseline',
+          pilot_tests:'Four pilot tests', strategic_value:'Strategic value', available_data:'Available data', non_ai_alternative:'Non-AI alternative',
+          owner_human_line:'Owner and human line', decision:'Decision', evidence_needed:'Evidence needed',
+          current_steps:'Current workflow', exception_path:'Exception path', memory:'Memory', reasoning:'Reasoning', action:'Action', feedback:'Feedback',
+          boundaries:'Automate / Assist / Escalate', build_buy_partner:'Build / Buy / Partner', critical_assumption:'Critical assumption',
+          pilot_boundary:'Pilot boundary', ownership:'Owner and team', old_work_removed:'Old work removed', new_behaviour:'New behaviour',
+          data_boundary:'Data boundary', risk_tier:'Risk tier', operational_boundary:'Operational boundary', control_recovery:'Control and recovery',
+          evidence:'Outcome / adoption / safety evidence', economics:'Economics', weekly_question:'Weekly learning question', premortem:'Pre-mortem',
+          pitch_problem:'Pitch · problem', pitch_brain:'Pitch · Company Brain', pitch_workflow:'Pitch · workflow', pitch_control:'Pitch · control',
+          pitch_evidence:'Pitch · evidence and decision', commitment_72h:'72-hour commitment', day30_review_date:'Day-30 review date',
+          day30_review_with:'Day-30 review with', scale_if:'Scale if', fix_if:'Fix if', stop_if:'Stop if'
+        };
+        function hasAnswer(v) {
+          if (typeof v === 'string') return !!v.trim();
+          if (Array.isArray(v)) return v.some(hasAnswer);
+          if (v && typeof v === 'object') return Object.keys(v).some(function (k) { return hasAnswer(v[k]); });
+          return v === true || typeof v === 'number';
+        }
+        function nested(v) {
+          if (Array.isArray(v)) return esc(v.join(' · '));
+          if (v && typeof v === 'object') {
+            return Object.keys(v).filter(function (k) { return hasAnswer(v[k]); }).map(function (k) {
+              var name = k.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+              return '<div style="margin:4px 0"><strong style="font-size:11px">' + esc(name) + ':</strong> ' + nested(v[k]) + '</div>';
+            }).join('');
+          }
+          return esc(v == null ? '' : v);
+        }
+        function sessionEvidence(n) {
+          var data = ss[String(n)] || {};
+          var keys = Object.keys(labels).filter(function (k) { return Object.prototype.hasOwnProperty.call(data, k); });
+          var answered = keys.filter(function (k) { return hasAnswer(data[k]); });
+          return '<details' + (n === current ? ' open' : '') + ' style="border-top:1px solid var(--rule);padding:10px 0">' +
+            '<summary style="cursor:pointer;font-family:var(--serif);font-size:16px"><strong>Session ' + n + '</strong> · ' + esc(titles[n]) +
+            ' <span class="sub">(' + answered.length + ' answers)</span></summary>' +
+            (answered.length ? '<div style="margin-top:8px">' + answered.map(function (k) {
+              return '<div style="padding:8px 0;border-bottom:1px solid var(--rule-soft)"><div class="sub">' + esc(labels[k]) +
+                '</div><div style="font-size:13.5px;line-height:1.5;margin-top:3px">' + nested(data[k]) + '</div></div>';
+            }).join('') + '</div>' : '<p class="muted">No answers saved for this session.</p>') + '</details>';
+        }
+        var allEvidence = [1,2,3,4,5].map(sessionEvidence).join('');
+        return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h4 style="margin:0">4 · AI Leadership Initiative Builder</h4>' +
+          '<span class="pill ' + ((b.completion_percent || 0) >= 80 ? 'on' : '') + '">' + (b.completion_percent || 0) + '% complete</span></div>' +
+          '<div style="height:5px;background:var(--rule-soft);border-radius:4px;overflow:hidden;margin:12px 0 14px"><div style="height:100%;width:' + (b.completion_percent || 0) + '%;background:var(--accent)"></div></div>' +
+          '<div class="grid2"><div><div class="sub">Current section</div><div style="font-family:var(--serif);font-size:17px;margin-top:3px">Session ' + current + ' · ' + esc(titles[current]) + '</div></div>' +
+          '<div><div class="sub">Completed outputs</div><div style="font-size:13px;margin-top:3px">' + (completed.length ? completed.map(function (n) { return esc(wins[n]); }).join(' · ') : 'No session output completed yet') + '</div></div></div>' +
+          '<div style="margin-top:14px"><div class="sub" style="margin-bottom:5px">Complete Builder evidence · all five sessions</div>' + allEvidence + '</div>' +
+          '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="row-actions" href="' + esc(courseLink) + '" target="_blank" rel="noopener">Open participant workspace ↗</a>' +
+          (initiative ? '<a class="row-actions" href="/ai-business-leaders/pdf/' + initiative.id + '" target="_blank" rel="noopener">Open latest 90-day charter ↗</a>' : '') + '</div></div>';
+      })() +
+
       '</div>';
 
     wireDetail(d);

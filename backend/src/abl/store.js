@@ -473,3 +473,18 @@ export async function deleteParticipant(id) {
 export async function getBuilder(participantId) {
   return docData(await col(COLLECTIONS.ablBuilders).doc(participantId).get());
 }
+export async function upsertBuilder(participantId, input) {
+  const ref = col(COLLECTIONS.ablBuilders).doc(participantId);
+  const existing = await ref.get();
+  const row = {
+    participant_id: participantId,
+    sessions: input.sessions || {},
+    current_session: input.current_session || 1,
+    completed_sessions: input.completed_sessions || [],
+    completion_percent: input.completion_percent || 0,
+    updated_at: nowISO(),
+  };
+  if (!existing.exists) row.created_at = nowISO();
+  await ref.set(row, { merge: true });
+  return docData(await ref.get());
+}
