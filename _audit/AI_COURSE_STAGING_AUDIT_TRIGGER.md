@@ -1,5 +1,5 @@
 # AI Course Staging Audit Trigger
 
-Audit target: `agent/ai-course-staging` at `6cb683e35ef375b47c47bd3b32681b9eb1b5bef6`.
+Audit target: `agent/ai-course-staging` at `3a5ecebd79feab839b6e738d8a91e9ab884c725d`.
 
 This draft PR exists only to trigger the staging checks and must not be merged.
