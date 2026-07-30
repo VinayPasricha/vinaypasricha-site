@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/ai-course-staging
+  pull_request:
+    branches:
+      - agent/ai-course-staging
   workflow_dispatch:
 
 permissions:
@@ -14,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Check out staging branch
+      - name: Check out audited commit
         uses: actions/checkout@v4
       - name: Use Node.js 20
         uses: actions/setup-node@v4
