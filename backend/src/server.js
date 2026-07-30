@@ -1,6 +1,7 @@
 // Entry point: start the HTTP server. Firestore connects lazily on first use,
 // so there is no database connection step here.
 import crypto from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { config } from './config.js';
 import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
@@ -12,6 +13,30 @@ import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
+
+function deploymentInfo() {
+  try {
+    const parsed = JSON.parse(readFileSync(new URL('../../assets/data/staging-release.json', import.meta.url), 'utf8'));
+    return {
+      release: String(parsed.release || ''),
+      contains_all_changes_through: String(parsed.contains_all_changes_through || ''),
+      service: String(process.env.K_SERVICE || 'local'),
+      revision: String(process.env.K_REVISION || 'local'),
+    };
+  } catch (e) {
+    return {
+      release: 'unknown',
+      contains_all_changes_through: '',
+      service: String(process.env.K_SERVICE || 'local'),
+      revision: String(process.env.K_REVISION || 'local'),
+    };
+  }
+}
+const DEPLOYMENT = deploymentInfo();
+function markDeployment(res) {
+  res.setHeader('X-ABL-Release', DEPLOYMENT.release);
+  res.setHeader('X-ABL-Revision', DEPLOYMENT.revision);
+}
 
 function studioCookie(req) {
   const raw = String(req.headers.cookie || '');
@@ -40,6 +65,7 @@ if (stack) {
     const pathname = String(req.url || '').split('?')[0];
     const studioRequest = pathname === '/studio' || pathname.startsWith('/studio/') || pathname.startsWith('/api/studio/');
     if (process.env.K_SERVICE && studioRequest && !String(process.env.STUDIO_PASSPHRASE || '').trim()) {
+      markDeployment(res);
       if (pathname.startsWith('/api/')) return res.status(503).json({ error: 'studio_not_configured' });
       return res.status(503).send('Vinay Studio is temporarily unavailable because its private access key is not configured.');
     }
@@ -58,6 +84,7 @@ if (stack) {
     const studioUi = pathname === '/studio' || pathname.startsWith('/studio/');
     if (!studioUi) return next();
 
+    markDeployment(res);
     res.setHeader('Cache-Control', 'private, no-store');
     if (!process.env.K_SERVICE) return next();
     if (pathname === '/studio/login' || pathname === '/studio/login.html') return next();
@@ -125,6 +152,11 @@ if (stack) {
 // extensionless paths such as /ai-business-leaders/login are served as public
 // static files before their private no-store route can run.
 const before = stack ? stack.length : 0;
+app.get('/api/abl/deployment', (req, res) => {
+  markDeployment(res);
+  res.set('Cache-Control', 'private, no-store');
+  res.json({ ok: true, data: DEPLOYMENT });
+});
 registerFocusedWorkspaceRoute(app);
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
@@ -141,6 +173,7 @@ if (stack) {
 
 app.listen(config.port, () => {
   console.log(`[server] listening on port ${config.port}`);
+  console.log(`[server] release: ${DEPLOYMENT.release} · revision: ${DEPLOYMENT.revision}`);
   console.log('[server] storage: Firestore (including AI Leadership Workspace collections)');
   console.log('[server] participant access: passwordless email verification required');
   console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
