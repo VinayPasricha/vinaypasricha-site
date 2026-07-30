@@ -8,6 +8,7 @@
     "translate": "node scripts/translate-pack.mjs",
     "translate:dry": "node scripts/translate-pack.mjs --dry-run",
     "test:abl-course": "node scripts/test-abl-course.mjs",
+    "test:abl-launch": "node scripts/test-abl-launch.mjs",
     "test:homepage": "node --test scripts/test-homepage-redesign.mjs"
   },
   "devDependencies": {
