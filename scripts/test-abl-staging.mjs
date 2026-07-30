@@ -108,17 +108,33 @@ await waitForRelease();
 }
 
 {
-  const response = await request('/studio/ai-leadership-workspace', { redirect: 'manual' });
+  const { response, body } = await text('/studio/ai-leadership-workspace', { redirect: 'manual' });
+  if (response.status !== 302) {
+    console.error('Studio route diagnostic:', JSON.stringify({
+      status: response.status,
+      location: response.headers.get('location'),
+      cacheControl: response.headers.get('cache-control'),
+      contentType: response.headers.get('content-type'),
+      body: body.slice(0, 1000),
+    }));
+  }
   assert.equal(response.status, 302, `private Studio must redirect to login; received ${response.status}`);
   assert.match(String(response.headers.get('location') || ''), /^\/studio\/login/, 'Studio redirect must go to private login');
   hasNoStore(response, 'Studio redirect');
 }
 
 {
-  const response = await request('/api/studio/status', { redirect: 'manual' });
+  const { response, body } = await text('/api/studio/status', { redirect: 'manual' });
+  if (response.status !== 200) {
+    console.error('Studio status diagnostic:', JSON.stringify({
+      status: response.status,
+      contentType: response.headers.get('content-type'),
+      body: body.slice(0, 1000),
+    }));
+  }
   assert.equal(response.status, 200, `Studio must be explicitly configured on staging; received ${response.status}`);
-  const body = await response.json();
-  assert.equal(body.authed, false, 'anonymous staging request must not be Studio-authenticated');
+  const parsed = JSON.parse(body);
+  assert.equal(parsed.authed, false, 'anonymous staging request must not be Studio-authenticated');
 }
 
 console.log('Deployed staging HTTP audit passed: fingerprint, health, OTP privacy, participant isolation, no-store caching and Studio gate.');
