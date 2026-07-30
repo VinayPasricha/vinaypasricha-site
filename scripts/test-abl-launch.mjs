@@ -33,16 +33,18 @@ const login = read('ai-business-leaders/login.html');
 
 // Access control: slug selects a record but never authorises access.
 includes(server, 'app.use(participantApiGuard)', 'participant API guard is installed');
-includes(guard, "path.match(/^\\/api\\/abl\\/(?:session|course|workspace)\\/([^/]+)/)", 'all participant API families are guarded');
-includes(guard, "String(payload.slug) !== String(slug)", 'token slug must match requested workspace');
+includes(guard, "path.match(/^\/api\/abl\/(?:session|course|workspace)\/([^/]+)/)", 'all participant API families are guarded');
+includes(guard, 'String(payload.slug) !== String(slug)', 'token slug must match requested workspace');
 includes(auth, 'participantCanSignIn', 'Studio invite state gates OTP access');
 includes(auth, 'GENERIC_REQUEST_MESSAGE', 'OTP request does not disclose participant membership');
 includes(login, 'six-digit sign-in code', 'participant login clearly uses OTP');
 
 // Studio must fail closed when secrets are missing.
-excludes(workspace, "|| 'vik123'", 'Studio has no built-in fallback passphrase');
-includes(workspace, "if (!passphrase) return ''", 'missing Studio passphrase fails closed');
-includes(workspace, 'cookieAllowed || tokenAllowed', 'Studio accepts only configured credentials');
+excludes(workspace, "|| 'vik123'", 'new Studio API has no built-in fallback passphrase');
+includes(workspace, "if (!passphrase) return ''", 'missing workspace Studio passphrase fails closed');
+includes(workspace, 'cookieAllowed || tokenAllowed', 'workspace Studio accepts only configured credentials');
+includes(server, 'studio_not_configured', 'central Studio is blocked when its passphrase is absent');
+includes(server, "!String(process.env.STUDIO_PASSPHRASE || '').trim()", 'Cloud Run requires an explicit Studio passphrase');
 
 // Participant chrome must never expose private Studio.
 includes(focusedRoute, 'hidden aria-hidden="true" tabindex="-1"', 'Studio control is removed before participant HTML is sent');
