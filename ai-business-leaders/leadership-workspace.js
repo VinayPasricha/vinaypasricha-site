@@ -48,7 +48,13 @@
   }
 
   function itemCard(item) {
-    var open = item.source_url ? ' href="' + esc(item.source_url) + '" target="_blank" rel="noopener"' : '';
+    // An uploaded PDF is served from our own signed-in API, which a plain link
+    // navigation cannot authenticate — fetch it with the sign-in token instead
+    // (see the delegated handler below). External links open normally.
+    var isFile = item.source_url && item.source_url.indexOf('/api/abl/') === 0;
+    var open = item.source_url
+      ? (isFile ? ' href="#" data-file-url="' + esc(item.source_url) + '"' : ' href="' + esc(item.source_url) + '" target="_blank" rel="noopener"')
+      : '';
     var tag = item.type || 'resource';
     return '<a class="lw-material-card"' + open + '>' +
       '<span class="type">' + esc(tag) + (item.session_number ? ' · Session ' + item.session_number : '') + '</span>' +
@@ -301,6 +307,31 @@
       // workspace layer is temporarily unavailable.
     }
   }
+
+  // Open an uploaded course PDF. The file lives behind our signed-in API, so we
+  // fetch it with the participant's token and show the bytes — a plain link
+  // would arrive without the token and be rejected. A blank tab is opened
+  // synchronously inside the click so the browser does not treat the later
+  // navigation as a blocked pop-up.
+  async function openGatedFile(url, win) {
+    try {
+      var res = await fetch(url, { headers: (window.AblAuth && window.AblAuth.headers) ? window.AblAuth.headers({}) : {} });
+      if (res.status === 401) { if (win) win.close(); if (window.AblAuth) { window.AblAuth.clear(); window.AblAuth.login(); } return; }
+      if (!res.ok) throw new Error('unavailable');
+      var blobUrl = URL.createObjectURL(await res.blob());
+      if (win && !win.closed) win.location = blobUrl; else window.open(blobUrl, '_blank', 'noopener');
+      setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 120000);
+    } catch (e) {
+      if (win && !win.closed) win.close();
+      alert('This file could not be opened. Please make sure you are still signed in and try again.');
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-file-url]') : null;
+    if (!el) return;
+    e.preventDefault();
+    openGatedFile(el.getAttribute('data-file-url'), window.open('', '_blank'));
+  });
 
   loadWorkspace();
 })();
