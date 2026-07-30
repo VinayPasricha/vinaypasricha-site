@@ -7,6 +7,7 @@ import { registerAuthRoutes } from './abl/authRoutes.js';
 import { registerRuntimeRoutes } from './abl/runtimeRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
 import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
+import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
@@ -47,9 +48,10 @@ if (stack) {
 }
 
 // createApp installs the site's static handler and JSON API 404 before returning.
-// Register the newer workspace, sign-in and runtime routes, then move only those
-// newly-added Express layers immediately before the API 404.
+// Register the focused participant shell first so it wins the workspace route,
+// followed by the data, sign-in and guided-conversation routes.
 const before = stack ? stack.length : 0;
+registerFocusedWorkspaceRoute(app);
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
 registerRuntimeRoutes(app, { rateLimit });
