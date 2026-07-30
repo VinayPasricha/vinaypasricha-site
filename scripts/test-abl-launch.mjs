@@ -13,6 +13,7 @@ const excludes = (source, text, label) => assert.ok(!source.includes(text), labe
   'ai-business-leaders/participant-only-nav.js',
   'ai-business-leaders/participant-inner-nav.js',
   'ai-business-leaders/workspace-home-focus.js',
+  'backend/package.json',
   'backend/src/abl/authRoutes.js',
   'backend/src/abl/participantGuard.js',
   'backend/src/abl/securePageRoutes.js',
@@ -31,6 +32,7 @@ const excludes = (source, text, label) => assert.ok(!source.includes(text), labe
 ].forEach(mustExist);
 
 const server = read('backend/src/server.js');
+const backendPackage = read('backend/package.json');
 const guard = read('backend/src/abl/participantGuard.js');
 const auth = read('backend/src/abl/authRoutes.js');
 const workspace = read('backend/src/abl/workspaceRoutes.js');
@@ -97,6 +99,14 @@ includes(focusedHome, 'Your saved work', 'participant home preserves access to s
 includes(workspace, 'session.meeting_url', 'current session meeting link is selected from the cohort schedule');
 includes(workspace, 'session_date', 'current session date is exposed for adaptive behaviour');
 
+// Cohort changes preserve already received work without granting future old-cohort content.
+includes(workspace, 'material_entitlements', 'material access is snapshotted before a cohort change');
+includes(workspace, 'assignment_entitlements', 'assignment access is snapshotted before a cohort change');
+includes(workspace, 'cohort_history', 'cohort movement history is retained');
+includes(workspace, "visibleTo(assignment, participant, 'assignment_entitlements') || Boolean(byAssignment[assignment.id])", 'saved assignment work remains visible after reassignment');
+includes(workspace, 'existingSubmission', 'an earlier assignment remains editable after reassignment');
+includes(workspace, "return fail(res, 'Email already exists', 409)", 'participant email edits reject duplicates');
+
 // Destructive course-content operations are intercepted before legacy handlers.
 includes(server, 'registerSafeArchiveRoutes(app)', 'safe archive routes are registered');
 includes(safeArchive, "status: 'hidden'", 'published content is archived rather than erased');
@@ -104,6 +114,7 @@ assert.ok(server.indexOf('registerSafeArchiveRoutes(app)') < server.indexOf('reg
 
 // Direct assignment uploads remain private and authenticated.
 includes(server, 'registerAssignmentUploadRoutes(app)', 'assignment upload routes are registered');
+includes(backendPackage, '"@google-cloud/storage"', 'the Cloud Storage client dependency is declared');
 includes(upload, "res.set('Cache-Control', 'private, no-store')", 'uploaded assignment downloads are never publicly cached');
 includes(upload, 'signatureMatches', 'uploaded files are checked by content signature');
 includes(upload, 'assignmentVisible', 'participants can upload only to assignments available to them');
@@ -113,6 +124,8 @@ includes(server, 'registerIntelligenceRoutes(app', 'Studio intelligence routes a
 includes(intelligence, '/api/abl/intelligence/participants/:id/ask', 'participant research endpoint exists');
 includes(intelligence, 'completeGrounded', 'participant agent can perform live grounded public research');
 includes(intelligence, 'PRIVATE COURSE EVIDENCE', 'private evidence is synthesised separately from public web research');
+includes(intelligence, 'Intentionally public-only', 'grounded web queries exclude private meeting and course evidence');
+excludes(intelligence, 'RECENT ADMIN QUESTIONS FOR REFERENCE', 'private thread history is not sent to public web search');
 includes(intelligence, 'save_to_dossier', 'grounded follow-up findings can be retained in the participant dossier');
 includes(intelligence, "thread(participant.id, 'admin_research')", 'participant research conversation persists in its own private thread');
 includes(intelligence, 'recentConversation(history)', 'participant agent understands follow-up questions from recent thread context');
@@ -123,10 +136,14 @@ includes(participantIntelligence, 'Save grounded findings to this dossier', 'ope
 // Cross-participant Course Intelligence agent.
 includes(intelligence, '/api/abl/intelligence/cohort/ask', 'cross-participant intelligence endpoint exists');
 includes(intelligence, 'compactParticipantEvidence', 'the directory is scanned with compact evidence before deep reads');
+includes(intelligence, 'chunks(ranked, 28)', 'every participant is examined in model-sized directory batches');
+includes(intelligence, 'mapLimit(participants, 8', 'Firestore directory reads are concurrency limited');
 includes(intelligence, 'Confirmed, Probable/inferred, or Insufficient evidence', 'commercial-interest answers separate fact, inference and missing evidence');
+includes(intelligence, 'DIRECTORY SIZE EXAMINED', 'answers state how many participant records were examined');
 includes(intelligence, 'cohort_id', 'cross-participant analysis can be restricted to one cohort');
 includes(courseIntelligence, 'Which Gurugram participants may need recruitment help?', 'Course Intelligence includes the intended recruitment query');
 includes(courseIntelligence, 'Records considered', 'answers link back to the records used');
+includes(courseIntelligence, 'renderAnswer', 'Course Intelligence renders readable structured answers');
 includes(unifiedStudio, '/studio/course-intelligence.js', 'the unified private Studio loads Course Intelligence');
 
 // One maintained profile route: legacy links preserve the participant query string.
@@ -141,4 +158,4 @@ excludes(auditWorkflow, '\n  pull_request:', 'the launch audit does not run on p
 // Invitation should lead to login, not treat a shareable slug as authentication.
 includes(workspace, '/ai-business-leaders/login', 'Studio invitation points participants to secure login');
 
-console.log('AI for Business Leaders launch audit passed: access, privacy, mobile navigation, safe persistence, assignment uploads, participant research and cross-course intelligence.');
+console.log('AI for Business Leaders launch audit passed: access, privacy, mobile navigation, cohort-safe persistence, safe archives, assignment uploads, participant research and full-directory Course Intelligence.');
