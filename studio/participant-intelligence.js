@@ -4,6 +4,8 @@
   var params = new URLSearchParams(location.search);
   var participantId = params.get('participant');
   if (!participantId) return;
+  var installing = false;
+  var observer = null;
 
   function esc(value) {
     return String(value == null ? '' : value)
@@ -51,35 +53,42 @@
       '<div class="intel-status" id="participantIntelStatus"></div></div></div>';
   }
   async function install(snapshot) {
-    if (!snapshot || document.getElementById('participantIntelCard')) return;
-    var detail = await api('/api/abl/participants/' + encodeURIComponent(participantId));
-    var participant = detail.participant || {};
-    snapshot.insertAdjacentHTML('afterend', cardMarkup(participant.name, participant.company_name));
-    var thread = await api('/api/abl/intelligence/participants/' + encodeURIComponent(participantId) + '/thread');
-    renderMessages(thread.messages || []);
-    var question = document.getElementById('participantIntelQuestion');
-    var status = document.getElementById('participantIntelStatus');
-    var ask = document.getElementById('participantIntelAsk');
-    Array.prototype.forEach.call(document.querySelectorAll('#participantIntelCard .intel-suggestion'), function(button){
-      button.onclick = function(){ question.value = button.textContent; question.focus(); };
-    });
-    ask.onclick = async function(){
-      var value = question.value.trim();
-      if (!value) { status.textContent = 'Ask a question first.'; return; }
-      ask.disabled = true; ask.textContent = 'Researching…'; status.textContent = 'Reading the private record and checking public sources…';
-      try {
-        var result = await api('/api/abl/intelligence/participants/' + encodeURIComponent(participantId) + '/ask', {
-          method:'POST', body:JSON.stringify({ question:value, use_web:document.getElementById('participantIntelWeb').checked, save_to_dossier:document.getElementById('participantIntelSave').checked })
-        });
-        renderMessages(result.messages || []);
-        question.value = '';
-        status.textContent = result.saved_to_dossier ? 'Answered and saved to the participant dossier.' : (result.grounded ? 'Answered from the private record and grounded public sources.' : 'Answered from available evidence; live grounding was unavailable or not requested.');
-      } catch (error) { status.textContent = error.message || 'Could not answer that question.'; }
-      ask.disabled = false; ask.textContent = 'Ask research agent';
-    };
-    question.addEventListener('keydown', function(event){ if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') ask.click(); });
+    if (!snapshot || installing || document.getElementById('participantIntelCard')) return;
+    installing = true;
+    try {
+      var detail = await api('/api/abl/participants/' + encodeURIComponent(participantId));
+      if (document.getElementById('participantIntelCard')) return;
+      var participant = detail.participant || {};
+      snapshot.insertAdjacentHTML('afterend', cardMarkup(participant.name, participant.company_name));
+      if (observer) observer.disconnect();
+      var thread = await api('/api/abl/intelligence/participants/' + encodeURIComponent(participantId) + '/thread');
+      renderMessages(thread.messages || []);
+      var question = document.getElementById('participantIntelQuestion');
+      var status = document.getElementById('participantIntelStatus');
+      var ask = document.getElementById('participantIntelAsk');
+      Array.prototype.forEach.call(document.querySelectorAll('#participantIntelCard .intel-suggestion'), function(button){
+        button.onclick = function(){ question.value = button.textContent; question.focus(); };
+      });
+      ask.onclick = async function(){
+        var value = question.value.trim();
+        if (!value) { status.textContent = 'Ask a question first.'; return; }
+        ask.disabled = true; ask.textContent = 'Researching…'; status.textContent = 'Reading the private record and checking public sources…';
+        try {
+          var result = await api('/api/abl/intelligence/participants/' + encodeURIComponent(participantId) + '/ask', {
+            method:'POST', body:JSON.stringify({ question:value, use_web:document.getElementById('participantIntelWeb').checked, save_to_dossier:document.getElementById('participantIntelSave').checked })
+          });
+          renderMessages(result.messages || []);
+          question.value = '';
+          status.textContent = result.saved_to_dossier ? 'Answered and saved to the participant dossier.' : (result.grounded ? 'Answered from the private record and grounded public sources.' : 'Answered from available evidence; live grounding was unavailable or not requested.');
+        } catch (error) { status.textContent = error.message || 'Could not answer that question.'; }
+        ask.disabled = false; ask.textContent = 'Ask research agent';
+      };
+      question.addEventListener('keydown', function(event){ if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') ask.click(); });
+    } finally {
+      installing = false;
+    }
   }
-  var observer = new MutationObserver(function(){
+  observer = new MutationObserver(function(){
     var snapshot = document.querySelector('.snapshot-card');
     if (snapshot) install(snapshot).catch(function(error){ console.error('[participant-intelligence]', error); });
   });
