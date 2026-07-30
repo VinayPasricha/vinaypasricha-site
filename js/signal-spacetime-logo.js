@@ -34,7 +34,7 @@ if (mount) {
     };
 
     const idle = window.requestIdleCallback
-      ? (callback) => window.requestIdleCallback(callback, { timeout: 1000 })
+      ? (callback) => window.requestIdleCallback(callback, { timeout: 200 })
       : (callback) => window.setTimeout(callback, 200);
 
     idle(() => {
@@ -435,8 +435,7 @@ if (mount) {
           removeParallaxListeners();
           if (!mount.querySelector("img")) {
             const fallbackImage = document.createElement("img");
-            fallbackImage.src =
-              "/assets/images/vinay-signal-spacetime-mark.png";
+            fallbackImage.src = "/assets/images/brand/favicon-512.png";
             fallbackImage.alt =
               "Signal × Spacetime — the mark of Vinay Pasricha";
             mount.prepend(fallbackImage);

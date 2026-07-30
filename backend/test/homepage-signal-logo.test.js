@@ -11,7 +11,9 @@ test("homepage mounts the real Signal × Spacetime scene", async () => {
     read("css/site.css"),
   ]);
 
-  assert.match(html, /id="logo3d" class="hero-logo logo3d"/);
+  // The redesigned homepage still mounts the scene; it no longer wraps it in the
+  // old hero-logo class, so match the mount point rather than the exact classes.
+  assert.match(html, /id="logo3d" class="[^"]*logo3d/);
   assert.match(
     html,
     /alt="Signal × Spacetime — the mark of Vinay Pasricha"/

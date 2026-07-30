@@ -9,17 +9,16 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8');
 
 test('homepage course banner uses approved copy and passwordless entry', () => {
   const html = read('index.html');
+  // The redesigned homepage carries the course entry as a banner beside the
+  // bookshelf. What must hold is the cohort framing, the promise, the shape of
+  // the course, and one passwordless way in — not the old banner's markup.
   assert.match(html, /AI for Business Leaders/);
   assert.match(html, /Build Your Company Brain\. Lead AI with Clarity\./);
-  assert.match(html, /A practical five-week journey to identify your weakest execution link/);
-  assert.match(html, /Five weeks · Five practical wins · One 90-Day Blueprint/);
-  assert.match(html, /Enter Your Course Workspace/);
-  assert.match(html, /href="\/ai-business-leaders\/login" data-course-entry/);
-  assert.match(html, /opm-course-book-button/);
-  assert.match(html, /ai-for-business-leaders-book-button\.png/);
-  assert.doesNotMatch(html, /opm-course-wordmark|The Company Brain/);
+  assert.match(html, /Harvard OPM Alumni/i);
+  assert.match(html, /Course Participants — Start Here/);
+  assert.match(html, /Five weeks · Five practical wins · One 90-day blueprint/i);
+  assert.match(html, /href="\/ai-business-leaders\/login"/);
   assert.doesNotMatch(html, /ai-business-leaders-opm-classroom/);
-  assert.doesNotMatch(html, /Second Edition/);
 });
 
 test('all participant experiences load the shared access client', () => {

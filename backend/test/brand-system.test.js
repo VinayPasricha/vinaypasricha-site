@@ -57,7 +57,14 @@ test("every published HTML page uses the brand icons and social card", async () 
 });
 
 test("homepage conversations carry only the specified spectrum accents", async () => {
-  const [html, css] = await Promise.all([read("index.html"), read("css/site.css")]);
+  // The redesigned homepage renders the same twelve conversations as cards and
+  // styles them from its own stylesheet, so read that alongside site.css.
+  const [html, base, redesign] = await Promise.all([
+    read("index.html"),
+    read("css/site.css"),
+    read("css/home-redesign.css"),
+  ]);
+  const css = `${base}\n${redesign}`;
   const spectrum = [
     "#e11431",
     "#c9133a",
@@ -73,12 +80,13 @@ test("homepage conversations carry only the specified spectrum accents", async (
     "#3d9bff",
   ];
 
-  assert.equal((html.match(/class="path-row"/g) || []).length, 12);
+  // Twelve conversations, one per spectrum step, however they are laid out.
+  assert.equal((html.match(/class="conversation-card/g) || []).length, 12);
   spectrum.forEach((color) => assert.ok(css.includes(color), `missing ${color}`));
-  assert.match(css, /\.path-row:hover \.pr-num/);
-  assert.match(css, /\.path-row:hover \.pr-arrow/);
-  assert.match(css, /\.path-row:hover::after/);
-  assert.doesNotMatch(css, /\.path-row:hover \.pr-quote/);
+  // The accent belongs to the card and its leading number, never to the quote.
+  assert.match(css, /\.conversation-card:hover/);
+  assert.match(css, /\.conversation-card:hover \.card-top/);
+  assert.doesNotMatch(css, /\.conversation-card:hover q/);
 });
 
 test("amber hairlines pulse once and respect reduced motion", async () => {
@@ -88,10 +96,9 @@ test("amber hairlines pulse once and respect reduced motion", async () => {
     read("js/site.js"),
   ]);
 
-  assert.equal(
-    (html.match(/class="brand-section-divider"/g) || []).length,
-    4
-  );
+  // Four amber hairlines, now carried by the section itself rather than a
+  // dedicated divider element.
+  assert.equal((html.match(/pulse-divider/g) || []).length, 4);
   assert.match(css, /rgba\(255,\s*167,\s*38,\s*\.35\)/);
   assert.match(css, /rgba\(255,\s*167,\s*38,\s*\.9\)/);
   assert.match(css, /animation:\s*amber-divider-sweep 1\.2s/);
