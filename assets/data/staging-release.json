@@ -1,6 +1,6 @@
 {
-  "release": "abl-course-staging-20260730-0117",
-  "contains_all_changes_through": "3d040362011704f3bf66468aecfafaa56635f6c3",
-  "deployment_requested_at": "2026-07-30T01:17:00Z",
-  "verification": "AI course launch gate after private-route ordering fix and real mobile drawer"
+  "release": "abl-course-staging-20260730-0126",
+  "contains_all_changes_through": "eb19cac6b295c710ca6c7b57b83f058fc7cc8460",
+  "deployment_requested_at": "2026-07-30T01:26:00Z",
+  "verification": "AI course launch gate after explicit fail-closed Studio UI redirect"
 }
