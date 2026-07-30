@@ -1,16 +1,17 @@
 name: AI Course Launch Audit
 
+# Manual only. Automatic push and pull-request triggers were deliberately removed
+# to prevent repeated failure notifications while staging infrastructure is being
+# isolated. Run this workflow only when a deliberate launch audit is required.
 on:
-  push:
-    branches:
-      - agent/ai-course-staging
-  pull_request:
-    branches:
-      - agent/ai-course-staging
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ai-course-launch-audit
+  cancel-in-progress: true
 
 jobs:
   deployment-capability:
