@@ -242,7 +242,18 @@
       var body = { title: $('announcementTitle').value, message: $('announcementMessage').value, link_url: $('announcementLink').value, status: $('announcementStatus').value,
         publish_at: $('announcementPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
       var button = this, status = $('announcementFormStatus'); button.disabled = true; status.textContent = 'Publishing…';
-      try { await api('/announcements', { method: 'POST', body: JSON.stringify(body) }); status.textContent = 'Announcement saved.'; await load(); }
+      try {
+        var saved = await api('/announcements', { method: 'POST', body: JSON.stringify(body) });
+        // Report the delivery, not just the save: an operator needs to know how
+        // many participants it actually reached.
+        var mail = saved && saved.email;
+        if (!mail) status.textContent = 'Announcement saved as a draft — nothing emailed yet.';
+        else if (mail.skipped === 'email_not_configured') status.textContent = 'Published. Email is not configured on this server, so nothing was sent.';
+        else if (!mail.attempted) status.textContent = 'Published. No participant in this audience has an email address on file.';
+        else if (mail.failed) status.textContent = 'Published and emailed ' + mail.sent + ' of ' + mail.attempted + ' participants — ' + mail.failed + ' could not be delivered.';
+        else status.textContent = 'Published and emailed ' + mail.sent + ' participant' + (mail.sent === 1 ? '' : 's') + '.';
+        await load();
+      }
       catch (e) { status.textContent = e.message; }
       button.disabled = false;
     };

@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { db, COLLECTIONS } from '../firestore.js';
 import * as ablRepo from './store.js';
+import { sendAnnouncementEmails, emailConfigured } from './announcementMail.js';
 
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const nowISO = () => new Date().toISOString();
@@ -274,11 +275,30 @@ export function registerWorkspaceRoutes(app) {
   app.patch('/api/abl/workspace/admin/submissions/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablSubmissions, req.params.id, { admin_comment: cleanText(req.body && req.body.admin_comment, 5000) })));
 
   app.get('/api/abl/workspace/admin/announcements', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablAnnouncements)));
+  // Publishing an announcement also emails it to the audience it was published
+  // to. Delivery happens once per announcement, recorded on the document, so
+  // editing a published announcement never re-mails the cohort.
+  async function deliver(res, saved, req) {
+    if (!publishIsLive(saved) || saved.email_sent_at) return ok(res, saved);
+    const origin = `${req.protocol}://${req.get('host')}`;
+    const result = await sendAnnouncementEmails(saved, { origin });
+    const stamped = result.sent > 0
+      ? await saveDoc(COLLECTIONS.ablAnnouncements, saved.id, {
+        email_sent_at: nowISO(), email_sent_count: result.sent, email_failed_count: result.failed,
+      })
+      : saved;
+    return ok(res, { ...stamped, email: result });
+  }
+
   app.post('/api/abl/workspace/admin/announcements', requireStudio, async (req, res) => {
     const row = sanitiseAnnouncement(req.body || {});
     if (!row.title || !row.message) return fail(res, 'Title and message are required');
-    return ok(res, await saveDoc(COLLECTIONS.ablAnnouncements, null, row), 201);
+    const saved = await saveDoc(COLLECTIONS.ablAnnouncements, null, row);
+    return deliver(res, saved, req);
   });
-  app.patch('/api/abl/workspace/admin/announcements/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablAnnouncements, req.params.id, sanitiseAnnouncement(req.body || {}))));
+  app.patch('/api/abl/workspace/admin/announcements/:id', requireStudio, async (req, res) => {
+    const saved = await saveDoc(COLLECTIONS.ablAnnouncements, req.params.id, sanitiseAnnouncement(req.body || {}));
+    return deliver(res, saved, req);
+  });
   app.delete('/api/abl/workspace/admin/announcements/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablAnnouncements, req.params.id)));
 }
