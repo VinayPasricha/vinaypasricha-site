@@ -63,11 +63,18 @@ function publishIsLive(item) {
   if (item.status !== 'scheduled' || !item.publish_at) return false;
   return new Date(item.publish_at).getTime() <= Date.now();
 }
-function visibleTo(item, participant) {
+function hasEntitlement(item, participant, field) {
+  if (!field || !item || !item.id) return false;
+  return cleanArray(participant && participant[field], 1000).includes(String(item.id));
+}
+function visibleTo(item, participant, entitlementField = null) {
   if (!publishIsLive(item)) return false;
   const audience = item.audience || 'all';
   if (audience === 'all') return true;
-  if (audience === 'cohorts') return cleanArray(item.cohort_ids).includes(String(participant.cohort_id || ''));
+  if (audience === 'cohorts') {
+    const currentCohort = String(participant.cohort_id || '');
+    return cleanArray(item.cohort_ids).includes(currentCohort) || hasEntitlement(item, participant, entitlementField);
+  }
   if (audience === 'participants') return cleanArray(item.participant_ids).includes(String(participant.id));
   return false;
 }
@@ -132,18 +139,18 @@ export function registerWorkspaceRoutes(app) {
       const p = await ablRepo.getParticipantBySlug(req.params.slug);
       if (!p) return fail(res, 'Workspace not found', 404);
       if (!p.link_approved) return fail(res, 'This workspace is not active yet.', 403);
-      const [cohort, materials, assignments, announcements, builder, outputs] = await Promise.all([
+      const [cohort, materials, assignments, announcements, builder, outputs, submissionSnap] = await Promise.all([
         p.cohort_id ? docData(await col(COLLECTIONS.ablCohorts).doc(String(p.cohort_id)).get()) : null,
         listCollection(COLLECTIONS.ablMaterials),
         listCollection(COLLECTIONS.ablAssignments),
         listCollection(COLLECTIONS.ablAnnouncements),
         ablRepo.getBuilder(p.id),
         ablRepo.getOutputs(p.id),
+        col(COLLECTIONS.ablSubmissions).where('participant_id', '==', p.id).get(),
       ]);
-      const visibleAssignments = assignments.filter((a) => visibleTo(a, p));
-      const submissionSnap = await col(COLLECTIONS.ablSubmissions).where('participant_id', '==', p.id).get();
       const submissions = submissionSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
       const byAssignment = Object.fromEntries(submissions.map((s) => [s.assignment_id, s]));
+      const visibleAssignments = assignments.filter((a) => visibleTo(a, p, 'assignment_entitlements') || Boolean(byAssignment[a.id]));
       const initiative = outputs.find((o) => o.output_type === 'ai_leadership_initiative') || null;
       const journeyStarted = !!(p.last_activity_at || p.message_count || p.course_last_activity_at || (builder && builder.completion_percent));
       if (p.invite_status !== 'active') ablRepo.updateParticipant(p.id, { invite_status: 'active' }).catch(() => {});
@@ -155,7 +162,7 @@ export function registerWorkspaceRoutes(app) {
           last_activity_at: p.course_last_activity_at || p.last_activity_at || null,
         },
         cohort: participantCohort(cohort),
-        materials: materials.filter((m) => visibleTo(m, p)),
+        materials: materials.filter((m) => visibleTo(m, p, 'material_entitlements')),
         assignments: visibleAssignments.map((a) => ({ ...a, submission: byAssignment[a.id] || null })),
         announcements: announcements.filter((a) => visibleTo(a, p)),
         builder: builder || { sessions: {}, current_session: 1, completed_sessions: [], completion_percent: 0 },
@@ -172,8 +179,10 @@ export function registerWorkspaceRoutes(app) {
       const p = await ablRepo.getParticipantBySlug(req.params.slug);
       if (!p || !p.link_approved) return fail(res, 'Workspace not found', 404);
       const assignment = docData(await col(COLLECTIONS.ablAssignments).doc(req.params.assignmentId).get());
-      if (!assignment || !visibleTo(assignment, p)) return fail(res, 'Assignment not available', 404);
       const id = `${req.params.assignmentId}_${p.id}`;
+      const existingSubmission = docData(await col(COLLECTIONS.ablSubmissions).doc(id).get());
+      const assignmentAvailable = assignment && (visibleTo(assignment, p, 'assignment_entitlements') || Boolean(existingSubmission));
+      if (!assignmentAvailable) return fail(res, 'Assignment not available', 404);
       const status = req.body && req.body.status === 'submitted' ? 'submitted' : 'draft';
       const saved = await saveDoc(COLLECTIONS.ablSubmissions, id, {
         assignment_id: req.params.assignmentId, participant_id: p.id,
@@ -210,7 +219,14 @@ export function registerWorkspaceRoutes(app) {
         const existing = await ablRepo.getParticipantByEmail(email);
         if (existing) { skipped.push({ name, email, reason: 'Email already exists' }); continue; }
         const p = await ablRepo.createParticipant({ name, company_name: cleanText(row.company_name, 180) || 'To be added', email, role_title: cleanText(row.role_title, 180) || null });
-        const saved = await ablRepo.updateParticipant(p.id, { phone: phone || null, cohort_id: cohortId, invite_status: 'not_invited' });
+        const saved = await ablRepo.updateParticipant(p.id, {
+          phone: phone || null,
+          cohort_id: cohortId,
+          cohort_history: cohortId ? [{ from_cohort_id: null, to_cohort_id: cohortId, changed_at: nowISO() }] : [],
+          material_entitlements: [],
+          assignment_entitlements: [],
+          invite_status: 'not_invited',
+        });
         created.push(saved);
       }
       return ok(res, { created, skipped }, 201);
@@ -219,14 +235,48 @@ export function registerWorkspaceRoutes(app) {
 
   app.patch('/api/abl/workspace/admin/participants/:id', requireStudio, async (req, res) => {
     try {
+      const current = await ablRepo.getParticipant(req.params.id);
+      if (!current) return fail(res, 'Participant not found', 404);
       const b = req.body || {};
       const patch = {};
       ['name', 'email', 'phone', 'company_name', 'role_title', 'cohort_id', 'invite_status'].forEach((k) => {
         if (Object.prototype.hasOwnProperty.call(b, k)) patch[k] = b[k] == null ? null : cleanText(b[k], k === 'email' ? 320 : 240);
       });
-      if (patch.email) patch.email = patch.email.toLowerCase();
+      if (patch.email) {
+        patch.email = patch.email.toLowerCase();
+        if (patch.email !== String(current.email || '').toLowerCase()) {
+          const duplicate = await ablRepo.getParticipantByEmail(patch.email);
+          if (duplicate && duplicate.id !== current.id) return fail(res, 'Email already exists', 409);
+        }
+      }
+
+      if (Object.prototype.hasOwnProperty.call(patch, 'cohort_id')) {
+        const previousCohortId = cleanText(current.cohort_id, 120) || null;
+        const nextCohortId = cleanText(patch.cohort_id, 120) || null;
+        patch.cohort_id = nextCohortId;
+        if (previousCohortId !== nextCohortId) {
+          const [materials, assignments] = await Promise.all([
+            listCollection(COLLECTIONS.ablMaterials),
+            listCollection(COLLECTIONS.ablAssignments),
+          ]);
+          const materialEntitlements = new Set(cleanArray(current.material_entitlements, 1000));
+          const assignmentEntitlements = new Set(cleanArray(current.assignment_entitlements, 1000));
+          materials.filter((m) => visibleTo(m, current, 'material_entitlements')).forEach((m) => materialEntitlements.add(String(m.id)));
+          assignments.filter((a) => visibleTo(a, current, 'assignment_entitlements')).forEach((a) => assignmentEntitlements.add(String(a.id)));
+          patch.material_entitlements = [...materialEntitlements].slice(-1000);
+          patch.assignment_entitlements = [...assignmentEntitlements].slice(-1000);
+          patch.cohort_history = [
+            ...(Array.isArray(current.cohort_history) ? current.cohort_history.slice(-99) : []),
+            { from_cohort_id: previousCohortId, to_cohort_id: nextCohortId, changed_at: nowISO() },
+          ];
+        }
+      }
+
       return ok(res, await ablRepo.updateParticipant(req.params.id, patch));
-    } catch (e) { return fail(res, 'Server error', 500); }
+    } catch (e) {
+      console.error('[abl-workspace] participant update', e);
+      return fail(res, 'Server error', 500);
+    }
   });
 
   app.post('/api/abl/workspace/admin/participants/:id/invite', requireStudio, async (req, res) => {
