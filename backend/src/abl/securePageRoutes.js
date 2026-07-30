@@ -1,5 +1,5 @@
 // Serves the established preparation and Initiative Builder shells with the
-// shared participant-auth client inserted before their existing page scripts.
+// shared participant-auth client and persistent Workspace Home navigation.
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -8,10 +8,12 @@ const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 
 function authenticatedShell(file, appScript) {
   const source = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', file), 'utf8');
-  if (source.includes('/ai-business-leaders/auth-client.js')) return source;
   const target = `<script src="/ai-business-leaders/${appScript}"></script>`;
-  const auth = '<script src="/ai-business-leaders/auth-client.js"></script>\n  ';
-  return source.replace(target, auth + target);
+  const scripts = [
+    source.includes('/ai-business-leaders/auth-client.js') ? '' : '<script src="/ai-business-leaders/auth-client.js"></script>',
+    source.includes('/ai-business-leaders/participant-inner-nav.js') ? '' : '<script src="/ai-business-leaders/participant-inner-nav.js"></script>',
+  ].filter(Boolean).join('\n  ');
+  return scripts ? source.replace(target, scripts + '\n  ' + target) : source;
 }
 
 export function registerSecureParticipantPages(app) {
