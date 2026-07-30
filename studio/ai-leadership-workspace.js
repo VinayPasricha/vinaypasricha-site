@@ -145,13 +145,23 @@
     }).join('') : '<tr><td colspan="7" class="empty">No participants yet.</td></tr>';
   }
 
+  // The people assigned to a cohort, listed by name (with company).
+  function membersOf(c) {
+    var members = state.participants.filter(function (p) { return p.cohort_id === c.id; });
+    if (!members.length) return '<div style="margin-top:12px"><div class="sub" style="text-transform:uppercase;letter-spacing:.08em">Participants</div><p class="empty" style="margin:6px 0 0">No one assigned yet — add people to this cohort from Manage participants.</p></div>';
+    members.sort(function (a, b) { return String(a.name || '').localeCompare(String(b.name || '')); });
+    return '<div style="margin-top:12px"><div class="sub" style="text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Participants (' + members.length + ')</div>' +
+      '<ol style="margin:0;padding-left:22px;font-size:13.5px;line-height:1.8;max-height:340px;overflow:auto">' +
+      members.map(function (p) { return '<li>' + esc(p.name || 'Unnamed') + (p.company_name ? ' <span class="sub" style="color:var(--ink-3)">· ' + esc(p.company_name) + '</span>' : '') + '</li>'; }).join('') +
+      '</ol></div>';
+  }
   function cohortCard(c, compact) {
     var count = state.participants.filter(function (p) { return p.cohort_id === c.id; }).length;
     var current = Math.max(1, Math.min(5, parseInt(c.current_session, 10) || 1));
     var next = c.sessions && c.sessions[String(current)];
     return '<article class="entity-card" data-cohort="' + esc(c.id) + '"><span class="meta">' + count + ' participants · Session ' + current + '</span><h3>' + esc(c.name) + '</h3>' +
       '<p>' + esc(c.description || 'No description') + '</p><p>' + (next && next.date ? 'Next: ' + esc(fmtDate(next.date)) : 'Session date not added') + '</p>' +
-      (compact ? '' : '<div class="field" style="margin-top:12px"><label>Current session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
+      (compact ? '' : membersOf(c) + '<div class="field" style="margin-top:12px"><label>Current session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
       '<div class="actions"><button class="btn small" data-save-cohort>Save</button><button class="btn small ghost" data-delete-cohort>Delete</button></div>') + '</article>';
   }
   function renderCohorts() {
