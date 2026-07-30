@@ -10,6 +10,19 @@ const clean = (value, max = 12000) => String(value == null ? '' : value).trim().
 const ok = (res, data, code = 200) => res.status(code).json({ ok: true, data });
 const fail = (res, error, code = 400) => res.status(code).json({ ok: false, error });
 
+async function mapLimit(items, limit, mapper) {
+  const rows = Array.isArray(items) ? items : [];
+  const output = new Array(rows.length);
+  let cursor = 0;
+  async function worker() {
+    while (cursor < rows.length) {
+      const index = cursor++;
+      output[index] = await mapper(rows[index], index);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(Math.max(1, limit), rows.length || 1) }, worker));
+  return output;
+}
 function sourceList(sources) {
   return (Array.isArray(sources) ? sources : []).slice(0, 10).map((s) => ({
     title: clean(s && s.title, 240), uri: clean(s && s.uri, 1200),
@@ -65,11 +78,15 @@ async function participantEvidence(participant) {
     repo.listAssets(participant.id), repo.getOutputs(participant.id), repo.listSessions(participant.id),
   ]);
   const snapshot = latestOutput(outputs, 'admin_participant_snapshot');
-  const conversations = await Promise.all(sessions.filter((s) => s.mode !== 'admin_research').slice(0, 8).map(async (s) => {
-    const messages = await repo.listMessages(s.id);
-    return `[${s.mode}] ` + messages.filter((m) => ['user', 'assistant'].includes(m.role)).slice(-12)
-      .map((m) => `${m.role}: ${clean(m.content, 1800)}`).join('\n');
-  }));
+  const conversations = await mapLimit(
+    sessions.filter((s) => s.mode !== 'admin_research').slice(0, 8),
+    4,
+    async (session) => {
+      const messages = await repo.listMessages(session.id);
+      return `[${session.mode}] ` + messages.filter((m) => ['user', 'assistant'].includes(m.role)).slice(-12)
+        .map((m) => `${m.role}: ${clean(m.content, 1800)}`).join('\n');
+    },
+  );
   return [
     `PROFILE: ${participant.name || ''} · ${participant.company_name || ''} · ${participant.role_title || ''} · ${participant.industry || ''} · ${participant.geography || ''} · cohort=${participant.cohort_id || 'unassigned'}`,
     `RESEARCH FIELDS: ${evidenceText(research && research.structured_context, 7000)}`,
@@ -95,15 +112,17 @@ async function appendResearchFinding(participantId, question, publicText, source
     sources_notes: clean([current && current.sources_notes, links ? `Follow-up sources (${stamp}): ${links}` : ''].filter(Boolean).join('\n'), 15000),
   });
 }
-function publicResearchPrompt(participant, question, history) {
-  return `PERSON: ${participant.name || ''}\nROLE: ${participant.role_title || ''}\nCOMPANY: ${participant.company_name || ''}\nOFFICIAL WEBSITE: ${participant.company_website || ''}\nRECENT ADMIN QUESTIONS FOR REFERENCE: ${clean((history || []).map((m) => `${m.role}: ${m.content}`).join(' | '), 4000)}\nQUESTION: ${question}`;
+function publicResearchPrompt(participant, question) {
+  // Intentionally public-only: no meeting notes, course memory or private thread text
+  // is sent to the Google Search-grounded request.
+  return `PERSON: ${participant.name || ''}\nROLE: ${participant.role_title || ''}\nCOMPANY: ${participant.company_name || ''}\nOFFICIAL WEBSITE: ${participant.company_website || ''}\nQUESTION: ${question}`;
 }
 async function askParticipant(participant, question, useWeb, history) {
   let publicResult = { text: '', sources: [], grounded: false };
   if (useWeb) {
     publicResult = await completeGrounded({
       system: `You are a careful corporate researcher. Research only the named person and company in the user message. Resolve identity using the official company/domain. Answer the exact question with current public facts. Do not use private assumptions. Distinguish company-wide facts from facts about subsidiaries, brands or promoters. If turnover or ownership is not publicly available, say so. Be concise and evidence-led.`,
-      messages: [{ role: 'user', content: publicResearchPrompt(participant, question, history) }],
+      messages: [{ role: 'user', content: publicResearchPrompt(participant, question) }],
     });
   }
   const internal = await participantEvidence(participant);
@@ -127,32 +146,32 @@ function tokens(query) {
     marriage: ['marriage','wedding','matrimony','event'], wedding: ['marriage','wedding','matrimony','event'],
   };
   const base = clean(query, 2000).toLowerCase().match(/[a-z0-9₹]+/g) || [];
-  return Array.from(new Set(base.flatMap((t) => aliases[t] || [t]).filter((t) => t.length > 2)));
+  return Array.from(new Set(base.flatMap((token) => aliases[token] || [token]).filter((token) => token.length > 2)));
 }
 function lexicalScore(record, queryTokens) {
   const text = record.text.toLowerCase();
   return queryTokens.reduce((score, token) => score + (text.includes(token) ? (token.length > 7 ? 3 : 1) : 0), 0);
 }
 async function compactDirectory(participants) {
-  return Promise.all(participants.map(async (participant) => ({
+  return mapLimit(participants, 8, async (participant) => ({
     id: participant.id, name: participant.name, company: participant.company_name,
     cohort_id: participant.cohort_id || null, geography: participant.geography || '',
     text: await compactParticipantEvidence(participant),
-  })));
+  }));
 }
 function chunks(items, size) {
   const out = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  for (let index = 0; index < items.length; index += size) out.push(items.slice(index, index + size));
   return out;
 }
 async function selectFromBatch(batch, question) {
   const raw = await completeModel({
     model: MODEL, generationConfig: { maxOutputTokens: 1400, temperature: 0.1 },
     system: `Select every participant record in this batch that may be relevant to the administrator's question. Return strict JSON only: {"candidate_ids":["id"],"reason_by_id":{"id":"short evidence-based reason"}}. Do not infer facts not present in a record. For possible commercial interest, include supported records and records needing confirmation, but state which.`,
-    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nTHIS DIRECTORY BATCH:\n${JSON.stringify(batch.map((r) => ({ id:r.id,name:r.name,company:r.company,cohort_id:r.cohort_id,geography:r.geography,evidence:clean(r.text,2200) })))}` }],
+    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nTHIS DIRECTORY BATCH:\n${JSON.stringify(batch.map((record) => ({ id:record.id,name:record.name,company:record.company,cohort_id:record.cohort_id,geography:record.geography,evidence:clean(record.text,2200) })))}` }],
   });
   const parsed = extractJson(raw) || {};
-  const allowed = new Set(batch.map((r) => String(r.id)));
+  const allowed = new Set(batch.map((record) => String(record.id)));
   return {
     ids: (Array.isArray(parsed.candidate_ids) ? parsed.candidate_ids : []).map(String).filter((id) => allowed.has(id)),
     reasons: parsed.reason_by_id || {},
@@ -160,29 +179,31 @@ async function selectFromBatch(batch, question) {
 }
 async function selectCandidates(records, question) {
   const queryTokens = tokens(question);
-  const ranked = records.map((r) => ({ ...r, score: lexicalScore(r, queryTokens) }))
+  const ranked = records.map((record) => ({ ...record, score: lexicalScore(record, queryTokens) }))
     .sort((a, b) => b.score - a.score);
   // Every record is shown to one selector batch. Lexical ranking improves batch order;
   // it never excludes participants from an all-course count.
-  const selections = await Promise.all(chunks(ranked, 28).map((batch) => selectFromBatch(batch, question)));
+  const selections = await mapLimit(chunks(ranked, 28), 2, (batch) => selectFromBatch(batch, question));
   const ids = [];
   const reasons = {};
   selections.forEach((selection) => {
     selection.ids.forEach((id) => { if (!ids.includes(id)) ids.push(id); });
     Object.assign(reasons, selection.reasons || {});
   });
-  if (!ids.length) ranked.filter((r) => r.score > 0).slice(0, 20).forEach((r) => ids.push(String(r.id)));
+  if (!ids.length) ranked.filter((record) => record.score > 0).slice(0, 20).forEach((record) => ids.push(String(record.id)));
   return { ids: ids.slice(0, 50), reasons };
 }
 async function askDirectory(participants, question, history) {
   const records = await compactDirectory(participants);
   const selected = await selectCandidates(records, question);
-  const byId = new Map(participants.map((p) => [String(p.id), p]));
+  const byId = new Map(participants.map((participant) => [String(participant.id), participant]));
   const selectedParticipants = selected.ids.map((id) => byId.get(id)).filter(Boolean);
-  const detail = await Promise.all(selectedParticipants.map(async (p) => ({
-    id: p.id, name: p.name, company: p.company_name, cohort_id: p.cohort_id || null,
-    evidence: await participantEvidence(p), reason: clean(selected.reasons[p.id], 500),
-  })));
+  const detail = await mapLimit(selectedParticipants, 6, async (participant) => ({
+    id: participant.id, name: participant.name, company: participant.company_name,
+    cohort_id: participant.cohort_id || null,
+    evidence: await participantEvidence(participant),
+    reason: clean(selected.reasons[participant.id], 500),
+  }));
   const messages = recentConversation(history, 6).concat([{
     role: 'user', content: `CURRENT QUESTION\n${question}\n\nDIRECTORY SIZE EXAMINED\n${participants.length}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}`,
   }]);
@@ -191,7 +212,13 @@ async function askDirectory(participants, question, history) {
     system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), explain the selection rule, and state how many directory records were examined. Mention likely false positives and missing data. End with one practical follow-up action.`,
     messages,
   });
-  return { answer, matches: detail.map((d) => ({ id:d.id,name:d.name,company:d.company,cohort_id:d.cohort_id,reason:d.reason })) };
+  return {
+    answer,
+    matches: detail.map((item) => ({
+      id:item.id, name:item.name, company:item.company,
+      cohort_id:item.cohort_id, reason:item.reason,
+    })),
+  };
 }
 
 export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
@@ -202,8 +229,14 @@ export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
     try {
       const participant = await repo.getParticipant(req.params.id);
       if (!participant) return fail(res, 'Participant not found', 404);
-      return ok(res, { participant: { id:participant.id,name:participant.name,company_name:participant.company_name }, ...(await thread(participant.id, 'admin_research')) });
-    } catch (e) { console.error('[abl-intelligence] participant thread', e); return fail(res, 'Server error', 500); }
+      return ok(res, {
+        participant: { id:participant.id,name:participant.name,company_name:participant.company_name },
+        ...(await thread(participant.id, 'admin_research')),
+      });
+    } catch (error) {
+      console.error('[abl-intelligence] participant thread', error);
+      return fail(res, 'Server error', 500);
+    }
   });
   app.post('/api/abl/intelligence/participants/:id/ask', requireAdmin, participantLimit, async (req, res) => {
     try {
@@ -211,20 +244,35 @@ export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
       if (!question) return fail(res, 'Ask a question first.');
       const participant = await repo.getParticipant(req.params.id);
       if (!participant) return fail(res, 'Participant not found', 404);
-      const t = await thread(participant.id, 'admin_research');
-      const priorMessages = t.messages.slice(-8);
-      await repo.addMessage({ session_id:t.session.id, participant_id:participant.id, role:'admin', content:question });
+      const currentThread = await thread(participant.id, 'admin_research');
+      const priorMessages = currentThread.messages.slice(-8);
+      await repo.addMessage({ session_id:currentThread.session.id, participant_id:participant.id, role:'admin', content:question });
       const result = await askParticipant(participant, question, req.body && req.body.use_web !== false, priorMessages);
-      await repo.addMessage({ session_id:t.session.id, participant_id:participant.id, role:'assistant', content:result.answer, metadata:{ sources:result.sources, grounded:result.grounded } });
-      if (req.body && req.body.save_to_dossier && result.grounded) await appendResearchFinding(participant.id, question, result.publicText, result.sources);
-      await repo.updateSession(t.session.id, { updated_at: nowISO() });
-      return ok(res, { answer:result.answer,sources:result.sources,grounded:result.grounded,saved_to_dossier:!!(req.body && req.body.save_to_dossier && result.grounded),messages:(await thread(participant.id,'admin_research')).messages });
-    } catch (e) { console.error('[abl-intelligence] participant ask', e); return fail(res, 'The participant research agent could not answer that question.', 500); }
+      await repo.addMessage({
+        session_id:currentThread.session.id, participant_id:participant.id, role:'assistant',
+        content:result.answer, metadata:{ sources:result.sources, grounded:result.grounded },
+      });
+      if (req.body && req.body.save_to_dossier && result.grounded) {
+        await appendResearchFinding(participant.id, question, result.publicText, result.sources);
+      }
+      await repo.updateSession(currentThread.session.id, { updated_at: nowISO() });
+      return ok(res, {
+        answer:result.answer, sources:result.sources, grounded:result.grounded,
+        saved_to_dossier:!!(req.body && req.body.save_to_dossier && result.grounded),
+        messages:(await thread(participant.id,'admin_research')).messages,
+      });
+    } catch (error) {
+      console.error('[abl-intelligence] participant ask', error);
+      return fail(res, 'The participant research agent could not answer that question.', 500);
+    }
   });
 
   app.get('/api/abl/intelligence/cohort/thread', requireAdmin, async (req, res) => {
     try { return ok(res, await thread(GLOBAL_ID, 'cohort_intelligence')); }
-    catch (e) { console.error('[abl-intelligence] cohort thread', e); return fail(res, 'Server error', 500); }
+    catch (error) {
+      console.error('[abl-intelligence] cohort thread', error);
+      return fail(res, 'Server error', 500);
+    }
   });
   app.post('/api/abl/intelligence/cohort/ask', requireAdmin, cohortLimit, async (req, res) => {
     try {
@@ -232,14 +280,26 @@ export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
       if (!question) return fail(res, 'Ask a question first.');
       let participants = await repo.listParticipants();
       const cohortId = clean(req.body && req.body.cohort_id, 160);
-      if (cohortId) participants = participants.filter((p) => String(p.cohort_id || '') === cohortId);
-      const t = await thread(GLOBAL_ID, 'cohort_intelligence');
-      const priorMessages = t.messages.slice(-6);
-      await repo.addMessage({ session_id:t.session.id, participant_id:GLOBAL_ID, role:'admin', content:question, metadata:{ cohort_id:cohortId || null } });
+      if (cohortId) participants = participants.filter((participant) => String(participant.cohort_id || '') === cohortId);
+      const currentThread = await thread(GLOBAL_ID, 'cohort_intelligence');
+      const priorMessages = currentThread.messages.slice(-6);
+      await repo.addMessage({
+        session_id:currentThread.session.id, participant_id:GLOBAL_ID, role:'admin',
+        content:question, metadata:{ cohort_id:cohortId || null },
+      });
       const result = await askDirectory(participants, question, priorMessages);
-      await repo.addMessage({ session_id:t.session.id, participant_id:GLOBAL_ID, role:'assistant', content:result.answer, metadata:{ matches:result.matches, cohort_id:cohortId || null } });
-      await repo.updateSession(t.session.id, { updated_at: nowISO() });
-      return ok(res, { answer:result.answer,matches:result.matches,messages:(await thread(GLOBAL_ID,'cohort_intelligence')).messages });
-    } catch (e) { console.error('[abl-intelligence] cohort ask', e); return fail(res, 'The course intelligence agent could not answer that question.', 500); }
+      await repo.addMessage({
+        session_id:currentThread.session.id, participant_id:GLOBAL_ID, role:'assistant',
+        content:result.answer, metadata:{ matches:result.matches, cohort_id:cohortId || null },
+      });
+      await repo.updateSession(currentThread.session.id, { updated_at: nowISO() });
+      return ok(res, {
+        answer:result.answer, matches:result.matches,
+        messages:(await thread(GLOBAL_ID,'cohort_intelligence')).messages,
+      });
+    } catch (error) {
+      console.error('[abl-intelligence] cohort ask', error);
+      return fail(res, 'The course intelligence agent could not answer that question.', 500);
+    }
   });
 }
