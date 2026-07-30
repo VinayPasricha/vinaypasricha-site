@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { config } from './config.js';
 import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
+import { registerSafeArchiveRoutes } from './abl/safeArchiveRoutes.js';
 import { registerAuthRoutes } from './abl/authRoutes.js';
 import { registerRuntimeRoutes } from './abl/runtimeRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
@@ -158,6 +159,9 @@ app.get('/api/abl/deployment', (req, res) => {
   res.json({ ok: true, data: DEPLOYMENT });
 });
 registerFocusedWorkspaceRoute(app);
+// Register safe removal before the legacy DELETE handlers so destructive requests
+// are archived when participant history or published content must be preserved.
+registerSafeArchiveRoutes(app);
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
 registerRuntimeRoutes(app, { rateLimit });
