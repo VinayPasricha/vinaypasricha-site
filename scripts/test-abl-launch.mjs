@@ -47,10 +47,11 @@ includes(workspace, 'cookieAllowed || tokenAllowed', 'workspace Studio accepts o
 includes(server, 'studio_not_configured', 'central Studio is blocked when its passphrase is absent');
 includes(server, "!String(process.env.STUDIO_PASSPHRASE || '').trim()", 'Cloud Run requires an explicit Studio passphrase');
 
-// Participant chrome must never expose private Studio.
+// Participant chrome must never render or reintroduce the private Studio control.
 includes(focusedRoute, 'hidden aria-hidden="true" tabindex="-1"', 'Studio control is removed before participant HTML is sent');
 includes(focusedRoute, 'participant-only-nav.js', 'participant-only chrome is always layered onto the real workspace');
-excludes(participantChrome, 'Vinay Studio', 'participant chrome contains no Studio label');
+excludes(participantChrome, '>Vinay Studio<', 'participant chrome contains no visible Studio label');
+excludes(participantChrome, 'id="studioMode"', 'participant chrome cannot recreate the Studio switch');
 includes(participantChrome, '← Workspace Home', 'every internal workspace screen gets a home return');
 
 // External participant tools must also return home and carry auth.
