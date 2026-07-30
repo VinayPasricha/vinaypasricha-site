@@ -1,7 +1,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const path = new URL('../backend/src/app.js', import.meta.url);
-let source = readFileSync(path, 'utf8');
+// The patterns below are written with newlines, so a source checked out with
+// CRLF line endings would fail to match and abort the container build. Normalise
+// first: the file is rewritten from this string, so the image gets LF either way.
+let source = readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 
 function replaceOnce(from, to, label) {
   if (!source.includes(from)) throw new Error(`Studio hardening failed: ${label} source pattern was not found`);
