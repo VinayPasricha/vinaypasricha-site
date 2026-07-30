@@ -27,8 +27,7 @@ function messageView(message) {
 async function thread(participantId, mode) {
   const session = await repo.getOrCreateSession(participantId, mode);
   const messages = (await repo.listMessages(session.id))
-    .filter((m) => ['admin', 'assistant'].includes(m.role))
-    .map(messageView);
+    .filter((m) => ['admin', 'assistant'].includes(m.role)).map(messageView);
   return { session, messages };
 }
 function recentConversation(messages, limit = 8) {
@@ -110,12 +109,10 @@ async function askParticipant(participant, question, useWeb, history) {
   const internal = await participantEvidence(participant);
   const sources = sourceList(publicResult.sources);
   const answerMessages = recentConversation(history).concat([{
-    role: 'user',
-    content: `CURRENT QUESTION\n${question}\n\nPRIVATE COURSE EVIDENCE\n${internal}\n\nPUBLIC WEB RESEARCH\n${clean(publicResult.text, 14000) || '(not requested or unavailable)'}\n\nPUBLIC SOURCES\n${JSON.stringify(sources)}`,
+    role: 'user', content: `CURRENT QUESTION\n${question}\n\nPRIVATE COURSE EVIDENCE\n${internal}\n\nPUBLIC WEB RESEARCH\n${clean(publicResult.text, 14000) || '(not requested or unavailable)'}\n\nPUBLIC SOURCES\n${JSON.stringify(sources)}`,
   }]);
   const answer = await completeModel({
-    model: MODEL,
-    generationConfig: { maxOutputTokens: 2600, temperature: 0.2 },
+    model: MODEL, generationConfig: { maxOutputTokens: 2600, temperature: 0.2 },
     system: `You are Vinay Pasricha's private participant research analyst in an ongoing conversation. Answer the latest question using the supplied private course evidence, recent thread context and any separately supplied public web research. Never invent. Use these headings only when relevant: **Answer**, **What the private record says**, **What public research adds**, **What remains unknown**, **Useful next question**. Label any commercial-interest judgement as an inference, not a fact. Do not expose unrelated private details.`,
     messages: answerMessages,
   });
@@ -143,23 +140,39 @@ async function compactDirectory(participants) {
     text: await compactParticipantEvidence(participant),
   })));
 }
+function chunks(items, size) {
+  const out = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+async function selectFromBatch(batch, question) {
+  const raw = await completeModel({
+    model: MODEL, generationConfig: { maxOutputTokens: 1400, temperature: 0.1 },
+    system: `Select every participant record in this batch that may be relevant to the administrator's question. Return strict JSON only: {"candidate_ids":["id"],"reason_by_id":{"id":"short evidence-based reason"}}. Do not infer facts not present in a record. For possible commercial interest, include supported records and records needing confirmation, but state which.`,
+    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nTHIS DIRECTORY BATCH:\n${JSON.stringify(batch.map((r) => ({ id:r.id,name:r.name,company:r.company,cohort_id:r.cohort_id,geography:r.geography,evidence:clean(r.text,2200) })))}` }],
+  });
+  const parsed = extractJson(raw) || {};
+  const allowed = new Set(batch.map((r) => String(r.id)));
+  return {
+    ids: (Array.isArray(parsed.candidate_ids) ? parsed.candidate_ids : []).map(String).filter((id) => allowed.has(id)),
+    reasons: parsed.reason_by_id || {},
+  };
+}
 async function selectCandidates(records, question) {
   const queryTokens = tokens(question);
   const ranked = records.map((r) => ({ ...r, score: lexicalScore(r, queryTokens) }))
     .sort((a, b) => b.score - a.score);
-  const broad = /\b(all|every|how many|count|across|overall)\b/i.test(question);
-  const pool = (broad ? ranked : ranked.filter((r) => r.score > 0)).slice(0, broad ? 70 : 40);
-  const modelPool = pool.length ? pool : ranked.slice(0, 40);
-  const raw = await completeModel({
-    model: MODEL, generationConfig: { maxOutputTokens: 1800, temperature: 0.1 },
-    system: `Select the participant records relevant to the administrator's question. Return strict JSON only: {"candidate_ids":["id"],"reason_by_id":{"id":"short reason"}}. Select at most 20. Do not infer facts not present in a record. For questions about possible commercial interest, include records with supporting evidence and records that need confirmation, but explain the distinction in the reason.`,
-    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nPARTICIPANT DIRECTORY:\n${JSON.stringify(modelPool.map((r) => ({ id:r.id,name:r.name,company:r.company,cohort_id:r.cohort_id,geography:r.geography,evidence:clean(r.text,2200) })))}` }],
+  // Every record is shown to one selector batch. Lexical ranking improves batch order;
+  // it never excludes participants from an all-course count.
+  const selections = await Promise.all(chunks(ranked, 28).map((batch) => selectFromBatch(batch, question)));
+  const ids = [];
+  const reasons = {};
+  selections.forEach((selection) => {
+    selection.ids.forEach((id) => { if (!ids.includes(id)) ids.push(id); });
+    Object.assign(reasons, selection.reasons || {});
   });
-  const parsed = extractJson(raw) || {};
-  const allowed = new Set(records.map((r) => String(r.id)));
-  let ids = (Array.isArray(parsed.candidate_ids) ? parsed.candidate_ids : []).map(String).filter((id) => allowed.has(id)).slice(0, 20);
-  if (!ids.length) ids = ranked.filter((r) => r.score > 0).slice(0, 15).map((r) => String(r.id));
-  return { ids, reasons: parsed.reason_by_id || {} };
+  if (!ids.length) ranked.filter((r) => r.score > 0).slice(0, 20).forEach((r) => ids.push(String(r.id)));
+  return { ids: ids.slice(0, 50), reasons };
 }
 async function askDirectory(participants, question, history) {
   const records = await compactDirectory(participants);
@@ -171,12 +184,11 @@ async function askDirectory(participants, question, history) {
     evidence: await participantEvidence(p), reason: clean(selected.reasons[p.id], 500),
   })));
   const messages = recentConversation(history, 6).concat([{
-    role: 'user',
-    content: `CURRENT QUESTION\n${question}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}`,
+    role: 'user', content: `CURRENT QUESTION\n${question}\n\nDIRECTORY SIZE EXAMINED\n${participants.length}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}`,
   }]);
   const answer = await completeModel({
     model: MODEL, generationConfig: { maxOutputTokens: 3600, temperature: 0.15 },
-    system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), and explain the selection rule. Mention likely false positives and missing data. End with one practical follow-up action.`,
+    system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), explain the selection rule, and state how many directory records were examined. Mention likely false positives and missing data. End with one practical follow-up action.`,
     messages,
   });
   return { answer, matches: detail.map((d) => ({ id:d.id,name:d.name,company:d.company,cohort_id:d.cohort_id,reason:d.reason })) };
