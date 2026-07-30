@@ -31,6 +31,12 @@ async function thread(participantId, mode) {
     .map(messageView);
   return { session, messages };
 }
+function recentConversation(messages, limit = 8) {
+  return (messages || []).slice(-limit).map((message) => ({
+    role: message.role === 'assistant' ? 'assistant' : 'user',
+    content: clean(message.content, 3500),
+  }));
+}
 function latestOutput(outputs, type) {
   return (outputs || []).filter((o) => o.output_type === type)
     .sort((a, b) => String(b.updated_at || b.created_at || '').localeCompare(String(a.updated_at || a.created_at || '')))[0] || null;
@@ -40,34 +46,43 @@ function evidenceText(value, max) {
   if (value && typeof value === 'object') return clean(JSON.stringify(value), max);
   return clean(value, max);
 }
-async function participantEvidence(participant, detailed = true) {
+async function compactParticipantEvidence(participant) {
+  const [research, memory, notes, outputs] = await Promise.all([
+    repo.getResearch(participant.id), repo.getMemory(participant.id),
+    repo.listNotes(participant.id), repo.getOutputs(participant.id),
+  ]);
+  const snapshot = latestOutput(outputs, 'admin_participant_snapshot');
+  return [
+    `PROFILE: ${participant.name || ''} · ${participant.company_name || ''} · ${participant.role_title || ''} · ${participant.industry || ''} · ${participant.geography || ''} · cohort=${participant.cohort_id || 'unassigned'}`,
+    `RESEARCH: ${evidenceText(research && research.structured_context, 1300)} · ${evidenceText(research && research.research_dossier, 1600)}`,
+    `COURSE MEMORY: ${evidenceText(memory && memory.fields, 1200)}`,
+    snapshot ? `ADMIN SNAPSHOT: ${evidenceText(snapshot.reviewed_content_markdown || snapshot.content_markdown, 2200)}` : '',
+    !snapshot && notes.length ? `RECENT NOTES: ${notes.slice(0, 3).map((n) => clean(n.content, 850)).join(' · ')}` : '',
+  ].filter(Boolean).join('\n\n');
+}
+async function participantEvidence(participant) {
   const [research, memory, notes, assets, outputs, sessions] = await Promise.all([
     repo.getResearch(participant.id), repo.getMemory(participant.id), repo.listNotes(participant.id),
     repo.listAssets(participant.id), repo.getOutputs(participant.id), repo.listSessions(participant.id),
   ]);
   const snapshot = latestOutput(outputs, 'admin_participant_snapshot');
-  const blocks = [
+  const conversations = await Promise.all(sessions.filter((s) => s.mode !== 'admin_research').slice(0, 8).map(async (s) => {
+    const messages = await repo.listMessages(s.id);
+    return `[${s.mode}] ` + messages.filter((m) => ['user', 'assistant'].includes(m.role)).slice(-12)
+      .map((m) => `${m.role}: ${clean(m.content, 1800)}`).join('\n');
+  }));
+  return [
     `PROFILE: ${participant.name || ''} · ${participant.company_name || ''} · ${participant.role_title || ''} · ${participant.industry || ''} · ${participant.geography || ''} · cohort=${participant.cohort_id || 'unassigned'}`,
-    `RESEARCH FIELDS: ${evidenceText(research && research.structured_context, detailed ? 7000 : 1000)}`,
-    `RESEARCH DOSSIER: ${evidenceText(research && research.research_dossier, detailed ? 9000 : 1200)}`,
-    `COURSE MEMORY: ${evidenceText(memory && memory.fields, detailed ? 9000 : 1000)}`,
-    snapshot ? `ADMIN SNAPSHOT: ${evidenceText(snapshot.reviewed_content_markdown || snapshot.content_markdown, detailed ? 10000 : 1600)}` : '',
-  ];
-  if (detailed) {
-    blocks.push(`MEETING NOTES: ${notes.slice(0, 12).map((n) => `[${n.title || 'Meeting'} | ${n.occurred_at || ''} | ${n.review_status || ''}] ${clean(n.content || n.raw_transcript, 5000)}`).join('\n')}`);
-    blocks.push(`UPLOADED REFERENCES: ${assets.slice(0, 12).map((a) => `[${a.title || a.file_name || 'File'}] ${clean(a.extracted_text || a.description, 3500)}`).join('\n')}`);
-    const conversations = await Promise.all(sessions.filter((s) => s.mode !== 'admin_research').slice(0, 8).map(async (s) => {
-      const messages = await repo.listMessages(s.id);
-      return `[${s.mode}] ` + messages.filter((m) => ['user', 'assistant'].includes(m.role)).slice(-12)
-        .map((m) => `${m.role}: ${clean(m.content, 1800)}`).join('\n');
-    }));
-    blocks.push(`COURSE CONVERSATIONS: ${conversations.join('\n\n')}`);
-    blocks.push(`COURSE OUTPUTS: ${outputs.filter((o) => o.output_type !== 'admin_participant_snapshot').slice(0, 10)
-      .map((o) => `[${o.output_type}] ${clean(o.reviewed_content_markdown || o.content_markdown, 5000)}`).join('\n')}`);
-  } else if (!snapshot && notes.length) {
-    blocks.push(`RECENT NOTES: ${notes.slice(0, 3).map((n) => clean(n.content, 700)).join(' · ')}`);
-  }
-  return blocks.filter(Boolean).join('\n\n');
+    `RESEARCH FIELDS: ${evidenceText(research && research.structured_context, 7000)}`,
+    `RESEARCH DOSSIER: ${evidenceText(research && research.research_dossier, 9000)}`,
+    `COURSE MEMORY: ${evidenceText(memory && memory.fields, 9000)}`,
+    snapshot ? `ADMIN SNAPSHOT: ${evidenceText(snapshot.reviewed_content_markdown || snapshot.content_markdown, 10000)}` : '',
+    `MEETING NOTES: ${notes.slice(0, 12).map((n) => `[${n.title || 'Meeting'} | ${n.occurred_at || ''} | ${n.review_status || ''}] ${clean(n.content || n.raw_transcript, 5000)}`).join('\n')}`,
+    `UPLOADED REFERENCES: ${assets.slice(0, 12).map((a) => `[${a.title || a.file_name || 'File'}] ${clean(a.extracted_text || a.description, 3500)}`).join('\n')}`,
+    `COURSE CONVERSATIONS: ${conversations.join('\n\n')}`,
+    `COURSE OUTPUTS: ${outputs.filter((o) => o.output_type !== 'admin_participant_snapshot').slice(0, 10)
+      .map((o) => `[${o.output_type}] ${clean(o.reviewed_content_markdown || o.content_markdown, 5000)}`).join('\n')}`,
+  ].filter(Boolean).join('\n\n');
 }
 async function appendResearchFinding(participantId, question, publicText, sources) {
   if (!clean(publicText)) return;
@@ -81,30 +96,39 @@ async function appendResearchFinding(participantId, question, publicText, source
     sources_notes: clean([current && current.sources_notes, links ? `Follow-up sources (${stamp}): ${links}` : ''].filter(Boolean).join('\n'), 15000),
   });
 }
-function publicResearchPrompt(participant, question) {
-  return `PERSON: ${participant.name || ''}\nROLE: ${participant.role_title || ''}\nCOMPANY: ${participant.company_name || ''}\nOFFICIAL WEBSITE: ${participant.company_website || ''}\nQUESTION: ${question}`;
+function publicResearchPrompt(participant, question, history) {
+  return `PERSON: ${participant.name || ''}\nROLE: ${participant.role_title || ''}\nCOMPANY: ${participant.company_name || ''}\nOFFICIAL WEBSITE: ${participant.company_website || ''}\nRECENT ADMIN QUESTIONS FOR REFERENCE: ${clean((history || []).map((m) => `${m.role}: ${m.content}`).join(' | '), 4000)}\nQUESTION: ${question}`;
 }
-async function askParticipant(participant, question, useWeb) {
+async function askParticipant(participant, question, useWeb, history) {
   let publicResult = { text: '', sources: [], grounded: false };
   if (useWeb) {
     publicResult = await completeGrounded({
       system: `You are a careful corporate researcher. Research only the named person and company in the user message. Resolve identity using the official company/domain. Answer the exact question with current public facts. Do not use private assumptions. Distinguish company-wide facts from facts about subsidiaries, brands or promoters. If turnover or ownership is not publicly available, say so. Be concise and evidence-led.`,
-      messages: [{ role: 'user', content: publicResearchPrompt(participant, question) }],
+      messages: [{ role: 'user', content: publicResearchPrompt(participant, question, history) }],
     });
   }
-  const internal = await participantEvidence(participant, true);
+  const internal = await participantEvidence(participant);
   const sources = sourceList(publicResult.sources);
+  const answerMessages = recentConversation(history).concat([{
+    role: 'user',
+    content: `CURRENT QUESTION\n${question}\n\nPRIVATE COURSE EVIDENCE\n${internal}\n\nPUBLIC WEB RESEARCH\n${clean(publicResult.text, 14000) || '(not requested or unavailable)'}\n\nPUBLIC SOURCES\n${JSON.stringify(sources)}`,
+  }]);
   const answer = await completeModel({
     model: MODEL,
     generationConfig: { maxOutputTokens: 2600, temperature: 0.2 },
-    system: `You are Vinay Pasricha's private participant research analyst. Answer the administrator's question using the supplied private course evidence and any separately supplied public web research. Never invent. Use these headings only when relevant: **Answer**, **What the private record says**, **What public research adds**, **What remains unknown**, **Useful next question**. Label any commercial-interest judgement as an inference, not a fact. Do not expose unrelated private details.`,
-    messages: [{ role: 'user', content: `QUESTION\n${question}\n\nPRIVATE COURSE EVIDENCE\n${internal}\n\nPUBLIC WEB RESEARCH\n${clean(publicResult.text, 14000) || '(not requested or unavailable)'}\n\nPUBLIC SOURCES\n${JSON.stringify(sources)}` }],
+    system: `You are Vinay Pasricha's private participant research analyst in an ongoing conversation. Answer the latest question using the supplied private course evidence, recent thread context and any separately supplied public web research. Never invent. Use these headings only when relevant: **Answer**, **What the private record says**, **What public research adds**, **What remains unknown**, **Useful next question**. Label any commercial-interest judgement as an inference, not a fact. Do not expose unrelated private details.`,
+    messages: answerMessages,
   });
   return { answer, publicText: publicResult.text || '', grounded: !!publicResult.grounded && sources.length > 0, sources };
 }
 
 function tokens(query) {
-  const aliases = { gurugram: ['gurugram','gurgaon'], gurgaon: ['gurugram','gurgaon'], recruit: ['recruit','recruitment','hiring','hire','talent'], marriage: ['marriage','wedding','matrimony','event'] };
+  const aliases = {
+    gurugram: ['gurugram','gurgaon'], gurgaon: ['gurugram','gurgaon'],
+    recruit: ['recruit','recruitment','hiring','hire','talent','vacancy','workforce'],
+    hiring: ['recruit','recruitment','hiring','hire','talent','vacancy','workforce'],
+    marriage: ['marriage','wedding','matrimony','event'], wedding: ['marriage','wedding','matrimony','event'],
+  };
   const base = clean(query, 2000).toLowerCase().match(/[a-z0-9₹]+/g) || [];
   return Array.from(new Set(base.flatMap((t) => aliases[t] || [t]).filter((t) => t.length > 2)));
 }
@@ -116,7 +140,7 @@ async function compactDirectory(participants) {
   return Promise.all(participants.map(async (participant) => ({
     id: participant.id, name: participant.name, company: participant.company_name,
     cohort_id: participant.cohort_id || null, geography: participant.geography || '',
-    text: await participantEvidence(participant, false),
+    text: await compactParticipantEvidence(participant),
   })));
 }
 async function selectCandidates(records, question) {
@@ -124,12 +148,12 @@ async function selectCandidates(records, question) {
   const ranked = records.map((r) => ({ ...r, score: lexicalScore(r, queryTokens) }))
     .sort((a, b) => b.score - a.score);
   const broad = /\b(all|every|how many|count|across|overall)\b/i.test(question);
-  const pool = (broad ? ranked : ranked.filter((r) => r.score > 0)).slice(0, broad ? 60 : 35);
-  const modelPool = pool.length ? pool : ranked.slice(0, 35);
+  const pool = (broad ? ranked : ranked.filter((r) => r.score > 0)).slice(0, broad ? 70 : 40);
+  const modelPool = pool.length ? pool : ranked.slice(0, 40);
   const raw = await completeModel({
     model: MODEL, generationConfig: { maxOutputTokens: 1800, temperature: 0.1 },
     system: `Select the participant records relevant to the administrator's question. Return strict JSON only: {"candidate_ids":["id"],"reason_by_id":{"id":"short reason"}}. Select at most 20. Do not infer facts not present in a record. For questions about possible commercial interest, include records with supporting evidence and records that need confirmation, but explain the distinction in the reason.`,
-    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nPARTICIPANT DIRECTORY:\n${JSON.stringify(modelPool.map((r) => ({ id:r.id,name:r.name,company:r.company,cohort_id:r.cohort_id,geography:r.geography,evidence:clean(r.text,1800) })))}` }],
+    messages: [{ role: 'user', content: `QUESTION: ${question}\n\nPARTICIPANT DIRECTORY:\n${JSON.stringify(modelPool.map((r) => ({ id:r.id,name:r.name,company:r.company,cohort_id:r.cohort_id,geography:r.geography,evidence:clean(r.text,2200) })))}` }],
   });
   const parsed = extractJson(raw) || {};
   const allowed = new Set(records.map((r) => String(r.id)));
@@ -137,19 +161,23 @@ async function selectCandidates(records, question) {
   if (!ids.length) ids = ranked.filter((r) => r.score > 0).slice(0, 15).map((r) => String(r.id));
   return { ids, reasons: parsed.reason_by_id || {} };
 }
-async function askDirectory(participants, question) {
+async function askDirectory(participants, question, history) {
   const records = await compactDirectory(participants);
   const selected = await selectCandidates(records, question);
   const byId = new Map(participants.map((p) => [String(p.id), p]));
   const selectedParticipants = selected.ids.map((id) => byId.get(id)).filter(Boolean);
   const detail = await Promise.all(selectedParticipants.map(async (p) => ({
     id: p.id, name: p.name, company: p.company_name, cohort_id: p.cohort_id || null,
-    evidence: await participantEvidence(p, true), reason: clean(selected.reasons[p.id], 500),
+    evidence: await participantEvidence(p), reason: clean(selected.reasons[p.id], 500),
   })));
+  const messages = recentConversation(history, 6).concat([{
+    role: 'user',
+    content: `CURRENT QUESTION\n${question}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}`,
+  }]);
   const answer = await completeModel({
     model: MODEL, generationConfig: { maxOutputTokens: 3600, temperature: 0.15 },
-    system: `You are Vinay Pasricha's private course intelligence analyst. Answer the cross-participant question only from the supplied private evidence. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), and explain the selection rule. Mention likely false positives and missing data. End with one practical follow-up action.`,
-    messages: [{ role: 'user', content: `QUESTION\n${question}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}` }],
+    system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), and explain the selection rule. Mention likely false positives and missing data. End with one practical follow-up action.`,
+    messages,
   });
   return { answer, matches: detail.map((d) => ({ id:d.id,name:d.name,company:d.company,cohort_id:d.cohort_id,reason:d.reason })) };
 }
@@ -172,8 +200,9 @@ export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
       const participant = await repo.getParticipant(req.params.id);
       if (!participant) return fail(res, 'Participant not found', 404);
       const t = await thread(participant.id, 'admin_research');
+      const priorMessages = t.messages.slice(-8);
       await repo.addMessage({ session_id:t.session.id, participant_id:participant.id, role:'admin', content:question });
-      const result = await askParticipant(participant, question, req.body && req.body.use_web !== false);
+      const result = await askParticipant(participant, question, req.body && req.body.use_web !== false, priorMessages);
       await repo.addMessage({ session_id:t.session.id, participant_id:participant.id, role:'assistant', content:result.answer, metadata:{ sources:result.sources, grounded:result.grounded } });
       if (req.body && req.body.save_to_dossier && result.grounded) await appendResearchFinding(participant.id, question, result.publicText, result.sources);
       await repo.updateSession(t.session.id, { updated_at: nowISO() });
@@ -193,8 +222,9 @@ export function registerIntelligenceRoutes(app, { requireAdmin, rateLimit }) {
       const cohortId = clean(req.body && req.body.cohort_id, 160);
       if (cohortId) participants = participants.filter((p) => String(p.cohort_id || '') === cohortId);
       const t = await thread(GLOBAL_ID, 'cohort_intelligence');
+      const priorMessages = t.messages.slice(-6);
       await repo.addMessage({ session_id:t.session.id, participant_id:GLOBAL_ID, role:'admin', content:question, metadata:{ cohort_id:cohortId || null } });
-      const result = await askDirectory(participants, question);
+      const result = await askDirectory(participants, question, priorMessages);
       await repo.addMessage({ session_id:t.session.id, participant_id:GLOBAL_ID, role:'assistant', content:result.answer, metadata:{ matches:result.matches, cohort_id:cohortId || null } });
       await repo.updateSession(t.session.id, { updated_at: nowISO() });
       return ok(res, { answer:result.answer,matches:result.matches,messages:(await thread(GLOBAL_ID,'cohort_intelligence')).messages });
