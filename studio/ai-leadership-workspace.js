@@ -112,6 +112,39 @@
     $('navAnnouncements').textContent = state.announcements.length;
   }
 
+  // Per-participant activity from the data already loaded (no extra fetch):
+  // whether they have engaged at all, when last, and how many assignments
+  // they have submitted.
+  function activityOf(p) {
+    var started = !!(p.last_activity_at || p.course_last_activity_at || p.message_count);
+    var last = p.course_last_activity_at || p.last_activity_at || null;
+    var submitted = state.submissions.filter(function (s) { return s.participant_id === p.id && s.status === 'submitted'; }).length;
+    return { started: started, last: last, submitted: submitted };
+  }
+  function renderActivity() {
+    if (!$('activityRows')) return;
+    var total = state.participants.length;
+    var started = state.participants.filter(function (p) { return activityOf(p).started; }).length;
+    var totalSubs = state.submissions.filter(function (s) { return s.status === 'submitted'; }).length;
+    if ($('activitySummary')) $('activitySummary').innerHTML = '<div class="stat-grid" style="margin-bottom:16px">' +
+      '<div class="stat"><strong>' + total + '</strong><span>Participants</span></div>' +
+      '<div class="stat"><strong>' + started + '</strong><span>Started</span></div>' +
+      '<div class="stat"><strong>' + (total - started) + '</strong><span>Not started yet</span></div>' +
+      '<div class="stat"><strong>' + totalSubs + '</strong><span>Assignments submitted</span></div></div>';
+    // Not-started first, so whoever needs a nudge is at the top.
+    var rows = state.participants.slice().sort(function (a, b) { return (activityOf(a).started ? 1 : 0) - (activityOf(b).started ? 1 : 0); });
+    $('activityRows').innerHTML = rows.length ? rows.map(function (p, i) {
+      var a = activityOf(p);
+      return '<tr><td class="sub" style="color:var(--ink-3)">' + (i + 1) + '</td>' +
+        '<td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.company_name || '') + '</div></td>' +
+        '<td>' + esc(cohortName(p.cohort_id)) + '</td>' +
+        '<td>' + (a.started ? '<span class="pill on">Started</span>' : '<span class="pill">Not started</span>') + '</td>' +
+        '<td class="sub">' + (a.last ? fmtDate(a.last) : '—') + '</td>' +
+        '<td>' + a.submitted + '</td>' +
+        '<td><a class="btn small ghost" href="/ai-business-leaders/workspace/' + encodeURIComponent(p.slug) + '?admin=1" target="_blank" rel="noopener">Open</a></td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty">No participants yet.</td></tr>';
+  }
+
   function cohortCard(c, compact) {
     var count = state.participants.filter(function (p) { return p.cohort_id === c.id; }).length;
     var current = Math.max(1, Math.min(5, parseInt(c.current_session, 10) || 1));
@@ -211,7 +244,7 @@
     ['bulkCohort', 'materialCohort', 'assignmentCohort', 'announcementCohort'].forEach(function (id) { $(id).innerHTML = options('', true); });
   }
   function renderAll() {
-    refreshCohortSelects(); renderStats(); renderCohorts(); renderParticipants(); renderMaterials(); renderAssignments(); renderAnnouncements();
+    refreshCohortSelects(); renderStats(); renderActivity(); renderCohorts(); renderParticipants(); renderMaterials(); renderAssignments(); renderAnnouncements();
   }
 
   function parseParticipants(text) {
