@@ -75,9 +75,13 @@
     if (s.uploaded_file_name && /^\/api\/abl\/workspace\/admin\//.test(link.value || '')) link.value = '';
     link.placeholder = 'Optional Google Drive or file link';
     var uploaded = s.uploaded_file_name ? '<strong>' + esc(s.uploaded_file_name) + '</strong><span>' + esc(size(s.uploaded_file_size || 0)) + '</span><button type="button" data-download-file data-file-name="' + esc(s.uploaded_file_name) + '">Open file ↗</button>' : '';
-    link.insertAdjacentHTML('beforebegin', '<div class="lw-upload-box"><label>Upload assignment</label><input type="file" data-upload-input accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp"><small>PDF, Word, PowerPoint or image · Maximum 15 MB</small><div class="lw-uploaded-file" data-uploaded-file' + (uploaded ? '' : ' hidden') + '>' + uploaded + '</div><div class="lw-upload-note" data-upload-note></div><div class="lw-upload-or">Or paste a Drive/file link below</div></div>');
+    link.insertAdjacentHTML('beforebegin', '<div class="lw-upload-box" data-drop-zone><label>Upload assignment</label><div class="lw-upload-prompt">Choose a file or drag it here</div><input type="file" data-upload-input accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp"><small>PDF, Word, PowerPoint or image · Maximum 15 MB</small><div class="lw-uploaded-file" data-uploaded-file' + (uploaded ? '' : ' hidden') + '>' + uploaded + '</div><div class="lw-upload-note" data-upload-note></div><div class="lw-upload-or">Or paste a Drive/file link below</div></div>');
     var input = card.querySelector('[data-upload-input]');
+    var drop = card.querySelector('[data-drop-zone]');
     input.onchange = function(){ upload(card, input.files && input.files[0]); };
+    ['dragenter','dragover'].forEach(function(name){ drop.addEventListener(name,function(e){ e.preventDefault(); drop.classList.add('dragging'); }); });
+    ['dragleave','drop'].forEach(function(name){ drop.addEventListener(name,function(e){ e.preventDefault(); drop.classList.remove('dragging'); }); });
+    drop.addEventListener('drop',function(e){ upload(card,e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]); });
     wireDownload(card);
     Array.prototype.forEach.call(card.querySelectorAll('[data-save]'), function(button){
       var original = button.onclick;
