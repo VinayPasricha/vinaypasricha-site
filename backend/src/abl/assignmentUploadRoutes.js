@@ -11,13 +11,16 @@ const docData = (d) => (d.exists ? { id: d.id, ...d.data() } : null);
 const ok = (res, data, code = 200) => res.status(code).json({ ok: true, data });
 const fail = (res, error, code = 400) => res.status(code).json({ ok: false, error });
 const MAX_BYTES = 15 * 1024 * 1024;
-const TYPES = new Set([
-  'application/pdf','application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'image/jpeg','image/png','image/webp',
-]);
+const TYPE_EXTENSIONS = {
+  'application/pdf': ['.pdf'],
+  'application/msword': ['.doc'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+  'application/vnd.ms-powerpoint': ['.ppt'],
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/webp': ['.webp'],
+};
 
 function bucketName() {
   const project = String(process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '').trim();
@@ -40,6 +43,38 @@ function requireStudio(req, res, next) {
   const token = req.get('x-admin-token') || '';
   if ((expected && cookies(req).__session === expected) || (process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)) return next();
   return fail(res, 'unauthorized', 401);
+}
+function isLive(item) {
+  if (!item) return false;
+  if (item.status === 'published') return true;
+  return item.status === 'scheduled' && item.publish_at && new Date(item.publish_at).getTime() <= Date.now();
+}
+function assignmentVisible(item, participant) {
+  if (!isLive(item)) return false;
+  const audience = item.audience || 'all';
+  if (audience === 'all') return true;
+  if (audience === 'participants') return (item.participant_ids || []).map(String).includes(String(participant.id));
+  if (audience === 'cohorts') {
+    const current = (item.cohort_ids || []).map(String).includes(String(participant.cohort_id || ''));
+    const retained = (participant.assignment_entitlements || []).map(String).includes(String(item.id));
+    return current || retained;
+  }
+  return false;
+}
+function signatureMatches(body, mime) {
+  if (mime === 'application/pdf') return body.subarray(0, 5).toString() === '%PDF-';
+  if (mime === 'image/jpeg') return body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff;
+  if (mime === 'image/png') return body.subarray(0, 8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
+  if (mime === 'image/webp') return body.subarray(0, 4).toString() === 'RIFF' && body.subarray(8, 12).toString() === 'WEBP';
+  if (mime.includes('openxmlformats')) return body[0] === 0x50 && body[1] === 0x4b;
+  if (mime === 'application/msword' || mime === 'application/vnd.ms-powerpoint') {
+    return body.subarray(0, 8).equals(Buffer.from([0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1]));
+  }
+  return false;
+}
+function validFile(name, mime, body) {
+  const extensions = TYPE_EXTENSIONS[mime];
+  return Boolean(extensions && extensions.some((ext) => name.toLowerCase().endsWith(ext)) && signatureMatches(body, mime));
 }
 async function sendFile(res, submission) {
   const bucket = bucketName();
@@ -64,12 +99,12 @@ export function registerAssignmentUploadRoutes(app) {
       const assignment = docData(await col(COLLECTIONS.ablAssignments).doc(req.params.assignmentId).get());
       const id = `${req.params.assignmentId}_${participant.id}`;
       const existing = docData(await col(COLLECTIONS.ablSubmissions).doc(id).get());
-      if (!assignment && !existing) return fail(res, 'Assignment not available.', 404);
+      if (!assignment || (!assignmentVisible(assignment, participant) && !existing)) return fail(res, 'Assignment not available.', 404);
       const body = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
       const mime = String(req.get('content-type') || '').split(';')[0].toLowerCase();
       const name = safeName(req.get('x-file-name'));
       if (!body.length) return fail(res, 'Choose a file to upload.');
-      if (!TYPES.has(mime)) return fail(res, 'Upload a PDF, Word, PowerPoint, JPG, PNG or WebP file.', 415);
+      if (!validFile(name, mime, body)) return fail(res, 'Upload a genuine PDF, Word, PowerPoint, JPG, PNG or WebP file.', 415);
       const bucket = bucketName();
       if (!bucket) return fail(res, 'Assignment uploads are not configured yet.', 503);
       const objectName = `abl-assignments/${participant.id}/${req.params.assignmentId}/${crypto.randomUUID()}-${name}`;
@@ -96,12 +131,22 @@ export function registerAssignmentUploadRoutes(app) {
   });
 
   app.get('/api/abl/workspace/:slug/submissions/:assignmentId/file', async (req, res) => {
-    const p = req.ablParticipant;
-    if (!p || p.slug !== req.params.slug) return fail(res, 'Sign-in required.', 401);
-    return sendFile(res, docData(await col(COLLECTIONS.ablSubmissions).doc(`${req.params.assignmentId}_${p.id}`).get()));
+    try {
+      const p = req.ablParticipant;
+      if (!p || p.slug !== req.params.slug) return fail(res, 'Sign-in required.', 401);
+      return sendFile(res, docData(await col(COLLECTIONS.ablSubmissions).doc(`${req.params.assignmentId}_${p.id}`).get()));
+    } catch (e) {
+      console.error('[abl-assignment-download]', e);
+      return fail(res, 'Could not download this file.', 500);
+    }
   });
 
   app.get('/api/abl/workspace/admin/submissions/:id/file', requireStudio, async (req, res) => {
-    return sendFile(res, docData(await col(COLLECTIONS.ablSubmissions).doc(req.params.id).get()));
+    try {
+      return sendFile(res, docData(await col(COLLECTIONS.ablSubmissions).doc(req.params.id).get()));
+    } catch (e) {
+      console.error('[abl-assignment-admin-download]', e);
+      return fail(res, 'Could not download this file.', 500);
+    }
   });
 }
