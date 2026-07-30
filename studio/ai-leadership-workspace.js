@@ -143,14 +143,14 @@
     var rows = state.participants.filter(function (p) {
       return !query || [p.name, p.email, p.phone, p.company_name, cohortName(p.cohort_id)].join(' ').toLowerCase().includes(query);
     });
-    $('participantRows').innerHTML = rows.length ? rows.map(function (p) {
+    $('participantRows').innerHTML = rows.length ? rows.map(function (p, i) {
       var invite = p.invite_status || (p.link_approved ? 'invited' : 'not_invited');
-      return '<tr data-participant="' + esc(p.id) + '"><td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
+      return '<tr data-participant="' + esc(p.id) + '"><td class="sub" style="color:var(--ink-3);white-space:nowrap">' + (i + 1) + '</td><td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
         '<td><div>' + esc(p.email || '—') + '</div><div class="sub">' + esc(p.phone || '—') + '</div></td><td>' + esc(p.company_name || '—') + '</td>' +
         '<td><select data-participant-cohort>' + options(p.cohort_id, true) + '</select></td><td><span class="pill ' + esc(invite) + '">' + esc(invite.replace(/_/g, ' ')) + '</span></td>' +
         '<td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small" data-invite>' + (invite === 'not_invited' ? 'Send invite' : 'Resend invite') + '</button>' +
         '<a class="btn small ghost" href="/ai-business-leaders/workspace/' + encodeURIComponent(p.slug) + '" target="_blank" rel="noopener">Open workspace</a></div></td></tr>';
-    }).join('') : '<tr><td colspan="6" class="empty">No matching participants.</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty">No matching participants.</td></tr>';
     Array.prototype.forEach.call($('participantRows').querySelectorAll('[data-participant]'), function (row) {
       var id = row.getAttribute('data-participant');
       row.querySelector('[data-participant-cohort]').onchange = async function (e) {
