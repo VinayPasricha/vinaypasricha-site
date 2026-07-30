@@ -42,7 +42,7 @@ jobs:
     timeout-minutes: 20
     env:
       ABL_STAGING_BASE_URL: https://vinay-site-staging-349140108061.asia-south1.run.app
-      ABL_EXPECTED_RELEASE: abl-course-staging-20260730-0133
+      ABL_EXPECTED_RELEASE: abl-course-staging-20260730-0200
       ABL_DEPLOY_WAIT_SECONDS: '720'
     steps:
       - name: Check out audited commit
@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Wait for exact Cloud Run revision and test live security routes
+      - name: Wait for one stable Cloud Run revision and test live security routes
         run: npm run test:abl-staging
       - name: Install browser driver only
         run: npm install --no-save --ignore-scripts playwright-core@1.54.1
