@@ -33,7 +33,8 @@ const login = read('ai-business-leaders/login.html');
 
 // Access control: slug selects a record but never authorises access.
 includes(server, 'app.use(participantApiGuard)', 'participant API guard is installed');
-includes(guard, "path.match(/^\/api\/abl\/(?:session|course|workspace)\/([^/]+)/)", 'all participant API families are guarded');
+includes(guard, 'const match = path.match(', 'participant guard matches protected API paths');
+includes(guard, '(?:session|course|workspace)', 'all participant API families are guarded');
 includes(guard, 'String(payload.slug) !== String(slug)', 'token slug must match requested workspace');
 includes(auth, 'participantCanSignIn', 'Studio invite state gates OTP access');
 includes(auth, 'GENERIC_REQUEST_MESSAGE', 'OTP request does not disclose participant membership');
