@@ -19,6 +19,7 @@ import {
   generateLeadershipBlueprint,
   runtimeOpeningTurn,
   RUNTIME_OPENING_VERSION,
+  usableOptions,
 } from './service.js';
 import { REWARD_TITLES, SOFT_WARN_AT } from './copy.js';
 import { COURSE_RUNTIME_MODES } from './course-runtimes.js';
@@ -40,6 +41,7 @@ import {
   hashLoginCode,
   hashParticipantToken,
   isPreviewEnvironment,
+  isLocalEnvironment,
   normalizeEmail,
   participantTokenExpiry,
   validEmail,
@@ -136,6 +138,191 @@ function streamPdf(res, { title, who, date, md, filename }) {
   doc.end();
 }
 
+const BUILDER_FIELDS = {
+  1: ['candidate_workflow', 'people_systems', 'where_work_breaks', 'business_consequence', 'current_ai_use', 'company_brain_hypothesis'],
+  2: ['problem_sentence', 'recurrence', 'value_bucket', 'baseline', 'pilot_tests', 'strategic_value', 'available_data',
+    'non_ai_alternative', 'owner_human_line', 'decision', 'evidence_needed'],
+  3: ['current_steps', 'exception_path', 'memory', 'reasoning', 'action', 'feedback', 'boundaries',
+    'build_buy_partner', 'critical_assumption'],
+  4: ['pilot_boundary', 'ownership', 'old_work_removed', 'new_behaviour', 'data_boundary', 'risk_tier',
+    'operational_boundary', 'control_recovery', 'evidence', 'economics', 'weekly_question', 'premortem'],
+  5: ['pitch_problem', 'pitch_brain', 'pitch_workflow', 'pitch_control', 'pitch_evidence', 'commitment_72h',
+    'day30_review_date', 'day30_review_with', 'scale_if', 'fix_if', 'stop_if'],
+};
+const COMPLETION_KEYS = {
+  1: ['candidate_workflow', 'where_work_breaks', 'business_consequence', 'company_brain_hypothesis'],
+  2: ['problem_sentence', 'baseline', 'owner_human_line', 'decision'],
+  3: ['memory', 'reasoning', 'action', 'feedback', 'boundaries'],
+  4: ['pilot_boundary', 'ownership', 'risk_tier', 'operational_boundary', 'evidence'],
+  5: ['pitch_problem', 'pitch_workflow', 'pitch_control', 'pitch_evidence', 'commitment_72h'],
+};
+function cleanBuilderValue(v, depth = 0) {
+  if (depth > 4) return null;
+  if (typeof v === 'string') return v.trim().slice(0, 12000);
+  if (typeof v === 'boolean' || typeof v === 'number') return v;
+  if (Array.isArray(v)) return v.slice(0, 30).map((x) => cleanBuilderValue(x, depth + 1));
+  if (v && typeof v === 'object') {
+    const out = {};
+    Object.keys(v).slice(0, 40).forEach((k) => { out[String(k).slice(0, 80)] = cleanBuilderValue(v[k], depth + 1); });
+    return out;
+  }
+  return null;
+}
+function hasBuilderValue(v) {
+  if (typeof v === 'string') return v.trim().length > 0;
+  if (Array.isArray(v)) return v.some(hasBuilderValue);
+  if (v && typeof v === 'object') return Object.values(v).some(hasBuilderValue);
+  return v === true || (typeof v === 'number' && Number.isFinite(v));
+}
+function builderText(v, fallback = 'Needs confirmation', max = 720) {
+  if (!hasBuilderValue(v)) return fallback;
+  let out = '';
+  if (Array.isArray(v)) {
+    out = v.filter(hasBuilderValue).map((x) => builderText(x, '', max)).filter(Boolean).join(', ');
+  } else if (v && typeof v === 'object') {
+    out = Object.entries(v).filter(([, value]) => hasBuilderValue(value)).map(([key, value]) => {
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      return `${label}: ${builderText(value, '', max)}`;
+    }).join(' · ');
+  } else {
+    out = String(v).trim();
+  }
+  if (!out) return fallback;
+  return out.length > max ? `${out.slice(0, max - 1).trim()}…` : out;
+}
+function builderProgress(sessions) {
+  const completed = [];
+  let answered = 0, total = 0;
+  for (let n = 1; n <= 5; n++) {
+    const data = sessions[String(n)] || {};
+    const keys = COMPLETION_KEYS[n];
+    const done = keys.filter((k) => hasBuilderValue(data[k])).length;
+    answered += done; total += keys.length;
+    if (done === keys.length) completed.push(n);
+  }
+  return { completed, percent: total ? Math.round(answered / total * 100) : 0 };
+}
+function builderMarkdown(p, sessions) {
+  const s1 = sessions['1'] || {}, s2 = sessions['2'] || {}, s3 = sessions['3'] || {};
+  const s4 = sessions['4'] || {}, s5 = sessions['5'] || {};
+  const txt = (v, fallback = 'Needs confirmation', max = 720) => builderText(v, fallback, max);
+  const boundary = s3.boundaries || {}, op = s4.operational_boundary || {}, evidence = s4.evidence || {};
+  const initiativeName = txt(s1.candidate_workflow || s2.problem_sentence, 'My First AI Leadership Initiative', 120);
+  return `# My First AI Leadership Initiative
+
+**${p.name || 'Participant'}${p.company_name ? ` · ${p.company_name}` : ''}**
+
+## Page 1 · Leadership Case
+
+### Initiative name
+${initiativeName}
+
+### Recurring problem, consequence and why now
+${txt(s2.problem_sentence || s1.where_work_breaks)}
+
+**Business consequence:** ${txt(s1.business_consequence)}
+
+**Value bucket and baseline:** ${txt(s2.value_bucket)} · ${txt(s2.baseline)}
+
+**Decision and evidence needed:** ${txt(s2.decision)} · ${txt(s2.evidence_needed)}
+
+### Company Brain breakdown and proposed AI role
+${txt(s5.pitch_brain || s1.company_brain_hypothesis)}
+
+**Memory:** ${txt(s3.memory)}
+
+**Reasoning:** ${txt(s3.reasoning)}
+
+**Action:** ${txt(s3.action)}
+
+**Feedback:** ${txt(s3.feedback)}
+
+### Workflow change and human boundary
+**Current workflow:** ${txt(s3.current_steps)}
+
+**Future workflow:** ${txt(s5.pitch_workflow || `${txt(s3.memory, '', 180)} ${txt(s3.reasoning, '', 180)} ${txt(s3.action, '', 180)} ${txt(s3.feedback, '', 180)}`)}
+
+**Exception path:** ${txt(s3.exception_path)}
+
+**Automate:** ${txt(boundary.automate)}
+
+**Assist:** ${txt(boundary.assist)}
+
+**Escalate:** ${txt(boundary.escalate)}
+
+### Human responsibility and capability retained
+**Owner and decision rights:** ${txt(s2.owner_human_line || s4.ownership)}
+
+**Build / Buy / Partner:** ${txt(s3.build_buy_partner)}
+
+**Capability retained:** ${txt(s2.strategic_value || s3.build_buy_partner)}
+
+<!-- pagebreak -->
+
+## Page 2 · 90-Day Pilot Charter
+
+### Pilot scope and users
+${txt(s4.pilot_boundary)}
+
+### Build / Buy / Partner and economics
+**Route and vendor-exit test:** ${txt(s3.build_buy_partner)}
+
+**Economics:** ${txt(s4.economics)}
+
+### Baseline, Day-30 evidence and Day-90 targets
+**Outcome:** ${txt(evidence.outcome)}
+
+**Adoption:** ${txt(evidence.adoption)}
+
+**Safety:** ${txt(evidence.safety)}
+
+### Data, AI / human boundary and controls
+**Data:** ${txt(s4.data_boundary || s2.available_data)}
+
+**AI may:** ${txt(op.allowed)}
+
+**AI may not:** ${txt(op.not_allowed)}
+
+**Human approval:** ${txt(op.human_approve)}
+
+**Always escalate:** ${txt(op.escalate)}
+
+### Risk and control
+**Risk tier:** ${txt(s4.risk_tier)}
+
+**Control and recovery:** ${txt(s4.control_recovery)}
+
+**Owner and team:** ${txt(s4.ownership)}
+
+### 90-day path and decision rules
+**Days 1–15 · Diagnose:** confirm the problem, baseline, data, owner and proceed / investigate / wait decision.
+
+**Days 16–30 · Design:** finalise the workflow, human line, pilot boundary, controls, users and go / no-go evidence.
+
+**Days 31–75 · Build and Run:** configure the contained pilot, review outcome, adoption, safety and economics weekly, and correct exceptions.
+
+**Days 76–90 · Decide:** compare the evidence with the pre-agreed rules and scale, fix or stop.
+
+**Day-30 evidence:** ${txt(s5.pitch_evidence || s4.weekly_question)}
+
+**Scale if:** ${txt(s5.scale_if)}
+
+**Fix if:** ${txt(s5.fix_if)}
+
+**Stop if:** ${txt(s5.stop_if)}
+
+### Dated commitment
+**Within 72 hours:** ${txt(s5.commitment_72h)}
+
+**Day-30 sponsor review:** ${txt(s5.day30_review_date)} with ${txt(s5.day30_review_with)}
+
+---
+
+*Working draft generated from the participant's cumulative Initiative Builder. Any “Needs confirmation” item remains an explicit open decision.*`;
+}
+
+// tiny markdown -> HTML for the printable document view (server-side)
+
 export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // Per-endpoint limiters (fall back to no-op if the host didn't pass a factory).
   const mk = (opts) => (typeof rateLimit === 'function' ? rateLimit(opts) : noLimit);
@@ -155,106 +342,8 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     return { sub: saved.participant_id, slug: saved.slug };
   };
 
-  // -------------------------------------------------------------------------
-  // Participant passwordless sign-in
-  // -------------------------------------------------------------------------
-  app.post('/api/abl/auth/request', authRequestLimit, async (req, res) => {
-    try {
-      const email = normalizeEmail(req.body && req.body.email);
-      if (!validEmail(email)) return fail(res, 'Enter a valid email address.');
-      let p = await repo.getParticipantByEmail(email);
-      // Keep one staging-only participant deterministic so repeated design and
-      // sign-in tests cannot be blocked by an older disabled/draft record.
-      if (isPreviewEnvironment() && email === 'vinay@wlci.in') {
-        if (!p) {
-          p = await repo.createParticipant({
-            name: 'Vinay Pasricha', company_name: 'GoodSpace AI', email,
-            role_title: 'Founder & CEO', company_website: 'https://goodspace.ai',
-          });
-        }
-        p = await repo.updateParticipant(p.id, {
-          email,
-          email_normalized: email,
-          login_enabled: true,
-          link_approved: true,
-          status: 'link_ready',
-          approved_at: p.approved_at || new Date().toISOString(),
-        });
-      }
-      if (!p || p.login_enabled === false) {
-        return fail(res, 'This email is not registered for the course. Please contact Vinay at Vinay@goodspace.ai to get access.', 403);
-      }
-      const generic = { message: 'Your sign-in code is on its way.' };
-      const code = createLoginCode();
-      await repo.saveAuthCode(email, {
-        participant_id: p.id,
-        code_hash: hashLoginCode(email, code),
-        expires_at: codeExpiry(),
-      });
-      const delivery = await deliverLoginCode({ email, code, name: p.name });
-      return ok(res, {
-        ...generic,
-        preview_code: delivery.preview && isPreviewEnvironment() ? code : undefined,
-      });
-    } catch (e) {
-      console.error('[abl] auth request error:', e.message);
-      return fail(res, 'The sign-in code could not be sent. Please try again shortly.', 503);
-    }
-  });
 
-  app.post('/api/abl/auth/verify', authVerifyLimit, async (req, res) => {
-    try {
-      const email = normalizeEmail(req.body && req.body.email);
-      const code = String((req.body && req.body.code) || '').replace(/\s/g, '');
-      if (!validEmail(email) || !/^\d{6}$/.test(code)) return fail(res, 'Enter the six-digit code from your email.');
-      const saved = await repo.getAuthCode(email);
-      const expired = !saved || Number.isNaN(Date.parse(saved.expires_at)) || Date.parse(saved.expires_at) <= Date.now();
-      const exhausted = saved && Number(saved.attempts || 0) >= 5;
-      if (expired || exhausted || !verifyLoginCode(email, code, saved && saved.code_hash)) {
-        if (saved) await repo.incrementAuthAttempts(email);
-        return fail(res, 'That code is incorrect or has expired.', 401);
-      }
-      let p = await repo.getParticipant(saved.participant_id);
-      if (!p || p.login_enabled === false || normalizeEmail(p.email) !== email) {
-        return fail(res, 'This course access is not active.', 403);
-      }
-      // Presence in the preloaded participant list is the access decision.
-      // Verified email ownership activates older draft records automatically.
-      if (!p.link_approved) {
-        p = await repo.updateParticipant(p.id, {
-          link_approved: true, status: 'link_ready', approved_at: new Date().toISOString(),
-        });
-      }
-      let token = createParticipantToken(p);
-      if (!token) {
-        token = createOpaqueParticipantToken();
-        await repo.saveParticipantSession(hashParticipantToken(token), {
-          participant_id: p.id, slug: p.slug, expires_at: participantTokenExpiry(),
-        });
-      }
-      await repo.consumeAuthCode(email);
-      await repo.touchActivity(p.id);
-      return ok(res, {
-        token,
-        participant: { name: p.name, company_name: p.company_name, email: p.email },
-        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
-        expires_in_days: 30,
-      });
-    } catch (e) { return oops(res, e); }
-  });
 
-  app.get('/api/abl/auth/status', async (req, res) => {
-    try {
-      const payload = await participantPayload(req);
-      if (!payload) return fail(res, 'Sign-in required.', 401);
-      const p = await repo.getParticipant(payload.sub);
-      if (!p || p.slug !== payload.slug || p.login_enabled === false || !p.link_approved) return fail(res, 'Sign-in required.', 401);
-      return ok(res, {
-        participant: { name: p.name, company_name: p.company_name, email: p.email },
-        workspace: `/ai-business-leaders/workspace/${encodeURIComponent(p.slug)}`,
-      });
-    } catch (e) { return oops(res, e); }
-  });
 
   // All participant APIs now require the short-lived bearer issued above. The
   // page shells remain reachable so a missing/expired sign-in can redirect to
@@ -281,7 +370,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const session = await repo.getOrCreateSession(p.id, 'participant');
       const messages = (await repo.listMessages(session.id))
         .filter((m) => m.role === 'user' || m.role === 'assistant')
-        .map((m) => ({ role: m.role, content: m.content, at: m.created_at, options: (m.metadata && m.metadata.options) || [] }));
+        .map((m) => ({ role: m.role, content: m.content, at: m.created_at, options: usableOptions((m.metadata && m.metadata.options) || []) }));
       // Once a journey is chosen + consent given, open with the agent's greeting
       // so the participant is never staring at an empty box.
       if (!messages.length && session.consent_given && session.selected_depth) {
@@ -438,7 +527,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
       const messages = storedMessages
         .filter((m) => m.role === 'user' || m.role === 'assistant')
         .map((m) => ({ role: m.role, content: m.content, at: m.created_at,
-          options: (m.metadata && m.metadata.options) || [],
+          options: usableOptions((m.metadata && m.metadata.options) || []),
           selection_mode: (m.metadata && m.metadata.selection_mode) || 'single',
           stage: (m.metadata && m.metadata.stage) || '' }));
       // Self-heal a session that was marked started by an older revision but
@@ -626,7 +715,65 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
   // -------------------------------------------------------------------------
   // Admin (studio-gated)
   // -------------------------------------------------------------------------
-  app.get('/api/abl/participants', requireAdmin, async (req, res) => {
+app.get('/api/abl/course/:slug', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const builder = await repo.getBuilder(p.id);
+      return ok(res, {
+        participant: { name: p.name, company_name: p.company_name, role_title: p.role_title, slug: p.slug },
+        builder: builder || { sessions: {}, current_session: 1, completed_sessions: [], completion_percent: 0 },
+      });
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.patch('/api/abl/course/:slug', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const n = Math.max(1, Math.min(5, parseInt(req.body && req.body.session, 10) || 1));
+      const incoming = (req.body && req.body.data) || {};
+      const current = await repo.getBuilder(p.id);
+      const sessions = { ...((current && current.sessions) || {}) };
+      const clean = {};
+      BUILDER_FIELDS[n].forEach((k) => { if (Object.prototype.hasOwnProperty.call(incoming, k)) clean[k] = cleanBuilderValue(incoming[k]); });
+      sessions[String(n)] = { ...(sessions[String(n)] || {}), ...clean, updated_at: new Date().toISOString() };
+      const progress = builderProgress(sessions);
+      const saved = await repo.upsertBuilder(p.id, {
+        sessions, current_session: n, completed_sessions: progress.completed, completion_percent: progress.percent,
+      });
+      await repo.updateParticipant(p.id, {
+        course_current_session: n, course_completion_percent: progress.percent, course_last_activity_at: new Date().toISOString(),
+      });
+      return ok(res, saved);
+    } catch (e) { return oops(res, e); }
+  });
+
+  app.post('/api/abl/course/:slug/charter', async (req, res) => {
+    try {
+      const p = await repo.getParticipantBySlug(req.params.slug);
+      if (!p) return fail(res, 'Course workspace not found', 404);
+      if (!p.link_approved) return fail(res, 'This course workspace is not active yet.', 403);
+      const builder = await repo.getBuilder(p.id);
+      const markdown = builderMarkdown(p, (builder && builder.sessions) || {});
+      const output = await repo.saveOutput({
+        participant_id: p.id, output_type: 'ai_leadership_initiative',
+        content_markdown: markdown,
+        content_json: {
+          builder_updated_at: builder && builder.updated_at,
+          sessions: (builder && builder.sessions) || {},
+        },
+      });
+      return ok(res, { id: output.id, markdown });
+    } catch (e) { return oops(res, e); }
+  });
+
+  // -------------------------------------------------------------------------
+  // Admin (studio-gated)
+  // -------------------------------------------------------------------------
+    app.get('/api/abl/participants', requireAdmin, async (req, res) => {
     try { return ok(res, await repo.listParticipants()); } catch (e) { return oops(res, e); }
   });
 
@@ -978,22 +1125,7 @@ export function registerAbl(app, { requireAdmin, rateLimit, studioAuthed }) {
     } catch (e) { return next(); }
   });
 
-  app.get('/ai-business-leaders/workspace/:slug', (req, res, next) => {
-    try {
-      if (workspaceShell == null) workspaceShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'workspace.html'), 'utf8');
-      res.set('Content-Type', 'text/html; charset=utf-8');
-      res.set('Cache-Control', 'private, no-store');
-      return res.send(workspaceShell);
-    } catch (e) { return next(); }
-  });
 
-  app.get('/ai-business-leaders/s/:slug', (req, res, next) => {
-    try {
-      if (sessionShell == null) sessionShell = readFileSync(path.join(SITE_ROOT, 'ai-business-leaders', 'session.html'), 'utf8');
-      res.set('Content-Type', 'text/html; charset=utf-8');
-      return res.send(sessionShell);
-    } catch (e) { return next(); }
-  });
 
   // Real, branded, downloadable PDF (generated server-side, no browser).
   app.get('/ai-business-leaders/pdf/:outputId', async (req, res, next) => {

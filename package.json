@@ -7,7 +7,13 @@
   "scripts": {
     "dev": "vite",
     "translate": "node scripts/translate-pack.mjs",
-    "translate:dry": "node scripts/translate-pack.mjs --dry-run"
+    "translate:dry": "node scripts/translate-pack.mjs --dry-run",
+    "test:abl-course": "node scripts/test-abl-course.mjs",
+    "test:abl-launch": "node scripts/test-abl-launch.mjs",
+    "test:abl-server-start": "node scripts/test-abl-server-start.mjs",
+    "test:abl-staging": "node scripts/test-abl-staging.mjs",
+    "test:abl-staging-browser": "node scripts/test-abl-staging-browser.mjs",
+    "test:homepage": "node --test scripts/test-homepage-redesign.mjs"
   },
   "devDependencies": {
     "jsdom": "^25.0.1",

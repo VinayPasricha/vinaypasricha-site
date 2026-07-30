@@ -466,3 +466,10 @@ export async function deleteParticipant(id) {
   await batch.commit();
   return { deleted: true, docs: refs.length };
 }
+
+// ---- cumulative AI Leadership Initiative Builder -------------------------
+// One document per participant. It deliberately stays independent of the
+// optional preparation conversation so nobody is blocked from course work.
+export async function getBuilder(participantId) {
+  return docData(await col(COLLECTIONS.ablBuilders).doc(participantId).get());
+}

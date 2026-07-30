@@ -66,6 +66,7 @@ export const REWARD_TITLES = {
   ved_report: 'Execution Constraint Report',
   siv_report: 'My First AI Project Decision Report',
   leadership_blueprint: '90-Day AI Leadership Blueprint',
+  ai_leadership_initiative: 'My First AI Leadership Initiative',
 };
 
 export const MAX_MESSAGES_DEFAULT = 200;

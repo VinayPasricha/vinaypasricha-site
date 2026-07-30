@@ -100,9 +100,17 @@ export function isPreviewEnvironment() {
   return !process.env.K_SERVICE || /staging/i.test(process.env.K_SERVICE || '');
 }
 
+// Strictly a developer machine: Cloud Run always sets K_SERVICE, so this is
+// false on every deployment including staging. Returning a sign-in code in the
+// API response is safe here and nowhere else — on a deployed service it would
+// let anyone who knows a participant's email sign in as them.
+export function isLocalEnvironment() {
+  return !process.env.K_SERVICE;
+}
+
 export async function deliverLoginCode({ email, code, name }) {
   if (!config.resendApiKey) {
-    if (isPreviewEnvironment()) return { delivered: false, preview: true };
+    if (isLocalEnvironment()) return { delivered: false, preview: true };
     throw new Error('Participant email delivery is not configured.');
   }
   const response = await fetch('https://api.resend.com/emails', {

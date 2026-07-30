@@ -71,11 +71,9 @@
       return;
     }
     document.getElementById('emailEcho').textContent = email;
-    if (result.data.preview_code) {
-      message('Approved email confirmed. Opening your course workspace...');
-      if (await verifyAndEnter(result.data.preview_code, emailForm)) return;
-      codeInput.value = result.data.preview_code;
-    }
+    // Locally there is no mail provider, so the code comes back in the response
+    // and is shown on the card. The participant still types it, so the code
+    // step behaves exactly as it will once real email delivery is configured.
     busy(emailForm, false);
     emailStep.hidden = true; codeStep.hidden = false;
     var preview = document.getElementById('previewCode');

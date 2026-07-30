@@ -97,7 +97,7 @@ function requireAdmin(req, res, next) {
 
 // Tiny in-memory per-IP rate limiter (per Cloud Run instance). Caps abuse/cost
 // on the open AI endpoint without any external store. Best-effort, not exact.
-function rateLimit({ windowMs, max }) {
+export function rateLimit({ windowMs, max }) {
   const hits = new Map(); // ip -> number[] (timestamps)
   return (req, res, next) => {
     // Admin token (e.g. the translation pipeline) bypasses the limit.

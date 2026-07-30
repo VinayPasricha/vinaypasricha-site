@@ -42,12 +42,16 @@ test('login asks for the pre-registered email and one-time code', () => {
   assert.match(html, /another computer or phone/i);
   assert.match(html, /same course email/i);
   assert.match(html, /saved work will still be here/i);
-  assert.match(js, /Approved email confirmed\. Opening your course workspace/);
-  assert.match(js, /verifyAndEnter\(result\.data\.preview_code/);
+  // A returned code is shown on the card and typed by the participant; the
+  // page must never sign anyone in automatically.
+  assert.match(js, /previewCode/);
+  assert.doesNotMatch(js, /verifyAndEnter\(result\.data\.preview_code/);
 });
 
-test('unknown course emails receive Vinay access instructions', () => {
-  const routes = read('backend/src/abl/routes.js');
-  assert.match(routes, /This email is not registered for the course\. Please contact Vinay at Vinay@goodspace\.ai to get access\./);
-  assert.match(routes, /email === 'vinay@wlci\.in'/);
+test('unknown course emails reveal no membership information', () => {
+  const auth = read('backend/src/abl/authRoutes.js');
+  // One generic answer for every email: unknown, known-but-uninvited, or active.
+  assert.match(auth, /GENERIC_REQUEST_MESSAGE/);
+  assert.match(auth, /invite_status === 'invited'/);
+  assert.doesNotMatch(auth, /This email is not registered for the course/);
 });
