@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 const base = String(process.env.ABL_STAGING_BASE_URL || '').replace(/\/$/, '');
 const expectedRelease = String(process.env.ABL_EXPECTED_RELEASE || '');
 const waitSeconds = Math.max(60, Number(process.env.ABL_DEPLOY_WAIT_SECONDS || 720));
+const affinityCookie = 'GOOGAPPUID=731';
+let activeRevision = '';
 
 assert.ok(base.startsWith('https://'), 'ABL_STAGING_BASE_URL must be an https URL');
 assert.ok(expectedRelease, 'ABL_EXPECTED_RELEASE is required');
@@ -18,6 +20,7 @@ async function request(path, init = {}) {
       signal: controller.signal,
       headers: {
         'User-Agent': 'abl-staging-launch-audit/1.0',
+        Cookie: affinityCookie,
         ...(init.headers || {}),
       },
     });
@@ -34,18 +37,35 @@ async function text(path, init) {
 async function waitForRelease() {
   const deadline = Date.now() + waitSeconds * 1000;
   let last = 'no response';
+  let candidateRevision = '';
+  let consecutive = 0;
+  const requiredConsecutive = 20;
+
   while (Date.now() < deadline) {
     try {
-      const response = await request(`/assets/data/staging-release.json?audit=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      const body = await response.text();
+      const response = await request(`/api/abl/deployment?audit=${Date.now()}`, { cache: 'no-store' });
+      const raw = await response.text();
       if (response.ok) {
-        const release = JSON.parse(body);
-        last = release.release || 'missing release field';
-        if (release.release === expectedRelease) {
-          console.log(`Deployment fingerprint confirmed: ${expectedRelease}`);
-          return;
+        const body = JSON.parse(raw);
+        const info = body.data || {};
+        const release = String(info.release || '');
+        const revision = String(info.revision || '');
+        last = `${release || 'missing release'} @ ${revision || 'missing revision'}`;
+
+        if (release === expectedRelease && revision && revision !== 'local') {
+          if (revision === candidateRevision) consecutive += 1;
+          else {
+            candidateRevision = revision;
+            consecutive = 1;
+          }
+          console.log(`Staging revision stability: ${consecutive}/${requiredConsecutive} · ${last}`);
+          if (consecutive >= requiredConsecutive) {
+            activeRevision = revision;
+            console.log(`Dynamic deployment confirmed: ${expectedRelease} on ${activeRevision}`);
+            return;
+          }
+          await sleep(1500);
+          continue;
         }
       } else {
         last = `HTTP ${response.status}`;
@@ -53,15 +73,25 @@ async function waitForRelease() {
     } catch (error) {
       last = error.message;
     }
+
+    candidateRevision = '';
+    consecutive = 0;
     console.log(`Waiting for staging deployment; currently ${last}`);
-    await sleep(15000);
+    await sleep(10000);
   }
-  throw new Error(`Staging did not serve ${expectedRelease} within ${waitSeconds}s; last result: ${last}`);
+  throw new Error(`Staging did not serve ${expectedRelease} consistently within ${waitSeconds}s; last result: ${last}`);
 }
 
 function hasNoStore(response, label) {
   const cache = String(response.headers.get('cache-control') || '').toLowerCase();
   assert.ok(cache.includes('no-store'), `${label} must be no-store; received ${cache || 'no cache-control'}`);
+}
+
+function assertRevisionHeaders(response, label) {
+  const release = String(response.headers.get('x-abl-release') || '');
+  const revision = String(response.headers.get('x-abl-revision') || '');
+  assert.equal(release, expectedRelease, `${label} was served by a different release: ${release || 'missing header'}`);
+  assert.equal(revision, activeRevision, `${label} was served by a different Cloud Run revision: ${revision || 'missing header'}`);
 }
 
 await waitForRelease();
@@ -113,11 +143,14 @@ await waitForRelease();
     console.error('Studio route diagnostic:', JSON.stringify({
       status: response.status,
       location: response.headers.get('location'),
+      release: response.headers.get('x-abl-release'),
+      revision: response.headers.get('x-abl-revision'),
       cacheControl: response.headers.get('cache-control'),
       contentType: response.headers.get('content-type'),
       body: body.slice(0, 1000),
     }));
   }
+  assertRevisionHeaders(response, 'Studio route');
   assert.equal(response.status, 302, `private Studio must redirect to login; received ${response.status}`);
   assert.match(String(response.headers.get('location') || ''), /^\/studio\/login/, 'Studio redirect must go to private login');
   hasNoStore(response, 'Studio redirect');
@@ -135,6 +168,7 @@ await waitForRelease();
   assert.equal(response.status, 200, `Studio must be explicitly configured on staging; received ${response.status}`);
   const parsed = JSON.parse(body);
   assert.equal(parsed.authed, false, 'anonymous staging request must not be Studio-authenticated');
+  assert.equal(parsed.enabled, true, 'staging Studio must report that private access is configured');
 }
 
-console.log('Deployed staging HTTP audit passed: fingerprint, health, OTP privacy, participant isolation, no-store caching and Studio gate.');
+console.log(`Deployed staging HTTP audit passed on ${activeRevision}: health, OTP privacy, participant isolation, no-store caching and Studio gate.`);
