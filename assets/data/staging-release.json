@@ -1,6 +1,6 @@
 {
-  "release": "abl-course-staging-20260730-0200",
-  "contains_all_changes_through": "37745be400c2ed2379c5f510be554a8db82f72fe",
-  "deployment_requested_at": "2026-07-30T02:00:00Z",
-  "verification": "Stable dynamic Cloud Run revision plus live HTTP and mobile Chrome launch gate"
+  "release": "abl-course-staging-20260730-0220",
+  "contains_all_changes_through": "cbffc0ce36e0593c333a130d9b8f486a0b2276ff",
+  "deployment_requested_at": "2026-07-30T02:20:00Z",
+  "verification": "Clean final course staging redeploy after competing deployment queue drained"
 }
