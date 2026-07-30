@@ -1,5 +1,6 @@
 // Entry point: start the HTTP server. Firestore connects lazily on first use,
 // so there is no database connection step here.
+import crypto from 'node:crypto';
 import { config } from './config.js';
 import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
@@ -11,6 +12,23 @@ import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
+
+function studioCookie(req) {
+  const raw = String(req.headers.cookie || '');
+  for (const part of raw.split(';')) {
+    const i = part.indexOf('=');
+    if (i < 0 || part.slice(0, i).trim() !== '__session') continue;
+    try { return decodeURIComponent(part.slice(i + 1).trim()); }
+    catch (e) { return ''; }
+  }
+  return '';
+}
+
+function explicitStudioHash() {
+  const passphrase = String(process.env.STUDIO_PASSPHRASE || '').trim();
+  if (!passphrase) return '';
+  return crypto.createHash('sha256').update('studio:' + passphrase).digest('hex');
+}
 
 // Launch hardening: the older central Studio gate contains a development fallback
 // passphrase. On every Cloud Run deployment, refuse all Studio UI/login traffic
@@ -29,6 +47,41 @@ if (stack) {
   });
   const hardeningLayers = stack.splice(hardeningStart);
   stack.splice(0, 0, ...hardeningLayers);
+
+  // Handle anonymous Studio UI requests before the older gate. Using explicit
+  // status and Location headers avoids the legacy redirect path that returned a
+  // 500 on Cloud Run. Authenticated requests continue through to the existing
+  // Studio routes using the same cookie hash.
+  const studioGateStart = stack.length;
+  app.use((req, res, next) => {
+    const pathname = String(req.url || '').split('?')[0];
+    const studioUi = pathname === '/studio' || pathname.startsWith('/studio/');
+    if (!studioUi) return next();
+
+    res.setHeader('Cache-Control', 'private, no-store');
+    if (!process.env.K_SERVICE) return next();
+    if (pathname === '/studio/login' || pathname === '/studio/login.html') return next();
+
+    const expected = explicitStudioHash();
+    if (!expected) {
+      res.statusCode = 503;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Vinay Studio is not configured.');
+    }
+    if (studioCookie(req) === expected) return next();
+
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      res.statusCode = 302;
+      res.setHeader('Location', '/studio/login');
+      return res.end();
+    }
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    return res.end(JSON.stringify({ error: 'unauthorized' }));
+  });
+  const studioGateLayers = stack.splice(studioGateStart);
+  const expressInitAt = stack.findIndex((layer) => layer.name === 'expressInit');
+  stack.splice(expressInitAt >= 0 ? expressInitAt + 1 : 1, 0, ...studioGateLayers);
 }
 
 // createApp already contains the original preparation and Initiative Builder
