@@ -79,10 +79,24 @@ function visibleTo(item, participant, entitlementField = null) {
   if (audience === 'participants') return cleanArray(item.participant_ids).includes(String(participant.id));
   return false;
 }
+const SESSION_LIFECYCLE = new Set(['upcoming', 'live', 'completed', 'follow_up']);
+function sanitiseSessions(value) {
+  const input = value && typeof value === 'object' ? value : {};
+  const sessions = {};
+  for (let number = 1; number <= 5; number += 1) {
+    const raw = input[String(number)] || input[number] || {};
+    sessions[String(number)] = {
+      date: raw.date || null,
+      meeting_url: cleanText(raw.meeting_url, 3000) || null,
+      status: SESSION_LIFECYCLE.has(raw.status) ? raw.status : 'upcoming',
+    };
+  }
+  return sessions;
+}
 function participantCohort(cohort) {
   if (!cohort) return null;
   const current = Math.max(1, Math.min(5, parseInt(cohort.current_session, 10) || 1));
-  const sessions = cohort.sessions && typeof cohort.sessions === 'object' ? cohort.sessions : {};
+  const sessions = sanitiseSessions(cohort.sessions);
   const session = sessions[String(current)] || sessions[current] || {};
   return {
     ...cohort,
@@ -336,11 +350,21 @@ export function registerWorkspaceRoutes(app) {
     return ok(res, await saveDoc(COLLECTIONS.ablCohorts, null, {
       name: cleanText(body.name, 160), description: cleanText(body.description, 1000), status: body.status || 'active',
       timezone: cleanText(body.timezone, 80) || 'Asia/Kolkata',
-      sessions: body.sessions && typeof body.sessions === 'object' ? body.sessions : {},
+      sessions: sanitiseSessions(body.sessions),
       current_session: Math.max(1, Math.min(5, parseInt(body.current_session, 10) || 1)),
     }), 201);
   });
-  app.patch('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await saveDoc(COLLECTIONS.ablCohorts, req.params.id, req.body || {})));
+  app.patch('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => {
+    const body = req.body || {};
+    const patch = {};
+    if (body.name !== undefined) patch.name = cleanText(body.name, 160);
+    if (body.description !== undefined) patch.description = cleanText(body.description, 1000);
+    if (body.status !== undefined) patch.status = cleanText(body.status, 40);
+    if (body.timezone !== undefined) patch.timezone = cleanText(body.timezone, 80) || 'Asia/Kolkata';
+    if (body.current_session !== undefined) patch.current_session = Math.max(1, Math.min(5, parseInt(body.current_session, 10) || 1));
+    if (body.sessions !== undefined) patch.sessions = sanitiseSessions(body.sessions);
+    return ok(res, await saveDoc(COLLECTIONS.ablCohorts, req.params.id, patch));
+  });
   app.delete('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablCohorts, req.params.id)));
 
   app.get('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablMaterials)));

@@ -173,7 +173,7 @@ function fromApi(d){
     current:(co&&co.current_session)||(d.builder&&d.builder.current_session)||1,
     selected:pt.id,
     participants:[{id:pt.id,name:txt(pt.name),email:txt(pt.email),phone:'',company:txt(pt.company_name),role:txt(pt.role_title),cohort:cohortId,invite:pt.invite_status||'active',started:!!pt.journey_started}],
-    cohorts:co?[{id:co.id,name:txt(co.name),meeting:txt(co.meeting_url||co.meeting),current:co.current_session||1}]:[{id:cohortId,name:'',meeting:'',current:1}],
+    cohorts:co?[{id:co.id,name:txt(co.name),meeting:txt(co.meeting_url||co.meeting),current:co.current_session||1,sessions:co.sessions||{}}]:[{id:cohortId,name:'',meeting:'',current:1,sessions:{}}],
     materials:(d.materials||[]).map(m=>({id:m.id,title:txt(m.title),type:txt(m.type)||'resource',url:txt(m.source_url),file:txt(m.file_name),session:m.session_number||0,phase:m.phase||'library',status:'published',audience:'all',cohort:cohortId})),
     assignments:(d.assignments||[]).map(a=>({id:a.id,title:txt(a.title),session:a.session_number||1,instructions:txt(a.instructions),cohort:cohortId,status:'published'})),
     submissions:Object.fromEntries((d.assignments||[]).map(a=>[a.id,{status:(a.submission&&a.submission.status)||'draft',text:(a.submission&&a.submission.response_text)||''}])),
