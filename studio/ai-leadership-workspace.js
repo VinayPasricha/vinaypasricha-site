@@ -27,6 +27,23 @@
     if (!response.ok || body.ok === false) throw new Error(body.error || 'Request failed');
     return body.data;
   }
+  function fileSelected(id) {
+    var el = $(id);
+    return !!(el && el.files && el.files[0]);
+  }
+  // Read a chosen PDF as a data URL and upload it; returns { file_key, file_name }.
+  async function uploadPdf(id) {
+    var file = $(id).files[0];
+    if (file.size > 8 * 1024 * 1024) throw new Error('That PDF is larger than 8 MB.');
+    if (file.type ? file.type !== 'application/pdf' : !/\.pdf$/i.test(file.name)) throw new Error('Only PDF files can be uploaded.');
+    var dataUrl = await new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result)); };
+      r.onerror = function () { reject(new Error('The file could not be read.')); };
+      r.readAsDataURL(file);
+    });
+    return api('/materials/upload', { method: 'POST', body: JSON.stringify({ data: dataUrl, file_name: file.name }) });
+  }
   function cohortName(id) {
     var c = state.cohorts.find(function (x) { return x.id === id; });
     return c ? c.name : 'Unassigned';
@@ -43,6 +60,22 @@
     var html = includeAll ? '<option value="">Unassigned</option>' : '<option value="">Choose cohort</option>';
     return html + state.cohorts.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === selected ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('');
   }
+
+  // ---- form guards ----
+  // Show a field only when its controlling <select> has a qualifying value, and
+  // run once on load so the default state is right. Hides the wrapping .field
+  // so its label goes too. Keeps contradictory choices (e.g. Everyone + a
+  // cohort) off the screen entirely.
+  function bindConditional(controlId, targetId, showWhen) {
+    var ctrl = $(controlId), target = $(targetId);
+    if (!ctrl || !target) return;
+    var field = target.closest('.field') || target;
+    function apply() { field.style.display = showWhen(ctrl.value) ? '' : 'none'; }
+    ctrl.addEventListener('change', apply);
+    apply();
+  }
+  var isCohorts = function (v) { return v === 'cohorts'; };
+  var isScheduled = function (v) { return v === 'scheduled'; };
 
   function showPage(name) {
     Array.prototype.forEach.call(document.querySelectorAll('[data-page-view]'), function (page) { page.hidden = page.getAttribute('data-page-view') !== name; });
@@ -79,13 +112,56 @@
     $('navAnnouncements').textContent = state.announcements.length;
   }
 
+  // Per-participant activity from the data already loaded (no extra fetch):
+  // whether they have engaged at all, when last, and how many assignments
+  // they have submitted.
+  function activityOf(p) {
+    var started = !!(p.last_activity_at || p.course_last_activity_at || p.message_count);
+    var last = p.course_last_activity_at || p.last_activity_at || null;
+    var submitted = state.submissions.filter(function (s) { return s.participant_id === p.id && s.status === 'submitted'; }).length;
+    return { started: started, last: last, submitted: submitted };
+  }
+  function renderActivity() {
+    if (!$('activityRows')) return;
+    var total = state.participants.length;
+    var started = state.participants.filter(function (p) { return activityOf(p).started; }).length;
+    var totalSubs = state.submissions.filter(function (s) { return s.status === 'submitted'; }).length;
+    if ($('activitySummary')) $('activitySummary').innerHTML = '<div class="stat-grid" style="margin-bottom:16px">' +
+      '<div class="stat"><strong>' + total + '</strong><span>Participants</span></div>' +
+      '<div class="stat"><strong>' + started + '</strong><span>Started</span></div>' +
+      '<div class="stat"><strong>' + (total - started) + '</strong><span>Not started yet</span></div>' +
+      '<div class="stat"><strong>' + totalSubs + '</strong><span>Assignments submitted</span></div></div>';
+    // Not-started first, so whoever needs a nudge is at the top.
+    var rows = state.participants.slice().sort(function (a, b) { return (activityOf(a).started ? 1 : 0) - (activityOf(b).started ? 1 : 0); });
+    $('activityRows').innerHTML = rows.length ? rows.map(function (p, i) {
+      var a = activityOf(p);
+      return '<tr><td class="sub" style="color:var(--ink-3)">' + (i + 1) + '</td>' +
+        '<td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.company_name || '') + '</div></td>' +
+        '<td>' + esc(cohortName(p.cohort_id)) + '</td>' +
+        '<td>' + (a.started ? '<span class="pill on">Started</span>' : '<span class="pill">Not started</span>') + '</td>' +
+        '<td class="sub">' + (a.last ? fmtDate(a.last) : '—') + '</td>' +
+        '<td>' + a.submitted + '</td>' +
+        '<td><a class="btn small ghost" href="/ai-business-leaders/workspace/' + encodeURIComponent(p.slug) + '?admin=1" target="_blank" rel="noopener">Open</a></td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty">No participants yet.</td></tr>';
+  }
+
+  // The people assigned to a cohort, listed by name (with company).
+  function membersOf(c) {
+    var members = state.participants.filter(function (p) { return p.cohort_id === c.id; });
+    if (!members.length) return '<div style="margin-top:12px"><div class="sub" style="text-transform:uppercase;letter-spacing:.08em">Participants</div><p class="empty" style="margin:6px 0 0">No one assigned yet — add people to this cohort from Manage participants.</p></div>';
+    members.sort(function (a, b) { return String(a.name || '').localeCompare(String(b.name || '')); });
+    return '<div style="margin-top:12px"><div class="sub" style="text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Participants (' + members.length + ')</div>' +
+      '<ol style="margin:0;padding-left:22px;font-size:13.5px;line-height:1.8;max-height:340px;overflow:auto">' +
+      members.map(function (p) { return '<li>' + esc(p.name || 'Unnamed') + (p.company_name ? ' <span class="sub" style="color:var(--ink-3)">· ' + esc(p.company_name) + '</span>' : '') + '</li>'; }).join('') +
+      '</ol></div>';
+  }
   function cohortCard(c, compact) {
     var count = state.participants.filter(function (p) { return p.cohort_id === c.id; }).length;
     var current = Math.max(1, Math.min(5, parseInt(c.current_session, 10) || 1));
     var next = c.sessions && c.sessions[String(current)];
     return '<article class="entity-card" data-cohort="' + esc(c.id) + '"><span class="meta">' + count + ' participants · Session ' + current + '</span><h3>' + esc(c.name) + '</h3>' +
       '<p>' + esc(c.description || 'No description') + '</p><p>' + (next && next.date ? 'Next: ' + esc(fmtDate(next.date)) : 'Session date not added') + '</p>' +
-      (compact ? '' : '<div class="field" style="margin-top:12px"><label>Current session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
+      (compact ? '' : membersOf(c) + '<div class="field" style="margin-top:12px"><label>Current session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
       '<div class="actions"><button class="btn small" data-save-cohort>Save</button><button class="btn small ghost" data-delete-cohort>Delete</button></div>') + '</article>';
   }
   function renderCohorts() {
@@ -110,14 +186,14 @@
     var rows = state.participants.filter(function (p) {
       return !query || [p.name, p.email, p.phone, p.company_name, cohortName(p.cohort_id)].join(' ').toLowerCase().includes(query);
     });
-    $('participantRows').innerHTML = rows.length ? rows.map(function (p) {
+    $('participantRows').innerHTML = rows.length ? rows.map(function (p, i) {
       var invite = p.invite_status || (p.link_approved ? 'invited' : 'not_invited');
-      return '<tr data-participant="' + esc(p.id) + '"><td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
+      return '<tr data-participant="' + esc(p.id) + '"><td class="sub" style="color:var(--ink-3);white-space:nowrap">' + (i + 1) + '</td><td><div class="name">' + esc(p.name) + '</div><div class="sub">' + esc(p.role_title || '') + '</div></td>' +
         '<td><div>' + esc(p.email || '—') + '</div><div class="sub">' + esc(p.phone || '—') + '</div></td><td>' + esc(p.company_name || '—') + '</td>' +
         '<td><select data-participant-cohort>' + options(p.cohort_id, true) + '</select></td><td><span class="pill ' + esc(invite) + '">' + esc(invite.replace(/_/g, ' ')) + '</span></td>' +
         '<td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small" data-invite>' + (invite === 'not_invited' ? 'Send invite' : 'Resend invite') + '</button>' +
-        '<a class="btn small ghost" href="/ai-business-leaders/workspace/' + encodeURIComponent(p.slug) + '" target="_blank" rel="noopener">Open workspace</a></div></td></tr>';
-    }).join('') : '<tr><td colspan="6" class="empty">No matching participants.</td></tr>';
+        '<a class="btn small ghost" href="/ai-business-leaders/workspace/' + encodeURIComponent(p.slug) + '?admin=1" target="_blank" rel="noopener">Open workspace</a></div></td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty">No matching participants.</td></tr>';
     Array.prototype.forEach.call($('participantRows').querySelectorAll('[data-participant]'), function (row) {
       var id = row.getAttribute('data-participant');
       row.querySelector('[data-participant-cohort]').onchange = async function (e) {
@@ -170,15 +246,35 @@
 
   function renderAnnouncements() {
     $('announcementCards').innerHTML = state.announcements.length ? state.announcements.map(function (a) {
-      return '<article class="entity-card"><span class="meta">' + esc(a.audience || 'all') + (a.audience === 'cohorts' ? ' · ' + esc(cohortName((a.cohort_ids || [])[0])) : '') + '</span><h3>' + esc(a.title) + '</h3><p>' + esc(a.message) + '</p><p><span class="pill ' + esc(a.status) + '">' + esc(a.status) + '</span> · ' + esc(fmtDate(a.publish_at || a.updated_at)) + '</p></article>';
+      var failed = a.email_failed_count || 0;
+      var delivery = a.email_sent_at
+        ? '<p class="sub">Emailed ' + (a.email_sent_count || 0) + (failed ? ' · <span style="color:#b4472d;font-weight:600">' + failed + ' not delivered</span>' : '') + '</p>'
+        : '';
+      var resend = failed
+        ? '<div class="actions"><button class="btn small" data-resend="' + esc(a.id) + '">Resend to ' + failed + ' who missed it</button><span class="form-status" data-resend-status="' + esc(a.id) + '"></span></div>'
+        : '';
+      return '<article class="entity-card"><span class="meta">' + esc(a.audience || 'all') + (a.audience === 'cohorts' ? ' · ' + esc(cohortName((a.cohort_ids || [])[0])) : '') + '</span><h3>' + esc(a.title) + '</h3><p>' + esc(a.message) + '</p><p><span class="pill ' + esc(a.status) + '">' + esc(a.status) + '</span> · ' + esc(fmtDate(a.publish_at || a.updated_at)) + '</p>' + delivery + resend + '</article>';
     }).join('') : '<p class="empty">No announcements yet.</p>';
+    Array.prototype.forEach.call($('announcementCards').querySelectorAll('[data-resend]'), function (b) {
+      b.onclick = async function () {
+        var id = b.getAttribute('data-resend');
+        var st = $('announcementCards').querySelector('[data-resend-status="' + id + '"]');
+        b.disabled = true; if (st) st.textContent = 'Resending…';
+        try {
+          var r = await api('/announcements/' + id + '/resend', { method: 'POST', body: '{}' });
+          var m = r && r.email;
+          toast(m ? ('Resent ' + (m.sent || 0) + (m.failed ? ' · ' + m.failed + ' still failed' : ' — all delivered')) : 'Resent');
+          await load();
+        } catch (e) { b.disabled = false; if (st) st.textContent = e.message; }
+      };
+    });
   }
 
   function refreshCohortSelects() {
     ['bulkCohort', 'materialCohort', 'assignmentCohort', 'announcementCohort'].forEach(function (id) { $(id).innerHTML = options('', true); });
   }
   function renderAll() {
-    refreshCohortSelects(); renderStats(); renderCohorts(); renderParticipants(); renderMaterials(); renderAssignments(); renderAnnouncements();
+    refreshCohortSelects(); renderStats(); renderActivity(); renderCohorts(); renderParticipants(); renderMaterials(); renderAssignments(); renderAnnouncements();
   }
 
   function parseParticipants(text) {
@@ -203,6 +299,7 @@
     };
 
     $('createCohort').onclick = async function () {
+      if (!$('cohortName').value.trim()) { $('cohortFormStatus').textContent = 'Give the cohort a name first.'; return; }
       var sessions = {};
       [1,2,3,4,5].forEach(function (n) {
         var date = $('cohortSessionDate' + n).value, link = $('cohortSessionLink' + n).value.trim();
@@ -217,18 +314,34 @@
     };
 
     $('publishMaterial').onclick = async function () {
-      var audience = $('materialAudience').value, cohort = $('materialCohort').value;
-      var body = { title: $('materialTitle').value, type: $('materialType').value, session_number: Number($('materialSession').value), phase: $('materialPhase').value,
-        source_url: $('materialUrl').value, description: $('materialDescription').value, status: $('materialStatus').value,
-        publish_at: $('materialPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
-      var button = this, status = $('materialFormStatus'); button.disabled = true; status.textContent = 'Saving…';
-      try { await api('/materials', { method: 'POST', body: JSON.stringify(body) }); status.textContent = 'Material saved.'; ['materialTitle','materialUrl','materialDescription','materialPublishAt'].forEach(function (id) { $(id).value = ''; }); await load(); }
-      catch (e) { status.textContent = e.message; }
+      var audience = $('materialAudience').value, cohort = $('materialCohort').value, mstatus = $('materialFormStatus');
+      if (!$('materialTitle').value.trim()) { mstatus.textContent = 'Add a title first.'; return; }
+      if (audience === 'cohorts' && !cohort) { mstatus.textContent = 'Choose a cohort, or set the audience to Everyone.'; return; }
+      if ($('materialStatus').value === 'scheduled' && !$('materialPublishAt').value) { mstatus.textContent = 'Pick a publish date and time to schedule it.'; return; }
+      if (!$('materialUrl').value.trim() && !fileSelected('materialFile')) { mstatus.textContent = 'Add a link or upload a PDF.'; return; }
+      var button = this; button.disabled = true; mstatus.textContent = 'Saving…';
+      try {
+        var uploaded = null;
+        if (fileSelected('materialFile')) { mstatus.textContent = 'Uploading PDF…'; uploaded = await uploadPdf('materialFile'); }
+        var body = { title: $('materialTitle').value, type: $('materialType').value, session_number: Number($('materialSession').value), phase: $('materialPhase').value,
+          source_url: $('materialUrl').value, description: $('materialDescription').value, status: $('materialStatus').value,
+          publish_at: $('materialPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [],
+          file_key: uploaded ? uploaded.file_key : '', file_name: uploaded ? uploaded.file_name : '' };
+        await api('/materials', { method: 'POST', body: JSON.stringify(body) });
+        mstatus.textContent = 'Material saved.';
+        ['materialTitle','materialUrl','materialDescription','materialPublishAt'].forEach(function (id) { $(id).value = ''; });
+        if ($('materialFile')) $('materialFile').value = '';
+        if ($('materialFileStatus')) $('materialFileStatus').textContent = '';
+        await load();
+      }
+      catch (e) { mstatus.textContent = e.message; }
       button.disabled = false;
     };
 
     $('createAssignment').onclick = async function () {
       var cohort = $('assignmentCohort').value;
+      if (!$('assignmentTitle').value.trim()) { $('assignmentFormStatus').textContent = 'Add a title first.'; return; }
+      if ($('assignmentStatus').value === 'scheduled' && !$('assignmentDueAt').value) { $('assignmentFormStatus').textContent = 'Set a due date to schedule it.'; return; }
       var body = { title: $('assignmentTitle').value, instructions: $('assignmentInstructions').value, session_number: Number($('assignmentSession').value), due_at: $('assignmentDueAt').value || null,
         audience: cohort ? 'cohorts' : 'all', cohort_ids: cohort ? [cohort] : [], status: $('assignmentStatus').value };
       var button = this, status = $('assignmentFormStatus'); button.disabled = true; status.textContent = 'Saving…';
@@ -238,7 +351,11 @@
     };
 
     $('publishAnnouncement').onclick = async function () {
-      var audience = $('announcementAudience').value, cohort = $('announcementCohort').value;
+      var audience = $('announcementAudience').value, cohort = $('announcementCohort').value, astatus = $('announcementFormStatus');
+      if (!$('announcementTitle').value.trim()) { astatus.textContent = 'Add a title first.'; return; }
+      if (!$('announcementMessage').value.trim()) { astatus.textContent = 'Write a message first.'; return; }
+      if (audience === 'cohorts' && !cohort) { astatus.textContent = 'Choose a cohort, or set the audience to Everyone.'; return; }
+      if ($('announcementStatus').value === 'scheduled' && !$('announcementPublishAt').value) { astatus.textContent = 'Pick a publish date and time to schedule it.'; return; }
       var body = { title: $('announcementTitle').value, message: $('announcementMessage').value, link_url: $('announcementLink').value, status: $('announcementStatus').value,
         publish_at: $('announcementPublishAt').value || null, audience: audience, cohort_ids: audience === 'cohorts' && cohort ? [cohort] : [] };
       var button = this, status = $('announcementFormStatus'); button.disabled = true; status.textContent = 'Publishing…';
@@ -263,6 +380,14 @@
       if (navigator.clipboard) await navigator.clipboard.writeText(text);
       toast('WhatsApp message copied');
     };
+
+    // Conditional fields: a cohort picker only when the audience is a cohort,
+    // and a publish date only when scheduling. Runs once now so the defaults
+    // (Everyone / Publish now) start with those fields hidden.
+    bindConditional('materialAudience', 'materialCohort', isCohorts);
+    bindConditional('announcementAudience', 'announcementCohort', isCohorts);
+    bindConditional('materialStatus', 'materialPublishAt', isScheduled);
+    bindConditional('announcementStatus', 'announcementPublishAt', isScheduled);
   }
 
   async function load() {

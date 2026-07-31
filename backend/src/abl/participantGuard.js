@@ -1,9 +1,25 @@
 // Enforces passwordless participant authentication across every participant API.
 // The public slug selects a workspace; it never grants access by itself.
+import crypto from 'node:crypto';
 import * as repo from './store.js';
 import {
   bearerToken, verifyParticipantToken, hashParticipantToken, normalizeEmail,
 } from './auth.js';
+
+// An authenticated Studio admin (the __session cookie, matching the same
+// passphrase hash the main gate uses, or the ADMIN_TOKEN master key) may open
+// any participant's workspace read-only for support and review.
+function studioAuthed(req) {
+  const passphrase = String(process.env.STUDIO_PASSPHRASE || 'vik123').trim();
+  const expected = passphrase ? crypto.createHash('sha256').update('studio:' + passphrase).digest('hex') : '';
+  const cookies = {};
+  String(req.headers.cookie || '').split(';').forEach((part) => {
+    const i = part.indexOf('=');
+    if (i > -1) cookies[part.slice(0, i).trim()] = decodeURIComponent(part.slice(i + 1).trim());
+  });
+  if (expected && cookies.__session === expected) return true;
+  return !!process.env.ADMIN_TOKEN && (req.get('x-admin-token') || '') === process.env.ADMIN_TOKEN;
+}
 
 function protectedSlug(pathname) {
   const path = String(pathname || '');
@@ -34,6 +50,14 @@ export async function participantApiGuard(req, res, next) {
   if (!slug) return next();
 
   try {
+    // Studio admins may view any workspace without a participant sign-in.
+    if (studioAuthed(req)) {
+      const participant = await repo.getParticipantBySlug(slug);
+      if (!participant) return res.status(404).json({ ok: false, error: 'Workspace not found.' });
+      req.ablParticipant = participant;
+      req.ablAdminView = true;
+      return next();
+    }
     const payload = await payloadFromRequest(req);
     if (!payload || !payload.sub || !payload.slug) {
       return res.status(401).json({ ok: false, error: 'Sign-in required.' });

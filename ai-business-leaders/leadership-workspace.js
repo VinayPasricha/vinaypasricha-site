@@ -48,7 +48,13 @@
   }
 
   function itemCard(item) {
-    var open = item.source_url ? ' href="' + esc(item.source_url) + '" target="_blank" rel="noopener"' : '';
+    // An uploaded PDF is served from our own signed-in API, which a plain link
+    // navigation cannot authenticate — fetch it with the sign-in token instead
+    // (see the delegated handler below). External links open normally.
+    var isFile = item.source_url && item.source_url.indexOf('/api/abl/') === 0;
+    var open = item.source_url
+      ? (isFile ? ' href="#" data-file-url="' + esc(item.source_url) + '"' : ' href="' + esc(item.source_url) + '" target="_blank" rel="noopener"')
+      : '';
     var tag = item.type || 'resource';
     return '<a class="lw-material-card"' + open + '>' +
       '<span class="type">' + esc(tag) + (item.session_number ? ' · Session ' + item.session_number : '') + '</span>' +
@@ -301,6 +307,9 @@
       // workspace layer is temporarily unavailable.
     }
   }
+
+  // Uploaded-PDF clicks are handled globally in auth-client.js (it fetches with
+  // the sign-in token and shows the file), so nothing to wire here.
 
   loadWorkspace();
 })();

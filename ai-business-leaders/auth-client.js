@@ -176,5 +176,34 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installMobileWorkspace);
   else installMobileWorkspace();
 
-  window.AblAuth = { key: KEY, read: read, token: token, headers: headers, login: login, clear: clear };
+  // Uploaded course-material PDFs are served from the participant API, which a
+  // plain link navigation cannot authenticate. Intercept any click heading to a
+  // material file endpoint — whatever screen rendered it — fetch it with the
+  // sign-in token, and show the PDF from a blob. A blank tab is opened inside
+  // the click so the later navigation is not treated as a blocked pop-up.
+  var FILE_ENDPOINT = /\/api\/abl\/workspace\/[^/]+\/materials\/[^/]+\/file(\?|$)/;
+  async function openGatedFile(url, win) {
+    try {
+      var res = await fetch(url, { headers: headers({}) });
+      if (res.status === 401) { if (win && !win.closed) win.close(); clear(); login(); return; }
+      if (!res.ok) throw new Error('unavailable');
+      var blobUrl = URL.createObjectURL(await res.blob());
+      if (win && !win.closed) win.location = blobUrl; else window.open(blobUrl, '_blank', 'noopener');
+      setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 120000);
+    } catch (e) {
+      if (win && !win.closed) win.close();
+      try { window.alert('This file could not be opened. Please make sure you are still signed in and try again.'); } catch (e2) {}
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('a[href], [data-file-url]') : null;
+    if (!el) return;
+    var url = el.getAttribute('data-file-url') || el.getAttribute('href') || '';
+    if (!FILE_ENDPOINT.test(url)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openGatedFile(url, window.open('', '_blank'));
+  }, true);
+
+  window.AblAuth = { key: KEY, read: read, token: token, headers: headers, login: login, clear: clear, openGatedFile: openGatedFile };
 }());

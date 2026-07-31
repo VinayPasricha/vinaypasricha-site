@@ -250,6 +250,9 @@
   }
 
   function wireCreate() {
+    // The create-participant form is not present on every surface (e.g. the
+    // embedded preparation view), so wire it only when it exists.
+    if (!$('createBtn')) return;
     $('createBtn').onclick = async function () {
       var body = { name: $('n-name').value.trim(), company_name: $('n-company').value.trim(),
         role_title: $('n-role').value.trim(), email: $('n-email').value.trim(),

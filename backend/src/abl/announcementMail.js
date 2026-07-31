@@ -10,7 +10,7 @@ import * as repo from './store.js';
 const FROM_NAME = 'AI for Business Leaders';
 // Resend accepts more, but small batches keep one rejected address from taking
 // a whole cohort's mail down with it.
-const CONCURRENCY = 4;
+const CONCURRENCY = 2;
 
 export function emailConfigured() {
   return !!config.resendApiKey;
@@ -47,17 +47,24 @@ function announcementHtml({ title, message, linkUrl, workspaceUrl, firstName }) 
 </div>`;
 }
 
-async function sendOne({ to, subject, html }) {
+async function sendOne({ to, subject, html }, attempt = 0) {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${config.resendApiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: config.ablFromEmail, to: [to], subject, html }),
   });
-  if (!response.ok) {
-    let detail = '';
-    try { detail = JSON.stringify(await response.json()); } catch (e) { detail = `HTTP ${response.status}`; }
-    throw new Error(detail);
+  if (response.ok) return;
+  // Rate limits (429) and transient server errors are retried with backoff,
+  // honouring Retry-After — this is what turned a burst into 'failed' before.
+  if ((response.status === 429 || response.status >= 500) && attempt < 5) {
+    const retryAfter = Number(response.headers.get('retry-after')) || 0;
+    const wait = retryAfter > 0 ? retryAfter * 1000 : Math.min(10000, 600 * Math.pow(2, attempt));
+    await new Promise((r) => setTimeout(r, wait));
+    return sendOne({ to, subject, html }, attempt + 1);
   }
+  let detail = '';
+  try { detail = JSON.stringify(await response.json()); } catch (e) { detail = `HTTP ${response.status}`; }
+  throw new Error(detail);
 }
 
 // Who an announcement reaches, using the same audience rules the workspace API
@@ -83,11 +90,16 @@ export async function announcementRecipients(announcement, db) {
 
 // Send to every recipient, returning what happened rather than throwing: the
 // announcement is already published, and the operator needs to see the outcome.
-export async function sendAnnouncementEmails(announcement, { origin } = {}) {
+export async function sendAnnouncementEmails(announcement, { origin, onlyIds } = {}) {
   if (!emailConfigured()) {
     return { attempted: 0, sent: 0, failed: 0, skipped: 'email_not_configured' };
   }
-  const recipients = await announcementRecipients(announcement);
+  let recipients = await announcementRecipients(announcement);
+  // A resend targets only specific participants (the ones a prior send missed).
+  if (onlyIds && onlyIds.length) {
+    const wanted = new Set(onlyIds.map(String));
+    recipients = recipients.filter((p) => wanted.has(String(p.id)));
+  }
   const subject = String(announcement.title || 'Course announcement').slice(0, 180);
   const failures = [];
   let sent = 0;
@@ -112,7 +124,7 @@ export async function sendAnnouncementEmails(announcement, { origin } = {}) {
         });
         sent += 1;
       } catch (e) {
-        failures.push({ email: p.email, error: e.message });
+        failures.push({ id: p.id, email: p.email, error: e.message });
       }
     }
   }
@@ -121,7 +133,7 @@ export async function sendAnnouncementEmails(announcement, { origin } = {}) {
   if (failures.length) {
     console.error('[abl-announcement] delivery failures:', failures.slice(0, 5));
   }
-  return { attempted: recipients.length, sent, failed: failures.length, failures: failures.slice(0, 10) };
+  return { attempted: recipients.length, sent, failed: failures.length, failures: failures.slice(0, 10), failedIds: failures.map((f) => f.id).filter(Boolean) };
 }
 
 export const ANNOUNCEMENT_COLLECTION = COLLECTIONS.ablAnnouncements;
