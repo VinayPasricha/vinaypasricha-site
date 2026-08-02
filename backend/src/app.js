@@ -13,6 +13,7 @@ import {
   listLeads,
 } from './services/store.js';
 import { complete as aiComplete } from './services/ai.js';
+import { askBook } from './services/bookAgent.js';
 import {
   runResearch,
   buildStore,
@@ -271,6 +272,27 @@ export function createApp() {
       res.json({ completion });
     } catch (err) {
       res.status(500).json({ error: 'ai_error', detail: err.message });
+    }
+  });
+
+  // Public, manuscript-grounded reading companion. The manuscript index stays
+  // in private Cloud Storage; only the final answer and page references leave
+  // the server. Free use is capped per conversation (20 questions / 10k tokens),
+  // after which the reader is pointed at the book.
+  app.post('/api/books/ai-for-business-leaders/ask', rateLimit({ windowMs: 60000, max: 12 }), async (req, res) => {
+    try {
+      const result = await askBook(req.body || {});
+      res.json(result);
+    } catch (err) {
+      console.error('[book-agent] request failed:', err);
+      const limited = err.code === 'BOOK_LIMIT';
+      const status = limited ? 429 : (/required|valid conversation/i.test(err.message) ? 400 : 503);
+      res.status(status).json({
+        error: limited ? 'book_limit_reached' : 'book_agent_error',
+        detail: limited ? 'You have reached the free conversation limit. Continue with the complete book.' : (status === 400 ? err.message : 'The reading companion is temporarily unavailable.'),
+        limitReached: limited,
+        purchaseUrl: limited ? 'https://www.amazon.in/dp/B0GFXXPGP7' : undefined,
+      });
     }
   });
 

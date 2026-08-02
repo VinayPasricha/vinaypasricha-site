@@ -27,6 +27,7 @@ export const COLLECTIONS = {
   conversations: collectionName('conversations'),   // every AI chat + its result, tagged by runtime
   leads: collectionName('leads'),                   // emails / contacts captured anywhere on the site
   priorityLeads: collectionName('priority_leads'),  // full submissions from the high-intent lead form (js/lead-form.js)
+  bookCompanionSessions: collectionName('book_companion_sessions'), // per-visitor usage state for the public reading companion
   companyProfiles: collectionName('companyProfiles'), // published Organizational Frequency pages, keyed by slug
   // First-party website analytics — one document per tracked event, plus a
   // rolled-up document per known person.
