@@ -1,6 +1,6 @@
 {
-  "release": "abl-course-staging-20260730-0133",
-  "contains_all_changes_through": "91841a0a7c6aa016d9c3aa752c33db86e78d612a",
-  "deployment_requested_at": "2026-07-30T01:33:00Z",
-  "verification": "AI course launch gate with container-build Studio hardening"
+  "release": "book-growth-staging-20260802-0740",
+  "contains_all_changes_through": "127f0fe659c60fa5b7dfddaa95134c72482722f7",
+  "deployment_requested_at": "2026-08-02T07:40:00Z",
+  "verification": "Book Growth Command Centre: persistent daily tasks, proof, SEO board, funnel, email and Slack accountability"
 }
