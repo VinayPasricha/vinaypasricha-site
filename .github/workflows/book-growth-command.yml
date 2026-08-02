@@ -13,6 +13,18 @@ on:
       - 'studio/analytics.html'
       - 'studio/book-growth-command.js'
       - 'studio/book-growth-command.css'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/book-growth-command.yml'
+      - 'backend/src/growthCommand.js'
+      - 'backend/src/server.js'
+      - 'backend/src/config.js'
+      - 'backend/src/firestore.js'
+      - 'studio/analytics.html'
+      - 'studio/book-growth-command.js'
+      - 'studio/book-growth-command.css'
   workflow_dispatch:
     inputs:
       mode:
@@ -39,11 +51,11 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Check out staging branch
+      - name: Check out proposed build
         uses: actions/checkout@v4
 
       - name: Set up Node
@@ -78,7 +90,7 @@ jobs:
         run: npm test
 
   deliver:
-    if: github.event_name != 'push'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
