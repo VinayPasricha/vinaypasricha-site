@@ -12,6 +12,7 @@ import { registerAuthRoutes } from './abl/authRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
 import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
 import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
+import { registerGrowthCommandRoutes } from './growthCommand.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
@@ -162,7 +163,7 @@ if (stack) {
 }
 
 // createApp installs generic translation/static handlers and the JSON API 404
-// before returning. Register course routes, then move them ahead of static files.
+// before returning. Register course and growth routes, then move them ahead of static files.
 const before = stack ? stack.length : 0;
 app.get('/api/abl/deployment', (req, res) => {
   markDeployment(res);
@@ -178,6 +179,8 @@ registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
 // Both research agents are Studio-only and fail closed without explicit credentials.
 registerIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
+// Book Growth is also Studio-only; its scheduler uses an independent secret.
+registerGrowthCommandRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
 if (stack) {
   const added = stack.splice(before);
   let insertAt = stack.findIndex((layer) => layer.name === 'serveStatic');
@@ -195,5 +198,6 @@ app.listen(config.port, () => {
   console.log('[server] participant access: passwordless email verification required');
   console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
   console.log('[server] Studio intelligence: participant research + cross-cohort analysis enabled');
+  console.log('[server] Book Growth: persistent daily tasks, proof, Search Console and notifications enabled');
   console.log(`[server] conversations expire after ${config.conversationTtlDays} days (via Firestore TTL policy)`);
 });
