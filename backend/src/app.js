@@ -119,6 +119,28 @@ export function rateLimit({ windowMs, max }) {
   };
 }
 
+function bookRequestAllowed(req) {
+  const origin = String(req.get('origin') || '').trim();
+  if (!origin) return false;
+  try {
+    const url = new URL(origin);
+    const host = url.hostname.toLowerCase();
+    if (url.protocol !== 'https:' && host !== 'localhost' && host !== '127.0.0.1') return false;
+    return host === 'vinaypasricha.com' || host === 'www.vinaypasricha.com' ||
+      host === 'localhost' || host === '127.0.0.1' ||
+      (host.endsWith('.run.app') && (host.startsWith('vinay-site-') || host.startsWith('vinay-site-staging-')));
+  } catch (_) { return false; }
+}
+
+function stableBookAddress(req) {
+  const chain = String(req.get('x-forwarded-for') || '').split(',').map((v) => v.trim()).filter(Boolean);
+  // Cloud Run appends the actual client and load-balancer addresses. Retaining
+  // the trusted tail prevents a caller from resetting limits by prepending a
+  // forged X-Forwarded-For value.
+  if (chain.length >= 2) return chain.slice(-2).join(',');
+  return chain[0] || req.ip || req.socket?.remoteAddress || 'unknown';
+}
+
 export function createApp() {
   const app = express();
   // Transcript uploads are admin-only and capped again at 6 MB by the ABL
@@ -260,9 +282,12 @@ export function createApp() {
   // Public, manuscript-grounded reading companion. The manuscript index stays
   // in private Cloud Storage; only the final answer and page references leave
   // the server.
-  app.post('/api/books/ai-for-business-leaders/ask', rateLimit({ windowMs: 60000, max: 12 }), async (req, res) => {
+  app.post('/api/books/ai-for-business-leaders/ask', rateLimit({ windowMs: 60000, max: 4 }), async (req, res) => {
     try {
-      const result = await askBook(req.body || {});
+      if (!bookRequestAllowed(req)) return res.status(403).json({ error: 'book_origin_required', detail: 'Open the reading companion on vinaypasricha.com.' });
+      const address = stableBookAddress(req);
+      const visitorKey = crypto.createHash('sha256').update(`book-reader-v1:${address}`).digest('hex');
+      const result = await askBook({ ...(req.body || {}), visitorKey });
       res.json(result);
     } catch (err) {
       console.error('[book-agent] request failed:', err);
