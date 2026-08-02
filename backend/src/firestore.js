@@ -32,6 +32,9 @@ export const COLLECTIONS = {
   analyticsEvents: collectionName('analytics_events'),
   analyticsPeople: collectionName('analytics_people'),
   analyticsChannels: collectionName('analytics_channels'), // named short links (/go/<slug>)
+  // Daily Book Growth execution: assigned actions, proof and notification state.
+  growthTasks: collectionName('growth_tasks'),
+  growthRuns: collectionName('growth_runs'),
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
   ablParticipants: collectionName('abl_participants'),
