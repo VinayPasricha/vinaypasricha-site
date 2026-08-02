@@ -265,6 +265,7 @@ export function createApp() {
       const result = await askBook(req.body || {});
       res.json(result);
     } catch (err) {
+      console.error('[book-agent] request failed:', err);
       const status = /required/i.test(err.message) ? 400 : 503;
       res.status(status).json({ error: 'book_agent_error', detail: status === 400 ? err.message : 'The reading companion is temporarily unavailable.' });
     }
