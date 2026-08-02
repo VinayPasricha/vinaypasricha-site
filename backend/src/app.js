@@ -13,6 +13,7 @@ import {
   listLeads,
 } from './services/store.js';
 import { complete as aiComplete } from './services/ai.js';
+import { askBook } from './services/bookAgent.js';
 import {
   runResearch,
   buildStore,
@@ -253,6 +254,19 @@ export function createApp() {
       res.json({ completion });
     } catch (err) {
       res.status(500).json({ error: 'ai_error', detail: err.message });
+    }
+  });
+
+  // Public, manuscript-grounded reading companion. The manuscript index stays
+  // in private Cloud Storage; only the final answer and page references leave
+  // the server.
+  app.post('/api/books/ai-for-business-leaders/ask', rateLimit({ windowMs: 60000, max: 12 }), async (req, res) => {
+    try {
+      const result = await askBook(req.body || {});
+      res.json(result);
+    } catch (err) {
+      const status = /required/i.test(err.message) ? 400 : 503;
+      res.status(status).json({ error: 'book_agent_error', detail: status === 400 ? err.message : 'The reading companion is temporarily unavailable.' });
     }
   });
 

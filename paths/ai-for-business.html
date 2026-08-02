@@ -24,6 +24,7 @@
 
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="../css/i18n.css">
+  <link rel="stylesheet" href="../css/book-companion.css">
 
   <script type="application/ld+json">
   {
@@ -317,6 +318,33 @@
   </div>
 </section>
 
+<!-- =================== TALK TO THE BOOK =================== -->
+<section class="book-companion" data-book-companion>
+  <div class="book-companion-inner">
+    <div class="book-companion-copy">
+      <div class="label">— A conversation with the book</div>
+      <h2>Ask the book.<br><em>Test the argument.</em></h2>
+      <p>This reading companion has studied the complete second edition. Ask it to explain an idea, apply a framework to your business, or challenge what you think the book is saying.</p>
+      <div class="book-agent-note">Answers are grounded in the book and include the relevant section and pages. This is a companion to Vinay's writing—not Vinay himself.</div>
+    </div>
+    <div class="book-chat" aria-label="Talk to AI for Business Leaders">
+      <div class="book-chat-head"><div class="book-chat-title">AI for Business Leaders · Reading Companion</div><div class="book-chat-status">Book-grounded</div></div>
+      <div class="book-chat-messages" data-messages aria-live="polite">
+        <div class="book-chat-message agent">What are you trying to understand about AI and your business? I’ll answer from the book—and tell you when the book does not establish an answer.</div>
+      </div>
+      <div class="book-chat-suggestions" data-suggestions>
+        <button type="button">What is a Company Brain?</button>
+        <button type="button">Where should a leader start?</button>
+        <button type="button">How should humans and AI divide responsibility?</button>
+      </div>
+      <form class="book-chat-form">
+        <textarea rows="2" maxlength="2000" aria-label="Ask the book a question" placeholder="Ask a question about the book…" required></textarea>
+        <button type="submit">Ask</button>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- =================== DEFENSE =================== -->
 <section class="defense">
   <div class="label">— A short defense</div>
@@ -374,5 +402,6 @@
 <script src="../js/i18n.js"></script>
 
   <script src="/js/claude-bridge.js"></script>
+  <script src="/js/book-companion.js"></script>
 </body>
 </html>
