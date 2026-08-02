@@ -56,4 +56,5 @@ export const COLLECTIONS = {
   // long-lived session records issued once a code is verified.
   ablAuthCodes: collectionName('abl_auth_codes'),
   ablParticipantSessions: collectionName('abl_participant_sessions'),
+  bookCompanionSessions: collectionName('book_companion_sessions'),
 };

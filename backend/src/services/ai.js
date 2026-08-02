@@ -68,6 +68,34 @@ export async function complete({ system, messages } = {}) {
   return text || '';
 }
 
+// Generate within a hard, caller-supplied total-token budget. Vertex counts the
+// complete request before generation, then maxOutputTokens is capped to the
+// exact remaining allowance.
+export async function completeWithinBudget({ system, messages, tokenBudget, maxOutputTokens = 700 } = {}) {
+  const contents = toContents(messages);
+  if (!contents.length) throw new Error('messages are required');
+  const request = { contents };
+  if (system && String(system).trim()) {
+    request.systemInstruction = { role: 'system', parts: [{ text: String(system) }] };
+  }
+  const counted = await model().countTokens(request);
+  const promptTokens = Number(counted?.totalTokens || 0);
+  const allowance = Math.floor(Number(tokenBudget || 0) - promptTokens);
+  if (allowance < 96) {
+    const err = new Error('Conversation token limit reached');
+    err.code = 'BOOK_LIMIT';
+    throw err;
+  }
+  request.generationConfig = { maxOutputTokens: Math.min(maxOutputTokens, allowance) };
+  const result = await model().generateContent(request);
+  const candidate = result?.response?.candidates?.[0];
+  const text = (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('');
+  if (!text) throw new Error('The model returned no answer');
+  const metadata = result?.response?.usageMetadata || {};
+  const totalTokens = Number(metadata.totalTokenCount || (promptTokens + Math.ceil(text.length / 4)));
+  return { text, usage: { promptTokens, totalTokens } };
+}
+
 // Like complete(), but with LIVE Google Search grounding switched on: the model
 // genuinely searches the web and grounds its answer in real sources. Uses the
 // same Vertex auth — no API key. Returns { text, queries, sources } where

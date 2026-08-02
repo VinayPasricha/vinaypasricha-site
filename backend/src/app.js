@@ -265,8 +265,15 @@ export function createApp() {
       const result = await askBook(req.body || {});
       res.json(result);
     } catch (err) {
-      const status = /required/i.test(err.message) ? 400 : 503;
-      res.status(status).json({ error: 'book_agent_error', detail: status === 400 ? err.message : 'The reading companion is temporarily unavailable.' });
+      console.error('[book-agent] request failed:', err);
+      const limited = err.code === 'BOOK_LIMIT';
+      const status = limited ? 429 : (/required|valid conversation/i.test(err.message) ? 400 : 503);
+      res.status(status).json({
+        error: limited ? 'book_limit_reached' : 'book_agent_error',
+        detail: limited ? 'You have reached the free conversation limit. Continue with the complete book.' : (status === 400 ? err.message : 'The reading companion is temporarily unavailable.'),
+        limitReached: limited,
+        purchaseUrl: limited ? 'https://www.amazon.in/dp/B0GFXXPGP7' : undefined,
+      });
     }
   });
 
