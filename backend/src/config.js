@@ -36,4 +36,16 @@ export const config = {
   ablAuthSecret: optional('ABL_AUTH_SECRET', optional('ADMIN_TOKEN', '')),
   resendApiKey: optional('RESEND_API_KEY', ''),
   ablFromEmail: optional('ABL_FROM_EMAIL', 'AI for Business Leaders <course@vinaypasricha.com>'),
+
+  // Priority lead alerts (services/leadAlerts.js). The default sender must sit
+  // on a Resend-verified domain — goodspace.ai is verified, vinaypasricha.com
+  // is not — or Resend rejects the send.
+  leadFromEmail: optional('LEAD_FROM_EMAIL', 'Vinay Pasricha · Site <vinay@goodspace.ai>'),
+  leadAlertEmail: optional('LEAD_ALERT_EMAIL', 'vinay@goodspace.ai'),
+
+  // Slack delivery for lead alerts: a bot-token DM is preferred, with a single
+  // incoming webhook as the simpler fallback. Unset means email-only.
+  growthSlackBotToken: optional('GROWTH_SLACK_BOT_TOKEN', ''),
+  growthVinaySlackUserId: optional('GROWTH_VINAY_SLACK_USER_ID', 'U0AN6TZ2H6Y'),
+  growthSlackWebhookUrl: optional('GROWTH_SLACK_WEBHOOK_URL', ''),
 };
