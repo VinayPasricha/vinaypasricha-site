@@ -3,221 +3,147 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Growth Command Centre — Studio · Vinay Pasricha</title>
+  <title>Website Intelligence — Studio · Vinay Pasricha</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/brand/favicon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/brand/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta property="og:image" content="https://vinaypasricha.com/assets/images/brand/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/brand/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="studio.css">
-  <link rel="stylesheet" href="book-growth-command.css">
+  <link rel="stylesheet" href="website-intelligence.css">
 </head>
-<body class="studio-body growth-body">
+<body class="studio-body wi-body">
   <header class="studio-topbar">
-    <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— Book Growth</span></div>
+    <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— Website Intelligence</span></div>
     <div class="st-right"><a class="st-link" href="index.html">← Studio</a></div>
   </header>
 
-  <div id="login" class="growth-login" hidden>
-    <p class="growth-eyebrow">Private operator room</p>
-    <h1>Book Growth Command Centre</h1>
-    <p>Enter the Studio passphrase to continue.</p>
-    <input type="password" id="pw" placeholder="Passphrase" autocomplete="current-password">
-    <button class="growth-button primary" id="loginBtn">Enter →</button>
-    <p id="loginErr" class="growth-error" hidden>That passphrase was not accepted.</p>
-  </div>
+  <section id="login" class="wi-login" hidden>
+    <p class="wi-kicker">Private operator room</p>
+    <h1>Website Intelligence</h1>
+    <p>Enter the Studio passphrase.</p>
+    <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password">
+    <button id="loginBtn" class="wi-btn primary">Enter →</button>
+    <p id="loginErr" class="wi-error" hidden>That passphrase was not accepted.</p>
+  </section>
 
-  <main class="growth-shell" id="main" hidden>
-    <section class="growth-hero">
+  <main id="main" class="wi-shell" hidden>
+    <section class="wi-top">
       <div>
-        <p class="growth-eyebrow">Daily marketing operating system</p>
-        <h1>Book Growth<br><em>Command Centre</em></h1>
-        <p class="growth-lede">One priority action for Vinay. One priority action for Vaishnav. Every day—chosen to improve discoverability, qualified readership and book sales.</p>
+        <p class="wi-kicker">Your website, explained visually</p>
+        <h1>What happened?</h1>
+        <p class="wi-subtitle">Simple on the surface. Every number opens into the evidence underneath.</p>
       </div>
-      <div class="growth-hero-side">
-        <div class="growth-range" id="range">
-          <button data-days="7">7d</button>
-          <button data-days="30" class="on">30d</button>
-          <button data-days="90">90d</button>
+      <div class="wi-period-wrap">
+        <div id="periods" class="wi-periods" role="tablist" aria-label="Time period">
+          <button class="on" data-mode="since-last">Since last checked</button>
+          <button data-mode="week">This week</button>
+          <button data-mode="month">This month</button>
+          <button data-mode="year">This year</button>
+          <button data-mode="custom">Custom dates</button>
         </div>
-        <div class="growth-date" id="rangeSub">Loading data…</div>
-        <button class="growth-button quiet" id="regenerate">Regenerate today’s plan</button>
+        <div id="rangeLabel" class="wi-range-label">Loading…</div>
       </div>
     </section>
 
-    <div id="note"></div>
-
-    <section class="growth-section today-section" aria-labelledby="todayTitle">
-      <div class="growth-section-head split">
-        <div>
-          <p class="growth-eyebrow">Do this now</p>
-          <h2 id="todayTitle">Today’s Growth Plan</h2>
-        </div>
-        <div class="today-progress"><strong id="todayDone">0 of 2</strong><span>verified today</span></div>
-      </div>
-      <div class="task-grid" id="todayTasks"></div>
-    </section>
-
-    <section class="growth-scoreboard" aria-label="Accountability scoreboard">
-      <div class="score-card"><span>Current streak</span><strong id="streak">0 days</strong><small>At least one verified task per day</small></div>
-      <div class="score-card"><span>7-day completion</span><strong id="weekCompletion">0%</strong><small>Verified tasks assigned this week</small></div>
-      <div class="score-card"><span>Vinay</span><strong id="vinayScore">0 / 0</strong><small>Verified / assigned</small></div>
-      <div class="score-card"><span>Vaishnav</span><strong id="vaishnavScore">0 / 0</strong><small>Verified / assigned</small></div>
-      <div class="score-card alert"><span>Overdue</span><strong id="overdue">0</strong><small>Needs follow-up</small></div>
-    </section>
-
-    <section class="growth-section" aria-labelledby="opportunityTitle">
-      <div class="growth-section-head">
-        <p class="growth-eyebrow">Why today’s work matters</p>
-        <h2 id="opportunityTitle">Highest-value opportunities</h2>
-        <p>The page ranks opportunities by likely contribution to book sales, urgency, evidence and risk of doing nothing.</p>
-      </div>
-      <div class="opportunity-list" id="opportunities"></div>
-    </section>
-
-    <section class="growth-section phase-section" aria-labelledby="phaseTitle">
-      <div class="growth-section-head split">
-        <div>
-          <p class="growth-eyebrow">Build the engine in sequence</p>
-          <h2 id="phaseTitle">Growth programme</h2>
-        </div>
-        <p class="phase-note">SEO first. Social next. Paid only after evidence. Amazon optimisation after reliable traffic.</p>
-      </div>
-      <div class="phase-rail">
-        <article class="phase active"><span>01</span><strong>SEO</strong><p>Win qualified search visibility and create durable reader entry points.</p><em>Active now</em></article>
-        <article class="phase"><span>02</span><strong>Social</strong><p>Turn ideas into repeatable posts that send people to the website.</p><em>Next</em></article>
-        <article class="phase"><span>03</span><strong>Paid growth</strong><p>Amplify messages already proven to attract the right readers.</p><em>Later</em></article>
-        <article class="phase"><span>04</span><strong>Amazon</strong><p>Improve listing conversion, discoverability and ad efficiency.</p><em>Later</em></article>
+    <section class="wi-brief" aria-live="polite">
+      <div class="wi-brief-icon">✦</div>
+      <div>
+        <p class="wi-kicker">In plain English</p>
+        <p id="briefText" class="wi-brief-text">Reading the website activity…</p>
       </div>
     </section>
 
-    <section class="growth-section" aria-labelledby="seoTitle">
-      <div class="growth-section-head split">
-        <div>
-          <p class="growth-eyebrow">Phase 1 · active</p>
-          <h2 id="seoTitle">SEO Growth Board</h2>
-          <p>What is attracting readers, what is missing and what should be improved next.</p>
-        </div>
-        <div class="integration-pill pending" id="searchConsoleStatus">Search Console not connected</div>
-      </div>
-      <div class="seo-grid">
-        <article class="signal-card hero-signal">
-          <span>Priority book page</span>
-          <strong id="priorityBookPage">—</strong>
-          <p id="priorityBookReason">Waiting for traffic data.</p>
-        </article>
-        <article class="signal-card"><span>Book-page views</span><strong id="bookViews">0</strong><p>Tracked views in the selected period.</p></article>
-        <article class="signal-card"><span>Buy-intent clicks</span><strong id="buyClicks">0</strong><p>Clicks whose label or destination suggests a purchase action.</p></article>
-        <article class="signal-card"><span>Organic/referral sessions</span><strong id="qualifiedSessions">0</strong><p>Sessions not classified as direct.</p></article>
-      </div>
-      <div class="growth-cols">
-        <div class="growth-panel">
-          <div class="panel-head"><h3>Pages creating book interest</h3><span>click a row for detail</span></div>
-          <div id="bookPages" class="rank-list"></div>
-        </div>
-        <div class="growth-panel">
-          <div class="panel-head"><h3>SEO actions waiting</h3><span>generated from current signals</span></div>
-          <div id="seoActions" class="action-list"></div>
-        </div>
-      </div>
+    <section id="headlineCards" class="wi-cards" aria-label="Main website insights">
+      <button class="wi-card blue" data-focus="visitors">
+        <span class="wi-card-icon">◎</span><span class="wi-card-label">Real visitors</span>
+        <strong id="realVisitors">—</strong><small id="realVisitorsDelta">External people only</small>
+        <span class="wi-open">Open the detail →</span>
+      </button>
+      <button class="wi-card cyan" data-focus="sources">
+        <span class="wi-card-icon">↗</span><span class="wi-card-label">Where they came from</span>
+        <strong id="topSource">—</strong><small id="sourceSub">Top source</small>
+        <span class="wi-open">Open the sources →</span>
+      </button>
+      <button class="wi-card orange" data-focus="time">
+        <span class="wi-card-icon">◷</span><span class="wi-card-label">Time spent</span>
+        <strong id="avgTime">—</strong><small id="timeSub">Average per visit</small>
+        <span class="wi-open">Open attention →</span>
+      </button>
+      <button class="wi-card violet" data-focus="pages">
+        <span class="wi-card-icon">▤</span><span class="wi-card-label">Pages read</span>
+        <strong id="pagesRead">—</strong><small id="pagesSub">Across all visits</small>
+        <span class="wi-open">Open the pages →</span>
+      </button>
+      <button class="wi-card green" data-focus="outcomes">
+        <span class="wi-card-icon">✓</span><span class="wi-card-label">Useful outcomes</span>
+        <strong id="usefulOutcomes">—</strong><small id="outcomeSub">Results and strong intent</small>
+        <span class="wi-open">Open the results →</span>
+      </button>
     </section>
 
-    <section class="growth-section" aria-labelledby="funnelTitle">
-      <div class="growth-section-head">
-        <p class="growth-eyebrow">Measure after attracting the right traffic</p>
-        <h2 id="funnelTitle">Book Sales Funnel</h2>
-        <p>The funnel separates attention from buying intent. Purchases will remain marked as unavailable until Amazon or website order data is connected.</p>
+    <section id="secondary" class="wi-secondary" hidden>
+      <div class="wi-section-head">
+        <div><p class="wi-kicker">First drill-down</p><h2 id="secondaryTitle">Real visitors</h2></div>
+        <button id="closeSecondary" class="wi-icon-btn" aria-label="Close detail">×</button>
       </div>
-      <div class="book-funnel" id="bookFunnel"></div>
-      <div class="funnel-warning" id="funnelWarning">Purchase confirmation is not connected yet. Buy clicks are an intent signal, not a sale.</div>
+      <div id="secondaryGrid" class="wi-secondary-grid"></div>
+      <p class="wi-hint">Every bar, slice, point and row is clickable. Keep clicking to reach individual sessions and timestamped events.</p>
     </section>
 
-    <section class="growth-section secondary-section" aria-labelledby="goodspaceTitle">
-      <div class="growth-section-head split">
-        <div>
-          <p class="growth-eyebrow">Secondary commercial priority</p>
-          <h2 id="goodspaceTitle">GoodSpace Recruitment Opportunities</h2>
-          <p>Only meaningful recruitment intent belongs here; general website visits do not.</p>
-        </div>
-        <span class="secondary-badge">Priority 2</span>
-      </div>
-      <div class="growth-scoreboard compact">
-        <div class="score-card"><span>Recruitment-page views</span><strong id="goodspaceViews">0</strong><small>Selected period</small></div>
-        <div class="score-card"><span>Leads captured</span><strong id="leadCount">0</strong><small>Current database total</small></div>
-        <div class="score-card"><span>Recommended follow-ups</span><strong id="followups">0</strong><small>High-intent signals only</small></div>
-      </div>
-      <div id="recentLeads" class="lead-list"></div>
+    <section class="wi-overview-grid">
+      <article class="wi-panel wide">
+        <div class="wi-panel-head"><div><p class="wi-kicker">Direction of travel</p><h2>Visitors over time</h2></div><span class="wi-legend"><i class="blue-dot"></i> Visitors <i class="green-dot"></i> Outcomes</span></div>
+        <div id="trendChart" class="wi-chart large"></div>
+      </article>
+      <article class="wi-panel">
+        <div class="wi-panel-head"><div><p class="wi-kicker">From attention to result</p><h2>What visitors achieved</h2></div></div>
+        <div id="journeyChart" class="wi-journey"></div>
+      </article>
     </section>
 
-    <section class="growth-section history-section" aria-labelledby="historyTitle">
-      <div class="growth-section-head split">
-        <div>
-          <p class="growth-eyebrow">Accountability</p>
-          <h2 id="historyTitle">Task history and proof</h2>
-        </div>
-        <button class="growth-button quiet" id="exportHistory">Export history</button>
-      </div>
-      <div id="taskHistory" class="history-list"></div>
+    <section class="wi-insights">
+      <div class="wi-section-head compact"><div><p class="wi-kicker">What changed</p><h2>Three things to notice</h2></div></div>
+      <div id="insightCards" class="wi-insight-grid"></div>
     </section>
 
-    <details class="growth-section technical-section">
-      <summary><span>Technical Analytics & Diagnostics</span><small>Open only when Vaishnav needs implementation detail</small></summary>
-      <div class="technical-body">
-        <div class="growth-scoreboard compact" id="technicalKpis"></div>
-        <div class="growth-cols">
-          <div class="growth-panel"><div class="panel-head"><h3>Top pages</h3></div><div id="technicalPages" class="rank-list"></div></div>
-          <div class="growth-panel"><div class="panel-head"><h3>Top referrers</h3></div><div id="technicalRefs" class="rank-list"></div></div>
-        </div>
-        <div class="growth-cols">
-          <div class="growth-panel"><div class="panel-head"><h3>Devices</h3></div><div id="technicalDevices" class="rank-list"></div></div>
-          <div class="growth-panel"><div class="panel-head"><h3>Browsers</h3></div><div id="technicalBrowsers" class="rank-list"></div></div>
-        </div>
+    <section class="wi-actions">
+      <div class="wi-section-head compact"><div><p class="wi-kicker">Only after the evidence</p><h2>What should we do today?</h2></div></div>
+      <div id="actionCards" class="wi-action-grid"><div class="wi-empty">Loading today’s actions…</div></div>
+    </section>
+
+    <details class="wi-technical">
+      <summary><span>More analytics for Vaishnav</span><small>Tracking diagnostics, excluded traffic and implementation detail</small></summary>
+      <div class="wi-technical-body">
+        <div id="technicalSummary" class="wi-technical-cards"></div>
+        <p>This area deliberately stays closed on the main view. It keeps the technical depth available without making the executive view harder to read.</p>
       </div>
     </details>
-
-    <section class="growth-section integration-section" aria-labelledby="integrationTitle">
-      <div class="growth-section-head">
-        <p class="growth-eyebrow">Delivery and data connections</p>
-        <h2 id="integrationTitle">Activation checklist</h2>
-        <p>The command centre works now with first-party website analytics. These connections unlock automated delivery and stronger attribution.</p>
-      </div>
-      <div class="integration-grid">
-        <article><span class="status-dot pending"></span><strong>Google Search Console</strong><p>Required for real queries, impressions, rankings and click-through opportunities.</p></article>
-        <article><span class="status-dot pending"></span><strong>Email delivery</strong><p>Will send one detailed task each morning and follow up until proof is submitted.</p></article>
-        <article><span class="status-dot pending"></span><strong>Slack delivery</strong><p>Will post both tasks, reminders and proof requests in the chosen channel.</p></article>
-        <article><span class="status-dot pending"></span><strong>Amazon / order data</strong><p>Required to turn buy intent into verified sales and advertising ROI.</p></article>
-      </div>
-    </section>
   </main>
 
-  <dialog id="proofDialog" class="proof-dialog">
-    <form method="dialog" id="proofForm">
-      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
-      <p class="growth-eyebrow">Proof required</p>
-      <h2 id="proofTitle">Submit completion proof</h2>
-      <p id="proofPrompt"></p>
-      <label>Public link or file reference
-        <input type="url" id="proofUrl" placeholder="https://…">
-      </label>
-      <label>What was completed?
-        <textarea id="proofNote" rows="5" placeholder="Briefly describe the completed work and any result already visible."></textarea>
-      </label>
-      <div class="dialog-actions">
-        <button class="growth-button quiet" value="cancel">Cancel</button>
-        <button class="growth-button primary" id="saveProof" value="default">Submit proof</button>
-      </div>
+  <dialog id="customDialog" class="wi-dialog small">
+    <form method="dialog" id="customForm">
+      <button class="wi-dialog-close" value="cancel" aria-label="Close">×</button>
+      <p class="wi-kicker">Choose a period</p><h2>Custom dates</h2>
+      <div class="wi-date-grid"><label>From<input id="customStart" type="date" required></label><label>To<input id="customEnd" type="date" required></label></div>
+      <div class="wi-dialog-actions"><button value="cancel" class="wi-btn quiet">Cancel</button><button id="applyCustom" value="default" class="wi-btn primary">Show report</button></div>
     </form>
   </dialog>
 
-  <div class="growth-toast" id="toast"></div>
-  <script src="book-growth-command.js"></script>
+  <dialog id="drillDialog" class="wi-dialog drill">
+    <div class="wi-drill-shell">
+      <header class="wi-drill-head">
+        <div><p class="wi-kicker">Deep evidence</p><div id="breadcrumbs" class="wi-breadcrumbs"></div><h2 id="drillTitle">Drill-down</h2></div>
+        <button id="drillClose" class="wi-dialog-close" aria-label="Close">×</button>
+      </header>
+      <div id="drillSummary" class="wi-mini-cards"></div>
+      <div id="drillCharts" class="wi-drill-grid"></div>
+      <section class="wi-records"><div class="wi-panel-head"><div><p class="wi-kicker">Smallest available records</p><h3 id="recordTitle">Visitor sessions</h3></div></div><div id="recordList"></div></section>
+    </div>
+  </dialog>
+
+  <div id="toast" class="wi-toast"></div>
+  <script src="website-intelligence.js"></script>
 </body>
 </html>
