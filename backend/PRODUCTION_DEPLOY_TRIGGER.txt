@@ -1,0 +1,4 @@
+Website Intelligence production deployment requested at 2026-08-02T13:19:00Z.
+Release commit: 6f2d5f63f27fe583109d856e3f520d1acf8843a4
+Target service: vinay-site, asia-south1
+Reason: force the production Cloud Build trigger after the Website Intelligence merge.
