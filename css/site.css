@@ -110,19 +110,20 @@ body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([clas
   color: var(--ink-2);
   max-width: 44ch;
 }
+/* Not flex: the sentence must reflow as one paragraph, with the dot
+   sitting inline before it. */
 .lf-promise{
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
   margin-top: 22px;
   font-family: var(--serif);
   font-size: 14px;
   font-style: italic;
+  line-height: 1.6;
   color: var(--ink-3);
   max-width: 40ch;
 }
 .lf-dot{
-  flex: none;
+  display: inline-block;
+  margin-right: 9px;
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--brand-amber);
   box-shadow: 0 0 0 0 rgba(255, 167, 38, .5);
