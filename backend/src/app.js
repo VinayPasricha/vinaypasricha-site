@@ -42,6 +42,22 @@ function injectTracker(html) {
   return html;
 }
 
+// CSS/JS are cached for a day but aren't fingerprinted, so stamp every local
+// stylesheet/script URL with the deploy revision. Each deploy then gets fresh
+// URLs and cached copies from earlier revisions are never served stale.
+// K_REVISION is set by Cloud Run; boot time covers local runs.
+const ASSET_VERSION = encodeURIComponent(process.env.K_REVISION || String(Date.now()));
+function stampAssetVersions(html) {
+  if (typeof html !== 'string') return html;
+  return html.replace(
+    /((?:href|src)=")([^"]+\.(?:css|js|mjs))(")/g,
+    (m, pre, url, post) => {
+      if (/^(?:https?:)?\/\//i.test(url) || url.includes('?')) return m; // external or already versioned
+      return pre + url + '?v=' + ASSET_VERSION + post;
+    },
+  );
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Repo root is two levels up from backend/src -> serves index.html, paths/, etc.
 const SITE_ROOT = path.resolve(__dirname, '..', '..');
@@ -553,7 +569,7 @@ export function createApp() {
     let rel = decodeURIComponent(req.path);
     if (rel.endsWith('/')) rel += 'index.html';
     else if (!path.extname(rel)) rel += '.html';
-    else return next(); // a real asset — leave to static
+    else if (!rel.endsWith('.html')) return next(); // a real asset — leave to static
     if (blockedPrefixes().some((p) => rel === p || rel.startsWith(p + '/'))) return next();
     const abs = path.join(SITE_ROOT, rel);
     if (!abs.startsWith(SITE_ROOT) || !existsSync(abs)) return next();
@@ -561,7 +577,7 @@ export function createApp() {
       const key = abs + '\0' + statSync(abs).mtimeMs;
       let out = trackedHtmlCache.get(key);
       if (out === undefined) {
-        out = injectTracker(readFileSync(abs, 'utf8'));
+        out = stampAssetVersions(injectTracker(readFileSync(abs, 'utf8')));
         trackedHtmlCache.set(key, out);
         if (trackedHtmlCache.size > 2000) trackedHtmlCache.clear();
       }
