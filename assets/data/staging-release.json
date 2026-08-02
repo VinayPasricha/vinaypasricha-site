@@ -1,6 +1,6 @@
 {
-  "release": "website-intelligence-staging-20260802-1715",
-  "contains_all_changes_through": "01b64ff488c43ee3367de62afb897e667653aa88",
-  "deployment_requested_at": "2026-08-02T11:45:00Z",
-  "verification": "Visual Website Intelligence: five-card executive view, since-last/week/month/year/custom periods, external traffic filtering, progressive drill-downs to visitor sessions and timestamped events, and retained Book Growth actions"
+  "release": "website-intelligence-simple-staging-20260802-1728",
+  "contains_all_changes_through": "1828a21d0cbf2c29bc2893e6a22858e404da1a23",
+  "deployment_requested_at": "2026-08-02T11:58:00Z",
+  "verification": "Simplified visual Website Intelligence: one colourful opening composition, fewer visible elements per frame, stronger colour navigation, unchanged progressive drill-down depth and retained analytics intelligence"
 }
