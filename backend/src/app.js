@@ -29,6 +29,8 @@ import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
 import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, listChannels, channelStats, createChannel, deleteChannel, resolveChannelClick } from './services/analytics.js';
+import { alertPriorityLead } from './services/leadAlerts.js';
+import { db, COLLECTIONS } from './firestore.js';
 import crypto from 'node:crypto';
 
 // First-party analytics: a tiny tracker script is injected into every served
@@ -314,6 +316,42 @@ export function createApp() {
       res.json({ ok: true, id: lead.id });
     } catch (err) {
       res.status(400).json({ error: 'bad_request', detail: err.message });
+    }
+  });
+
+  // High-intent lead form (js/lead-form.js): stores the full submission and
+  // alerts Vinay immediately by email + Slack. The `hp` field is a honeypot —
+  // bots that fill it get a fake success and nothing is stored or sent.
+  app.post('/api/leads/priority', rateLimit({ windowMs: 60000, max: 5 }), async (req, res) => {
+    try {
+      const b = req.body || {};
+      if (String(b.hp || '').trim()) return res.json({ ok: true });
+      const lead = {
+        form: String(b.form || 'general').slice(0, 60),
+        name: String(b.name || '').trim().slice(0, 120),
+        email: String(b.email || '').trim().toLowerCase().slice(0, 160),
+        company: String(b.company || '').trim().slice(0, 160),
+        role: String(b.role || '').trim().slice(0, 120),
+        message: String(b.message || '').trim().slice(0, 2000),
+        path: String(b.path || '').slice(0, 200),
+        context: String(b.context || '').slice(0, 120),
+        createdAt: new Date(),
+      };
+      if (!lead.name || !lead.message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) {
+        return res.status(400).json({ error: 'invalid', detail: 'Name, a valid email, and a message are required.' });
+      }
+      const doc = await db.collection(COLLECTIONS.priorityLeads).add(lead);
+      // Also file them in the unified leads directory (keyed by email).
+      await saveLead({
+        email: lead.email,
+        name: lead.name,
+        organizationName: lead.company,
+        source: `priority:${lead.form}${lead.context ? ':' + lead.context : ''}`,
+      }).catch(() => {});
+      const notified = await alertPriorityLead(lead);
+      res.json({ ok: true, id: doc.id, notified: { email: notified.email.sent, slack: notified.slack.sent } });
+    } catch (err) {
+      res.status(500).json({ error: 'server_error', detail: err.message });
     }
   });
 
