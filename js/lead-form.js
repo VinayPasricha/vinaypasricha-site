@@ -23,6 +23,15 @@
       button: 'Send it to Vinay',
       success: 'Received — and already on Vinay’s phone. Expect a personal reply at the email you gave, usually within a day.',
     },
+    'hiring': {
+      label: 'Hire for resonance',
+      heading: 'Hiring for a role you <em>keep getting wrong?</em>',
+      sub: 'Tell Vinay what you are trying to hire for, and what keeps not working. It reaches him directly, flagged for urgent attention — and where GoodSpace can do the discovery for you, he will say so plainly.',
+      messageLabel: 'What are you trying to hire, and what keeps going wrong?',
+      messagePlaceholder: 'The role, the misfires so far, and what "right" would actually look like…',
+      button: 'Send it to Vinay',
+      success: 'Received — and already on Vinay’s phone. He reads these himself and replies personally, usually within a day.',
+    },
     'decision-support': {
       label: 'Bring the decision to Vinay',
       heading: 'Some decisions deserve <em>a second mind.</em>',
