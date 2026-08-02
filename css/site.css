@@ -68,6 +68,155 @@ body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([clas
 .accent{color:var(--accent)}
 
 /* ============================================================
+   LEAD FORM — the high-intent door (js/lead-form.js).
+   Mounted from [data-lead-form] placeholders on paths pages and
+   inside the books. Inherits the page's theme tokens.
+   ============================================================ */
+.lead-form-block{
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 72px var(--gutter-sm);
+  border-top: 1px solid rgba(255, 167, 38, .28);
+}
+.lf-kicker{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.lf-heading{
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.18;
+  letter-spacing: -.012em;
+  color: var(--ink);
+  max-width: 22ch;
+}
+.lf-heading em{ font-style: italic; }
+.lf-grid{
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  margin-top: 36px;
+  align-items: start;
+}
+.lf-sub{
+  font-family: var(--serif);
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 44ch;
+}
+.lf-promise{
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 22px;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-3);
+  max-width: 40ch;
+}
+.lf-dot{
+  flex: none;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--brand-amber);
+  box-shadow: 0 0 0 0 rgba(255, 167, 38, .5);
+  animation: ribbon-pulse 2.4s ease-out infinite;
+}
+.lf-form{ display: block; }
+.lf-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.lf-field{ margin-bottom: 18px; }
+.lf-label{
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 7px;
+}
+.lf-opt{ opacity: .55; letter-spacing: .12em; }
+.lf-input{
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--paper-3);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color .2s;
+}
+.lf-input:focus{
+  outline: none;
+  border-color: var(--brand-amber);
+}
+textarea.lf-input{ resize: vertical; min-height: 120px; }
+.lf-actions{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.lf-submit{
+  cursor: pointer;
+  min-height: 46px;
+  padding: 13px 24px;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.lf-submit:hover{ transform: translateY(-2px); }
+.lf-submit:disabled{ opacity: .6; cursor: default; transform: none; }
+.lf-submit .lf-arrow{ margin-left: 6px; display: inline-block; transition: transform .2s; }
+.lf-submit:hover .lf-arrow{ transform: translateX(3px); }
+.lf-status{ font-family: var(--serif); font-size: 14px; font-style: italic; }
+.lf-error{ color: var(--accent); }
+.lf-status a{ text-decoration: underline; }
+.lf-success{
+  padding: 34px 30px;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--brand-amber);
+  background: var(--paper-3);
+}
+.lf-success-mark{
+  font-family: var(--serif);
+  font-size: 30px;
+  color: var(--brand-amber);
+  line-height: 1;
+}
+.lf-success-copy{
+  margin-top: 12px;
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 52ch;
+}
+@media (max-width: 860px){
+  .lf-grid{ grid-template-columns: 1fr; gap: 30px; }
+  .lf-row{ grid-template-columns: 1fr; gap: 0; }
+}
+
+/* ============================================================
    COURSE RIBBON — the door for live-cohort participants.
    One dark strip on every page, above the fold, both themes.
    ============================================================ */

@@ -26,6 +26,7 @@ const collectionName = (name) => `${collectionPrefix}${name}`;
 export const COLLECTIONS = {
   conversations: collectionName('conversations'),   // every AI chat + its result, tagged by runtime
   leads: collectionName('leads'),                   // emails / contacts captured anywhere on the site
+  priorityLeads: collectionName('priority_leads'),  // full submissions from the high-intent lead form (js/lead-form.js)
   companyProfiles: collectionName('companyProfiles'), // published Organizational Frequency pages, keyed by slug
   // First-party website analytics — one document per tracked event, plus a
   // rolled-up document per known person.
