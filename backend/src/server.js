@@ -13,6 +13,7 @@ import { participantApiGuard } from './abl/participantGuard.js';
 import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
 import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
 import { registerGrowthCommandRoutes } from './growthCommand.js';
+import { registerAnalyticsIntelligenceRoutes } from './analyticsIntelligence.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
@@ -181,6 +182,8 @@ registerAuthRoutes(app, { rateLimit });
 registerIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
 // Book Growth is also Studio-only; its scheduler uses an independent secret.
 registerGrowthCommandRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
+// Website Intelligence reuses the first-party event store and exposes progressive drill-downs.
+registerAnalyticsIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin });
 if (stack) {
   const added = stack.splice(before);
   let insertAt = stack.findIndex((layer) => layer.name === 'serveStatic');
@@ -199,5 +202,6 @@ app.listen(config.port, () => {
   console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
   console.log('[server] Studio intelligence: participant research + cross-cohort analysis enabled');
   console.log('[server] Book Growth: persistent daily tasks, proof, Search Console and notifications enabled');
+  console.log('[server] Website Intelligence: visual progressive drill-down analytics enabled');
   console.log(`[server] conversations expire after ${config.conversationTtlDays} days (via Firestore TTL policy)`);
 });
