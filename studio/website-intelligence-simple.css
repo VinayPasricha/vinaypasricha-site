@@ -1,0 +1,148 @@
+/* Website Intelligence — simplified visual layer
+   Keeps all existing data and drill-down behaviour while reducing the number
+   of visible elements in the opening frame. */
+
+:root{
+  --simple-blue:#1667ff;
+  --simple-cyan:#00a9c2;
+  --simple-orange:#ff8a18;
+  --simple-violet:#7657ef;
+  --simple-green:#11a66a;
+  --simple-ink:#14213d;
+  --simple-bg:#f3f6fb;
+}
+
+.wi-body{
+  background:
+    radial-gradient(circle at 8% 5%,rgba(22,103,255,.11),transparent 30%),
+    radial-gradient(circle at 94% 10%,rgba(118,87,239,.10),transparent 25%),
+    var(--simple-bg);
+}
+
+.wi-shell{max-width:1280px;padding:22px 26px 90px}
+
+/* One compact heading row, not a large editorial masthead. */
+.wi-top{align-items:center;margin:12px 0 18px;gap:24px}
+.wi-top h1{font:600 clamp(38px,5vw,62px)/.95 Newsreader,serif}
+.wi-subtitle{margin-top:8px;font-size:13px}
+.wi-period-wrap{max-width:610px}
+.wi-periods{gap:6px}
+.wi-periods button{padding:9px 13px;background:rgba(255,255,255,.78);box-shadow:0 5px 18px rgba(30,50,90,.04)}
+.wi-periods button.on{background:var(--simple-ink);box-shadow:0 9px 24px rgba(20,33,61,.20)}
+.wi-range-label{margin-top:7px}
+
+/* The summary becomes a strong visual headline, not another dashboard panel. */
+.wi-brief{
+  min-height:112px;
+  padding:22px 28px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 82% -20%,rgba(255,255,255,.28),transparent 38%),
+    linear-gradient(120deg,#14213d 0%,#174bb0 53%,#694ce0 100%);
+  box-shadow:0 24px 58px rgba(37,61,120,.20)
+}
+.wi-brief-icon{width:52px;height:52px;border-radius:18px;font-size:25px}
+.wi-brief-text{font-size:clamp(20px,2.25vw,30px);line-height:1.24;max-width:1080px}
+
+/* ONE visual board. The large visitor block is the anchor; the other four
+   blocks complete the story without looking like five unrelated widgets. */
+.wi-cards{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  grid-template-rows:150px 150px;
+  gap:12px;
+  margin:14px 0 34px;
+}
+.wi-card{
+  min-height:0;
+  height:100%;
+  padding:20px 22px;
+  border-radius:24px;
+  color:#fff!important;
+  box-shadow:0 17px 36px rgba(35,54,95,.14);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.wi-card:nth-child(1){grid-row:1/3;background:linear-gradient(145deg,#0f5bf1,#2f83ff)}
+.wi-card:nth-child(2){background:linear-gradient(145deg,#008ca6,#02bfd0)}
+.wi-card:nth-child(3){background:linear-gradient(145deg,#ea7110,#ff9f32)}
+.wi-card:nth-child(4){background:linear-gradient(145deg,#6044d9,#8d70ff)}
+.wi-card:nth-child(5){background:linear-gradient(145deg,#078b56,#17bd79)}
+.wi-card:hover,.wi-card:focus{transform:translateY(-3px) scale(1.008);box-shadow:0 24px 54px rgba(35,54,95,.22)}
+.wi-card::after{width:180px;height:180px;right:-48px;top:-70px;background:rgba(255,255,255,.13)}
+.wi-card::before{content:"";position:absolute;width:70px;height:70px;border-radius:50%;left:-24px;bottom:-32px;background:rgba(255,255,255,.09)}
+.wi-card-icon,.wi-open{display:none}
+.wi-card-label{margin:0 0 5px;font-size:12px;letter-spacing:.015em;opacity:.86}
+.wi-card strong{margin:0;font:700 clamp(34px,3.5vw,54px)/.98 Newsreader,serif;color:#fff;overflow:visible}
+.wi-card:nth-child(1) strong{font-size:clamp(70px,9vw,118px);letter-spacing:-.055em}
+.wi-card small{min-height:0;margin-top:7px;color:#fff;opacity:.78;font-size:10px}
+.wi-card:nth-child(1) small{font-size:12px}
+
+/* Keep the rest of the story below the first screen. */
+.wi-secondary{margin-top:0;border:0;padding:24px;border-radius:28px;box-shadow:0 22px 60px rgba(27,49,96,.13)}
+.wi-overview-grid{margin-top:46px;gap:16px}
+.wi-panel{border:0;border-radius:26px;box-shadow:0 18px 46px rgba(31,51,90,.09)}
+.wi-panel.wide{background:linear-gradient(180deg,#ffffff,#f3f7ff)}
+.wi-overview-grid>.wi-panel:not(.wide){background:linear-gradient(160deg,#20164c,#49359c);color:#fff}
+.wi-overview-grid>.wi-panel:not(.wide) .wi-kicker{color:#c8bfff}
+.wi-overview-grid>.wi-panel:not(.wide) .wi-panel-head h2{color:#fff}
+.wi-chart.large{height:270px}
+.wi-journey-step{min-height:58px;border-radius:18px;padding:12px 16px;box-shadow:0 9px 24px rgba(0,0,0,.13)}
+
+/* The second layer is cleaner: four large visual choices only. */
+.wi-secondary-grid{gap:12px}
+.wi-subpanel{border:0;border-radius:22px;padding:20px;background:#f7f9fd;box-shadow:inset 0 0 0 1px rgba(36,107,253,.06)}
+.wi-subpanel:nth-child(1){background:#eaf2ff}
+.wi-subpanel:nth-child(2){background:#fff1df}
+.wi-subpanel:nth-child(3){background:#f0ebff}
+.wi-subpanel:nth-child(4){background:#e5f8ef}
+.wi-hint{font-size:10px;opacity:.75}
+
+.wi-bar{grid-template-columns:minmax(82px,1fr) 2.6fr auto;gap:8px}
+.wi-bar-track{height:15px;background:rgba(255,255,255,.72)}
+.wi-time-band{min-height:84px;display:flex;flex-direction:column;justify-content:center;border-radius:18px;box-shadow:0 9px 22px rgba(34,50,80,.11)}
+.wi-time-band strong{font-size:28px}
+.wi-outcome{min-height:78px;border-radius:18px;padding:15px;box-shadow:0 8px 22px rgba(40,60,90,.08)}
+
+/* Lower sections use colour as navigation but remain visually quiet. */
+.wi-section-head.compact{margin-top:52px}
+.wi-insight-grid,.wi-action-grid{gap:12px}
+.wi-insight{border:0;border-radius:22px;padding:20px;box-shadow:0 14px 36px rgba(30,50,90,.08)}
+.wi-insight.good{background:linear-gradient(145deg,#e3f8ed,#f5fff9)}
+.wi-insight.opportunity{background:linear-gradient(145deg,#fff1d7,#fffaf0)}
+.wi-insight.warning{background:linear-gradient(145deg,#ffe8e6,#fff8f7)}
+.wi-action{border:0;border-radius:24px;box-shadow:0 18px 42px rgba(30,50,90,.09)}
+.wi-action.vinay{background:linear-gradient(150deg,#fff3e3,#fff)}
+.wi-action.vaishnav{background:linear-gradient(150deg,#eaf2ff,#fff)}
+.wi-technical{border:0;box-shadow:0 13px 34px rgba(30,50,90,.07)}
+
+/* The deep view stays powerful, but feels like one continuous investigation. */
+.wi-dialog.drill{border-radius:28px}
+.wi-drill-shell{background:linear-gradient(180deg,#fff,#f6f8fc)}
+.wi-mini-card{border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(30,50,90,.07)}
+.wi-drill-grid .wi-subpanel{background:#fff}
+
+@media(max-width:980px){
+  .wi-top{display:block}
+  .wi-period-wrap{text-align:left;margin-top:18px;max-width:none}
+  .wi-periods{justify-content:flex-start}
+  .wi-cards{grid-template-columns:1fr 1fr;grid-template-rows:190px 132px 132px}
+  .wi-card:nth-child(1){grid-column:1/3;grid-row:auto}
+  .wi-card:nth-child(1) strong{font-size:78px}
+  .wi-overview-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:620px){
+  .wi-shell{padding:16px 14px 72px}
+  .wi-top h1{font-size:43px}
+  .wi-periods{display:grid;grid-template-columns:1fr 1fr}
+  .wi-periods button:first-child{grid-column:1/3}
+  .wi-brief{grid-template-columns:1fr;padding:20px}
+  .wi-brief-icon{display:none}
+  .wi-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;margin-right:-14px}
+  .wi-card{min-width:78vw;height:190px;scroll-snap-align:start}
+  .wi-card:nth-child(1) strong{font-size:76px}
+  .wi-secondary-grid,.wi-insight-grid,.wi-action-grid{grid-template-columns:1fr}
+  .wi-time-bands{grid-template-columns:repeat(2,1fr)}
+}

@@ -9,6 +9,7 @@ import { registerAuthRoutes } from './abl/authRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
 import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
 import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
+import { registerAnalyticsIntelligenceRoutes } from './analyticsIntelligence.js';
 
 const app = createApp();
 const stack = app._router && app._router.stack;
@@ -52,6 +53,16 @@ function explicitStudioHash() {
   const passphrase = String(process.env.STUDIO_PASSPHRASE || '').trim();
   if (!passphrase) return '';
   return crypto.createHash('sha256').update('studio:' + passphrase).digest('hex');
+}
+
+function requireStudioAdmin(req, res, next) {
+  if (!process.env.K_SERVICE) return next();
+  const expected = explicitStudioHash();
+  const token = req.get('x-admin-token') || (req.query && req.query.token) || '';
+  const tokenAllowed = !!process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN;
+  if ((expected && studioCookie(req) === expected) || tokenAllowed) return next();
+  if (!expected && !process.env.ADMIN_TOKEN) return res.status(503).json({ ok: false, error: 'studio_not_configured' });
+  return res.status(401).json({ ok: false, error: 'unauthorized' });
 }
 
 // Launch hardening: the older central Studio gate contains a development fallback
@@ -153,10 +164,10 @@ if (stack) {
 }
 
 // createApp installs generic translation/static handlers and the JSON API 404
-// before returning. Register the focused participant shell, data, sign-in and
-// guided-conversation routes, then move them ahead of express.static. Otherwise
-// extensionless paths such as /ai-business-leaders/login are served as public
-// static files before their private no-store route can run.
+// before returning. Register the focused participant shell, data, sign-in,
+// guided-conversation and Website Intelligence routes, then move them ahead of
+// express.static. Otherwise extensionless paths and APIs may be intercepted by
+// generic static/404 handlers.
 const before = stack ? stack.length : 0;
 app.get('/api/abl/deployment', (req, res) => {
   markDeployment(res);
@@ -166,6 +177,7 @@ app.get('/api/abl/deployment', (req, res) => {
 registerFocusedWorkspaceRoute(app);
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
+registerAnalyticsIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin });
 if (stack) {
   const added = stack.splice(before);
   let insertAt = stack.findIndex((layer) => layer.name === 'serveStatic');
@@ -182,5 +194,6 @@ app.listen(config.port, () => {
   console.log('[server] storage: Firestore (including AI Leadership Workspace collections)');
   console.log('[server] participant access: passwordless email verification required');
   console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
+  console.log('[server] Website Intelligence: protected production analytics and drill-down enabled');
   console.log(`[server] conversations expire after ${config.conversationTtlDays} days (via Firestore TTL policy)`);
 });
