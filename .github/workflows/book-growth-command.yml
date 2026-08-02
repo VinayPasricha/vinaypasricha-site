@@ -1,0 +1,71 @@
+name: Book Growth Daily Accountability
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Which notification cycle to run
+        required: true
+        default: assign
+        type: choice
+        options:
+          - assign
+          - followup
+          - close
+  schedule:
+    # GitHub Actions schedules use UTC. These are 09:00, 16:00 and 19:00 IST.
+    - cron: '30 3 * * *'
+    - cron: '30 10 * * *'
+    - cron: '30 13 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: book-growth-${{ github.event.schedule || inputs.mode || 'manual' }}
+  cancel-in-progress: false
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Choose notification cycle
+        id: cycle
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          MANUAL_MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            mode="$MANUAL_MODE"
+          elif [[ "$SCHEDULE" == "30 3 * * *" ]]; then
+            mode="assign"
+          elif [[ "$SCHEDULE" == "30 10 * * *" ]]; then
+            mode="followup"
+          else
+            mode="close"
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+
+      - name: Send daily tasks or follow-up
+        shell: bash
+        env:
+          BASE_URL: ${{ secrets.GROWTH_COMMAND_BASE_URL }}
+          CRON_SECRET: ${{ secrets.GROWTH_CRON_SECRET }}
+          MODE: ${{ steps.cycle.outputs.mode }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$BASE_URL" || -z "$CRON_SECRET" ]]; then
+            echo "GROWTH_COMMAND_BASE_URL and GROWTH_CRON_SECRET must be configured as repository secrets." >&2
+            exit 1
+          fi
+          base="${BASE_URL%/}"
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-delay 5 \
+            -X POST "$base/api/growth/cron/$MODE" \
+            -H "Content-Type: application/json" \
+            -H "x-growth-cron-secret: $CRON_SECRET" \
+            -d '{}'
