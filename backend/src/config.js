@@ -51,6 +51,12 @@ export const config = {
   growthVaishnavSlackUserId: optional('GROWTH_VAISHNAV_SLACK_USER_ID', 'U093Z2F5ETH'),
   growthSlackWebhookUrl: optional('GROWTH_SLACK_WEBHOOK_URL', ''),
 
+  // Priority lead alerts (services/leadAlerts.js). The default sender must sit
+  // on a Resend-verified domain — goodspace.ai is verified, vinaypasricha.com
+  // is not — or Resend rejects the send.
+  leadFromEmail: optional('LEAD_FROM_EMAIL', 'Vinay Pasricha · Site <vinay@goodspace.ai>'),
+  leadAlertEmail: optional('LEAD_ALERT_EMAIL', optional('GROWTH_VINAY_EMAIL', 'vinay@goodspace.ai')),
+
   growthCronSecret: optional('GROWTH_CRON_SECRET', ''),
   growthTimezone: optional('GROWTH_TIMEZONE', 'Asia/Kolkata'),
 };

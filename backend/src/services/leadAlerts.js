@@ -50,14 +50,14 @@ function slackText(lead) {
 }
 
 async function sendEmailAlert(lead) {
-  if (!config.resendApiKey || !config.growthVinayEmail) return { configured: false, sent: false, error: '' };
+  if (!config.resendApiKey || !config.leadAlertEmail) return { configured: false, sent: false, error: '' };
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${config.resendApiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: config.growthFromEmail || config.ablFromEmail,
-        to: [config.growthVinayEmail],
+        from: config.leadFromEmail,
+        to: [config.leadAlertEmail],
         reply_to: lead.email,
         subject: `Priority lead: ${trim(lead.name, 60)}${lead.company ? ' — ' + trim(lead.company, 60) : ''}`,
         html: emailBody(lead),
@@ -67,6 +67,7 @@ async function sendEmailAlert(lead) {
     if (!response.ok) throw new Error(String(body.message || body.error || `Resend ${response.status}`).slice(0, 240));
     return { configured: true, sent: true, error: '' };
   } catch (err) {
+    console.warn('[leadAlerts] email failed:', err.message);
     return { configured: true, sent: false, error: err.message };
   }
 }
@@ -89,6 +90,7 @@ async function sendSlackAlert(lead) {
       if (!post.ok) throw new Error(`Slack chat.postMessage: ${post.error}`);
       return { configured: true, sent: true, error: '' };
     } catch (err) {
+      console.warn('[leadAlerts] slack failed:', err.message);
       return { configured: true, sent: false, error: err.message };
     }
   }
@@ -103,6 +105,7 @@ async function sendSlackAlert(lead) {
       if (!response.ok) throw new Error(`Slack webhook ${response.status}`);
       return { configured: true, sent: true, error: '' };
     } catch (err) {
+      console.warn('[leadAlerts] slack failed:', err.message);
       return { configured: true, sent: false, error: err.message };
     }
   }
