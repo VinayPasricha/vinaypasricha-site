@@ -81,6 +81,12 @@
   var isCohorts = function (v) { return v === 'cohorts'; };
   var isScheduled = function (v) { return v === 'scheduled'; };
 
+  function initialPage() {
+    var requested = new URLSearchParams(window.location.search).get('page') || 'home';
+    var allowed = ['home', 'participants', 'cohorts', 'materials', 'assignments', 'announcements'];
+    return allowed.indexOf(requested) >= 0 ? requested : 'home';
+  }
+
   function showPage(name) {
     Array.prototype.forEach.call(document.querySelectorAll('[data-page-view]'), function (page) { page.hidden = page.getAttribute('data-page-view') !== name; });
     Array.prototype.forEach.call(document.querySelectorAll('.studio-nav [data-page]'), function (b) { b.classList.toggle('active', b.getAttribute('data-page') === name); });
@@ -433,6 +439,7 @@
 
   renderSessionEditors();
   wireNavigation();
+  showPage(initialPage());
   wireForms();
   load();
 })();

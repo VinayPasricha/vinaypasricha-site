@@ -188,6 +188,113 @@
   font-weight: 400;
 }
 
+/* Vinay View: four human-scale destinations above the specialist rooms. */
+.studio-primary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.studio-primary-card {
+  min-height: 190px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  gap: 18px;
+  color: var(--ink);
+  background: var(--paper-3);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: transform .2s, border-color .2s, background .2s, box-shadow .2s;
+}
+.studio-primary-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ink-3);
+  background: var(--paper-2);
+  box-shadow: 0 16px 38px -30px rgba(20,17,10,.7);
+}
+.spc-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--accent);
+}
+.spc-body {
+  grid-column: 1 / -1;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.spc-body strong {
+  font-family: var(--serif);
+  font-size: 29px;
+  line-height: 1.08;
+  font-weight: 400;
+  letter-spacing: -.012em;
+}
+.spc-body > span {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.spc-arrow {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink-3);
+  transition: transform .2s, color .2s;
+}
+.studio-primary-card:hover .spc-arrow {
+  transform: translateX(5px);
+  color: var(--accent);
+}
+.studio-advanced {
+  margin-top: 16px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.studio-advanced > summary {
+  padding: 24px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--ink-2);
+}
+.studio-advanced > summary::-webkit-details-marker { display: none; }
+.studio-advanced > summary::after {
+  content: '+';
+  flex: 0 0 auto;
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--accent);
+}
+.studio-advanced[open] > summary::after { content: '−'; }
+.studio-advanced > summary span {
+  font-family: var(--serif);
+  font-size: 23px;
+}
+.studio-advanced > summary small {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.studio-advanced .studio-rooms {
+  padding-bottom: 20px;
+  border-top: 1px solid var(--rule-soft);
+}
+
 /* Room cards */
 .studio-rooms {
   display: flex;
@@ -682,6 +789,14 @@
   .studio-topbar { padding: 14px 20px; }
   .studio-main { padding: 48px 24px 80px; }
   .studio-hero h1 { font-size: 36px; }
+  .studio-primary { grid-template-columns: 1fr; gap: 12px; }
+  .studio-primary-card { min-height: 158px; padding: 22px; }
+  .spc-body strong { font-size: 25px; }
+  .studio-advanced > summary { align-items: flex-start; }
+  .studio-advanced > summary small {
+    max-width: 150px;
+    text-align: right;
+  }
   .room-card { grid-template-columns: 32px 1fr auto; gap: 16px; padding: 20px 8px; }
   .rc-title { font-size: 20px; }
 
