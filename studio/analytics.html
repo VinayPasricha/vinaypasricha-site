@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="studio.css">
   <link rel="stylesheet" href="website-intelligence.css">
+  <link rel="stylesheet" href="website-intelligence-simple.css">
 </head>
 <body class="studio-body wi-body">
   <header class="studio-topbar">
@@ -31,9 +32,9 @@
   <main id="main" class="wi-shell" hidden>
     <section class="wi-top">
       <div>
-        <p class="wi-kicker">Your website, explained visually</p>
+        <p class="wi-kicker">Website report</p>
         <h1>What happened?</h1>
-        <p class="wi-subtitle">Simple on the surface. Every number opens into the evidence underneath.</p>
+        <p class="wi-subtitle">Click any colour to explore the story underneath.</p>
       </div>
       <div class="wi-period-wrap">
         <div id="periods" class="wi-periods" role="tablist" aria-label="Time period">
@@ -50,7 +51,7 @@
     <section class="wi-brief" aria-live="polite">
       <div class="wi-brief-icon">✦</div>
       <div>
-        <p class="wi-kicker">In plain English</p>
+        <p class="wi-kicker">The story in one sentence</p>
         <p id="briefText" class="wi-brief-text">Reading the website activity…</p>
       </div>
     </section>
@@ -62,7 +63,7 @@
         <span class="wi-open">Open the detail →</span>
       </button>
       <button class="wi-card cyan" data-focus="sources">
-        <span class="wi-card-icon">↗</span><span class="wi-card-label">Where they came from</span>
+        <span class="wi-card-icon">↗</span><span class="wi-card-label">Where from</span>
         <strong id="topSource">—</strong><small id="sourceSub">Top source</small>
         <span class="wi-open">Open the sources →</span>
       </button>
@@ -85,20 +86,20 @@
 
     <section id="secondary" class="wi-secondary" hidden>
       <div class="wi-section-head">
-        <div><p class="wi-kicker">First drill-down</p><h2 id="secondaryTitle">Real visitors</h2></div>
+        <div><p class="wi-kicker">Explore</p><h2 id="secondaryTitle">Real visitors</h2></div>
         <button id="closeSecondary" class="wi-icon-btn" aria-label="Close detail">×</button>
       </div>
       <div id="secondaryGrid" class="wi-secondary-grid"></div>
-      <p class="wi-hint">Every bar, slice, point and row is clickable. Keep clicking to reach individual sessions and timestamped events.</p>
+      <p class="wi-hint">Click any visual to keep going deeper.</p>
     </section>
 
     <section class="wi-overview-grid">
       <article class="wi-panel wide">
-        <div class="wi-panel-head"><div><p class="wi-kicker">Direction of travel</p><h2>Visitors over time</h2></div><span class="wi-legend"><i class="blue-dot"></i> Visitors <i class="green-dot"></i> Outcomes</span></div>
+        <div class="wi-panel-head"><div><p class="wi-kicker">Trend</p><h2>Visitors over time</h2></div><span class="wi-legend"><i class="blue-dot"></i> Visitors <i class="green-dot"></i> Outcomes</span></div>
         <div id="trendChart" class="wi-chart large"></div>
       </article>
       <article class="wi-panel">
-        <div class="wi-panel-head"><div><p class="wi-kicker">From attention to result</p><h2>What visitors achieved</h2></div></div>
+        <div class="wi-panel-head"><div><p class="wi-kicker">Journey</p><h2>From visit to result</h2></div></div>
         <div id="journeyChart" class="wi-journey"></div>
       </article>
     </section>
@@ -109,15 +110,15 @@
     </section>
 
     <section class="wi-actions">
-      <div class="wi-section-head compact"><div><p class="wi-kicker">Only after the evidence</p><h2>What should we do today?</h2></div></div>
+      <div class="wi-section-head compact"><div><p class="wi-kicker">What next</p><h2>Two actions for today</h2></div></div>
       <div id="actionCards" class="wi-action-grid"><div class="wi-empty">Loading today’s actions…</div></div>
     </section>
 
     <details class="wi-technical">
-      <summary><span>More analytics for Vaishnav</span><small>Tracking diagnostics, excluded traffic and implementation detail</small></summary>
+      <summary><span>More analytics for Vaishnav</span><small>Tracking and implementation detail</small></summary>
       <div class="wi-technical-body">
         <div id="technicalSummary" class="wi-technical-cards"></div>
-        <p>This area deliberately stays closed on the main view. It keeps the technical depth available without making the executive view harder to read.</p>
+        <p>This technical information remains available without crowding the main report.</p>
       </div>
     </details>
   </main>
