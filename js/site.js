@@ -358,6 +358,29 @@ const ANALYTICS = {
     return null;
   }
 
+  // ---------- Course ribbon ----------
+  // A live cohort is running: participants must find their workspace door
+  // above the fold on every page. Injected site-wide; hidden inside the
+  // workspace itself. The [data-course-entry] hook below routes returning
+  // participants straight to their saved workspace.
+  injectCourseRibbon();
+
+  function injectCourseRibbon() {
+    if (/^\/(ai-business-leaders|studio)(\/|$)/.test(window.location.pathname)) return;
+    if (document.querySelector('.course-ribbon')) return;
+    const root = siteRootPrefix();
+    const ribbon = document.createElement('a');
+    ribbon.className = 'course-ribbon';
+    ribbon.href = root + 'ai-business-leaders/login';
+    ribbon.setAttribute('data-course-entry', '');
+    ribbon.innerHTML =
+      '<span class="cr-dot" aria-hidden="true"></span>' +
+      '<span class="cr-cohort">Live cohort · AI for Business Leaders</span>' +
+      '<strong data-course-entry-label>Course participants — enter your workspace </strong>' +
+      '<span class="cr-arrow" aria-hidden="true">→</span>';
+    document.body.insertBefore(ribbon, document.body.firstChild);
+  }
+
   // ---------- Topbar nav ----------
   // The five primary destinations, visible on every page without opening the
   // Index. Injected so each static page stays single-source.

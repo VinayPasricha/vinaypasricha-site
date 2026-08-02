@@ -68,6 +68,51 @@ body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([clas
 .accent{color:var(--accent)}
 
 /* ============================================================
+   COURSE RIBBON — the door for live-cohort participants.
+   One dark strip on every page, above the fold, both themes.
+   ============================================================ */
+.course-ribbon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 11px 24px;
+  background: #15151a;
+  border-bottom: 1px solid rgba(255, 167, 38, .35);
+  color: #ece9e2 !important;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  transition: background .2s;
+}
+.course-ribbon:hover{ background: #1b1b21; color: #ece9e2 !important; }
+.course-ribbon .cr-dot{
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--brand-amber);
+  flex: none;
+  box-shadow: 0 0 0 0 rgba(255, 167, 38, 0.6);
+  animation: ribbon-pulse 2.4s ease-out infinite;
+}
+@keyframes ribbon-pulse{
+  0%   { box-shadow: 0 0 0 0 rgba(255, 167, 38, 0.5); }
+  100% { box-shadow: 0 0 0 9px rgba(255, 167, 38, 0); }
+}
+.course-ribbon .cr-cohort{ color: rgba(236, 233, 226, .55); }
+.course-ribbon strong{ font-weight: 500; color: var(--brand-amber); }
+.course-ribbon .cr-arrow{
+  color: var(--brand-amber);
+  transition: transform .2s;
+}
+.course-ribbon:hover .cr-arrow{ transform: translateX(4px); }
+@media (max-width: 640px){
+  .course-ribbon{ padding: 10px 16px; font-size: 9.5px; gap: 8px 10px; }
+  .course-ribbon .cr-cohort{ display: none; }
+}
+
+/* ============================================================
    TOPBAR — not a corporate header.
    - Left: wordmark + tiny subtitle "Explorer of Emergence"
    - Center: subtle rotating "Now" line — what Vinay is doing today
