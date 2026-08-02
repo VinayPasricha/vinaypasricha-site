@@ -220,6 +220,32 @@ const ANALYTICS = {
     return null;
   }
 
+  // ---------- Topbar nav ----------
+  // The five primary destinations, visible on every page without opening the
+  // Index. Injected so each static page stays single-source.
+  injectTopbarNav();
+
+  function injectTopbarNav() {
+    const right = document.querySelector('.topbar .right');
+    if (!right || right.querySelector('.topbar-nav')) return;
+    const root = siteRootPrefix();
+    const links = [
+      { href: root + 'books', match: /^\/books/, label: 'Books' },
+      { href: root + 'paths/course', match: /\/paths\/course/, label: 'Course' },
+      { href: root + 'paths/blog', match: /\/paths\/(blog|essay)/, label: 'Notebook' },
+      { href: root + 'paths/story', match: /\/paths\/story/, label: 'Story' },
+      { href: root + 'paths/connect', match: /\/paths\/connect/, label: 'Connect' },
+    ];
+    const nav = document.createElement('nav');
+    nav.className = 'topbar-nav';
+    nav.setAttribute('aria-label', 'Primary');
+    nav.innerHTML = links.map((l) => {
+      const active = l.match.test(window.location.pathname);
+      return '<a href="' + l.href + '"' + (active ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
+    }).join('');
+    right.insertBefore(nav, right.firstChild);
+  }
+
   // ---------- Index overlay ----------
   // Inject the overlay markup if the page didn't include it.
   injectIndexOverlay();
