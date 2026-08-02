@@ -1,4 +1,5 @@
-Website Intelligence production deployment requested at 2026-08-02T13:19:00Z.
-Release commit: 6f2d5f63f27fe583109d856e3f520d1acf8843a4
+Website Intelligence production deployment requested at 2026-08-02T14:16:00Z.
+Release commit: c0ba9d71c16682d222f530c146a2227d5ed1c176
 Target service: vinay-site, asia-south1
-Reason: force the production Cloud Build trigger after the Website Intelligence merge.
+Deployment branch: agent/production-release-safe
+Reason: deploy the approved simplified Website Intelligence dashboard from the exact production trigger branch.
