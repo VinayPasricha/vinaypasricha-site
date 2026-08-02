@@ -1462,6 +1462,8 @@ body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([clas
   grid-template-columns: 1fr auto;
   gap: 32px;
   align-items: end;
+  /* Same amber hairline the dark homepage uses — the two rooms share a wall. */
+  border-top: 1px solid rgba(255, 167, 38, .28);
 }
 .site-foot .foot-left{
   display: flex;
@@ -1494,7 +1496,7 @@ body a:not([class*="btn"]):not([class*="button"]):not([class*="card"]):not([clas
   margin-left: 24px;
   transition: color .15s;
 }
-.site-foot .foot-right a:hover{ color: var(--accent-2); }
+.site-foot .foot-right a:hover{ color: var(--brand-amber); }
 
 /* ============================================================
    "More coming" placeholder — to be removed as we build sections
