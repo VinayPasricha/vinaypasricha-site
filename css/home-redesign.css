@@ -114,7 +114,7 @@ body.home-redesign {
 }
 
 .home-redesign .topbar .brand .subtitle {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 400;
@@ -126,7 +126,7 @@ body.home-redesign {
 .home-redesign .now-line {
   justify-self: end;
   display: block;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9.5px;
   font-weight: 400;
@@ -255,6 +255,28 @@ body.home-redesign {
 .hero-copy strong {
   color: #f2efe8;
   font-weight: 400;
+}
+
+/* Who is speaking — one factual line, set like a signature. */
+.hero-cred {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px !important;
+  color: rgba(236, 233, 226, .55);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.hero-cred::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: #ffa726;
+  flex: none;
 }
 
 .scroll-cue {
@@ -542,7 +564,7 @@ body.home-redesign {
 .book-meta,
 .banner-meta {
   margin-top: 8px !important;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 8.5px;
   letter-spacing: .11em;
@@ -559,19 +581,25 @@ body.home-redesign {
   gap: 42px;
   margin-top: 50px;
   min-height: 158px;
-  padding: 34px 38px;
-  border: 1px solid rgba(255, 167, 38, .58);
-  border-radius: 4px;
-  background:
-    radial-gradient(circle at 0 50%, rgba(225, 20, 49, .24), transparent 43%),
-    linear-gradient(112deg, rgba(92, 12, 34, .96), rgba(48, 12, 27, .97) 58%, rgba(21, 21, 26, .99));
-  box-shadow: 0 18px 45px -30px rgba(225, 20, 49, .75);
+  padding: 34px 38px 34px 42px;
+  border: 1px solid rgba(255, 167, 38, .28);
+  border-radius: 3px;
+  background: linear-gradient(165deg, #17171d, #131318 72%);
+  transition: border-color 200ms ease;
 }
 
+.course-banner:hover {
+  border-color: rgba(255, 167, 38, .45);
+}
+
+/* The course belongs to Book I — it carries the same red spine as the shelf. */
 .course-banner::before {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
   background: #e11431;
   content: "";
 }
@@ -613,23 +641,22 @@ body.home-redesign {
   align-items: center;
   justify-content: center;
   padding: 14px 20px;
-  border: 1px solid #ffa726;
+  border: 1px solid rgba(255, 167, 38, .65);
   border-radius: 3px;
-  background: #ffa726;
-  color: #101014 !important;
+  background: transparent;
+  color: #ffa726 !important;
   font-family: var(--mono);
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: .13em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 12px 30px -18px rgba(255, 167, 38, .9);
   transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .workspace-link:hover {
-  border-color: #ffc04d;
-  background: #ffc04d;
+  border-color: #ffa726;
+  background: #ffa726;
   color: #101014 !important;
   transform: translateY(-2px);
 }
@@ -678,22 +705,44 @@ body.home-redesign {
 
 .conversation-card {
   --card-color: #e11431;
+  position: relative;
   display: flex;
-  min-height: 120px;
+  min-height: 136px;
   flex-direction: column;
   justify-content: space-between;
-  padding: 18px 20px;
+  padding: 20px 22px 20px 26px;
   border: 1px solid rgba(236, 233, 226, .08);
   border-radius: 3px;
-  background: #15151a;
+  background: linear-gradient(165deg, #17171d, #131318 72%);
   color: #ece9e2 !important;
-  transition: border-color 180ms ease, transform 180ms ease;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Each doorway carries its spine color, like the books on the shelf. */
+.conversation-card::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
+  background: var(--card-color);
+  opacity: .55;
+  transition: opacity 200ms ease, top 200ms ease, bottom 200ms ease;
 }
 
 .conversation-card:hover {
-  border-color: rgba(255, 167, 38, .45);
+  border-color: color-mix(in srgb, var(--card-color) 55%, transparent);
   color: #ece9e2 !important;
   transform: translateY(-3px);
+  box-shadow: 0 18px 38px -26px color-mix(in srgb, var(--card-color) 65%, transparent);
+}
+
+.conversation-card:hover::before {
+  top: 10px;
+  bottom: 10px;
+  opacity: 1;
 }
 
 .card-top {
@@ -712,17 +761,22 @@ body.home-redesign {
 
 .card-top i {
   font-style: normal;
+  transition: transform 200ms ease;
 }
 
 .conversation-card:hover .card-top {
   filter: brightness(1.25);
 }
 
+.conversation-card:hover .card-top i {
+  transform: translateX(4px);
+}
+
 .conversation-card q {
   margin: 12px 0;
   color: #f2efe8;
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 300;
   line-height: 1.32;
   quotes: "“" "”";
@@ -733,7 +787,7 @@ body.home-redesign {
 }
 
 .conversation-card small {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 400;
@@ -823,7 +877,7 @@ body.home-redesign {
 
 .notebook-card p {
   margin-top: 14px;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: .14em;
@@ -872,7 +926,7 @@ body.home-redesign {
 
 .desk-meta {
   margin-top: 20px !important;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: .16em;
@@ -886,7 +940,7 @@ body.home-redesign {
 }
 
 .closing-kicker {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: .2em;
