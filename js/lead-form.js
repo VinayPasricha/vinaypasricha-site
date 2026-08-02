@@ -23,6 +23,15 @@
       button: 'Send it to Vinay',
       success: 'Received — and already on Vinay’s phone. Expect a personal reply at the email you gave, usually within a day.',
     },
+    'decision-support': {
+      label: 'Bring the decision to Vinay',
+      heading: 'Some decisions deserve <em>a second mind.</em>',
+      sub: 'SIV works alone. It works better with someone examining the ground with you. Describe the decision in front of you — it reaches Vinay directly, flagged for urgent attention.',
+      messageLabel: 'What decision are you sitting with?',
+      messagePlaceholder: 'The decision, the tension inside it, and what makes it hard to settle…',
+      button: 'Send the decision',
+      success: 'Received — and already on Vinay’s phone. He reads these himself and replies personally, usually within a day.',
+    },
   };
 
   function el(tag, cls, html) {
