@@ -36,4 +36,14 @@ export const config = {
   ablAuthSecret: optional('ABL_AUTH_SECRET', optional('ADMIN_TOKEN', '')),
   resendApiKey: optional('RESEND_API_KEY', ''),
   ablFromEmail: optional('ABL_FROM_EMAIL', 'AI for Business Leaders <course@vinaypasricha.com>'),
+
+  // Book Growth Command Centre. Search Console uses the Cloud Run service
+  // account, which must be added as a user of the configured property.
+  growthSearchConsoleSite: optional('GROWTH_SEARCH_CONSOLE_SITE', ''),
+  growthVinayEmail: optional('GROWTH_VINAY_EMAIL', ''),
+  growthVaishnavEmail: optional('GROWTH_VAISHNAV_EMAIL', ''),
+  growthFromEmail: optional('GROWTH_FROM_EMAIL', optional('ABL_FROM_EMAIL', 'Vinay Pasricha Growth <growth@vinaypasricha.com>')),
+  growthSlackWebhookUrl: optional('GROWTH_SLACK_WEBHOOK_URL', ''),
+  growthCronSecret: optional('GROWTH_CRON_SECRET', ''),
+  growthTimezone: optional('GROWTH_TIMEZONE', 'Asia/Kolkata'),
 };
