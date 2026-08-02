@@ -1,8 +1,9 @@
 {
-  "release": "website-intelligence-production-20260802-1847",
-  "contains_all_changes_through": "6f2d5f63f27fe583109d856e3f520d1acf8843a4",
-  "deployment_requested_at": "2026-08-02T13:17:00Z",
+  "release": "website-intelligence-production-20260802-1933",
+  "contains_all_changes_through": "712db3d871fb4a3ee561d1da7ee5c8f290cf1080",
+  "deployment_requested_at": "2026-08-02T14:03:00Z",
   "service": "vinay-site",
   "region": "asia-south1",
-  "verification": "Force production rebuild for simplified Website Intelligence using live analytics, conversations and leads data"
+  "deployment_branch": "agent/production-release-safe",
+  "verification": "Deploy the simplified Website Intelligence dashboard with live production analytics"
 }
