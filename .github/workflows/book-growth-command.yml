@@ -1,6 +1,18 @@
 name: Book Growth Daily Accountability
 
 on:
+  push:
+    branches:
+      - agent/ai-course-staging
+    paths:
+      - '.github/workflows/book-growth-command.yml'
+      - 'backend/src/growthCommand.js'
+      - 'backend/src/server.js'
+      - 'backend/src/config.js'
+      - 'backend/src/firestore.js'
+      - 'studio/analytics.html'
+      - 'studio/book-growth-command.js'
+      - 'studio/book-growth-command.css'
   workflow_dispatch:
     inputs:
       mode:
@@ -22,11 +34,51 @@ permissions:
   contents: read
 
 concurrency:
-  group: book-growth-${{ github.event.schedule || inputs.mode || 'manual' }}
+  group: book-growth-${{ github.event_name }}-${{ github.ref }}-${{ github.event.schedule || inputs.mode || 'validate' }}
   cancel-in-progress: false
 
 jobs:
+  validate:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out staging branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Parse changed JavaScript
+        run: |
+          set -euo pipefail
+          node --check backend/src/growthCommand.js
+          node --check backend/src/server.js
+          node --check backend/src/config.js
+          node --check backend/src/firestore.js
+          node --check studio/book-growth-command.js
+
+      - name: Verify dashboard contracts
+        run: |
+          set -euo pipefail
+          grep -q 'id="todayTasks"' studio/analytics.html
+          grep -q 'id="proofDialog"' studio/analytics.html
+          grep -q '/api/growth/command' studio/book-growth-command.js
+          grep -q 'registerGrowthCommandRoutes' backend/src/server.js
+          grep -q '/api/growth/cron/:mode' backend/src/growthCommand.js
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
   deliver:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
