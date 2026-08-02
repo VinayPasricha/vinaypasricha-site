@@ -144,6 +144,36 @@
   </p>
 </section>
 
+<!-- =================== TALK TO THE BOOK =================== -->
+<div class="book-companion" data-book-companion>
+  <button class="book-chat-launcher" type="button" data-open-book-chat aria-haspopup="dialog">
+    <span class="book-chat-launcher-kicker">AI for Business Leaders</span>
+    <span>Talk to the book</span>
+  </button>
+  <div class="book-chat-backdrop" data-book-chat-backdrop hidden></div>
+  <section class="book-chat-modal" role="dialog" aria-modal="true" aria-labelledby="book-chat-title" hidden>
+    <div class="book-chat-head">
+      <div><div class="book-chat-kicker">A conversation with the complete second edition</div><div class="book-chat-title" id="book-chat-title">Talk to the book</div></div>
+      <button class="book-chat-close" type="button" data-close-book-chat aria-label="Close conversation">×</button>
+    </div>
+    <div class="book-chat-meter" data-meter>20 questions available · 10,000-token conversation limit</div>
+    <div class="book-chat-messages" data-messages aria-live="polite">
+      <div class="book-chat-message agent">Ask me to explain an idea, apply a framework to your business, or challenge what you think the book is saying. My answers are grounded in the book.</div>
+    </div>
+    <div class="book-chat-suggestions" data-suggestions>
+      <button type="button">What is a Company Brain?</button>
+      <button type="button">Where should a leader begin with AI?</button>
+      <button type="button">What should remain a human responsibility?</button>
+      <button type="button">How do I choose one serious AI pilot?</button>
+      <button type="button">What does the book warn leaders not to do?</button>
+    </div>
+    <form class="book-chat-form">
+      <textarea rows="2" maxlength="2000" aria-label="Ask the book a question" placeholder="Ask a question about the book…" required></textarea>
+      <button type="submit">Ask</button>
+    </form>
+  </section>
+</div>
+
 <!-- =================== THE BOOK =================== -->
 <section class="book-card" id="the-book">
   <div class="book-card-inner">
@@ -314,33 +344,6 @@
         <h4>It is not a technical book.</h4>
         <p>It does not require you to know how transformers work. It assumes you know how to run a business and asks how AI fits inside <em>that</em> craft.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- =================== TALK TO THE BOOK =================== -->
-<section class="book-companion" data-book-companion>
-  <div class="book-companion-inner">
-    <div class="book-companion-copy">
-      <div class="label">— A conversation with the book</div>
-      <h2>Ask the book.<br><em>Test the argument.</em></h2>
-      <p>This reading companion has studied the complete second edition. Ask it to explain an idea, apply a framework to your business, or challenge what you think the book is saying.</p>
-      <div class="book-agent-note">Answers are grounded in the book and include the relevant section and pages. This is a companion to Vinay's writing—not Vinay himself.</div>
-    </div>
-    <div class="book-chat" aria-label="Talk to AI for Business Leaders">
-      <div class="book-chat-head"><div class="book-chat-title">AI for Business Leaders · Reading Companion</div><div class="book-chat-status">Book-grounded</div></div>
-      <div class="book-chat-messages" data-messages aria-live="polite">
-        <div class="book-chat-message agent">What are you trying to understand about AI and your business? I’ll answer from the book—and tell you when the book does not establish an answer.</div>
-      </div>
-      <div class="book-chat-suggestions" data-suggestions>
-        <button type="button">What is a Company Brain?</button>
-        <button type="button">Where should a leader start?</button>
-        <button type="button">How should humans and AI divide responsibility?</button>
-      </div>
-      <form class="book-chat-form">
-        <textarea rows="2" maxlength="2000" aria-label="Ask the book a question" placeholder="Ask a question about the book…" required></textarea>
-        <button type="submit">Ask</button>
-      </form>
     </div>
   </div>
 </section>
