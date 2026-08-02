@@ -236,19 +236,18 @@
     if (!host) return;
 
     async function loadEssays() {
+      // Direct Studio publications appear immediately. The static file remains
+      // only as a migration/failure fallback.
       try {
-        const draft = localStorage.getItem('studio.notebook');
-        if (draft) {
-          const d = JSON.parse(draft);
-          if (Array.isArray(d.essays)) return d.essays;
-        }
-      } catch (e) {}
-      try {
-        const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+        const res = await fetch('/api/notebook', { cache: 'no-cache' });
         if (res.ok) {
           const d = await res.json();
           return Array.isArray(d.essays) ? d.essays : [];
         }
+      } catch (e) {}
+      try {
+        const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+        if (res.ok) { const d = await res.json(); return Array.isArray(d.essays) ? d.essays : []; }
       } catch (e) {}
       return [];
     }

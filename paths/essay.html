@@ -104,6 +104,10 @@
       margin: 48px auto;
       max-width: 80px;
     }
+    .essay-body figure { margin: 40px 0; }
+    .essay-body figure:first-child { margin-top: 0; }
+    .essay-body figure img { width: 100%; height: auto; display: block; border-radius: 2px; }
+    .essay-body figcaption { margin-top: 9px; font-size: 14px; line-height: 1.45; color: var(--ink-3); font-style: italic; }
     .essay-tags-bottom {
       margin-top: 64px;
       padding-top: 36px;
@@ -259,21 +263,19 @@
   const params = new URLSearchParams(window.location.search);
   const slug = (params.get('slug') || '').toLowerCase().trim();
 
-  // Load essays — drafts take precedence in the same way watch.html handles videos
+  // Direct Studio publications appear immediately. The static file remains
+  // only as a migration/failure fallback.
   async function loadEssays() {
     try {
-      const draft = localStorage.getItem('studio.notebook');
-      if (draft) {
-        const d = JSON.parse(draft);
-        if (Array.isArray(d.essays)) return d.essays;
-      }
-    } catch (e) {}
-    try {
-      const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+      const res = await fetch('/api/notebook', { cache: 'no-cache' });
       if (res.ok) {
         const d = await res.json();
         return Array.isArray(d.essays) ? d.essays : [];
       }
+    } catch (e) {}
+    try {
+      const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+      if (res.ok) { const d = await res.json(); return Array.isArray(d.essays) ? d.essays : []; }
     } catch (e) {}
     return [];
   }
@@ -331,7 +333,7 @@
       <h1 class="essay-title">${essay.title || ''}</h1>
       ${essay.dek ? `<p class="essay-dek">${essay.dek}</p>` : ''}
 
-      <div class="essay-body">${window.notebookMarkdown(essay.body)}</div>
+      <div class="essay-body" id="essay-body"></div>
 
       ${tagsHTML ? `<div class="essay-tags-bottom">${tagsHTML}</div>` : ''}
     </article>
@@ -361,6 +363,29 @@
       `}
     </nav>
   `;
+
+  (function arrangeImages() {
+    const bodyHost = document.getElementById('essay-body');
+    if (!bodyHost) return;
+    bodyHost.innerHTML = window.notebookMarkdown(essay.body);
+    const images = Array.isArray(essay.images) ? essay.images.filter(image => image && /^\/api\/notebook\/images\//.test(image.url || '')) : [];
+    function figure(image) {
+      const node = document.createElement('figure');
+      const img = document.createElement('img');
+      img.src = image.url; img.alt = image.alt || 'Essay image'; node.appendChild(img);
+      if (image.alt) { const caption = document.createElement('figcaption'); caption.textContent = image.alt; node.appendChild(caption); }
+      return node;
+    }
+    if (!images.length) return;
+    bodyHost.insertBefore(figure(images[0]), bodyHost.firstChild);
+    const blocks = Array.from(bodyHost.children).filter(node => node.tagName !== 'FIGURE');
+    const remaining = images.slice(1);
+    remaining.forEach((image, index) => {
+      const position = Math.min(blocks.length - 1, Math.max(0, Math.round((index + 1) * blocks.length / (remaining.length + 1)) - 1));
+      const target = blocks[position];
+      if (target) target.insertAdjacentElement('afterend', figure(image)); else bodyHost.appendChild(figure(image));
+    });
+  })();
 
   function escapeHTML(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');

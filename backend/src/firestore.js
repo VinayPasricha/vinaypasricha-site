@@ -61,4 +61,6 @@ export const COLLECTIONS = {
   ablAuthCodes: collectionName('abl_auth_codes'),
   ablParticipantSessions: collectionName('abl_participant_sessions'),
   bookCompanionSessions: collectionName('book_companion_sessions'),
+  // Essays published directly from the private Notebook Studio.
+  notebookEssays: collectionName('notebook_essays'),
 };

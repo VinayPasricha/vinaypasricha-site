@@ -32,6 +32,7 @@ import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, l
 import { alertPriorityLead } from './services/leadAlerts.js';
 import { db, COLLECTIONS } from './firestore.js';
 import crypto from 'node:crypto';
+import { registerNotebook } from './notebook.js';
 
 // First-party analytics: a tiny tracker script is injected into every served
 // HTML page (see the injection points below), so the Studio Analytics dashboard
@@ -219,6 +220,9 @@ export function createApp() {
   // reuse the studio gate via requireAdmin; rateLimit/studioAuthed are shared so
   // ABL can throttle its expensive AI routes and gate the private brief.
   registerAbl(app, { requireAdmin, rateLimit, studioAuthed });
+
+  // Direct Notebook publishing: public reading plus Studio-gated editing.
+  registerNotebook(app, { requireAdmin, rateLimit });
 
   // ---- Conversations (anonymous) ----
   // Any runtime saves here: POST /api/runtimes/:runtime/conversations
