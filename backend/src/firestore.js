@@ -32,6 +32,7 @@ export const COLLECTIONS = {
   analyticsEvents: collectionName('analytics_events'),
   analyticsPeople: collectionName('analytics_people'),
   analyticsChannels: collectionName('analytics_channels'), // named short links (/go/<slug>)
+  growthRuns: collectionName('growth_runs'), // private Studio state such as Website Intelligence check-ins
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
   ablParticipants: collectionName('abl_participants'),
