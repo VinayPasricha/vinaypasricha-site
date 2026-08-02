@@ -276,7 +276,7 @@
     host.innerHTML = published.map(e => {
       const tags = (e.tags || []).map(t => `<span class="ei-tag">${escapeHTML(t)}</span>`).join('');
       return `
-        <a class="essay-item" href="essay?slug=${encodeURIComponent(e.slug)}">
+        <a class="essay-item" href="/paths/essay/${encodeURIComponent(e.slug)}">
           <span class="ei-date">${escapeHTML(e.monthLabel || e.date || '')}</span>
           <div>
             <div class="ei-title">${e.title || ''}</div>

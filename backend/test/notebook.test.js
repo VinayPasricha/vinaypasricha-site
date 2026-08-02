@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { sanitizeNotebookEssay, decodeNotebookImage, notebookSlug } from '../src/notebook.js';
+import { renderNotebookEssayHtml, renderNotebookSitemap } from '../src/notebookSeo.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
@@ -69,7 +70,7 @@ test('Studio lets a human paste text and publish without touching code', async (
     if (String(url) === '/api/studio/notebook') return { ok: true, status: 200, json: async () => ({ ok: true, essays: [] }) };
     if (String(url) === '/api/studio/notebook/essays') {
       const sent = JSON.parse(init.body);
-      return { ok: true, status: 200, json: async () => ({ ok: true, essay: sent, live_url: '/paths/essay?slug=' + sent.slug }) };
+      return { ok: true, status: 200, json: async () => ({ ok: true, essay: sent, live_url: '/paths/essay/' + sent.slug }) };
     }
     return { ok: false, status: 404, json: async () => ({ error: 'not_found' }) };
   };
@@ -91,4 +92,42 @@ test('Studio lets a human paste text and publish without touching code', async (
   assert.ok(publish, 'publish endpoint was called');
   assert.equal(JSON.parse(publish.init.body).status, 'published');
   assert.match(dom.window.document.getElementById('publishStatus').textContent, /Published/);
+});
+
+test('published Notebook articles are search-ready without JavaScript', () => {
+  const template = fs.readFileSync(path.join(root, 'paths', 'essay.html'), 'utf8');
+  const essay = sanitizeNotebookEssay({
+    title: 'Leadership decisions in the age of AI',
+    dek: 'A practical note about deciding clearly.',
+    body: '## The real question\n\nThis complete article body is visible to a crawler in the first response.',
+    tags: ['leadership', 'ai'],
+    status: 'published',
+    date: '2026-08-02',
+  });
+  const html = renderNotebookEssayHtml(template, essay, [essay]);
+  assert.match(html, /<title>Leadership decisions in the age of AI/);
+  assert.match(html, /canonical[^>]+\/paths\/essay\/leadership-decisions-in-the-age-of-ai/);
+  assert.match(html, /property="og:title" content="Leadership decisions in the age of AI"/);
+  assert.match(html, /"@type":"BlogPosting"/);
+  assert.match(html, /This complete article body is visible to a crawler/);
+});
+
+test('dynamic sitemap lists every published article and removes the empty essay shell', () => {
+  const staticXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const published = sanitizeNotebookEssay({
+    title: 'A sitemap article',
+    body: 'This is a complete article body with enough material to pass Notebook validation.',
+    status: 'published',
+    date: '2026-08-02',
+  });
+  const draft = sanitizeNotebookEssay({
+    title: 'A private draft',
+    body: 'This is a complete private draft body with enough material to pass validation.',
+    status: 'draft',
+    date: '2026-08-02',
+  });
+  const sitemap = renderNotebookSitemap(staticXml, [published, draft]);
+  assert.match(sitemap, /https:\/\/vinaypasricha\.com\/paths\/essay\/a-sitemap-article/);
+  assert.doesNotMatch(sitemap, /paths\/essay\/a-private-draft/);
+  assert.doesNotMatch(sitemap, /<loc>https:\/\/vinaypasricha\.com\/paths\/essay<\/loc>/);
 });

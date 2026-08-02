@@ -75,7 +75,7 @@
         '<div class="date">' + esc(essay.monthLabel || essay.date || '') + '</div>' +
         '<div><h3>' + esc(essay.title || 'Untitled') + '</h3><div class="meta">' + (live ? 'Live on website' : (essay.recovered ? 'Recovered draft' : 'Draft')) + ' · ' + esc((essay.tags || []).join(' · ')) + '</div></div>' +
         '<div class="post-actions"><button type="button" data-edit>Edit</button>' +
-        (live ? '<a href="/paths/essay?slug=' + encodeURIComponent(essay.slug) + '" target="_blank" rel="noopener">View live</a><button type="button" data-hide>Hide</button>' : '') + '</div></article>';
+        (live ? '<a href="/paths/essay/' + encodeURIComponent(essay.slug) + '" target="_blank" rel="noopener">View live</a><button type="button" data-hide>Hide</button>' : '') + '</div></article>';
     }).join('');
     Array.prototype.forEach.call($('postList').querySelectorAll('[data-edit]'), function (button) {
       button.onclick = function () { editEssay(button.closest('[data-slug]').getAttribute('data-slug')); };

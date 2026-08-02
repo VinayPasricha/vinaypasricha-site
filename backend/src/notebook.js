@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { db, COLLECTIONS } from './firestore.js';
 import { completeModel } from './services/ai.js';
 import { extractJson } from './abl/json.js';
+import { registerNotebookSeoRoutes } from './notebookSeo.js';
 
 const MAX_TEXT = 30000;
 const MAX_BODY = 80000;
@@ -87,7 +88,7 @@ function staticEssays() {
   } catch (error) { return []; }
 }
 
-async function listEssays({ publishedOnly = false } = {}) {
+export async function listEssays({ publishedOnly = false } = {}) {
   const snap = await db.collection(COLLECTIONS.notebookEssays).get();
   const merged = new Map(staticEssays().map((essay) => [essay.slug, essay]));
   snap.docs.forEach((doc) => merged.set(doc.id, doc.data()));
@@ -101,6 +102,7 @@ function imageContentType(id) {
 }
 
 export function registerNotebook(app, { requireAdmin, rateLimit }) {
+  registerNotebookSeoRoutes(app, { listEssays, notebookSlug });
   app.get('/api/notebook', async (req, res) => {
     try {
       res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
@@ -137,7 +139,7 @@ export function registerNotebook(app, { requireAdmin, rateLimit }) {
       const original = notebookSlug(req.body && req.body.original_slug || essay.slug);
       await db.collection(COLLECTIONS.notebookEssays).doc(essay.slug).set(essay, { merge: false });
       if (original !== essay.slug) await db.collection(COLLECTIONS.notebookEssays).doc(original).set({ slug: original, status: 'archived', updated_at: new Date().toISOString() }, { merge: false });
-      res.json({ ok: true, essay, live_url: `/paths/essay?slug=${encodeURIComponent(essay.slug)}` });
+      res.json({ ok: true, essay, live_url: `/paths/essay/${encodeURIComponent(essay.slug)}` });
     } catch (error) {
       res.status(400).json({ ok: false, error: 'save_failed', detail: error.message });
     }
