@@ -40,10 +40,17 @@ export const config = {
   // Book Growth Command Centre. Search Console uses the Cloud Run service
   // account, which must be added as a user of the configured property.
   growthSearchConsoleSite: optional('GROWTH_SEARCH_CONSOLE_SITE', ''),
-  growthVinayEmail: optional('GROWTH_VINAY_EMAIL', ''),
-  growthVaishnavEmail: optional('GROWTH_VAISHNAV_EMAIL', ''),
+  growthVinayEmail: optional('GROWTH_VINAY_EMAIL', 'vinay@goodspace.ai'),
+  growthVaishnavEmail: optional('GROWTH_VAISHNAV_EMAIL', 'vaishnav@goodspace.ai'),
   growthFromEmail: optional('GROWTH_FROM_EMAIL', optional('ABL_FROM_EMAIL', 'Vinay Pasricha Growth <growth@vinaypasricha.com>')),
+
+  // Preferred Slack delivery is a private DM through a Slack app/bot token.
+  // A single incoming webhook remains available as a simpler channel fallback.
+  growthSlackBotToken: optional('GROWTH_SLACK_BOT_TOKEN', ''),
+  growthVinaySlackUserId: optional('GROWTH_VINAY_SLACK_USER_ID', 'U0AN6TZ2H6Y'),
+  growthVaishnavSlackUserId: optional('GROWTH_VAISHNAV_SLACK_USER_ID', 'U093Z2F5ETH'),
   growthSlackWebhookUrl: optional('GROWTH_SLACK_WEBHOOK_URL', ''),
+
   growthCronSecret: optional('GROWTH_CRON_SECRET', ''),
   growthTimezone: optional('GROWTH_TIMEZONE', 'Asia/Kolkata'),
 };
