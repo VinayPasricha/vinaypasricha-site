@@ -86,7 +86,7 @@ export async function completeWithinBudget({ system, messages, tokenBudget, maxO
     err.code = 'BOOK_LIMIT';
     throw err;
   }
-  request.generationConfig = { maxOutputTokens: Math.min(maxOutputTokens, allowance) };
+  request.generationConfig = { maxOutputTokens: Math.min(maxOutputTokens, allowance), thinkingConfig: { thinkingBudget: 0 } };
   const result = await model().generateContent(request);
   const candidate = result?.response?.candidates?.[0];
   const text = (candidate?.content?.parts || []).map((p) => p.text).filter(Boolean).join('');
