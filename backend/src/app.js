@@ -370,7 +370,11 @@ export function createApp() {
   app.post('/api/track', rateLimit({ windowMs: 60000, max: 300 }), async (req, res) => {
     const ip = String(req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim();
     const ua = req.get('user-agent') || '';
-    await recordEvent(req.body || {}, { ip, ua });
+    // The client batches events into { events: [...] }; single bare events
+    // still arrive from cached copies of the old track.js.
+    const body = req.body || {};
+    const events = Array.isArray(body.events) ? body.events.slice(0, 50) : [body];
+    for (const event of events) await recordEvent(event || {}, { ip, ua });
     res.status(204).end();
   });
 
@@ -556,12 +560,28 @@ export function createApp() {
         if (trackedHtmlCache.size > 2000) trackedHtmlCache.clear();
       }
       res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'no-cache'); // always revalidate HTML so deploys show immediately
       return res.send(out);
     } catch (e) {
       return next(); // safe fallback to static
     }
   });
-  app.use(express.static(SITE_ROOT, { extensions: ['html'] }));
+  // Assets aren't fingerprinted, so rely on revalidation windows rather than
+  // immutable: a day for css/js, a week for images/fonts (they change rarely).
+  const LONG_CACHE = /\.(png|jpe?g|webp|avif|gif|svg|ico|woff2?)$/i;
+  const DAY_CACHE = /\.(css|js|mjs|json)$/i;
+  app.use(express.static(SITE_ROOT, {
+    extensions: ['html'],
+    setHeaders(res, filePath) {
+      if (LONG_CACHE.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+      } else if (DAY_CACHE.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
+      } else if (/\.html$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }));
 
   // JSON 404 for unmatched API routes; otherwise let static 404 stand.
   app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));

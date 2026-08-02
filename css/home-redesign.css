@@ -5,8 +5,8 @@
   --paper-3: #15151a;
   --ink: #ece9e2;
   --ink-2: #ece9e2;
-  --ink-3: rgba(236, 233, 226, .62);
-  --ink-4: rgba(236, 233, 226, .45);
+  --ink-3: rgba(236, 233, 226, .72);
+  --ink-4: rgba(236, 233, 226, .55);
   --rule: rgba(236, 233, 226, .08);
   --rule-soft: rgba(236, 233, 226, .08);
   --accent: #ffa726;
@@ -137,7 +137,7 @@ body.home-redesign {
 }
 
 .home-redesign .now-line em {
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 12px;
   font-style: italic;
@@ -156,7 +156,7 @@ body.home-redesign {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--mono);
   font-size: 9.5px;
   font-weight: 500;
@@ -223,16 +223,6 @@ body.home-redesign {
   transition: opacity 300ms ease;
 }
 
-.mark-caption {
-  margin-top: 10px !important;
-  color: rgba(236, 233, 226, .38);
-  font-family: var(--mono);
-  font-size: 8.5px;
-  letter-spacing: .22em;
-  text-align: center;
-  text-transform: uppercase;
-}
-
 .hero-statement {
   max-width: 680px;
 }
@@ -255,7 +245,7 @@ body.home-redesign {
 .hero-copy {
   max-width: 58ch;
   margin-top: 28px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 16.5px;
   font-weight: 300;
@@ -269,7 +259,7 @@ body.home-redesign {
 
 .scroll-cue {
   margin-top: 32px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 14px;
   font-style: italic;
@@ -470,7 +460,7 @@ body.home-redesign {
 
 .section-subline {
   margin-top: 14px !important;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 15px;
   font-style: italic;
@@ -667,7 +657,7 @@ body.home-redesign {
 }
 
 .group-head em {
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 13.5px;
   font-weight: 300;
@@ -767,7 +757,7 @@ body.home-redesign {
 
 .conversation-footer {
   margin-top: 28px !important;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 14px;
   text-align: right;
@@ -793,7 +783,7 @@ body.home-redesign {
 .notebook-intro > p:last-child {
   max-width: 35ch;
   margin-top: 18px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 15.5px;
   line-height: 1.6;
@@ -868,7 +858,7 @@ body.home-redesign {
 .desk-copy {
   max-width: 72ch;
   margin-top: 16px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 17px;
   font-weight: 300;
@@ -946,6 +936,10 @@ body.home-redesign {
     grid-template-columns: 1fr;
     gap: 44px;
   }
+
+  /* Words first on small screens — the mark becomes a coda, not a gate. */
+  .hero-statement { order: 1; }
+  .hero-mark { order: 2; }
 
   .hero-mark {
     width: min(100%, 320px);
@@ -1032,6 +1026,12 @@ body.home-redesign {
   .home-redesign .hero {
     padding-top: 48px;
     padding-bottom: 64px;
+    gap: 36px;
+  }
+
+  .hero-mark,
+  .logo3d {
+    width: min(100%, 240px);
   }
 
   .returning-home-head {

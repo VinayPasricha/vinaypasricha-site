@@ -94,21 +94,36 @@
   function base() {
     return { vid: vid, sid: sessionId(), email: (person && person.email) || '', pid: (person && person.id) || '', pname: (person && person.name) || '' };
   }
-  function send(body, beacon) {
+  // Events queue up and flush as one request every few seconds (or immediately
+  // via sendBeacon for leave-critical events) instead of one POST per event.
+  var queue = [];
+  var FLUSH_MS = 5000, MAX_QUEUE = 20;
+  var flushTimer = null;
+  function flush(beacon) {
+    if (!queue.length) return;
+    var events = queue.splice(0, queue.length);
     try {
-      var payload = JSON.stringify(body);
+      var payload = JSON.stringify({ events: events });
       if (beacon && navigator.sendBeacon) { navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' })); return; }
       fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
     } catch (e) {}
   }
+  function scheduleFlush() {
+    if (flushTimer) return;
+    flushTimer = setTimeout(function () { flushTimer = null; flush(); }, FLUSH_MS);
+  }
   function track(type, extra, beacon) {
     if (OFF) return;
-    var body = { type: type, path: location.pathname, lang: lang() };
+    var body = { type: type, path: location.pathname, lang: lang(), t: Date.now() };
     var b = base();
     for (var k in b) body[k] = b[k];
     if (extra) for (var j in extra) body[j] = extra[j];
-    send(body, beacon);
+    queue.push(body);
+    if (beacon || queue.length >= MAX_QUEUE) flush(beacon);
+    else scheduleFlush();
   }
+  window.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); });
+  window.addEventListener('pagehide', function () { flush(true); });
 
   function pageview() {
     lastPath = location.pathname;
