@@ -200,6 +200,7 @@
     if (!el) return;
     var url = el.getAttribute('data-file-url') || el.getAttribute('href') || '';
     if (!FILE_ENDPOINT.test(url)) return;
+    if (/[?&]token=/.test(url)) return; // token in URL — let the plain link navigate
     e.preventDefault();
     e.stopPropagation();
     openGatedFile(url, window.open('', '_blank'));

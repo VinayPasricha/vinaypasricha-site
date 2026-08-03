@@ -93,7 +93,12 @@ export function verifyParticipantToken(token) {
 
 export function bearerToken(req) {
   const header = String(req.get('authorization') || '');
-  return /^Bearer\s+/i.test(header) ? header.replace(/^Bearer\s+/i, '').trim() : '';
+  if (/^Bearer\s+/i.test(header)) return header.replace(/^Bearer\s+/i, '').trim();
+  // A browser navigating directly to a gated file link (e.g. opening a PDF in a
+  // new tab) cannot send an Authorization header, so also accept the token as a
+  // query param. Only meaningful for GETs of the private file endpoints.
+  const q = req.query && (req.query.token || req.query.t);
+  return q ? String(q).trim() : '';
 }
 
 export function isPreviewEnvironment() {

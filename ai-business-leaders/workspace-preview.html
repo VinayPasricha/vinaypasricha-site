@@ -66,9 +66,7 @@ const TYPE_LABELS={case:'Case study',manual:'Course manual',presentation:'Presen
 function typeKey(m){return String((m&&m.type)||'').toLowerCase()}
 function typeLabel(m){let k=typeKey(m);return TYPE_LABELS[k]||(k?k.charAt(0).toUpperCase()+k.slice(1):'Resource')}
 /* A material is only openable when Studio was given a link for it. */
-function openControl(m){return m&&m.url
-  ? '<a class="btn" href="'+esc(m.url)+'" target="_blank" rel="noopener">Open ↗</a>'
-  : '<span class="meta">No link yet</span>'}
+function openControl(m){if(!(m&&m.url))return '<span class="meta">No link yet</span>';var href=m.url,tok=(window.AblAuth&&AblAuth.token&&AblAuth.token())||'';if(tok&&/\/materials\/[^/]+\/file(\?|$)/.test(m.url))href=m.url+(m.url.indexOf('?')>-1?'&':'?')+'token='+encodeURIComponent(tok);return '<a class="btn" href="'+esc(href)+'" target="_blank" rel="noopener">Open ↗</a>'}
 
 /* Each notebook line is one Initiative Builder field, so editing here writes to
    the same record the Builder reads. Every row therefore needs exactly one
