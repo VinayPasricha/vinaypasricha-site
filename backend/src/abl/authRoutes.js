@@ -8,6 +8,7 @@ import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as repo from './store.js';
+import { recordEvent } from '../services/analytics.js';
 import {
   normalizeEmail, validEmail, createLoginCode, hashLoginCode, verifyLoginCode, codeExpiry,
   createParticipantToken, createOpaqueParticipantToken, hashParticipantToken,
@@ -102,6 +103,19 @@ export function registerAuthRoutes(app, { rateLimit }) {
       }
       await repo.consumeAuthCode(email);
       await repo.updateParticipant(p.id, { invite_status: 'active', last_activity_at: new Date().toISOString() });
+      // Surface course participants in the site's first-party analytics as a
+      // known person (source: course-login). Best-effort — never blocks sign-in.
+      recordEvent({
+        type: 'identify',
+        email: p.email,
+        pname: p.name,
+        vid: 'course-' + p.id, // synthetic visitor id so the event isn't dropped
+        path: `/ai-business-leaders/workspace/${p.slug}`,
+        traits: { name: p.name, company: p.company_name, role: p.role_title, phone: p.phone, source: 'course-login' },
+      }, {
+        ip: String(req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim(),
+        ua: req.get('user-agent') || '',
+      }).catch(() => {});
       return ok(res, {
         token,
         participant: { name: p.name, company_name: p.company_name, email: p.email },
