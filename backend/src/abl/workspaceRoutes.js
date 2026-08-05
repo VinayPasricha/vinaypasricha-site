@@ -203,8 +203,11 @@ export function registerWorkspaceRoutes(app) {
   // list: the participant is resolved by slug, their workspace must be active,
   // and the material must be visible to them (publish status + audience). The
   // bytes are streamed from the private bucket — the file has no public URL.
-  app.get('/api/abl/workspace/:slug/materials/:id/file', async (req, res) => {
+  app.get('/api/abl/workspace/:slug/materials/:id/file', async (req, res, next) => {
     try {
+      // ':slug' also matches the literal 'admin' segment, so this route would
+      // otherwise shadow the Studio admin file route below. Let those fall through.
+      if (req.params.slug === 'admin') return next();
       // participantApiGuard has already verified the signed-in participant owns
       // this slug and attached them here — the file is as gated as the workspace.
       const p = req.ablParticipant;
