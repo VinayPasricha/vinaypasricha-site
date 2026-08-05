@@ -253,7 +253,7 @@
     Array.prototype.forEach.call($('materialCards').querySelectorAll('[data-material]'), function (card) {
       card.querySelector('[data-delete-material]').onclick = async function () {
         if (!confirm('Delete this material?')) return;
-        try { await api('/materials/' + card.getAttribute('data-material'), { method: 'DELETE' }); toast('Material deleted'); await load(); } catch (e) { toast(e.message); }
+        try { var r = await api('/materials/' + card.getAttribute('data-material'), { method: 'DELETE' }); toast(r && r.action === 'archived' ? 'Archived (hidden). Click Delete again to remove it permanently.' : 'Material deleted'); await load(); } catch (e) { toast(e.message); }
       };
     });
     var recent = state.materials.filter(function (m) { return m.status === 'published'; }).slice(0, 3)

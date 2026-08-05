@@ -65,7 +65,10 @@ export function registerSafeArchiveRoutes(app) {
 
       const entitled = await participantEntitlementExists('material_entitlements', item.id);
       const reasons = [];
-      if (item.status !== 'draft') reasons.push('previously published or scheduled');
+      // Published/scheduled content is archived (hidden) on first delete. An
+      // already-hidden item is deleted for real on the next delete, so an
+      // admin can still fully remove a material in two clicks.
+      if (item.status !== 'draft' && item.status !== 'hidden') reasons.push('previously published or scheduled');
       if (entitled) reasons.push('participant entitlement exists');
 
       if (reasons.length) {
