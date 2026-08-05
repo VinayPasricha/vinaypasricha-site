@@ -58,6 +58,144 @@ const ANALYTICS = {
   }
 })();
 
+// A lightweight, private return loop. Browser-local history is enough to make
+// the public site feel continuous without requiring an account or transmitting
+// reading behaviour to the server.
+(() => {
+  const KEY = 'vp_returning_home_v1';
+  const HOME_PATHS = new Set(['/', '/index.html']);
+  const FRIENDLY_TITLES = {
+    '/books': 'The full bookshelf',
+    '/paths/ai-for-business': 'AI for Business Leaders',
+    '/paths/decisions': 'The SIV Method',
+    '/paths/execute': 'The Execution Doctrine',
+    '/paths/hire': 'Organizational Frequency',
+    '/paths/evolve': 'The Signal',
+    '/paths/civilization': 'Civilization',
+    '/paths/blog': 'The Notebook',
+    '/paths/story': 'The story of Vinay',
+    '/paths/connect': 'Your conversation with AION1',
+    '/paths/course': 'The AI Leadership Course',
+    '/paths/find-work': 'GoodSpace for candidates',
+    '/paths/career': 'Career Management',
+    '/paths/fiction': 'Between Two Dawns'
+  };
+
+  const normalisePath = (value) => {
+    let path = String(value || '/').split('?')[0].split('#')[0] || '/';
+    if (path.length > 1) path = path.replace(/\/+$/, '').replace(/\.html$/, '');
+    return path;
+  };
+
+  const readState = () => {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+    catch (e) { return null; }
+  };
+
+  const readCourseAccess = () => {
+    try { return JSON.parse(localStorage.getItem('abl_participant_access_v1') || 'null'); }
+    catch (e) { return null; }
+  };
+
+  const safeInternalHref = (value) => {
+    try {
+      const url = new URL(String(value || ''), window.location.origin);
+      return url.origin === window.location.origin ? url.pathname + url.search + url.hash : '';
+    } catch (e) { return ''; }
+  };
+
+  const escapeHtml = (value) => String(value || '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+
+  const previous = readState();
+  const currentPath = normalisePath(window.location.pathname);
+  const now = Date.now();
+
+  if (document.body.classList.contains('home-redesign') && previous?.seenAt) {
+    const panel = document.getElementById('returning-home');
+    const grid = document.getElementById('returning-home-grid');
+    const updated = document.getElementById('returning-home-updated');
+    const cards = [];
+
+    const lastPath = normalisePath(previous.lastMeaningfulPath);
+    if (lastPath && !HOME_PATHS.has(lastPath)) {
+      cards.push({
+        label: 'Continue where you left off',
+        title: previous.lastMeaningfulTitle || FRIENDLY_TITLES[lastPath] || 'Return to your last page',
+        action: 'Continue →',
+        href: safeInternalHref(lastPath)
+      });
+    }
+
+    const course = readCourseAccess();
+    const courseHref = safeInternalHref(course?.workspace);
+    if (course?.token && courseHref) {
+      cards.push({
+        label: 'Your private course',
+        title: 'Resume your AI Leadership Workspace',
+        action: 'Resume →',
+        href: courseHref
+      });
+    }
+
+    const signalPublishedAt = Date.parse('2026-07-30T00:00:00+05:30');
+    cards.push(lastPath === '/paths/evolve' ? {
+      label: 'Continue exploring',
+      title: 'The Notebook — essays written to be read more than once',
+      action: 'Open →',
+      href: '/paths/blog'
+    } : {
+      label: previous.seenAt < signalPublishedAt ? 'New since your last visit' : 'Latest from Vinay',
+      title: 'The Signal — a field guide for thinking clearly',
+      action: 'Open →',
+      href: '/paths/evolve'
+    });
+
+    if (cards.length === 1 && !lastPath) {
+      cards.unshift({
+        label: 'Continue exploring',
+        title: 'Choose the conversation closest to where you are',
+        action: 'Explore →',
+        href: '/#paths'
+      });
+    }
+
+    if (panel && grid) {
+      grid.innerHTML = cards.slice(0, 3).map((card) => `
+        <a class="returning-card" href="${escapeHtml(card.href)}">
+          <span class="returning-card-label">${escapeHtml(card.label)}</span>
+          <strong>${escapeHtml(card.title)}</strong>
+          <span class="returning-card-action">${escapeHtml(card.action)}</span>
+        </a>
+      `).join('');
+      const elapsedDays = Math.max(0, Math.floor((now - previous.seenAt) / 86400000));
+      if (updated) updated.textContent = elapsedDays > 0
+        ? `Last visit ${elapsedDays} day${elapsedDays === 1 ? '' : 's'} ago`
+        : 'Your place has been saved';
+      panel.hidden = false;
+    }
+  }
+
+  const nextState = {
+    firstSeenAt: previous?.firstSeenAt || now,
+    seenAt: now,
+    lastMeaningfulPath: previous?.lastMeaningfulPath || '',
+    lastMeaningfulTitle: previous?.lastMeaningfulTitle || ''
+  };
+
+  if (!HOME_PATHS.has(currentPath) && !currentPath.startsWith('/studio') && !currentPath.startsWith('/ai-business-leaders/login')) {
+    nextState.lastMeaningfulPath = currentPath;
+    nextState.lastMeaningfulTitle = FRIENDLY_TITLES[currentPath] || document.title.replace(/\s+[—|-]\s+Vinay Pasricha.*$/i, '').trim();
+  }
+
+  try { localStorage.setItem(KEY, JSON.stringify(nextState)); } catch (e) {}
+})();
+
 (function(){
 
   // ---------- Skip-to-content link ----------
@@ -218,6 +356,55 @@ const ANALYTICS = {
       }
     } catch (e) {}
     return null;
+  }
+
+  // ---------- Course ribbon ----------
+  // A live cohort is running: participants must find their workspace door
+  // above the fold on every page. Injected site-wide; hidden inside the
+  // workspace itself. The [data-course-entry] hook below routes returning
+  // participants straight to their saved workspace.
+  injectCourseRibbon();
+
+  function injectCourseRibbon() {
+    if (/^\/(ai-business-leaders|studio)(\/|$)/.test(window.location.pathname)) return;
+    if (document.querySelector('.course-ribbon')) return;
+    const root = siteRootPrefix();
+    const ribbon = document.createElement('a');
+    ribbon.className = 'course-ribbon';
+    ribbon.href = root + 'ai-business-leaders/login';
+    ribbon.setAttribute('data-course-entry', '');
+    ribbon.innerHTML =
+      '<span class="cr-dot" aria-hidden="true"></span>' +
+      '<span class="cr-cohort">Live cohort · AI for Business Leaders</span>' +
+      '<strong data-course-entry-label>Course participants — enter your workspace </strong>' +
+      '<span class="cr-arrow" aria-hidden="true">→</span>';
+    document.body.insertBefore(ribbon, document.body.firstChild);
+  }
+
+  // ---------- Topbar nav ----------
+  // The five primary destinations, visible on every page without opening the
+  // Index. Injected so each static page stays single-source.
+  injectTopbarNav();
+
+  function injectTopbarNav() {
+    const right = document.querySelector('.topbar .right');
+    if (!right || right.querySelector('.topbar-nav')) return;
+    const root = siteRootPrefix();
+    const links = [
+      { href: root + 'books', match: /^\/books/, label: 'Books' },
+      { href: root + 'paths/course', match: /\/paths\/course/, label: 'Course' },
+      { href: root + 'paths/blog', match: /\/paths\/(blog|essay)/, label: 'Notebook' },
+      { href: root + 'paths/story', match: /\/paths\/story/, label: 'Story' },
+      { href: root + 'paths/connect', match: /\/paths\/connect/, label: 'Connect' },
+    ];
+    const nav = document.createElement('nav');
+    nav.className = 'topbar-nav';
+    nav.setAttribute('aria-label', 'Primary');
+    nav.innerHTML = links.map((l) => {
+      const active = l.match.test(window.location.pathname);
+      return '<a href="' + l.href + '"' + (active ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
+    }).join('');
+    right.insertBefore(nav, right.firstChild);
   }
 
   // ---------- Index overlay ----------

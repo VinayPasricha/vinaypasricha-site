@@ -18,8 +18,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../css/site.css">
-  <link rel="stylesheet" href="../css/i18n.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/i18n.css">
 
   <style>
     /* ============================================================
@@ -104,6 +104,10 @@
       margin: 48px auto;
       max-width: 80px;
     }
+    .essay-body figure { margin: 40px 0; }
+    .essay-body figure:first-child { margin-top: 0; }
+    .essay-body figure img { width: 100%; height: auto; display: block; border-radius: 2px; }
+    .essay-body figcaption { margin-top: 9px; font-size: 14px; line-height: 1.45; color: var(--ink-3); font-style: italic; }
     .essay-tags-bottom {
       margin-top: 64px;
       padding-top: 36px;
@@ -198,7 +202,7 @@
 <body>
 
 <header class="topbar">
-  <a href="../" class="brand">
+  <a href="/" class="brand">
     <span class="name">Vinay <em>Pasricha</em></span>
     <span class="subtitle">Explorer of Emergence</span>
   </a>
@@ -246,34 +250,33 @@
     <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
   </div>
   <div class="foot-right">
-    © 2026 · <a href="../">Index</a><a href="../books">Books</a><a href="watch">Watch</a><a href="blog">Notebook</a><a href="connect">Connect</a>
+    © 2026 · <a href="/">Index</a><a href="/books">Books</a><a href="/paths/watch">Watch</a><a href="/paths/blog">Notebook</a><a href="/paths/connect">Connect</a>
   </div>
 </footer>
 
-<script src="../js/site.js"></script>
-<script src="../js/i18n.js"></script>
-<script src="../js/notebook-md.js"></script>
+<script src="/js/site.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/notebook-md.js"></script>
 <script>
 (async function () {
   const host = document.getElementById('essay-host');
   const params = new URLSearchParams(window.location.search);
-  const slug = (params.get('slug') || '').toLowerCase().trim();
+  const pathMatch = window.location.pathname.match(/^\/paths\/essay\/([^/]+)\/?$/);
+  const slug = (params.get('slug') || (pathMatch && decodeURIComponent(pathMatch[1])) || '').toLowerCase().trim();
 
-  // Load essays — drafts take precedence in the same way watch.html handles videos
+  // Direct Studio publications appear immediately. The static file remains
+  // only as a migration/failure fallback.
   async function loadEssays() {
     try {
-      const draft = localStorage.getItem('studio.notebook');
-      if (draft) {
-        const d = JSON.parse(draft);
-        if (Array.isArray(d.essays)) return d.essays;
-      }
-    } catch (e) {}
-    try {
-      const res = await fetch('../assets/data/notebook.json', { cache: 'no-cache' });
+      const res = await fetch('/api/notebook', { cache: 'no-cache' });
       if (res.ok) {
         const d = await res.json();
         return Array.isArray(d.essays) ? d.essays : [];
       }
+    } catch (e) {}
+    try {
+      const res = await fetch('/assets/data/notebook.json', { cache: 'no-cache' });
+      if (res.ok) { const d = await res.json(); return Array.isArray(d.essays) ? d.essays : []; }
     } catch (e) {}
     return [];
   }
@@ -284,7 +287,7 @@
   if (!slug) {
     host.innerHTML = `<div class="essay-missing">
       <h2>No essay selected.</h2>
-      <p>Return to the <a href="blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+      <p>Return to the <a href="/paths/blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
     </div>`;
     return;
   }
@@ -293,7 +296,7 @@
   if (!essay) {
     host.innerHTML = `<div class="essay-missing">
       <h2>That essay isn't here.</h2>
-      <p>It may not have published yet. Return to the <a href="blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
+      <p>It may not have published yet. Return to the <a href="/paths/blog" style="color:var(--accent);border-bottom:1px solid var(--rule)">Notebook</a>.</p>
     </div>`;
     return;
   }
@@ -301,7 +304,7 @@
   // Update canonical + SEO from the essay
   document.title = stripHTML(essay.title) + ' · The Monthly Notebook';
   const canonical = document.getElementById('link-canonical');
-  if (canonical) canonical.href = `https://vinaypasricha.com/paths/essay?slug=${encodeURIComponent(essay.slug)}`;
+  if (canonical) canonical.href = `https://vinaypasricha.com/paths/essay/${encodeURIComponent(essay.slug)}`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.content = stripHTML(essay.dek || essay.title);
 
@@ -315,9 +318,9 @@
   host.innerHTML = `
     <article class="essay-page" data-screen-label="Essay">
       <div class="essay-crumbs">
-        <a href="../">Index</a>
+        <a href="/">Index</a>
         <span class="sep">/</span>
-        <a href="blog">Notebook</a>
+        <a href="/paths/blog">Notebook</a>
         <span class="sep">/</span>
         <span class="num">${escapeHTML(essay.monthLabel || essay.date || '')}</span>
       </div>
@@ -331,14 +334,14 @@
       <h1 class="essay-title">${essay.title || ''}</h1>
       ${essay.dek ? `<p class="essay-dek">${essay.dek}</p>` : ''}
 
-      <div class="essay-body">${window.notebookMarkdown(essay.body)}</div>
+      <div class="essay-body" id="essay-body"></div>
 
       ${tagsHTML ? `<div class="essay-tags-bottom">${tagsHTML}</div>` : ''}
     </article>
 
     <nav class="essay-nav">
       ${older ? `
-        <a href="essay?slug=${encodeURIComponent(older.slug)}">
+        <a href="/paths/essay/${encodeURIComponent(older.slug)}">
           <div class="label">← Older</div>
           <div class="title">${older.title}</div>
         </a>
@@ -349,7 +352,7 @@
         </div>
       `}
       ${newer ? `
-        <a href="essay?slug=${encodeURIComponent(newer.slug)}" class="next-card">
+        <a href="/paths/essay/${encodeURIComponent(newer.slug)}" class="next-card">
           <div class="label">Newer →</div>
           <div class="title">${newer.title}</div>
         </a>
@@ -361,6 +364,29 @@
       `}
     </nav>
   `;
+
+  (function arrangeImages() {
+    const bodyHost = document.getElementById('essay-body');
+    if (!bodyHost) return;
+    bodyHost.innerHTML = window.notebookMarkdown(essay.body);
+    const images = Array.isArray(essay.images) ? essay.images.filter(image => image && /^\/api\/notebook\/images\//.test(image.url || '')) : [];
+    function figure(image) {
+      const node = document.createElement('figure');
+      const img = document.createElement('img');
+      img.src = image.url; img.alt = image.alt || 'Essay image'; node.appendChild(img);
+      if (image.alt) { const caption = document.createElement('figcaption'); caption.textContent = image.alt; node.appendChild(caption); }
+      return node;
+    }
+    if (!images.length) return;
+    bodyHost.insertBefore(figure(images[0]), bodyHost.firstChild);
+    const blocks = Array.from(bodyHost.children).filter(node => node.tagName !== 'FIGURE');
+    const remaining = images.slice(1);
+    remaining.forEach((image, index) => {
+      const position = Math.min(blocks.length - 1, Math.max(0, Math.round((index + 1) * blocks.length / (remaining.length + 1)) - 1));
+      const target = blocks[position];
+      if (target) target.insertAdjacentElement('afterend', figure(image)); else bodyHost.appendChild(figure(image));
+    });
+  })();
 
   function escapeHTML(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');

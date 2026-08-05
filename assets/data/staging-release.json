@@ -1,6 +1,6 @@
 {
-  "release": "abl-course-staging-20260730-0133",
-  "contains_all_changes_through": "91841a0a7c6aa016d9c3aa752c33db86e78d612a",
-  "deployment_requested_at": "2026-07-30T01:33:00Z",
-  "verification": "AI course launch gate with container-build Studio hardening"
+  "release": "website-intelligence-simple-staging-20260802-1728",
+  "contains_all_changes_through": "1828a21d0cbf2c29bc2893e6a22858e404da1a23",
+  "deployment_requested_at": "2026-08-02T11:58:00Z",
+  "verification": "Simplified visual Website Intelligence: one colourful opening composition, fewer visible elements per frame, stronger colour navigation, unchanged progressive drill-down depth and retained analytics intelligence"
 }

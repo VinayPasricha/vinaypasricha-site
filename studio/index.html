@@ -56,11 +56,51 @@
 <!-- ========== STUDIO BODY (hidden until auth) ========== -->
 <main class="studio-main" id="studio-main" style="display:none">
   <section class="studio-hero">
-    <div class="sh-eyebrow">— Studio</div>
-    <h1>What would you like <em>to edit?</em></h1>
-    <p class="lede">Each room edits a different layer of the site. Changes persist on this device until you publish (download the file and replace it in the repo).</p>
+    <div class="sh-eyebrow">— Vinay View</div>
+    <h1>What do you need <em>to do today?</em></h1>
+    <p class="lede">Choose one job. The technical complexity remains available when it is needed, without competing for your attention.</p>
   </section>
 
+  <section class="studio-primary" aria-label="Primary Studio destinations">
+    <a class="studio-primary-card" href="ai-leadership-workspace.html">
+      <span class="spc-number">01</span>
+      <span class="spc-body">
+        <strong>Run the Course</strong>
+        <span>Manage cohorts, sessions, course materials, assignments and announcements.</span>
+      </span>
+      <span class="spc-arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="studio-primary-card" href="ai-leadership-workspace.html?page=participants">
+      <span class="spc-number">02</span>
+      <span class="spc-body">
+        <strong>Participants</strong>
+        <span>Add, invite, assign, research and review every course participant.</span>
+      </span>
+      <span class="spc-arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="studio-primary-card" href="analytics.html">
+      <span class="spc-number">03</span>
+      <span class="spc-body">
+        <strong>Website Intelligence</strong>
+        <span>See what happened on the website and decide what needs attention next.</span>
+      </span>
+      <span class="spc-arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="studio-primary-card" href="content.html">
+      <span class="spc-number">04</span>
+      <span class="spc-body">
+        <strong>Content &amp; Publishing</strong>
+        <span>Work on books, essays, videos and the current “Now” message.</span>
+      </span>
+      <span class="spc-arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <details class="studio-advanced">
+    <summary>
+      <span>Advanced tools</span>
+      <small>For Vaishnav and technical work · 36 specialist rooms</small>
+    </summary>
   <section class="studio-rooms">
     <a class="room-card" href="runtime-outputs.html">
       <div class="rc-num">✦</div>
@@ -422,8 +462,10 @@
       <div class="rc-arrow">→</div>
     </a>
   </section>
+  </details>
+  <section class="studio-note">
     <p>
-      <em>Note.</em> This is the local-first v1 of the studio. Changes save to this browser, and the "Publish" action downloads a JSON file you replace in the repo. A real auth + database backend is planned for v1.1.
+      <em>Keep it simple.</em> Start with one of the four destinations above. Open Advanced tools only when a specialist workflow is needed.
     </p>
   </section>
 </main>

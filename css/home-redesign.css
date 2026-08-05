@@ -5,8 +5,8 @@
   --paper-3: #15151a;
   --ink: #ece9e2;
   --ink-2: #ece9e2;
-  --ink-3: rgba(236, 233, 226, .62);
-  --ink-4: rgba(236, 233, 226, .45);
+  --ink-3: rgba(236, 233, 226, .72);
+  --ink-4: rgba(236, 233, 226, .55);
   --rule: rgba(236, 233, 226, .08);
   --rule-soft: rgba(236, 233, 226, .08);
   --accent: #ffa726;
@@ -114,7 +114,7 @@ body.home-redesign {
 }
 
 .home-redesign .topbar .brand .subtitle {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 400;
@@ -126,7 +126,7 @@ body.home-redesign {
 .home-redesign .now-line {
   justify-self: end;
   display: block;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9.5px;
   font-weight: 400;
@@ -137,7 +137,7 @@ body.home-redesign {
 }
 
 .home-redesign .now-line em {
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 12px;
   font-style: italic;
@@ -156,7 +156,7 @@ body.home-redesign {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--mono);
   font-size: 9.5px;
   font-weight: 500;
@@ -223,16 +223,6 @@ body.home-redesign {
   transition: opacity 300ms ease;
 }
 
-.mark-caption {
-  margin-top: 10px !important;
-  color: rgba(236, 233, 226, .38);
-  font-family: var(--mono);
-  font-size: 8.5px;
-  letter-spacing: .22em;
-  text-align: center;
-  text-transform: uppercase;
-}
-
 .hero-statement {
   max-width: 680px;
 }
@@ -255,7 +245,7 @@ body.home-redesign {
 .hero-copy {
   max-width: 58ch;
   margin-top: 28px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 16.5px;
   font-weight: 300;
@@ -267,9 +257,31 @@ body.home-redesign {
   font-weight: 400;
 }
 
+/* Who is speaking — one factual line, set like a signature. */
+.hero-cred {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px !important;
+  color: rgba(236, 233, 226, .55);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.hero-cred::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: #ffa726;
+  flex: none;
+}
+
 .scroll-cue {
   margin-top: 32px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 14px;
   font-style: italic;
@@ -323,6 +335,107 @@ body.home-redesign {
   100% { opacity: 0; transform: scaleX(1); }
 }
 
+/* Returning visitors get one quiet continuation layer. It is populated from
+   browser-local history and never appears on a first visit. */
+.returning-home {
+  padding-top: clamp(42px, 6vw, 76px);
+  padding-bottom: clamp(42px, 6vw, 76px);
+  border-top: 1px solid rgba(25, 25, 23, .14);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(36, 71, 224, .08), transparent 34%),
+    var(--paper);
+}
+
+.returning-home[hidden] {
+  display: none;
+}
+
+.returning-home-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.returning-home h2 {
+  max-width: 760px;
+  font-size: clamp(34px, 4.2vw, 58px);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+}
+
+.returning-home h2 em {
+  font-weight: 300;
+}
+
+.returning-home-updated {
+  max-width: 260px;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: .08em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.returning-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid rgba(25, 25, 23, .2);
+  border-bottom: 1px solid rgba(25, 25, 23, .2);
+}
+
+.returning-card {
+  position: relative;
+  min-height: 190px;
+  padding: 26px 28px 24px;
+  border-right: 1px solid rgba(25, 25, 23, .2);
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.returning-card:last-child {
+  border-right: 0;
+}
+
+.returning-card:hover {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.returning-card-label {
+  display: block;
+  margin-bottom: 28px;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.returning-card:hover .returning-card-label {
+  color: rgba(255, 255, 255, .62);
+}
+
+.returning-card strong {
+  display: block;
+  max-width: 340px;
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.1vw, 30px);
+  font-weight: 300;
+  line-height: 1.08;
+}
+
+.returning-card-action {
+  position: absolute;
+  right: 24px;
+  bottom: 22px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
 .section-head {
   margin-bottom: 38px;
 }
@@ -369,7 +482,7 @@ body.home-redesign {
 
 .section-subline {
   margin-top: 14px !important;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 15px;
   font-style: italic;
@@ -451,7 +564,7 @@ body.home-redesign {
 .book-meta,
 .banner-meta {
   margin-top: 8px !important;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 8.5px;
   letter-spacing: .11em;
@@ -468,19 +581,25 @@ body.home-redesign {
   gap: 42px;
   margin-top: 50px;
   min-height: 158px;
-  padding: 34px 38px;
-  border: 1px solid rgba(255, 167, 38, .58);
-  border-radius: 4px;
-  background:
-    radial-gradient(circle at 0 50%, rgba(225, 20, 49, .24), transparent 43%),
-    linear-gradient(112deg, rgba(92, 12, 34, .96), rgba(48, 12, 27, .97) 58%, rgba(21, 21, 26, .99));
-  box-shadow: 0 18px 45px -30px rgba(225, 20, 49, .75);
+  padding: 34px 38px 34px 42px;
+  border: 1px solid rgba(255, 167, 38, .28);
+  border-radius: 3px;
+  background: linear-gradient(165deg, #17171d, #131318 72%);
+  transition: border-color 200ms ease;
 }
 
+.course-banner:hover {
+  border-color: rgba(255, 167, 38, .45);
+}
+
+/* The course belongs to Book I — it carries the same red spine as the shelf. */
 .course-banner::before {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
   background: #e11431;
   content: "";
 }
@@ -522,23 +641,22 @@ body.home-redesign {
   align-items: center;
   justify-content: center;
   padding: 14px 20px;
-  border: 1px solid #ffa726;
+  border: 1px solid rgba(255, 167, 38, .65);
   border-radius: 3px;
-  background: #ffa726;
-  color: #101014 !important;
+  background: transparent;
+  color: #ffa726 !important;
   font-family: var(--mono);
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: .13em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 12px 30px -18px rgba(255, 167, 38, .9);
   transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .workspace-link:hover {
-  border-color: #ffc04d;
-  background: #ffc04d;
+  border-color: #ffa726;
+  background: #ffa726;
   color: #101014 !important;
   transform: translateY(-2px);
 }
@@ -566,7 +684,7 @@ body.home-redesign {
 }
 
 .group-head em {
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 13.5px;
   font-weight: 300;
@@ -587,22 +705,44 @@ body.home-redesign {
 
 .conversation-card {
   --card-color: #e11431;
+  position: relative;
   display: flex;
-  min-height: 120px;
+  min-height: 136px;
   flex-direction: column;
   justify-content: space-between;
-  padding: 18px 20px;
+  padding: 20px 22px 20px 26px;
   border: 1px solid rgba(236, 233, 226, .08);
   border-radius: 3px;
-  background: #15151a;
+  background: linear-gradient(165deg, #17171d, #131318 72%);
   color: #ece9e2 !important;
-  transition: border-color 180ms ease, transform 180ms ease;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Each doorway carries its spine color, like the books on the shelf. */
+.conversation-card::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
+  background: var(--card-color);
+  opacity: .55;
+  transition: opacity 200ms ease, top 200ms ease, bottom 200ms ease;
 }
 
 .conversation-card:hover {
-  border-color: rgba(255, 167, 38, .45);
+  border-color: color-mix(in srgb, var(--card-color) 55%, transparent);
   color: #ece9e2 !important;
   transform: translateY(-3px);
+  box-shadow: 0 18px 38px -26px color-mix(in srgb, var(--card-color) 65%, transparent);
+}
+
+.conversation-card:hover::before {
+  top: 10px;
+  bottom: 10px;
+  opacity: 1;
 }
 
 .card-top {
@@ -621,17 +761,22 @@ body.home-redesign {
 
 .card-top i {
   font-style: normal;
+  transition: transform 200ms ease;
 }
 
 .conversation-card:hover .card-top {
   filter: brightness(1.25);
 }
 
+.conversation-card:hover .card-top i {
+  transform: translateX(4px);
+}
+
 .conversation-card q {
   margin: 12px 0;
   color: #f2efe8;
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 300;
   line-height: 1.32;
   quotes: "“" "”";
@@ -642,7 +787,7 @@ body.home-redesign {
 }
 
 .conversation-card small {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 400;
@@ -666,7 +811,7 @@ body.home-redesign {
 
 .conversation-footer {
   margin-top: 28px !important;
-  color: rgba(236, 233, 226, .45);
+  color: rgba(236, 233, 226, .55);
   font-family: var(--serif);
   font-size: 14px;
   text-align: right;
@@ -692,7 +837,7 @@ body.home-redesign {
 .notebook-intro > p:last-child {
   max-width: 35ch;
   margin-top: 18px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 15.5px;
   line-height: 1.6;
@@ -732,7 +877,7 @@ body.home-redesign {
 
 .notebook-card p {
   margin-top: 14px;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: .14em;
@@ -767,7 +912,7 @@ body.home-redesign {
 .desk-copy {
   max-width: 72ch;
   margin-top: 16px !important;
-  color: rgba(236, 233, 226, .62);
+  color: rgba(236, 233, 226, .72);
   font-family: var(--serif);
   font-size: 17px;
   font-weight: 300;
@@ -781,7 +926,7 @@ body.home-redesign {
 
 .desk-meta {
   margin-top: 20px !important;
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: .16em;
@@ -795,7 +940,7 @@ body.home-redesign {
 }
 
 .closing-kicker {
-  color: rgba(236, 233, 226, .38);
+  color: rgba(236, 233, 226, .5);
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: .2em;
@@ -846,6 +991,10 @@ body.home-redesign {
     gap: 44px;
   }
 
+  /* Words first on small screens — the mark becomes a coda, not a gate. */
+  .hero-statement { order: 1; }
+  .hero-mark { order: 2; }
+
   .hero-mark {
     width: min(100%, 320px);
     margin-inline: auto;
@@ -868,6 +1017,20 @@ body.home-redesign {
 
   .conversation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .returning-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .returning-card {
+    min-height: 150px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(25, 25, 23, .2);
+  }
+
+  .returning-card:last-child {
+    border-bottom: 0;
   }
 }
 
@@ -917,6 +1080,26 @@ body.home-redesign {
   .home-redesign .hero {
     padding-top: 48px;
     padding-bottom: 64px;
+    gap: 36px;
+  }
+
+  .hero-mark,
+  .logo3d {
+    width: min(100%, 240px);
+  }
+
+  .returning-home-head {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .returning-home-updated {
+    text-align: left;
+  }
+
+  .returning-card {
+    min-height: 140px;
+    padding: 22px 20px;
   }
 
   .hero-statement h1 {

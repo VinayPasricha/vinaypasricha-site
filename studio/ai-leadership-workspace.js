@@ -4,6 +4,10 @@
 
   var state = { participants: [], cohorts: [], materials: [], assignments: [], announcements: [], submissions: [] };
   var $ = function (id) { return document.getElementById(id); };
+  var SESSION_STATES = [
+    ['upcoming', 'Upcoming'], ['live', 'Live today'],
+    ['completed', 'Completed'], ['follow_up', 'Follow-up active']
+  ];
 
   function esc(value) {
     return String(value == null ? '' : value)
@@ -77,6 +81,12 @@
   var isCohorts = function (v) { return v === 'cohorts'; };
   var isScheduled = function (v) { return v === 'scheduled'; };
 
+  function initialPage() {
+    var requested = new URLSearchParams(window.location.search).get('page') || 'home';
+    var allowed = ['home', 'participants', 'cohorts', 'materials', 'assignments', 'announcements'];
+    return allowed.indexOf(requested) >= 0 ? requested : 'home';
+  }
+
   function showPage(name) {
     Array.prototype.forEach.call(document.querySelectorAll('[data-page-view]'), function (page) { page.hidden = page.getAttribute('data-page-view') !== name; });
     Array.prototype.forEach.call(document.querySelectorAll('.studio-nav [data-page]'), function (b) { b.classList.toggle('active', b.getAttribute('data-page') === name); });
@@ -94,8 +104,19 @@
 
   function renderSessionEditors() {
     $('sessionEditors').innerHTML = [1,2,3,4,5].map(function (n) {
-      return '<div class="session-editor"><strong>Session ' + n + '</strong><div class="field"><label>Date & time</label><input id="cohortSessionDate' + n + '" type="datetime-local"></div><div class="field" style="margin-top:8px"><label>Meeting link</label><input id="cohortSessionLink' + n + '" placeholder="https://meet.google.com/..."></div></div>';
+      return '<div class="session-editor"><strong>Session ' + n + '</strong><div class="field"><label>Date & time</label><input id="cohortSessionDate' + n + '" type="datetime-local"></div><div class="field" style="margin-top:8px"><label>Meeting link</label><input id="cohortSessionLink' + n + '" placeholder="https://meet.google.com/..."></div><div class="field" style="margin-top:8px"><label>Lifecycle</label><select id="cohortSessionStatus' + n + '">' + lifecycleOptions('upcoming') + '</select></div></div>';
     }).join('');
+  }
+
+  function lifecycleOptions(selected) {
+    return SESSION_STATES.map(function (item) {
+      return '<option value="' + item[0] + '"' + (item[0] === selected ? ' selected' : '') + '>' + item[1] + '</option>';
+    }).join('');
+  }
+
+  function lifecycleLabel(status) {
+    var item = SESSION_STATES.find(function (candidate) { return candidate[0] === status; });
+    return item ? item[1] : 'Upcoming';
   }
 
   function renderStats() {
@@ -159,9 +180,16 @@
     var count = state.participants.filter(function (p) { return p.cohort_id === c.id; }).length;
     var current = Math.max(1, Math.min(5, parseInt(c.current_session, 10) || 1));
     var next = c.sessions && c.sessions[String(current)];
-    return '<article class="entity-card" data-cohort="' + esc(c.id) + '"><span class="meta">' + count + ' participants · Session ' + current + '</span><h3>' + esc(c.name) + '</h3>' +
-      '<p>' + esc(c.description || 'No description') + '</p><p>' + (next && next.date ? 'Next: ' + esc(fmtDate(next.date)) : 'Session date not added') + '</p>' +
-      (compact ? '' : membersOf(c) + '<div class="field" style="margin-top:12px"><label>Current session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
+    var sessions = c.sessions || {};
+    var lifecycle = [1,2,3,4,5].map(function (n) {
+      var session = sessions[String(n)] || {};
+      return '<div class="cohort-session-row" data-session="' + n + '"><span><b>Session ' + n + '</b>' +
+        (session.date ? '<small>' + esc(fmtDate(session.date)) + '</small>' : '<small>Date not added</small>') + '</span>' +
+        (compact ? '<em class="pill ' + esc(session.status || 'upcoming') + '">' + esc(lifecycleLabel(session.status)) + '</em>' : '<select data-session-status>' + lifecycleOptions(session.status || 'upcoming') + '</select>') + '</div>';
+    }).join('');
+    return '<article class="entity-card cohort-lifecycle" data-cohort="' + esc(c.id) + '"><span class="meta">' + count + ' participants · Focus: Session ' + current + '</span><h3>' + esc(c.name) + '</h3>' +
+      '<p>' + esc(c.description || 'No description') + '</p><p>' + (next && next.date ? 'Next: ' + esc(fmtDate(next.date)) : 'Session date not added') + '</p><div class="cohort-session-list">' + lifecycle + '</div>' +
+      (compact ? '' : membersOf(c) + '<div class="field" style="margin-top:12px"><label>Participant focus session</label><select data-cohort-current>' + [1,2,3,4,5].map(function (n) { return '<option' + (n === current ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select><p class="empty" style="padding:6px 0 0">Usually the next live session. Earlier follow-up remains visible.</p></div>' +
       '<div class="actions"><button class="btn small" data-save-cohort>Save</button><button class="btn small ghost" data-delete-cohort>Delete</button></div>') + '</article>';
   }
   function renderCohorts() {
@@ -170,7 +198,13 @@
     Array.prototype.forEach.call($('cohortCards').querySelectorAll('[data-cohort]'), function (card) {
       card.querySelector('[data-save-cohort]').onclick = async function () {
         try {
-          await api('/cohorts/' + card.getAttribute('data-cohort'), { method: 'PATCH', body: JSON.stringify({ current_session: Number(card.querySelector('[data-cohort-current]').value) }) });
+          var cohort = state.cohorts.find(function (item) { return item.id === card.getAttribute('data-cohort'); });
+          var sessions = Object.assign({}, cohort && cohort.sessions || {});
+          Array.prototype.forEach.call(card.querySelectorAll('[data-session]'), function (row) {
+            var number = row.getAttribute('data-session');
+            sessions[number] = Object.assign({}, sessions[number] || {}, { status: row.querySelector('[data-session-status]').value });
+          });
+          await api('/cohorts/' + card.getAttribute('data-cohort'), { method: 'PATCH', body: JSON.stringify({ current_session: Number(card.querySelector('[data-cohort-current]').value), sessions: sessions }) });
           toast('Cohort updated'); await load();
         } catch (e) { toast(e.message); }
       };
@@ -303,7 +337,7 @@
       var sessions = {};
       [1,2,3,4,5].forEach(function (n) {
         var date = $('cohortSessionDate' + n).value, link = $('cohortSessionLink' + n).value.trim();
-        if (date || link) sessions[String(n)] = { date: date || null, meeting_url: link || null };
+        sessions[String(n)] = { date: date || null, meeting_url: link || null, status: $('cohortSessionStatus' + n).value || 'upcoming' };
       });
       var button = this, status = $('cohortFormStatus'); button.disabled = true; status.textContent = 'Saving…';
       try {
@@ -405,6 +439,7 @@
 
   renderSessionEditors();
   wireNavigation();
+  showPage(initialPage());
   wireForms();
   load();
 })();

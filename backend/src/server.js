@@ -5,10 +5,14 @@ import { readFileSync } from 'node:fs';
 import { config } from './config.js';
 import { createApp, rateLimit } from './app.js';
 import { registerWorkspaceRoutes } from './abl/workspaceRoutes.js';
+import { registerSafeArchiveRoutes } from './abl/safeArchiveRoutes.js';
+import { registerAssignmentUploadRoutes } from './abl/assignmentUploadRoutes.js';
+import { registerIntelligenceRoutes } from './abl/intelligenceRoutes.js';
 import { registerAuthRoutes } from './abl/authRoutes.js';
 import { participantApiGuard } from './abl/participantGuard.js';
 import { registerSecureParticipantPages } from './abl/securePageRoutes.js';
 import { registerFocusedWorkspaceRoute } from './abl/focusedWorkspaceRoute.js';
+import { registerGrowthCommandRoutes } from './growthCommand.js';
 import { registerAnalyticsIntelligenceRoutes } from './analyticsIntelligence.js';
 
 const app = createApp();
@@ -123,8 +127,8 @@ if (stack) {
 
 // createApp already contains the original preparation and Initiative Builder
 // endpoints. Insert one authentication guard immediately before the first of
-// those participant routes. It also protects workspace and runtime routes added
-// below, while explicitly ignoring Studio/admin and sign-in endpoints.
+// those participant routes. It also protects workspace routes added below,
+// while explicitly ignoring Studio/admin and sign-in endpoints.
 if (stack) {
   const guardStart = stack.length;
   app.use(participantApiGuard);
@@ -150,10 +154,6 @@ if (stack) {
     const routePath = layer.route && layer.route.path;
     return routePath === '/ai-business-leaders/s/:slug' || routePath === '/ai-business-leaders/course/:slug';
   });
-  // These shells are now the only ones serving those URLs, so there may be no
-  // original route to sit in front of. Fall back to just before the static
-  // handler — never to index 0, which is ahead of Express's own initialisation
-  // middleware and would leave the routes unreachable.
   if (firstParticipantPage < 0) {
     firstParticipantPage = stack.findIndex((layer) => layer.name === 'serveStatic');
   }
@@ -165,9 +165,9 @@ if (stack) {
 
 // createApp installs generic translation/static handlers and the JSON API 404
 // before returning. Register the focused participant shell, data, sign-in,
-// guided-conversation and Website Intelligence routes, then move them ahead of
-// express.static. Otherwise extensionless paths and APIs may be intercepted by
-// generic static/404 handlers.
+// guided-conversation, course, growth and Website Intelligence routes, then move
+// them ahead of express.static. Otherwise extensionless paths and APIs may be
+// intercepted by generic static/404 handlers.
 const before = stack ? stack.length : 0;
 app.get('/api/abl/deployment', (req, res) => {
   markDeployment(res);
@@ -175,8 +175,17 @@ app.get('/api/abl/deployment', (req, res) => {
   res.json({ ok: true, data: DEPLOYMENT });
 });
 registerFocusedWorkspaceRoute(app);
+// Safe removal must run before legacy DELETE handlers.
+registerSafeArchiveRoutes(app);
+// Private file upload/download routes rely on the participant guard above.
+registerAssignmentUploadRoutes(app);
 registerWorkspaceRoutes(app);
 registerAuthRoutes(app, { rateLimit });
+// Both research agents are Studio-only and fail closed without explicit credentials.
+registerIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
+// Book Growth is also Studio-only; its scheduler uses an independent secret.
+registerGrowthCommandRoutes(app, { requireAdmin: requireStudioAdmin, rateLimit });
+// Website Intelligence reuses the first-party event store and exposes progressive drill-downs.
 registerAnalyticsIntelligenceRoutes(app, { requireAdmin: requireStudioAdmin });
 if (stack) {
   const added = stack.splice(before);
@@ -194,6 +203,8 @@ app.listen(config.port, () => {
   console.log('[server] storage: Firestore (including AI Leadership Workspace collections)');
   console.log('[server] participant access: passwordless email verification required');
   console.log('[server] Studio access: explicit STUDIO_PASSPHRASE required on Cloud Run');
-  console.log('[server] Website Intelligence: protected production analytics and drill-down enabled');
+  console.log('[server] Studio intelligence: participant research + cross-cohort analysis enabled');
+  console.log('[server] Book Growth: persistent daily tasks, proof, Search Console and notifications enabled');
+  console.log('[server] Website Intelligence: visual progressive drill-down analytics enabled');
   console.log(`[server] conversations expire after ${config.conversationTtlDays} days (via Firestore TTL policy)`);
 });

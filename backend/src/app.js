@@ -29,7 +29,10 @@ import { existsSync, statSync, readFileSync } from 'node:fs';
 import { translateHtml, SUPPORTED as I18N_LANGS } from './services/i18nServer.js';
 import { registerAbl } from './abl/routes.js';
 import { recordEvent, analyticsSummary, listPeople, personTimeline, pageStats, listChannels, channelStats, createChannel, deleteChannel, resolveChannelClick } from './services/analytics.js';
+import { alertPriorityLead } from './services/leadAlerts.js';
+import { db, COLLECTIONS } from './firestore.js';
 import crypto from 'node:crypto';
+import { registerNotebook } from './notebook.js';
 
 // First-party analytics: a tiny tracker script is injected into every served
 // HTML page (see the injection points below), so the Studio Analytics dashboard
@@ -40,6 +43,22 @@ function injectTracker(html) {
   if (html.includes('</head>')) return html.replace('</head>', '  ' + TRACKER_TAG + '\n</head>');
   if (html.includes('</body>')) return html.replace('</body>', TRACKER_TAG + '</body>');
   return html;
+}
+
+// CSS/JS are cached for a day but aren't fingerprinted, so stamp every local
+// stylesheet/script URL with the deploy revision. Each deploy then gets fresh
+// URLs and cached copies from earlier revisions are never served stale.
+// K_REVISION is set by Cloud Run; boot time covers local runs.
+const ASSET_VERSION = encodeURIComponent(process.env.K_REVISION || String(Date.now()));
+function stampAssetVersions(html) {
+  if (typeof html !== 'string') return html;
+  return html.replace(
+    /((?:href|src)=")([^"]+\.(?:css|js|mjs))(")/g,
+    (m, pre, url, post) => {
+      if (/^(?:https?:)?\/\//i.test(url) || url.includes('?')) return m; // external or already versioned
+      return pre + url + '?v=' + ASSET_VERSION + post;
+    },
+  );
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -224,6 +243,9 @@ export function createApp() {
   // ABL can throttle its expensive AI routes and gate the private brief.
   registerAbl(app, { requireAdmin, rateLimit, studioAuthed });
 
+  // Direct Notebook publishing: public reading plus Studio-gated editing.
+  registerNotebook(app, { requireAdmin, rateLimit });
+
   // ---- Conversations (anonymous) ----
   // Any runtime saves here: POST /api/runtimes/:runtime/conversations
   // The client generates a sessionId; lead details come from the chat itself.
@@ -326,6 +348,42 @@ export function createApp() {
     }
   });
 
+  // High-intent lead form (js/lead-form.js): stores the full submission and
+  // alerts Vinay immediately by email + Slack. The `hp` field is a honeypot —
+  // bots that fill it get a fake success and nothing is stored or sent.
+  app.post('/api/leads/priority', rateLimit({ windowMs: 60000, max: 5 }), async (req, res) => {
+    try {
+      const b = req.body || {};
+      if (String(b.hp || '').trim()) return res.json({ ok: true });
+      const lead = {
+        form: String(b.form || 'general').slice(0, 60),
+        name: String(b.name || '').trim().slice(0, 120),
+        email: String(b.email || '').trim().toLowerCase().slice(0, 160),
+        company: String(b.company || '').trim().slice(0, 160),
+        role: String(b.role || '').trim().slice(0, 120),
+        message: String(b.message || '').trim().slice(0, 2000),
+        path: String(b.path || '').slice(0, 200),
+        context: String(b.context || '').slice(0, 120),
+        createdAt: new Date(),
+      };
+      if (!lead.name || !lead.message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) {
+        return res.status(400).json({ error: 'invalid', detail: 'Name, a valid email, and a message are required.' });
+      }
+      const doc = await db.collection(COLLECTIONS.priorityLeads).add(lead);
+      // Also file them in the unified leads directory (keyed by email).
+      await saveLead({
+        email: lead.email,
+        name: lead.name,
+        organizationName: lead.company,
+        source: `priority:${lead.form}${lead.context ? ':' + lead.context : ''}`,
+      }).catch(() => {});
+      const notified = await alertPriorityLead(lead);
+      res.json({ ok: true, id: doc.id, notified: { email: notified.email.sent, slack: notified.slack.sent } });
+    } catch (err) {
+      res.status(500).json({ error: 'server_error', detail: err.message });
+    }
+  });
+
   // List captured leads (admin / Studio).
   app.get('/api/leads', requireAdmin, async (req, res) => {
     try {
@@ -401,7 +459,11 @@ export function createApp() {
   app.post('/api/track', rateLimit({ windowMs: 60000, max: 300 }), async (req, res) => {
     const ip = String(req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim();
     const ua = req.get('user-agent') || '';
-    await recordEvent(req.body || {}, { ip, ua });
+    // The client batches events into { events: [...] }; single bare events
+    // still arrive from cached copies of the old track.js.
+    const body = req.body || {};
+    const events = Array.isArray(body.events) ? body.events.slice(0, 50) : [body];
+    for (const event of events) await recordEvent(event || {}, { ip, ua });
     res.status(204).end();
   });
 
@@ -574,7 +636,7 @@ export function createApp() {
     let rel = decodeURIComponent(req.path);
     if (rel.endsWith('/')) rel += 'index.html';
     else if (!path.extname(rel)) rel += '.html';
-    else return next(); // a real asset — leave to static
+    else if (!rel.endsWith('.html')) return next(); // a real asset — leave to static
     if (blockedPrefixes().some((p) => rel === p || rel.startsWith(p + '/'))) return next();
     const abs = path.join(SITE_ROOT, rel);
     if (!abs.startsWith(SITE_ROOT) || !existsSync(abs)) return next();
@@ -582,17 +644,33 @@ export function createApp() {
       const key = abs + '\0' + statSync(abs).mtimeMs;
       let out = trackedHtmlCache.get(key);
       if (out === undefined) {
-        out = injectTracker(readFileSync(abs, 'utf8'));
+        out = stampAssetVersions(injectTracker(readFileSync(abs, 'utf8')));
         trackedHtmlCache.set(key, out);
         if (trackedHtmlCache.size > 2000) trackedHtmlCache.clear();
       }
       res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'no-cache'); // always revalidate HTML so deploys show immediately
       return res.send(out);
     } catch (e) {
       return next(); // safe fallback to static
     }
   });
-  app.use(express.static(SITE_ROOT, { extensions: ['html'] }));
+  // Assets aren't fingerprinted, so rely on revalidation windows rather than
+  // immutable: a day for css/js, a week for images/fonts (they change rarely).
+  const LONG_CACHE = /\.(png|jpe?g|webp|avif|gif|svg|ico|woff2?)$/i;
+  const DAY_CACHE = /\.(css|js|mjs|json)$/i;
+  app.use(express.static(SITE_ROOT, {
+    extensions: ['html'],
+    setHeaders(res, filePath) {
+      if (LONG_CACHE.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+      } else if (DAY_CACHE.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
+      } else if (/\.html$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }));
 
   // JSON 404 for unmatched API routes; otherwise let static 404 stand.
   app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));

@@ -12,6 +12,9 @@
       '@media(max-width:820px){.quick-grid{grid-template-columns:1fr}.preparation-frame{height:calc(100vh - 210px);min-height:680px}}'
     ].join('');
     document.head.appendChild(style);
+    if (!document.querySelector('link[href="/studio/abl-intelligence.css"]')) {
+      var link = document.createElement('link'); link.rel = 'stylesheet'; link.href = '/studio/abl-intelligence.css'; document.head.appendChild(link);
+    }
   }
 
   function showPage(name) {
@@ -121,6 +124,11 @@
     new MutationObserver(apply).observe(rows, { childList: true, subtree: true });
   }
 
+  function loadCourseIntelligence() {
+    if (document.querySelector('script[src="/studio/course-intelligence.js"]')) return;
+    var script = document.createElement('script'); script.src = '/studio/course-intelligence.js'; script.defer = true; document.body.appendChild(script);
+  }
+
   function init() {
     addStyle();
     addPreparationPage();
@@ -128,6 +136,7 @@
     updateHome();
     removeCompetingLink();
     enhanceParticipantRows();
+    loadCourseIntelligence();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

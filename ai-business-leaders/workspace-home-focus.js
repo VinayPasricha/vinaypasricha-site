@@ -6,11 +6,17 @@
 
   function hasText(value) { return !!String(value == null ? '' : value).trim(); }
 
-  function currentAssignments(person) {
+  function visibleAssignments(person) {
     return (S.assignments || []).filter(function (a) {
-      return a.status === 'published' && Number(a.session || 0) === Number(S.current || 1) &&
+      return a.status === 'published' &&
         (!a.cohort || a.cohort === person.cohort);
     });
+  }
+
+  function unfinishedAssignment(person) {
+    return visibleAssignments(person).filter(function (assignment) {
+      return Number(assignment.session || 0) <= Number(S.current || 1) && assignmentState(assignment).status !== 'submitted';
+    }).sort(function (a, b) { return Number(a.session || 0) - Number(b.session || 0); })[0] || null;
   }
 
   function assignmentState(assignment) {
@@ -45,8 +51,7 @@
   }
 
   function nextAction(person, cohort) {
-    var assignments = currentAssignments(person);
-    var assignment = assignments[0] || null;
+    var assignment = unfinishedAssignment(person);
     var submission = assignmentState(assignment);
     var preparation = currentPreparationMaterial();
     var initiativeStarted = S.initiative && [S.initiative.problem, S.initiative.owner, S.initiative.day30, S.initiative.day90].some(hasText);
@@ -61,9 +66,17 @@
 
     if (assignment && submission.status === 'draft' && hasText(submission.text)) {
       return {
-        stage: 'After Session ' + S.current, title: 'Finish ' + assignment.title,
+        stage: 'After Session ' + assignment.session, title: 'Finish ' + assignment.title,
         copy: 'Your draft is saved. Complete the working output while the session is still fresh.',
         button: 'Resume my assignment', kind: 'assignments', note: 'Draft saved'
+      };
+    }
+
+    if (assignment && submission.status !== 'submitted') {
+      return {
+        stage: 'After Session ' + assignment.session, title: 'Complete ' + assignment.title,
+        copy: 'Turn the session into a usable piece of work for your own company.',
+        button: 'Open my assignment', kind: 'assignments', note: 'Not submitted'
       };
     }
 
@@ -72,14 +85,6 @@
         stage: 'Prepare for Session ' + S.current, title: 'Read ' + preparation.title,
         copy: 'This is the one item to open before the live session. Everything else can wait.',
         button: 'Open preparation', kind: 'material', material: preparation, note: 'Your next course action'
-      };
-    }
-
-    if (assignment && submission.status !== 'submitted') {
-      return {
-        stage: 'After Session ' + S.current, title: 'Complete ' + assignment.title,
-        copy: 'Turn the session into a usable piece of work for your own company.',
-        button: 'Open my assignment', kind: 'assignments', note: 'Not submitted'
       };
     }
 
@@ -112,7 +117,7 @@
 
   function savedWorkCards() {
     var notebookCount = [S.notebook.objective, S.notebook.constraint, S.notebook.brain, S.notebook.project].filter(hasText).length;
-    var assignments = currentAssignments(p());
+    var assignments = visibleAssignments(p());
     var submitted = assignments.filter(function (a) { return assignmentState(a).status === 'submitted'; }).length;
     var initiativeCount = [S.initiative.problem, S.initiative.owner, S.initiative.day30, S.initiative.day90].filter(hasText).length;
     return '<div class="focus-saved-grid">' +

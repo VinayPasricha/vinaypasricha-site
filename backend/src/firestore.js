@@ -26,13 +26,16 @@ const collectionName = (name) => `${collectionPrefix}${name}`;
 export const COLLECTIONS = {
   conversations: collectionName('conversations'),   // every AI chat + its result, tagged by runtime
   leads: collectionName('leads'),                   // emails / contacts captured anywhere on the site
+  priorityLeads: collectionName('priority_leads'),  // full submissions from the high-intent lead form (js/lead-form.js)
   companyProfiles: collectionName('companyProfiles'), // published Organizational Frequency pages, keyed by slug
   // First-party website analytics — one document per tracked event, plus a
   // rolled-up document per known person.
   analyticsEvents: collectionName('analytics_events'),
   analyticsPeople: collectionName('analytics_people'),
   analyticsChannels: collectionName('analytics_channels'), // named short links (/go/<slug>)
-  growthRuns: collectionName('growth_runs'), // private Studio state such as Website Intelligence check-ins
+  // Daily Book Growth execution: assigned actions, proof and notification state.
+  growthTasks: collectionName('growth_tasks'),
+  growthRuns: collectionName('growth_runs'), // also holds private Studio state such as Website Intelligence check-ins
   // AI for Business Leaders (ABL) — its own set of collections, kept separate
   // from the site's general chat data.
   ablParticipants: collectionName('abl_participants'),
@@ -59,4 +62,6 @@ export const COLLECTIONS = {
   ablParticipantSessions: collectionName('abl_participant_sessions'),
   bookCompanionSessions: collectionName('book_companion_sessions'),
   bookCompanionVisitors: collectionName('book_companion_visitors'),
+  // Essays published directly from the private Notebook Studio.
+  notebookEssays: collectionName('notebook_essays'),
 };

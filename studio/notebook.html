@@ -5,210 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notebook — Studio · Vinay Pasricha</title>
   <meta name="robots" content="noindex, nofollow">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="studio.css">
-
   <style>
-    /* ---------------- NOTEBOOK editor — variations on the videos shell ---------------- */
-    .essay-list { display: flex; flex-direction: column; gap: 8px; }
-    .eli {
-      display: grid;
-      grid-template-columns: 32px 110px 1fr auto;
-      gap: 18px;
-      padding: 16px;
-      background: var(--paper-3);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      align-items: center;
-      transition: background .15s;
-    }
-    .eli:hover { background: var(--paper-2); }
-    .eli.draft { border-style: dashed; opacity: 0.82; }
-    .eli.dragging { opacity: 0.5; }
-    .eli.expanded { display: block; }
-
-    .eli-handle {
-      font-family: var(--mono);
-      font-size: 18px;
-      color: var(--ink-4);
-      cursor: grab;
-      user-select: none;
-      text-align: center;
-    }
-    .eli-handle:active { cursor: grabbing; }
-
-    .eli-date {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-3);
-    }
-    .eli-date .yr { display: block; color: var(--ink); font-size: 13px; letter-spacing: 0; font-family: var(--serif); font-style: italic; margin-top: 2px; }
-
-    .eli-body { min-width: 0; }
-    .eli-title {
-      font-family: var(--serif);
-      font-size: 20px;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      margin-bottom: 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .eli-title em { font-style: italic; }
-    .eli-meta {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-3);
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .eli-meta .dot { color: var(--rule); }
-    .eli-meta .status-draft { color: var(--accent); }
-    .eli-meta .status-published { color: #2e7d5b; }
-    .eli-meta .tag { color: var(--ink-2); background: var(--paper-2); padding: 2px 6px; border-radius: 2px; }
-    .eli-meta .reading { color: var(--ink-3); }
-
-    .eli-actions { display: flex; gap: 6px; align-items: center; }
-    .eli-action {
-      padding: 7px 12px;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      background: transparent;
-      border: 1px solid var(--rule);
-      color: var(--ink-2);
-      cursor: pointer;
-      border-radius: 2px;
-      transition: background .15s, border-color .15s, color .15s;
-    }
-    .eli-action:hover { border-color: var(--ink); color: var(--ink); }
-    .eli-action.danger:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
-
-    /* Edit panel */
-    .eli-edit {
-      grid-column: 1 / -1;
-      padding-top: 18px;
-      margin-top: 14px;
-      border-top: 1px solid var(--rule);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px 24px;
-    }
-    .eli-edit label {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-3);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .eli-edit label.full { grid-column: 1 / -1; }
-    .eli-edit input,
-    .eli-edit textarea,
-    .eli-edit select {
-      font-family: var(--sans);
-      font-size: 14px;
-      color: var(--ink);
-      background: var(--paper);
-      border: 1px solid var(--rule);
-      padding: 10px 12px;
-      border-radius: 2px;
-      outline: none;
-      transition: border-color .15s;
-    }
-    .eli-edit input:focus,
-    .eli-edit textarea:focus,
-    .eli-edit select:focus { border-color: var(--ink); }
-    .eli-edit input.title-input { font-family: var(--serif); font-size: 22px; }
-    .eli-edit textarea { resize: vertical; font-family: var(--serif); font-size: 16px; line-height: 1.55; }
-    .eli-edit textarea.body { min-height: 320px; font-family: var(--serif); font-size: 16px; line-height: 1.55; }
-    .eli-edit .help {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 12px;
-      color: var(--ink-3);
-      margin-top: 2px;
-    }
-    .eli-edit-split {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-    .eli-edit-split label { grid-column: 1 / -1; margin-bottom: -10px; }
-    .eli-edit-preview {
-      padding: 24px 28px;
-      background: var(--paper);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      font-family: var(--serif);
-      font-size: 16px;
-      line-height: 1.65;
-      color: var(--ink);
-      max-height: 540px;
-      overflow-y: auto;
-    }
-    .eli-edit-preview h1 { font-size: 24px; font-weight: 400; letter-spacing: -0.012em; margin: 12px 0 8px; }
-    .eli-edit-preview h2 { font-size: 20px; font-weight: 400; margin: 18px 0 8px; letter-spacing: -0.008em; }
-    .eli-edit-preview h3 { font-size: 17px; font-weight: 500; margin: 14px 0 6px; }
-    .eli-edit-preview p { margin: 0 0 14px; }
-    .eli-edit-preview em { font-style: italic; }
-    .eli-edit-preview strong { font-weight: 500; }
-    .eli-edit-preview a { color: var(--accent); border-bottom: 1px solid var(--rule); }
-    .eli-edit-preview blockquote {
-      margin: 14px 0;
-      padding-left: 18px;
-      border-left: 3px solid var(--accent-2);
-      font-style: italic;
-      color: var(--ink-2);
-    }
-    .eli-edit-preview hr { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
-    .eli-edit-preview p.empty {
-      font-style: italic;
-      color: var(--ink-4);
-    }
-    .eli-edit-actions {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--rule-soft);
-    }
-
-    .el-empty {
-      padding: 64px 24px;
-      text-align: center;
-      border: 1px dashed var(--rule);
-      border-radius: 4px;
-      background: var(--paper-3);
-    }
-    .el-empty p { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink-3); }
-
-    @media (max-width: 800px) {
-      .eli { grid-template-columns: 24px 1fr; }
-      .eli-date { grid-column: 1 / -1; }
-      .eli-actions { grid-column: 1 / -1; flex-wrap: wrap; }
-      .eli-edit { grid-template-columns: 1fr; }
-      .eli-edit-split { grid-template-columns: 1fr; }
+    .notebook-shell { max-width: 960px; margin: 0 auto; padding: 64px 36px 110px; }
+    .notebook-head { display:flex; justify-content:space-between; align-items:end; gap:24px; padding-bottom:32px; border-bottom:1px solid var(--rule); margin-bottom:32px; }
+    .crumbs { font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.2em; color:var(--ink-3); margin-bottom:14px; }
+    .crumbs a { color:inherit; }
+    .notebook-head h1 { font-family:var(--serif); font-weight:400; font-size:48px; line-height:1; letter-spacing:-.02em; }
+    .notebook-head h1 em { color:var(--accent); }
+    .notebook-head p { max-width:390px; font-family:var(--serif); font-size:17px; line-height:1.5; font-style:italic; color:var(--ink-3); }
+    .recovery { display:none; padding:16px 18px; margin-bottom:20px; background:#f3ead1; border-left:3px solid var(--accent-2); font-family:var(--serif); font-size:15px; }
+    .composer { background:var(--paper-3); border:1px solid var(--rule); padding:30px; }
+    .step-label { font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.2em; color:var(--accent); margin-bottom:10px; }
+    .composer h2 { font-family:var(--serif); font-weight:400; font-size:30px; margin-bottom:8px; }
+    .composer-intro { font-family:var(--serif); font-size:16px; line-height:1.5; color:var(--ink-3); margin-bottom:20px; }
+    .source-input, .prepared-body, .simple-input { width:100%; border:1px solid var(--rule); background:var(--paper); color:var(--ink); outline:none; border-radius:3px; }
+    .source-input, .prepared-body { min-height:260px; padding:20px; resize:vertical; font-family:var(--serif); font-size:18px; line-height:1.65; }
+    .source-input:focus, .prepared-body:focus, .simple-input:focus { border-color:var(--ink-3); }
+    .paste-hint { margin-top:9px; font-family:var(--serif); font-size:13px; font-style:italic; color:var(--ink-3); }
+    .image-drop { margin-top:18px; padding:20px; border:1px dashed var(--ink-3); background:var(--paper); text-align:center; cursor:pointer; }
+    .image-drop.dragover { border-color:var(--accent); background:var(--paper-2); }
+    .image-drop strong { display:block; font-family:var(--serif); font-size:17px; font-weight:400; }
+    .image-drop span { font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
+    .images { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px; }
+    .image-card { position:relative; background:var(--paper); border:1px solid var(--rule); padding:8px; }
+    .image-card img { width:100%; aspect-ratio:16/10; object-fit:cover; display:block; }
+    .image-card input { width:100%; border:0; border-top:1px solid var(--rule-soft); margin-top:7px; padding:8px 2px 2px; background:transparent; font-family:var(--serif); font-size:13px; }
+    .image-card .badge { position:absolute; top:14px; left:14px; background:var(--ink); color:var(--paper); padding:4px 7px; font-family:var(--mono); font-size:8px; letter-spacing:.12em; text-transform:uppercase; }
+    .image-card button { position:absolute; top:14px; right:14px; width:28px; height:28px; border:0; background:rgba(20,17,10,.8); color:#fff; cursor:pointer; }
+    .actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:22px; }
+    .action { border:1px solid var(--ink); padding:12px 18px; background:transparent; color:var(--ink); font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.16em; cursor:pointer; }
+    .action.primary { background:var(--ink); color:var(--paper); }
+    .action.publish { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .action:disabled { opacity:.45; cursor:wait; }
+    .status { font-family:var(--serif); font-size:14px; font-style:italic; color:var(--ink-3); }
+    .status.error { color:var(--accent); }
+    .prepared { display:none; margin-top:28px; padding-top:28px; border-top:1px solid var(--rule); }
+    .field { display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+    .field label { font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.18em; color:var(--ink-3); }
+    .simple-input { padding:12px 14px; font-family:var(--serif); font-size:17px; }
+    .title-input { font-size:25px; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .preview { display:none; margin-top:28px; padding:32px; background:var(--paper); border:1px solid var(--rule); }
+    .preview h1 { font-family:var(--serif); font-weight:400; font-size:38px; line-height:1.08; margin-bottom:10px; }
+    .preview .dek { font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.5; color:var(--ink-3); margin-bottom:28px; }
+    .preview-body { font-family:var(--serif); font-size:18px; line-height:1.7; }
+    .preview-body p { margin-bottom:18px; }
+    .preview-body h1,.preview-body h2,.preview-body h3 { font-weight:400; margin:30px 0 12px; }
+    .preview figure { margin:28px 0; }
+    .preview figure img { width:100%; display:block; }
+    .preview figcaption { margin-top:8px; font-family:var(--serif); font-size:13px; font-style:italic; color:var(--ink-3); }
+    .published-section { margin-top:48px; }
+    .published-head { display:flex; justify-content:space-between; align-items:end; padding-bottom:14px; border-bottom:1px solid var(--rule); }
+    .published-head h2 { font-family:var(--serif); font-weight:400; font-size:28px; }
+    .post-list { display:flex; flex-direction:column; }
+    .post-row { display:grid; grid-template-columns:100px 1fr auto; gap:18px; align-items:center; padding:20px 6px; border-bottom:1px solid var(--rule-soft); }
+    .post-row .date,.post-row .meta { font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
+    .post-row h3 { font-family:var(--serif); font-weight:400; font-size:20px; margin-bottom:5px; }
+    .post-actions { display:flex; gap:7px; flex-wrap:wrap; justify-content:flex-end; }
+    .post-actions button,.post-actions a { padding:8px 10px; border:1px solid var(--rule); background:transparent; color:var(--ink-2); font-family:var(--mono); font-size:8px; letter-spacing:.13em; text-transform:uppercase; cursor:pointer; text-decoration:none; }
+    .empty { padding:40px 0; font-family:var(--serif); font-size:17px; font-style:italic; color:var(--ink-3); }
+    @media(max-width:760px){
+      .notebook-shell{padding:40px 20px 80px}.notebook-head{display:block}.notebook-head h1{font-size:38px;margin-bottom:14px}.composer{padding:22px 16px}.two{grid-template-columns:1fr}.images{grid-template-columns:1fr 1fr}.post-row{grid-template-columns:1fr}.post-actions{justify-content:flex-start}.preview{padding:24px 18px}
     }
   </style>
-
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/brand/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/brand/apple-touch-icon.png">
@@ -219,103 +83,72 @@
   <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/brand/og-image.png">
 </head>
 <body class="studio-body">
-
 <header class="studio-topbar">
-  <div class="st-brand">
-    <span class="st-mark">◯</span>
-    <span class="st-name">Studio</span>
-    <span class="st-sub">— editing the Notebook</span>
-  </div>
-  <div class="st-right">
-    <a class="st-link" href="../paths/blog.html" target="_blank" rel="noopener">View Notebook ↗</a>
-    <button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button>
-  </div>
+  <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— Notebook</span></div>
+  <div class="st-right"><button class="st-link" id="newButton" type="button">New article</button><a class="st-link" href="index.html">← Studio home</a><a class="st-link" href="../paths/blog.html" target="_blank" rel="noopener">View Notebook ↗</a><button class="st-link" id="studio-signout" type="button" style="display:none">Sign out</button></div>
 </header>
 
-<!-- ========== AUTH GATE ========== -->
-<section class="studio-auth" id="studio-auth">
-  <div class="auth-inner">
-    <div class="auth-mark">Studio</div>
-    <h1>Enter to <em>continue.</em></h1>
-    <p class="lede">This room edits the essays that appear on the public Notebook page.</p>
-    <form id="auth-form" class="auth-form">
-      <input type="password" id="auth-input" placeholder="Passphrase" autocomplete="current-password" autofocus>
-      <button type="submit">Enter <span class="arrow">→</span></button>
-    </form>
-    <p class="auth-error" id="auth-error" style="display:none">That wasn't it. Try again.</p>
-    <p class="auth-foot"><em>noindex · not in sitemap</em></p>
-  </div>
-</section>
+<section class="studio-auth" id="studio-auth"><div class="auth-inner"><div class="auth-mark">Studio</div><h1>A private editing room.</h1><p class="lede">Sign in to continue.</p></div></section>
 
-<!-- ========== EDITOR ========== -->
-<main class="studio-main" id="studio-main" style="display:none">
-  <div class="editor-shell">
+<main id="studio-main" style="display:none">
+  <div class="notebook-shell">
+    <header class="notebook-head">
+      <div><div class="crumbs"><a href="index.html">Studio</a> / Content &amp; Publishing / Notebook</div><h1>Write. Review. <em>Publish.</em></h1></div>
+      <p>Paste what you have. The AI prepares the page; you remain the editor. Publishing makes it live immediately.</p>
+    </header>
 
-    <div class="editor-head">
-      <div>
-        <div class="crumbs"><a href="index.html">Studio</a> &nbsp;/&nbsp; Notebook</div>
-        <h1>The <em>Notebook</em></h1>
+    <div class="recovery" id="recovery"></div>
+
+    <section class="composer">
+      <div class="step-label">01 — Bring the material</div>
+      <h2>Paste your article</h2>
+      <p class="composer-intro">It can be rough. Keep your language and ideas; the AI will organise them without inventing new claims.</p>
+      <textarea class="source-input" id="sourceText" maxlength="30000" placeholder="Paste the complete article here…"></textarea>
+      <p class="paste-hint">You can paste images directly while this box is active, or add them below.</p>
+
+      <div class="image-drop" id="imageDrop" role="button" tabindex="0">
+        <strong>Paste, drop or choose images</strong>
+        <span>PNG, JPG or WebP · up to 6 MB each</span>
+        <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
       </div>
-      <div class="editor-status" id="editor-status">
-        <span class="saved" id="status-saved">All changes saved on this device</span>
-      </div>
-    </div>
+      <div class="images" id="images"></div>
 
-    <!-- Quick add -->
-    <div class="quick-add">
-      <div class="label">— Begin a new essay</div>
-      <div class="qa-row">
-        <input type="text" id="qa-title" placeholder="Working title — e.g. The first shape of a hard decision">
-        <button type="button" id="qa-btn">Create draft <span style="font-family:var(--serif);font-style:italic;font-size:14px;margin-left:6px;letter-spacing:0;text-transform:none">→</span></button>
+      <div class="actions">
+        <button class="action primary" id="prepareButton" type="button">Arrange with AI</button>
+        <button class="action" id="continueButton" type="button">Continue without AI</button>
+        <span class="status" id="prepareStatus"></span>
       </div>
-      <p class="qa-hint">A draft is created with today's date. The slug is derived from the title; you can edit anything before publishing.</p>
-      <p class="qa-error" id="qa-error" style="display:none"></p>
-    </div>
 
-    <!-- Toolbar -->
-    <div class="editor-toolbar">
-      <div class="left">
-        <span class="tb-count" id="tb-count">0 essays</span>
-      </div>
-      <div class="right">
-        <button class="tb-btn ghost" type="button" id="btn-reset">Revert all changes</button>
-        <button class="tb-btn ghost" type="button" id="btn-import">Import JSON</button>
-        <input type="file" id="import-file" accept="application/json" style="display:none">
-        <button class="tb-btn primary" type="button" id="btn-publish">Publish &amp; download</button>
-      </div>
-    </div>
+      <section class="prepared" id="prepared">
+        <div class="step-label">02 — Review the page</div>
+        <div class="field"><label for="postTitle">Headline</label><input class="simple-input title-input" id="postTitle"></div>
+        <div class="field"><label for="postDek">Short introduction</label><input class="simple-input" id="postDek"></div>
+        <div class="two">
+          <div class="field"><label for="postTags">Tags</label><input class="simple-input" id="postTags" placeholder="ai, leadership, decisions"></div>
+          <div class="field"><label for="postDate">Publication date</label><input class="simple-input" id="postDate" type="date"></div>
+        </div>
+        <div class="field"><label for="postBody">Article</label><textarea class="prepared-body" id="postBody"></textarea></div>
+        <div class="actions">
+          <button class="action" id="previewButton" type="button">Preview page</button>
+          <button class="action" id="saveButton" type="button">Save draft</button>
+          <button class="action publish" id="publishButton" type="button">Publish on website</button>
+          <span class="status" id="publishStatus"></span>
+        </div>
+      </section>
 
-    <!-- Essay list -->
-    <div class="essay-list" id="essay-list">
-      <!-- Rendered by notebook-admin.js -->
-    </div>
+      <section class="preview" id="preview"><div class="step-label">Preview</div><h1 id="previewTitle"></h1><div class="dek" id="previewDek"></div><div class="preview-body" id="previewBody"></div></section>
+    </section>
 
+    <section class="published-section">
+      <div class="published-head"><h2>Your Notebook</h2><span class="status" id="count"></span></div>
+      <div class="post-list" id="postList"><div class="empty">Loading your essays…</div></div>
+    </section>
   </div>
 </main>
 
-<!-- Publish modal -->
-<div class="publish-overlay" id="publish-overlay" style="display:none">
-  <div class="publish-modal">
-    <h2>Publish to <em>vinaypasricha.com</em></h2>
-    <p>Your changes are saved locally. To make them live for visitors, replace the deployed <code>assets/data/notebook.json</code> with the file we just generated.</p>
-    <p class="steps">
-      <strong>Three small steps:</strong><br>
-      1. The file <em>notebook.json</em> has just downloaded to your computer.<br>
-      2. Open the GitHub repo and replace <em>assets/data/notebook.json</em> with it.<br>
-      3. Commit the change. The site rebuilds and the new essays are live.
-    </p>
-    <p>If you have a backend admin connected, this step will be one-click later. For now, this is the publish flow.</p>
-    <div class="publish-actions">
-      <button class="tb-btn" type="button" id="publish-close">Got it</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
 <script src="studio.js"></script>
+<script src="../js/notebook-md.js"></script>
 <script src="notebook-admin.js"></script>
-
-  <script src="/js/claude-bridge.js"></script>
+<script src="/js/claude-bridge.js"></script>
 </body>
 </html>
