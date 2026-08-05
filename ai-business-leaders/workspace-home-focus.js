@@ -137,9 +137,38 @@
     return '<div class="panel focus-update"><div><p class="eyebrow">' + esc(update.eyebrow) + '</p><h3>' + esc(update.title) + '</h3><p>' + esc(update.copy) + '</p></div>' + control + '</div>';
   }
 
+  function fmtWhen(date, days) {
+    var dateStr = date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    var timeStr = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    if (days <= 0) return 'Today · ' + timeStr;
+    if (days === 1) return 'Tomorrow · ' + dateStr + ' at ' + timeStr;
+    return dateStr + ' at ' + timeStr + ' · in ' + days + ' days';
+  }
+  // Surface the class schedule/status: a live session (Join now), else the next
+  // upcoming session with its date and a countdown. Reads the cohort's per-session
+  // status + dates set in Studio.
+  function nextClassBanner(cohort) {
+    if (!cohort || !cohort.sessions) return '';
+    var now = new Date(), entries = [], n, s;
+    for (n = 1; n <= 5; n++) {
+      s = cohort.sessions[String(n)] || cohort.sessions[n] || {};
+      entries.push({ n: n, date: s.date ? new Date(s.date) : null, status: s.status || 'upcoming', meeting: s.meeting_url || cohort.meeting || '', title: (typeof META !== 'undefined' && META[n]) ? META[n][0] : ('Session ' + n) });
+    }
+    var live = null, i;
+    for (i = 0; i < entries.length; i++) { if (entries[i].status === 'live') { live = entries[i]; break; } }
+    if (live) {
+      return '<div class="focus-nextclass live"><span class="ncdot"></span><div class="ncbody"><p class="eyebrow">Class is live now</p><h3>Session ' + live.n + ' · ' + esc(live.title) + '</h3></div>' + (live.meeting ? '<a class="btn red" href="' + esc(live.meeting) + '" target="_blank" rel="noopener">Join the class ↗</a>' : '') + '</div>';
+    }
+    var up = entries.filter(function (e) { return e.status !== 'completed' && e.date && e.date.getTime() >= now.getTime() - 2 * 3600000; }).sort(function (a, b) { return a.date - b.date; })[0];
+    if (!up) { up = entries.filter(function (e) { return (e.status === 'upcoming' || e.status === 'follow_up') && e.date; }).sort(function (a, b) { return a.date - b.date; })[0]; }
+    if (!up || !up.date) return '';
+    var days = Math.ceil((up.date.getTime() - now.getTime()) / 86400000);
+    var soon = days <= 2;
+    return '<div class="focus-nextclass' + (soon ? ' soon' : '') + '"><div class="ncbody"><p class="eyebrow">Your next class</p><h3>Session ' + up.n + ' · ' + esc(up.title) + '</h3><p class="ncwhen">' + esc(fmtWhen(up.date, days)) + '</p></div>' + (up.meeting && soon ? '<a class="btn" href="' + esc(up.meeting) + '" target="_blank" rel="noopener">Join link ↗</a>' : '') + '</div>';
+  }
   function focusedHome() {
     var person = p(), cohort = c(), action = nextAction(person, cohort), update = latestFromVinay(person);
-    return '<div class="hero focus-hero"><div><p class="eyebrow">AI for Business Leaders · Personal workspace</p><h1>' + esc(person.name.split(' ')[0]) + '’s AI Leadership Workspace</h1><p class="lede">One clear next action. Your course work and leadership initiative remain available whenever you need them.</p></div><div class="id"><div class="label">Prepared for</div><strong>' + esc(person.name) + '</strong><span>' + esc(person.role) + ' · ' + esc(person.company) + '</span><span>' + esc(cohort ? cohort.name : '') + '</span></div></div>' +
+    return '<div class="hero focus-hero"><div><p class="eyebrow">AI for Business Leaders · Personal workspace</p><h1>' + esc(person.name.split(' ')[0]) + '’s AI Leadership Workspace</h1><p class="lede">One clear next action. Your course work and leadership initiative remain available whenever you need them.</p></div><div class="id"><div class="label">Prepared for</div><strong>' + esc(person.name) + '</strong><span>' + esc(person.role) + ' · ' + esc(person.company) + '</span><span>' + esc(cohort ? cohort.name : '') + '</span></div></div>' + nextClassBanner(cohort) +
       '<section class="panel focus-command"><div class="focus-command-rule"></div><div class="focus-command-copy"><p class="eyebrow">Do this now · ' + esc(action.stage) + '</p><h2>' + esc(action.title) + '</h2><p>' + esc(action.copy) + '</p><span class="focus-note">' + esc(action.note) + '</span></div><div class="focus-command-action">' + actionControl(action) + '</div></section>' +
       '<div class="focus-two"><section><div class="sec focus-head"><h2>New from Vinay</h2><p>Only the latest relevant update.</p></div>' + fromVinayCard(update) + '</section>' +
       '<section><div class="sec focus-head"><h2>Your saved work</h2><p>Return to anything you have already started.</p></div>' + savedWorkCards() + '</section></div>' +
@@ -151,6 +180,13 @@
     var style = document.createElement('style');
     style.id = 'ablFocusStyles';
     style.textContent =
+      '.focus-nextclass{margin-top:24px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:18px 22px;border:1px solid var(--rule,rgba(90,70,50,.16));border-radius:14px;background:var(--paper2)}' +
+      '.focus-nextclass .ncbody h3{font-size:20px;margin:4px 0 0}.focus-nextclass .ncwhen{font-size:14px;color:var(--muted);margin:5px 0 0}' +
+      '.focus-nextclass.soon{border-color:rgba(180,71,45,.45);background:linear-gradient(120deg,var(--paper2),rgba(180,71,45,.06))}' +
+      '.focus-nextclass.live{border-color:var(--red);background:rgba(180,71,45,.09)}' +
+      '.focus-nextclass .ncdot{width:12px;height:12px;border-radius:99px;background:var(--red);flex:0 0 auto;animation:ncpulse 1.8s infinite}' +
+      '@keyframes ncpulse{0%{box-shadow:0 0 0 0 rgba(180,71,45,.5)}70%{box-shadow:0 0 0 10px rgba(180,71,45,0)}100%{box-shadow:0 0 0 0 rgba(180,71,45,0)}}' +
+      '@media (prefers-reduced-motion:reduce){.focus-nextclass .ncdot{animation:none}}' +
       '.focus-command{margin-top:28px;display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:22px;align-items:center;padding:27px;background:linear-gradient(120deg,var(--paper2),var(--deep));border-color:rgba(180,71,45,.42);box-shadow:0 18px 55px rgba(54,43,31,.08)}' +
       '.focus-command-rule{align-self:stretch;min-height:132px;border-radius:99px;background:var(--red)}' +
       '.focus-command-copy h2{font-size:34px;margin:8px 0}.focus-command-copy>p:not(.eyebrow){max-width:720px;font-size:14px;line-height:1.6;color:var(--muted)}' +
