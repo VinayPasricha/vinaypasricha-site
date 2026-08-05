@@ -246,7 +246,7 @@
   function materialCard(m) {
     return '<article class="entity-card" data-material="' + esc(m.id) + '"><span class="meta">' + esc(m.type || 'resource') + ' · ' + (m.session_number ? 'Session ' + m.session_number : 'Library') + '</span><h3>' + esc(m.title) + '</h3>' +
       '<p>' + esc(m.description || m.source_url || '') + '</p><p><span class="pill ' + esc(m.status) + '">' + esc(m.status) + '</span> · ' + esc(m.audience || 'all') + (m.audience === 'cohorts' ? ' · ' + esc(cohortName((m.cohort_ids || [])[0])) : '') + '</p>' +
-      '<div class="actions">' + (m.source_url ? '<a class="btn small ghost" href="' + esc(m.source_url) + '" target="_blank" rel="noopener">Preview</a>' : '') + '<button class="btn small ghost" data-delete-material>Delete</button></div></article>';
+      '<div class="actions">' + (m.file_key ? '<a class="btn small ghost" href="/api/abl/workspace/admin/materials/' + encodeURIComponent(m.id) + '/file" target="_blank" rel="noopener">View file ↗</a>' : '') + (m.source_url ? '<a class="btn small ghost" href="' + esc(m.source_url) + '" target="_blank" rel="noopener">' + (m.file_key ? 'Open link' : 'Preview') + '</a>' : '') + '<button class="btn small ghost" data-delete-material>Delete</button></div></article>';
   }
   function renderMaterials() {
     $('materialCards').innerHTML = state.materials.length ? state.materials.map(materialCard).join('') : '<p class="empty">No materials yet.</p>';

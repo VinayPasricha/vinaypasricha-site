@@ -368,6 +368,19 @@ export function registerWorkspaceRoutes(app) {
   app.delete('/api/abl/workspace/admin/cohorts/:id', requireStudio, async (req, res) => ok(res, await deleteDoc(COLLECTIONS.ablCohorts, req.params.id)));
 
   app.get('/api/abl/workspace/admin/materials', requireStudio, async (req, res) => ok(res, await listCollection(COLLECTIONS.ablMaterials)));
+  // Let the Studio admin view the uploaded file for any material (cookie-gated,
+  // regardless of audience) so they can check what they published.
+  app.get('/api/abl/workspace/admin/materials/:id/file', requireStudio, async (req, res) => {
+    try {
+      const material = docData(await col(COLLECTIONS.ablMaterials).doc(String(req.params.id)).get());
+      if (!material || !material.file_key) return fail(res, 'This material has no uploaded file.', 404);
+      const streamed = await streamMaterialFile(material.file_key, res, { fileName: material.file_name || material.title });
+      if (!streamed && !res.headersSent) return fail(res, 'The file could not be found.', 404);
+    } catch (e) {
+      console.error('[abl-workspace] admin material file', e);
+      if (!res.headersSent) return fail(res, 'Server error', 500);
+    }
+  });
   // Upload a PDF for a material. Returns a storage key the admin form then saves
   // on the material record; the file itself is never public.
   app.post('/api/abl/workspace/admin/materials/upload', requireStudio, async (req, res) => {
