@@ -365,6 +365,7 @@ function renderFeaturedBook(book) {
       </div>
       <div class="bf-grid">
         <div class="bf-cover">
+          <a href="${book.path}" class="bf-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
           ${book.cover
             ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
             : `<div class="bf-cover-placeholder">
@@ -372,6 +373,7 @@ function renderFeaturedBook(book) {
                  <span class="bcp-title">${escapeHTML(book.title)}</span>
                </div>`
           }
+          </a>
         </div>
         <div class="bf-info">
           <div class="bf-meta">
@@ -379,7 +381,7 @@ function renderFeaturedBook(book) {
             ${book.pages ? `<span class="dot">·</span><span>${book.pages} pages</span>` : ''}
             ${book.isbn ? `<span class="dot">·</span><span>ISBN ${book.isbn}</span>` : ''}
           </div>
-          <h2 class="bf-title">${escapeHTML(book.title)}<em>.</em></h2>
+          <h2 class="bf-title"><a href="${book.path}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h2>
           <p class="bf-subtitle">${escapeHTML(book.subtitle)}</p>
           <p class="bf-pitch">${escapeHTML(book.pitch)}</p>
           <ul class="bf-topics">
@@ -420,6 +422,7 @@ function renderBookCard(book) {
   return `
     <article class="book-card-v2 ${isUpcoming ? 'upcoming' : ''}" data-slug="${book.slug}">
       <div class="bc-cover">
+        <a href="${book.path}" class="bc-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
         ${book.cover
           ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
           : `<div class="bc-cover-placeholder">
@@ -427,13 +430,14 @@ function renderBookCard(book) {
                <span class="bcp-title">${escapeHTML(book.title)}</span>
              </div>`
         }
+        </a>
       </div>
       <div class="bc-body">
         <div class="bc-meta">
           <span>${book.year}</span>
           ${book.pages ? `<span class="dot">·</span><span>${book.pages}p</span>` : ''}
         </div>
-        <h3 class="bc-title">${escapeHTML(book.title)}<em>.</em></h3>
+        <h3 class="bc-title"><a href="${book.path}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h3>
         <p class="bc-subtitle">${escapeHTML(book.subtitle)}</p>
         <p class="bc-pitch">${escapeHTML(book.pitch)}</p>
         <div class="bc-actions">
