@@ -2,7 +2,7 @@
   "_comment": "Russian translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ru",
   "lang_native": "Русский",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-05",
   "strings": {
     "Explorer of Emergence": "Исследователь возникающего",
     "Now": "Сейчас",
@@ -904,7 +904,9 @@
     "I'd like to read your <em>fiction.</em>": "Я хотел бы прочитать вашу <em>художественную литературу.</em>",
     "I want to <em>speak with Vinay</em> directly.": "Я хочу <em>поговорить с Vinay</em> напрямую.",
     "One careful essay <em>each month.</em>": "Одно тщательно проработанное эссе <em>ежемесячно.</em>",
-    "Live three.js mark": "Живая метка three.js",
-    "Talk to the book": "Общайтесь с книгой"
+    "Talk to the book": "Общайтесь с книгой",
+    "Continue from <em>where you left off.</em>": "Продолжить с <em>того места, где вы остановились.</em>",
+    "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Основатель, GoodSpace AI · Автор шести книг",
+    "Welcome back": "Добро пожаловать обратно"
   }
 }

@@ -2,7 +2,7 @@
   "_comment": "French translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "fr",
   "lang_native": "Français",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-05",
   "strings": {
     "Explorer of Emergence": "Explorateur de l'Émergence",
     "Now": "Maintenant",
@@ -904,7 +904,9 @@
     "I'd like to read your <em>fiction.</em>": "J'aimerais lire votre <em>fiction.</em>",
     "I want to <em>speak with Vinay</em> directly.": "Je veux <em>parler directement avec Vinay.</em>",
     "One careful essay <em>each month.</em>": "Un essai réfléchi <em>chaque mois.</em>",
-    "Live three.js mark": "Marque three.js en direct",
-    "Talk to the book": "Parlez au livre"
+    "Talk to the book": "Parlez au livre",
+    "Continue from <em>where you left off.</em>": "Reprendre <em>là où vous vous êtes arrêté(e).</em>",
+    "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fondateur, GoodSpace AI · Auteur de six livres",
+    "Welcome back": "Bon retour"
   }
 }

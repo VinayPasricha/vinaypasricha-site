@@ -2,7 +2,7 @@
   "_comment": "Tamil translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ta",
   "lang_native": "தமிழ்",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-05",
   "strings": {
     "Explorer of Emergence": "வளர்ச்சியின் ஆய்வாளர்",
     "Now": "இப்போது",
@@ -904,7 +904,9 @@
     "I'd like to read your <em>fiction.</em>": "நான் உங்கள் <em>புனைகதைகளை</em> படிக்க விரும்புகிறேன்.",
     "I want to <em>speak with Vinay</em> directly.": "நான் <em>Vinay உடன் நேரடியாக பேச</em> விரும்புகிறேன்.",
     "One careful essay <em>each month.</em>": "ஒரு கவனமான கட்டுரை <em>ஒவ்வொரு மாதமும்.</em>",
-    "Live three.js mark": "நேரடி three.js குறி",
-    "Talk to the book": "புத்தகத்துடன் பேசு"
+    "Talk to the book": "புத்தகத்துடன் பேசு",
+    "Continue from <em>where you left off.</em>": "<em>நீங்கள் விட்டுச்சென்ற இடத்திலிருந்து</em> தொடரவும்.",
+    "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI நிறுவனர் · ஆறு புத்தகங்களின் ஆசிரியர்",
+    "Welcome back": "மீண்டும் வருக"
   }
 }

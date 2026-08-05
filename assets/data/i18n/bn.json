@@ -2,7 +2,7 @@
   "_comment": "Bengali translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "bn",
   "lang_native": "বাংলা",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-05",
   "strings": {
     "Explorer of Emergence": "উদ্ভবের অনুসন্ধানকারী",
     "Now": "এখন",
@@ -904,7 +904,9 @@
     "I'd like to read your <em>fiction.</em>": "আমি আপনার <em>কল্পসাহিত্য</em> পড়তে চাই।",
     "I want to <em>speak with Vinay</em> directly.": "আমি <em>Vinay-এর সাথে সরাসরি কথা বলতে</em> চাই।",
     "One careful essay <em>each month.</em>": "একটি যত্নশীল প্রবন্ধ <em>প্রতি মাসে।</em>",
-    "Live three.js mark": "সরাসরি three.js মার্ক",
-    "Talk to the book": "বইটির সাথে কথা বলুন"
+    "Talk to the book": "বইটির সাথে কথা বলুন",
+    "Continue from <em>where you left off.</em>": "যেখান থেকে <em>আপনি শেষ করেছিলেন।</em> সেখান থেকে চালিয়ে যান।",
+    "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — প্রতিষ্ঠাতা, GoodSpace AI · ছয়টি বইয়ের লেখক",
+    "Welcome back": "পুনরায় স্বাগতম"
   }
 }

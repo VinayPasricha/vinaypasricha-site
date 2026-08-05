@@ -2,7 +2,7 @@
   "_comment": "Spanish translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "es",
   "lang_native": "Español",
-  "updated_at": "2026-08-02",
+  "updated_at": "2026-08-05",
   "strings": {
     "Explorer of Emergence": "Explorador de la Emergencia",
     "Now": "Ahora",
@@ -904,7 +904,9 @@
     "I'd like to read your <em>fiction.</em>": "Me gustaría leer tu <em>ficción.</em>",
     "I want to <em>speak with Vinay</em> directly.": "Quiero <em>hablar con Vinay</em> directamente.",
     "One careful essay <em>each month.</em>": "Un ensayo cuidadoso <em>cada mes.</em>",
-    "Live three.js mark": "Marca en vivo de three.js",
-    "Talk to the book": "Habla con el libro"
+    "Talk to the book": "Habla con el libro",
+    "Continue from <em>where you left off.</em>": "Continuar desde <em>donde lo dejaste.</em>",
+    "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fundador, GoodSpace AI · Autor de seis libros",
+    "Welcome back": "Bienvenido de nuevo"
   }
 }
