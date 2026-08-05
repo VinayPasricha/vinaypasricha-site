@@ -3,148 +3,337 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Intelligence — Studio · Vinay Pasricha</title>
+  <title>Analytics — Studio · Vinay Pasricha</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/brand/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/brand/apple-touch-icon.png">
+  <meta property="og:image" content="https://vinaypasricha.com/assets/images/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://vinaypasricha.com/assets/images/brand/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
   <link rel="stylesheet" href="studio.css">
-  <link rel="stylesheet" href="website-intelligence.css">
-  <link rel="stylesheet" href="website-intelligence-simple.css">
+  <style>
+    .an-wrap { max-width: 1160px; margin: 0 auto; padding: 24px; }
+    .an-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
+    .an-head h1 { font-family: var(--serif); font-size: 26px; }
+    .an-range { display: flex; gap: 6px; }
+    .an-range button { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; background: none; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 5px; padding: 6px 12px; cursor: pointer; }
+    .an-range button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .an-sub { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-bottom: 18px; }
+    .an-note { font-size: 12px; color: var(--accent); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 5px; padding: 8px 12px; margin: 8px 0 16px; }
+    .sec-sub { font-size: 12.5px; color: var(--ink-3); margin: -8px 0 16px; max-width: 780px; line-height: 1.5; }
+
+    .an-ref { background: var(--paper-3); border: 1px solid var(--rule); border-radius: 8px; margin: 6px 0 22px; overflow: hidden; }
+    .an-ref > summary { list-style: none; cursor: pointer; padding: 13px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+    .an-ref > summary::-webkit-details-marker { display: none; }
+    .an-ref > summary::before { content: '▸'; color: var(--accent); transition: transform .15s; }
+    .an-ref[open] > summary::before { transform: rotate(90deg); }
+    .an-ref-body { padding: 4px 18px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
+    @media (max-width: 760px) { .an-ref-body { grid-template-columns: 1fr; } }
+    .an-ref-group { break-inside: avoid; margin-top: 12px; }
+    .an-ref-group h4 { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; border-bottom: 1px solid var(--rule-soft); padding-bottom: 5px; }
+    .an-ref-group dl { margin: 0; }
+    .an-ref-group dt { font-size: 13px; color: var(--ink); font-weight: 500; margin-top: 8px; }
+    .an-ref-group dd { margin: 1px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
+    .an-ref-group dt .tag { font-family: var(--mono); font-size: 10px; color: var(--ink-4); font-weight: 400; }
+    .an-sec { margin: 26px 0; }
+    .an-sec h2 { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid var(--rule); padding-bottom: 9px; margin-bottom: 16px; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .stat { background: var(--paper-3); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; }
+    .stat.hot { border-color: var(--accent); }
+    .stat-v { font-family: var(--serif); font-size: 28px; color: var(--ink); line-height: 1.1; }
+    .stat-l { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-top: 5px; }
+    .stat-s { font-family: var(--mono); font-size: 10px; color: var(--ink-4); margin-top: 2px; }
+
+    .chart { background: var(--paper-3); border: 1px solid var(--rule); border-radius: 8px; padding: 16px; }
+    .chart svg { width: 100%; height: 240px; display: block; }
+    .chart .lgnd { display: flex; gap: 16px; margin-top: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+    .chart .lgnd .k { display: inline-flex; align-items: center; gap: 6px; }
+    .chart .lgnd .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+
+    .bars { display: flex; flex-direction: column; gap: 7px; }
+    .bar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+    .bar .lbl { position: relative; font-size: 13px; color: var(--ink); padding: 6px 10px; border-radius: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .bar .fill { position: absolute; inset: 0; background: color-mix(in srgb, var(--accent) 16%, transparent); border-radius: 4px; z-index: 0; }
+    .bar .lbl span { position: relative; z-index: 1; }
+    .bar .val { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .muted { color: var(--ink-3); font-style: italic; font-size: 13px; }
+
+    .mini { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .mini td { padding: 7px 8px; border-bottom: 1px solid var(--rule-soft); }
+    .mini td.r { text-align: right; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+    .ppl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 620px; }
+    .ppl th { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+    .ppl td { padding: 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+    .ppl tr:hover td { background: var(--paper-3); cursor: pointer; }
+    .ppl .pnm { font-family: var(--serif); font-size: 14px; color: var(--ink); }
+    .ppl .pem { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+    .ppl .num { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .badge { font-family: var(--mono); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; background: var(--paper-2); color: var(--ink-2); padding: 2px 6px; border-radius: 3px; }
+
+    .pcard { border: 1px solid var(--accent); border-radius: 8px; background: var(--paper-2); padding: 18px; margin-bottom: 16px; }
+    .pcard .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .pcard .ph h3 { font-family: var(--serif); font-size: 20px; }
+    .pcard .meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+    .pcard .close { background: none; border: 1px solid var(--rule); color: var(--ink-2); font-family: var(--mono); font-size: 11px; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+    .tl { margin-top: 14px; display: flex; flex-direction: column; gap: 0; max-height: 460px; overflow: auto; border-top: 1px solid var(--rule); }
+    .tl-row { display: grid; grid-template-columns: 88px 120px 1fr; gap: 10px; padding: 8px 4px; border-bottom: 1px solid var(--rule-soft); font-size: 13px; align-items: baseline; }
+    .tl-when { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+    .tl-type { font-family: var(--mono); font-size: 10px; }
+    .tl-type .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .tl-what { color: var(--ink); word-break: break-word; }
+    .tl-what .sub { color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
+
+    .funnel { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+    .fstep { }
+    .fstep .fhead { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+    .fstep .fname { color: var(--ink); }
+    .fstep .fval { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .fstep .ftrack { height: 26px; background: var(--paper-2); border-radius: 5px; overflow: hidden; }
+    .fstep .ffill { height: 100%; background: color-mix(in srgb, var(--accent) 30%, transparent); border-right: 2px solid var(--accent); display: flex; align-items: center; padding-left: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink); transition: width .4s; }
+    .fstep .fdrop { font-family: var(--mono); font-size: 10px; color: var(--ink-4); margin-top: 2px; }
+
+    .nvr { display: flex; gap: 10px; margin-top: 4px; }
+    .nvr .seg { flex: 1; background: var(--paper-3); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; }
+    .nvr .seg .v { font-family: var(--serif); font-size: 20px; color: var(--ink); }
+    .nvr .seg .l { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+
+    .bar .lbl.clk { cursor: pointer; }
+    .bar .lbl.clk:hover { background: var(--paper-2); }
+    .ppage { border: 1px solid var(--accent); border-radius: 8px; background: var(--paper-2); padding: 16px; margin-bottom: 14px; }
+    .ppage .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .ppage h3 { font-family: var(--mono); font-size: 13px; color: var(--ink); word-break: break-all; }
+    .ppage .close { background: none; border: 1px solid var(--rule); color: var(--ink-2); font-family: var(--mono); font-size: 11px; border-radius: 5px; padding: 4px 9px; cursor: pointer; }
+    .ppage .pgstats { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; }
+    .ppage .pgstats .s .v { font-family: var(--serif); font-size: 18px; color: var(--ink); }
+    .ppage .pgstats .s .l { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+    .ppage .pgcols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .ppage .pgcols { grid-template-columns: 1fr; } }
+
+    #login { max-width: 360px; margin: 90px auto; text-align: center; }
+    #login input { width: 100%; margin: 10px 0; border: 1px solid var(--rule); background: var(--paper-3); border-radius: 4px; padding: 9px 11px; font: inherit; }
+    .btn { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; background: var(--ink); color: var(--paper); border: none; border-radius: 5px; padding: 9px 16px; cursor: pointer; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 4px; font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+  </style>
 </head>
-<body class="studio-body wi-body">
+<body class="studio-body">
   <header class="studio-topbar">
-    <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— Website Intelligence</span></div>
+    <div class="st-brand"><span class="st-mark">◯</span><span class="st-name">Studio</span><span class="st-sub">— Analytics</span></div>
     <div class="st-right"><a class="st-link" href="index.html">← Studio</a></div>
   </header>
 
-  <section id="login" class="wi-login" hidden>
-    <p class="wi-kicker">Private operator room</p>
-    <h1>Website Intelligence</h1>
-    <p>Enter the Studio passphrase.</p>
-    <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password">
-    <button id="loginBtn" class="wi-btn primary">Enter →</button>
-    <p id="loginErr" class="wi-error" hidden>That passphrase was not accepted.</p>
-  </section>
+  <div id="login" style="display:none">
+    <h2 style="font-family:var(--serif);font-size:22px">Studio access</h2>
+    <input class="ipt" type="password" id="pw" placeholder="Passphrase">
+    <button class="btn" id="loginBtn">Enter →</button>
+    <p id="loginErr" class="muted" style="display:none;margin-top:8px">That wasn't it.</p>
+  </div>
 
-  <main id="main" class="wi-shell" hidden>
-    <section class="wi-top">
+  <main class="an-wrap" id="main" style="display:none">
+    <div class="an-head">
       <div>
-        <p class="wi-kicker">Website report</p>
-        <h1>What happened?</h1>
-        <p class="wi-subtitle">Click any colour to explore the story underneath.</p>
+        <h1>Website analytics</h1>
+        <div class="an-sub" id="rangeSub">—</div>
       </div>
-      <div class="wi-period-wrap">
-        <div id="periods" class="wi-periods" role="tablist" aria-label="Time period">
-          <button class="on" data-mode="since-last">Since last checked</button>
-          <button data-mode="week">This week</button>
-          <button data-mode="month">This month</button>
-          <button data-mode="year">This year</button>
-          <button data-mode="custom">Custom dates</button>
+      <div class="an-range" id="range">
+        <button data-days="7">7d</button>
+        <button data-days="30" class="on">30d</button>
+        <button data-days="90">90d</button>
+        <button data-days="365">1y</button>
+      </div>
+    </div>
+
+    <div id="note"></div>
+
+    <details class="an-ref" open>
+      <summary>What's tracked — and what each label means</summary>
+      <div class="an-ref-body">
+
+        <div class="an-ref-group">
+          <h4>Traffic · every page, anonymous</h4>
+          <dl>
+            <dt>Page view</dt><dd>Each time someone opens or navigates to a page (including in-app view changes inside the runtimes).</dd>
+            <dt>Unique visitor</dt><dd>A distinct browser/device, counted by a random anonymous id kept on their device. Not a person.</dd>
+            <dt>Session</dt><dd>One visit. It ends after 30 minutes of inactivity, then a new session starts.</dd>
+            <dt>Time on page</dt><dd>Seconds spent on a page, measured when the visitor leaves or switches away.</dd>
+            <dt>Bounce rate</dt><dd>Share of sessions that viewed only a single page before leaving.</dd>
+          </dl>
         </div>
-        <div id="rangeLabel" class="wi-range-label">Loading…</div>
-      </div>
-    </section>
 
-    <section class="wi-brief" aria-live="polite">
-      <div class="wi-brief-icon">✦</div>
-      <div>
-        <p class="wi-kicker">The story in one sentence</p>
-        <p id="briefText" class="wi-brief-text">Reading the website activity…</p>
-      </div>
-    </section>
+        <div class="an-ref-group">
+          <h4>Interactions · events on every page</h4>
+          <dl>
+            <dt>Internal link click <span class="tag">link</span></dt><dd>Clicked a link that stays on this site.</dd>
+            <dt>Outbound link click <span class="tag">outbound_link</span></dt><dd>Clicked a link that leaves for another website.</dd>
+            <dt>Button click <span class="tag">button</span></dt><dd>Clicked a button or button-like control.</dd>
+            <dt>Email / phone link <span class="tag">contact_link</span></dt><dd>Clicked a <code>mailto:</code> or <code>tel:</code> link.</dd>
+            <dt>Form submitted <span class="tag">form_submit</span></dt><dd>Submitted any form. We record which form and the <em>number</em> of fields — <strong>never the values typed in</strong>.</dd>
+            <dt>Scroll depth <span class="tag">depth_25…100</span></dt><dd>Reached 25%, halfway, 75%, or the end of a page.</dd>
+            <dt>Rage click</dt><dd>3+ rapid clicks in the same spot — a signal of frustration or a broken control.</dd>
+            <dt>Custom event</dt><dd>Anything a runtime chooses to report via <code>vpTrack('name')</code>.</dd>
+          </dl>
+        </div>
 
-    <section id="headlineCards" class="wi-cards" aria-label="Main website insights">
-      <button class="wi-card blue" data-focus="visitors">
-        <span class="wi-card-icon">◎</span><span class="wi-card-label">Real visitors</span>
-        <strong id="realVisitors">—</strong><small id="realVisitorsDelta">External people only</small>
-        <span class="wi-open">Open the detail →</span>
-      </button>
-      <button class="wi-card cyan" data-focus="sources">
-        <span class="wi-card-icon">↗</span><span class="wi-card-label">Where from</span>
-        <strong id="topSource">—</strong><small id="sourceSub">Top source</small>
-        <span class="wi-open">Open the sources →</span>
-      </button>
-      <button class="wi-card orange" data-focus="time">
-        <span class="wi-card-icon">◷</span><span class="wi-card-label">Time spent</span>
-        <strong id="avgTime">—</strong><small id="timeSub">Average per visit</small>
-        <span class="wi-open">Open attention →</span>
-      </button>
-      <button class="wi-card violet" data-focus="pages">
-        <span class="wi-card-icon">▤</span><span class="wi-card-label">Pages read</span>
-        <strong id="pagesRead">—</strong><small id="pagesSub">Across all visits</small>
-        <span class="wi-open">Open the pages →</span>
-      </button>
-      <button class="wi-card green" data-focus="outcomes">
-        <span class="wi-card-icon">✓</span><span class="wi-card-label">Useful outcomes</span>
-        <strong id="usefulOutcomes">—</strong><small id="outcomeSub">Results and strong intent</small>
-        <span class="wi-open">Open the results →</span>
-      </button>
-    </section>
+        <div class="an-ref-group">
+          <h4>Acquisition & audience · per visit</h4>
+          <dl>
+            <dt>Source / campaign</dt><dd>Where the visit came from — a UTM tag (<code>utm_source</code>/<code>utm_campaign</code>) if present, else the referring site, else "direct". First-touch source is remembered per person.</dd>
+            <dt>Landing &amp; exit page</dt><dd>The first page a session arrived on and the last one before leaving.</dd>
+            <dt>Country</dt><dd>Approximate, derived from the browser's <em>timezone</em> — we never do IP geolocation.</dd>
+            <dt>Browser / OS</dt><dd>Read from the user-agent (Chrome, Safari, Windows, iOS…).</dd>
+            <dt>New vs returning</dt><dd>Whether it's a device's first-ever visit or a repeat one.</dd>
+            <dt>Engaged time</dt><dd>Seconds a visitor was <em>active</em> on a page (moving/scrolling/typing) — not just idle with the tab open.</dd>
+          </dl>
+        </div>
 
-    <section id="secondary" class="wi-secondary" hidden>
-      <div class="wi-section-head">
-        <div><p class="wi-kicker">Explore</p><h2 id="secondaryTitle">Real visitors</h2></div>
-        <button id="closeSecondary" class="wi-icon-btn" aria-label="Close detail">×</button>
-      </div>
-      <div id="secondaryGrid" class="wi-secondary-grid"></div>
-      <p class="wi-hint">Click any visual to keep going deeper.</p>
-    </section>
+        <div class="an-ref-group">
+          <h4>People · only after someone identifies</h4>
+          <dl>
+            <dt>Known person</dt><dd>A visitor stops being anonymous when they: submit a lead form, share their email in an AI chat, log into the Participant Room, or open an ABL course session.</dd>
+            <dt>Timeline</dt><dd>Their full activity history — including the pages they viewed <em>before</em> they identified, stitched together by their device.</dd>
+            <dt>Profile kept</dt><dd>Name, email, company, phone, role, how they were identified (source), device count, first &amp; last seen.</dd>
+          </dl>
+        </div>
 
-    <section class="wi-overview-grid">
-      <article class="wi-panel wide">
-        <div class="wi-panel-head"><div><p class="wi-kicker">Trend</p><h2>Visitors over time</h2></div><span class="wi-legend"><i class="blue-dot"></i> Visitors <i class="green-dot"></i> Outcomes</span></div>
-        <div id="trendChart" class="wi-chart large"></div>
-      </article>
-      <article class="wi-panel">
-        <div class="wi-panel-head"><div><p class="wi-kicker">Journey</p><h2>From visit to result</h2></div></div>
-        <div id="journeyChart" class="wi-journey"></div>
-      </article>
-    </section>
+        <div class="an-ref-group">
+          <h4>Privacy · what we don't do</h4>
+          <dl>
+            <dt>No raw IP, no cookies</dt><dd>The IP is turned into a salted hash and immediately discarded; identity uses local storage, not cookies.</dd>
+            <dt>No form contents</dt><dd>Form values, passwords, and message text are never captured — only that a form was submitted.</dd>
+            <dt>Opt-out respected</dt><dd>Honors browser Do-Not-Track and a per-visitor opt-out; the Studio itself is never tracked.</dd>
+          </dl>
+        </div>
 
-    <section class="wi-insights">
-      <div class="wi-section-head compact"><div><p class="wi-kicker">What changed</p><h2>Three things to notice</h2></div></div>
-      <div id="insightCards" class="wi-insight-grid"></div>
-    </section>
-
-    <section class="wi-actions">
-      <div class="wi-section-head compact"><div><p class="wi-kicker">What next</p><h2>Two actions for today</h2></div></div>
-      <div id="actionCards" class="wi-action-grid"><div class="wi-empty">Loading today’s actions…</div></div>
-    </section>
-
-    <details class="wi-technical">
-      <summary><span>More analytics for Vaishnav</span><small>Tracking and implementation detail</small></summary>
-      <div class="wi-technical-body">
-        <div id="technicalSummary" class="wi-technical-cards"></div>
-        <p>This technical information remains available without crowding the main report.</p>
       </div>
     </details>
+
+    <div class="an-sec">
+      <div class="stats" id="kpis"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Traffic over time</h2>
+      <p class="sec-sub">Daily page views (filled area) and unique visitors (dashed line) across the range you picked above.</p>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Known people <span id="peopleCount" class="an-sub" style="margin:0"></span></h2>
+      <p class="sec-sub">Visitors who identified themselves via a lead form, AI chat, Participant Room login, or ABL session. Click anyone to open their full timeline — including what they did while still anonymous.</p>
+      <div id="personPanel"></div>
+      <input id="peopleSearch" placeholder="Search name, email, company…" style="width:100%;max-width:420px;margin-bottom:10px;border:1px solid var(--rule);background:var(--paper-3);border-radius:4px;padding:8px 11px;font:inherit;font-size:13px">
+      <div style="overflow-x:auto"><table class="ppl" id="people"></table></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Conversion funnel</h2>
+      <p class="sec-sub">How far sessions get: <strong>Visited</strong> → <strong>Engaged</strong> (scrolled halfway, viewed 2+ pages, or stayed 30s+) → <strong>Interacted</strong> (clicked or submitted something) → <strong>Identified</strong> (became a known person). Percent is of all sessions.</p>
+      <div class="funnel" id="funnelSteps"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Events (in-depth interactions)</h2>
+      <p class="sec-sub">Every click, form submission, and scroll milestone across the public site. <strong>Top events</strong> = the specific action; <strong>By type</strong> = grouped. See the reference above for what each label means.</p>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top events</h3><div class="bars" id="topEvents"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">By type</h3><div class="bars" id="eventTypes"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>What they click — buttons &amp; links</h2>
+      <p class="sec-sub">Every button (🔘) and link (🔗) by its own label, most-clicked first — so you see exactly which controls people use. Add <code>data-track="name"</code> to any element to log it under a custom name instead.</p>
+      <div class="bars" id="topClicks"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Where they go &amp; where they come from</h2>
+      <p class="sec-sub">Most-viewed pages and where visits originate. <strong>Click any page</strong> to drill into its own stats — time on page, scroll depth, events, referrers, and countries.</p>
+      <div id="pagePanel"></div>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top pages <span style="color:var(--ink-4);text-transform:none;letter-spacing:0">· click to drill in</span></h3><div class="bars" id="topPages"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top referrers</h3><div class="bars" id="topRefs"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Acquisition — how they arrive</h2>
+      <p class="sec-sub">Per session: the traffic <strong>source</strong> (UTM campaign tag, or the referring site, or direct), the <strong>campaign</strong>, the <strong>landing</strong> page they arrived on, and the <strong>exit</strong> page they left from.</p>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Top sources</h3><div class="bars" id="acqSources"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Campaigns (UTM)</h3><div class="bars" id="acqCampaigns"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Landing pages</h3><div class="bars" id="acqLanding"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Exit pages</h3><div class="bars" id="acqExit"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Channels — links for the social team</h2>
+      <p class="sec-sub">Make one <strong>branded link per channel</strong> for whoever runs your social. They post <code>vinaypasricha.com/go/&lt;name&gt;</code>; each is tracked four ways for the range selected above — <strong>clicks</strong> (every tap of the link), <strong>visitors</strong> (distinct people who actually landed), <strong>sessions</strong>, and <strong>signups</strong> (visitors who became known leads). Clicks well above visitors usually means bots or repeat taps.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:18px">
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Channel<br>
+          <input id="ch-label" type="text" placeholder="Instagram" style="margin-top:4px;width:150px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Sends visitors to<br>
+          <input id="ch-dest" type="text" placeholder="/ (home)" value="/" style="margin-top:4px;width:170px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <label style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Campaign <span style="opacity:.6">(optional)</span><br>
+          <input id="ch-campaign" type="text" placeholder="jul-launch" style="margin-top:4px;width:130px;border:1px solid var(--rule);background:var(--paper-3,#fff);border-radius:4px;padding:8px 10px;font:inherit;font-size:14px"></label>
+        <button id="ch-add" style="font-family:var(--mono);font-size:12px;background:var(--accent,#b45309);color:#fff;border:none;border-radius:5px;padding:9px 16px;cursor:pointer">Add channel</button>
+        <span id="ch-status" style="font-size:12px;color:var(--ink-3)"></span>
+      </div>
+      <div id="ch-list"></div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Audience — who they are</h2>
+      <p class="sec-sub">Approximate <strong>country</strong> (from the visitor's timezone — never IP), <strong>browser</strong>, <strong>operating system</strong>, and how many are <strong>new</strong> vs <strong>returning</strong>.</p>
+      <div class="nvr" style="margin-bottom:16px">
+        <div class="seg"><div class="v" id="newV">0</div><div class="l">New visitors</div></div>
+        <div class="seg"><div class="v" id="retV">0</div><div class="l">Returning visitors</div></div>
+      </div>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Countries</h3><div class="bars" id="audCountries"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Browsers</h3><div class="bars" id="audBrowsers"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Operating systems</h3><div class="bars" id="audOS"></div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Devices</h3><div class="bars" id="devices"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Languages</h3><div class="bars" id="langs"></div></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>Engagement (AI runtimes &amp; leads)</h2>
+      <p class="sec-sub">From your existing database (not the page tracker): AI-conversation depth, how many conversations happened in each runtime, and the leads captured across the site.</p>
+      <div class="stats" id="aiDepth" style="margin-bottom:16px"></div>
+      <div class="cols">
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">AI conversations by runtime</h3><div class="bars" id="runtimes"></div></div>
+        <div><h3 style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px">Recent leads</h3><table class="mini" id="leads"></table></div>
+      </div>
+    </div>
+
+    <div class="an-sec">
+      <h2>AI for Business Leaders — funnel</h2>
+      <p class="sec-sub">Course-prep participants by stage, from first draft to a completed session: draft → research added → link ready → active → completed.</p>
+      <div class="bars" id="funnel"></div>
+    </div>
   </main>
 
-  <dialog id="customDialog" class="wi-dialog small">
-    <form method="dialog" id="customForm">
-      <button class="wi-dialog-close" value="cancel" aria-label="Close">×</button>
-      <p class="wi-kicker">Choose a period</p><h2>Custom dates</h2>
-      <div class="wi-date-grid"><label>From<input id="customStart" type="date" required></label><label>To<input id="customEnd" type="date" required></label></div>
-      <div class="wi-dialog-actions"><button value="cancel" class="wi-btn quiet">Cancel</button><button id="applyCustom" value="default" class="wi-btn primary">Show report</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="drillDialog" class="wi-dialog drill">
-    <div class="wi-drill-shell">
-      <header class="wi-drill-head">
-        <div><p class="wi-kicker">Deep evidence</p><div id="breadcrumbs" class="wi-breadcrumbs"></div><h2 id="drillTitle">Drill-down</h2></div>
-        <button id="drillClose" class="wi-dialog-close" aria-label="Close">×</button>
-      </header>
-      <div id="drillSummary" class="wi-mini-cards"></div>
-      <div id="drillCharts" class="wi-drill-grid"></div>
-      <section class="wi-records"><div class="wi-panel-head"><div><p class="wi-kicker">Smallest available records</p><h3 id="recordTitle">Visitor sessions</h3></div></div><div id="recordList"></div></section>
-    </div>
-  </dialog>
-
-  <div id="toast" class="wi-toast"></div>
-  <script src="website-intelligence.js"></script>
+  <div class="toast" id="toast"></div>
+  <script src="analytics-admin.js"></script>
 </body>
 </html>
