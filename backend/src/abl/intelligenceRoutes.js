@@ -2,8 +2,24 @@
 import { completeGrounded, completeModel } from '../services/ai.js';
 import { extractJson } from './json.js';
 import * as repo from './store.js';
+import { db, COLLECTIONS } from '../firestore.js';
+
+// Resolve cohort UUIDs to their human names so the agent can reason about
+// "Cohort 1", counts per batch, etc. instead of opaque ids.
+async function cohortNameMap() {
+  try {
+    const snap = await db.collection(COLLECTIONS.ablCohorts).get();
+    const map = {};
+    snap.forEach((d) => { map[d.id] = (d.data() || {}).name || d.id; });
+    return map;
+  } catch (e) { return {}; }
+}
 
 const MODEL = process.env.ABL_CHAT_MODEL || process.env.VERTEX_MODEL || 'gemini-2.5-flash';
+// Flash shares its internal "thinking" budget with maxOutputTokens, so an
+// undisabled thinking pass can consume the whole budget and truncate the answer
+// mid-sentence. Turn it off for Flash the same way service.js does.
+const NO_THINK = /flash/i.test(MODEL) ? { thinkingConfig: { thinkingBudget: 0 } } : {};
 const GLOBAL_ID = '__abl_course_intelligence__';
 const nowISO = () => new Date().toISOString();
 const clean = (value, max = 12000) => String(value == null ? '' : value).trim().slice(0, max);
@@ -131,7 +147,7 @@ async function askParticipant(participant, question, useWeb, history) {
     role: 'user', content: `CURRENT QUESTION\n${question}\n\nPRIVATE COURSE EVIDENCE\n${internal}\n\nPUBLIC WEB RESEARCH\n${clean(publicResult.text, 14000) || '(not requested or unavailable)'}\n\nPUBLIC SOURCES\n${JSON.stringify(sources)}`,
   }]);
   const answer = await completeModel({
-    model: MODEL, generationConfig: { maxOutputTokens: 2600, temperature: 0.2 },
+    model: MODEL, generationConfig: { maxOutputTokens: 4000, temperature: 0.2, ...NO_THINK },
     system: `You are Vinay Pasricha's private participant research analyst in an ongoing conversation. Answer the latest question using the supplied private course evidence, recent thread context and any separately supplied public web research. Never invent. Use these headings only when relevant: **Answer**, **What the private record says**, **What public research adds**, **What remains unknown**, **Useful next question**. Label any commercial-interest judgement as an inference, not a fact. Do not expose unrelated private details.`,
     messages: answerMessages,
   });
@@ -195,21 +211,29 @@ async function selectCandidates(records, question) {
 }
 async function askDirectory(participants, question, history) {
   const records = await compactDirectory(participants);
+  const cohorts = await cohortNameMap();
   const selected = await selectCandidates(records, question);
   const byId = new Map(participants.map((participant) => [String(participant.id), participant]));
   const selectedParticipants = selected.ids.map((id) => byId.get(id)).filter(Boolean);
   const detail = await mapLimit(selectedParticipants, 6, async (participant) => ({
     id: participant.id, name: participant.name, company: participant.company_name,
-    cohort_id: participant.cohort_id || null,
+    cohort: cohorts[participant.cohort_id] || participant.cohort_id || 'unassigned',
     evidence: await participantEvidence(participant),
     reason: clean(selected.reasons[participant.id], 500),
   }));
+  // The full roster of EVERY participant in scope, in compact form. This is the
+  // authoritative list for any total, count or breakdown — the relevance-selected
+  // detail below is only a subset for depth, and must never be treated as the whole.
+  const roster = records.map((record) => {
+    const cohort = cohorts[record.cohort_id] || record.cohort_id || 'unassigned';
+    return `- ${record.name || '(no name)'} | ${record.company || '(company unknown)'} | cohort: ${cohort} | ${clean(record.text, 560)}`;
+  }).join('\n');
   const messages = recentConversation(history, 6).concat([{
-    role: 'user', content: `CURRENT QUESTION\n${question}\n\nDIRECTORY SIZE EXAMINED\n${participants.length}\n\nRELEVANT PARTICIPANT EVIDENCE\n${JSON.stringify(detail)}`,
+    role: 'user', content: `CURRENT QUESTION\n${question}\n\nPARTICIPANTS IN SCOPE (authoritative total): ${participants.length}\n\nFULL ROSTER — every participant in scope. Use THIS list for any count, total, per-cohort or per-industry breakdown. Do not shrink a total to the detailed subset below.\n${roster}\n\nDETAILED EVIDENCE — only the participants most relevant to the question, for depth:\n${JSON.stringify(detail)}`,
   }]);
   const answer = await completeModel({
-    model: MODEL, generationConfig: { maxOutputTokens: 3600, temperature: 0.15 },
-    system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence. Give an exact count for each class, name the participants, state the evidence type (profile, research, meeting note, course conversation, output), explain the selection rule, and state how many directory records were examined. Mention likely false positives and missing data. End with one practical follow-up action.`,
+    model: MODEL, generationConfig: { maxOutputTokens: 6000, temperature: 0.15, ...NO_THINK },
+    system: `You are Vinay Pasricha's private course intelligence analyst in an ongoing conversation. Answer the latest cross-participant question only from the supplied private evidence and recent thread context. The FULL ROSTER lists EVERY participant in scope and is authoritative for totals, counts, and per-cohort or per-industry breakdowns — never report a total smaller than the "participants in scope" number unless the question itself narrows the set, and account for every roster entry (note ones with missing data rather than dropping them). Use the DETAILED EVIDENCE only for depth on specific people. Never invent or count an inference as confirmed. Where the question concerns possible commercial interest, classify people as Confirmed, Probable/inferred, or Insufficient evidence, with an exact count for each class, name the participants, and state the evidence type. Mention likely false positives and missing data. End with one practical follow-up action.`,
     messages,
   });
   return {

@@ -112,13 +112,24 @@
     ask.onclick = async function(){
       var value = question.value.trim();
       if (!value) { status.textContent = 'Ask a question first.'; return; }
-      ask.disabled = true; ask.textContent = 'Analysing…'; status.textContent = 'Scanning every participant in batches, then checking relevant underlying evidence…';
+      ask.disabled = true;
+      // Live elapsed timer — this query reads across every participant and
+      // typically takes 30-60s, so show the operator it is still working.
+      var started = Date.now();
+      var tick = function(){
+        var s = Math.round((Date.now() - started) / 1000);
+        ask.textContent = 'Analysing… ' + s + 's';
+        status.textContent = 'Reading across every participant and the relevant evidence — usually 30-60s (elapsed ' + s + 's).';
+      };
+      tick();
+      var timer = setInterval(tick, 1000);
       try {
         var result = await api('/api/abl/intelligence/cohort/ask', { method:'POST', body:JSON.stringify({ question:value, cohort_id:document.getElementById('courseIntelCohort').value || null }) });
         renderAnswer(result.answer);
         renderMatches(result.matches || []); renderHistory(result.messages || []); question.value = '';
-        status.textContent = 'Analysis complete. Review the evidence classification before acting.';
+        status.textContent = 'Analysis complete in ' + Math.round((Date.now() - started) / 1000) + 's. Review the evidence classification before acting.';
       } catch (error) { status.textContent = error.message || 'Could not complete the analysis.'; }
+      clearInterval(timer);
       ask.disabled = false; ask.textContent = 'Ask Course Intelligence';
     };
     question.addEventListener('keydown',function(event){ if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') ask.click(); });

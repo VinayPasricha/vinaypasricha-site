@@ -36,6 +36,9 @@ export const config = {
   ablAuthSecret: optional('ABL_AUTH_SECRET', optional('ADMIN_TOKEN', '')),
   resendApiKey: optional('RESEND_API_KEY', ''),
   ablFromEmail: optional('ABL_FROM_EMAIL', 'AI for Business Leaders <course@vinaypasricha.com>'),
+  // Replies to course announcements land in the instructor's inbox, not the
+  // unmonitored no-reply sending address.
+  ablReplyTo: optional('ABL_REPLY_TO', 'vinay@goodspace.ai'),
 
   // Book Growth Command Centre. Search Console uses the Cloud Run service
   // account, which must be added as a user of the configured property.

@@ -51,7 +51,7 @@ async function sendOne({ to, subject, html }, attempt = 0) {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${config.resendApiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: config.ablFromEmail, to: [to], subject, html }),
+    body: JSON.stringify({ from: config.ablFromEmail, to: [to], subject, html, reply_to: config.ablReplyTo }),
   });
   if (response.ok) return;
   // Rate limits (429) and transient server errors are retried with backoff,
