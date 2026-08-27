@@ -178,7 +178,19 @@
     let t = String(text).trim().replace(/^```(?:json)?/i, '').replace(/```$/,'').trim();
     const a = t.indexOf('{'), b = t.lastIndexOf('}');
     if (a !== -1 && b !== -1 && b > a) t = t.slice(a, b + 1);
-    try { return JSON.parse(t); } catch (e) { return null; }
+    try { return JSON.parse(t); } catch (e) { /* fall through to lenient extraction */ }
+    // The model sometimes leaves inner double-quotes unescaped inside the
+    // "answer" value, which breaks JSON.parse. Recover by anchoring on the
+    // known keys and pulling the fields out directly.
+    const m = t.match(/"answer"\s*:\s*"([\s\S]*?)"\s*,\s*"used"/) || t.match(/"answer"\s*:\s*"([\s\S]*)"\s*\}?\s*$/);
+    if (m) {
+      const groundedM = /"grounded"\s*:\s*(true|false)/.exec(t);
+      const usedM = t.match(/"used"\s*:\s*\[([^\]]*)\]/);
+      const used = usedM ? usedM[1].split(',').map((x) => parseInt(x, 10)).filter((n) => !isNaN(n)) : [];
+      const answer = m[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').trim();
+      return { grounded: groundedM ? groundedM[1] === 'true' : true, answer, used };
+    }
+    return null;
   }
 
   // ---- public ask ---------------------------------------------------
