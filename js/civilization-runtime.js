@@ -85,7 +85,7 @@
     if (indexPromise) return indexPromise;
     indexPromise = fetch(INDEX_URL, { cache: 'force-cache' })
       .then(r => { if (!r.ok) throw new Error('index ' + r.status); return r.json(); })
-      .then(data => { MODEL = buildModel(data.chunks || []); return MODEL; });
+      .then(data => { MODEL = buildModel(Array.isArray(data) ? data : (data.chunks || [])); return MODEL; });
     return indexPromise;
   }
 
