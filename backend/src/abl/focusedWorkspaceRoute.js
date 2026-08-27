@@ -18,7 +18,7 @@ function focusedShell() {
     )
     .replace(
       '</body>',
-      '<script src="/ai-business-leaders/workspace-home-focus.js"></script>' +
+      '<script src="/ai-business-leaders/workspace-home-focus.js?v=nc2"></script>' +
       '<script src="/ai-business-leaders/participant-only-nav.js"></script></body>'
     );
   return shell;
