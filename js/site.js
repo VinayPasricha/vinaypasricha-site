@@ -371,13 +371,27 @@ const ANALYTICS = {
     const root = siteRootPrefix();
     const ribbon = document.createElement('a');
     ribbon.className = 'course-ribbon';
-    ribbon.href = root + 'ai-business-leaders/login';
-    ribbon.setAttribute('data-course-entry', '');
-    ribbon.innerHTML =
-      '<span class="cr-dot" aria-hidden="true"></span>' +
-      '<span class="cr-cohort">Live cohort · AI for Business Leaders</span>' +
-      '<strong data-course-entry-label>Course participants — enter your workspace </strong>' +
-      '<span class="cr-arrow" aria-hidden="true">→</span>';
+    let returning = false;
+    try {
+      const saved = JSON.parse(localStorage.getItem('abl_participant_access_v1') || 'null');
+      returning = !!(saved && saved.token);
+    } catch (e) {}
+    if (returning) {
+      ribbon.href = root + 'ai-business-leaders/login';
+      ribbon.setAttribute('data-course-entry', '');
+      ribbon.innerHTML =
+        '<span class="cr-dot" aria-hidden="true"></span>' +
+        '<span class="cr-cohort">Live cohort · AI for Business Leaders</span>' +
+        '<strong data-course-entry-label>Course participants — enter your workspace </strong>' +
+        '<span class="cr-arrow" aria-hidden="true">→</span>';
+    } else {
+      ribbon.href = root + 'paths/course';
+      ribbon.innerHTML =
+        '<span class="cr-dot" aria-hidden="true"></span>' +
+        '<span class="cr-cohort">Live cohort · AI for Business Leaders</span>' +
+        '<strong>Applications open — the public course </strong>' +
+        '<span class="cr-arrow" aria-hidden="true">→</span>';
+    }
     document.body.insertBefore(ribbon, document.body.firstChild);
   }
 
