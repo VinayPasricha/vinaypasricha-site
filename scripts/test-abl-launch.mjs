@@ -66,7 +66,11 @@ includes(server, "layer.name === 'serveStatic'", 'participant routes are inserte
 includes(server, 'registerSecureParticipantPages(app)', 'secure participant shells are registered');
 
 // Studio must fail closed and anonymous Studio UI must be redirected safely.
-excludes(workspace, "|| 'vik123'", 'workspace Studio API has no built-in fallback passphrase');
+const app = read('backend/src/app.js');
+const noHardcodedPassphrase = (source) => !/STUDIO_PASSPHRASE\s*\|\|\s*'[^']+'/.test(source);
+assert.ok(noHardcodedPassphrase(workspace), 'workspace Studio API has no built-in fallback passphrase');
+assert.ok(noHardcodedPassphrase(guard), 'participant guard has no built-in fallback passphrase');
+assert.ok(noHardcodedPassphrase(app), 'central Studio has no built-in fallback passphrase');
 includes(workspace, "if (!passphrase) return ''", 'missing workspace Studio passphrase fails closed');
 includes(workspace, 'cookieAllowed || tokenAllowed', 'workspace Studio accepts only configured credentials');
 includes(server, 'studio_not_configured', 'central Studio is blocked when its passphrase is absent');

@@ -83,10 +83,11 @@ const blockedPrefixes = () => BLOCKED_PREFIXES;
 // NOTE: the cookie MUST be named "__session" — Firebase Hosting strips every
 // other cookie when proxying to Cloud Run, so any other name never arrives.
 const STUDIO_COOKIE = '__session';
-// The Studio login passphrase. Memorable by design (override with STUDIO_PASSPHRASE
-// env). The long ADMIN_TOKEN also works as a master key.
-const STUDIO_PASSPHRASE = process.env.STUDIO_PASSPHRASE || 'vik123';
+// Passphrase is env-only; no default in source. The long ADMIN_TOKEN also
+// works as a master key.
+const STUDIO_PASSPHRASE = String(process.env.STUDIO_PASSPHRASE || '').trim();
 function studioHash() {
+  if (!STUDIO_PASSPHRASE) return '';
   return crypto.createHash('sha256').update('studio:' + STUDIO_PASSPHRASE).digest('hex');
 }
 function parseCookies(req) {
@@ -212,7 +213,11 @@ export function createApp() {
     if (!IS_PUBLIC_DEPLOY) return next(); // local dev: open
     if (p === '/studio/login' || p === '/studio/login.html') return next();
     if (studioAuthed(req)) return next();
-    if (req.method === 'GET' || req.method === 'HEAD') return res.redirect(302, '/studio/login');
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      res.statusCode = 302;
+      res.setHeader('Location', '/studio/login');
+      return res.end();
+    }
     return res.status(401).json({ error: 'unauthorized' });
   });
 
@@ -220,19 +225,26 @@ export function createApp() {
   // Rate-limited to blunt brute-force guessing of the passphrase.
   app.post('/api/studio/login', rateLimit({ windowMs: 60000, max: 10 }), (req, res) => {
     const pw = String((req.body && req.body.password) || '');
-    // The passphrase, or the long ADMIN_TOKEN as a master key.
-    if (pw !== STUDIO_PASSPHRASE && !(config.adminToken && pw === config.adminToken)) {
+    // Passphrase is env-only; no default in source. Empty password must never
+    // match empty env. If the passphrase env is empty, only ADMIN_TOKEN may succeed.
+    if (!STUDIO_PASSPHRASE && !config.adminToken) {
+      return res.status(503).json({ error: 'studio_not_configured' });
+    }
+    if ((!STUDIO_PASSPHRASE || pw !== STUDIO_PASSPHRASE) && !(config.adminToken && pw === config.adminToken)) {
       return res.status(401).json({ error: 'invalid' });
     }
-    const secure = IS_PUBLIC_DEPLOY ? '; Secure' : '';
-    res.setHeader('Set-Cookie', STUDIO_COOKIE + '=' + studioHash() + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800' + secure);
+    const hash = studioHash();
+    if (hash) {
+      const secure = IS_PUBLIC_DEPLOY ? '; Secure' : '';
+      res.setHeader('Set-Cookie', STUDIO_COOKIE + '=' + hash + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800' + secure);
+    }
     res.json({ ok: true });
   });
   app.post('/api/studio/logout', (req, res) => {
     res.setHeader('Set-Cookie', STUDIO_COOKIE + '=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0');
     res.json({ ok: true });
   });
-  app.get('/api/studio/status', (req, res) => res.json({ authed: studioAuthed(req), enabled: !!config.adminToken }));
+  app.get('/api/studio/status', (req, res) => res.json({ authed: studioAuthed(req), enabled: !!STUDIO_PASSPHRASE || !!config.adminToken }));
 
   // ---- Health ----
   app.get('/api/health', (req, res) => res.json({ ok: true }));

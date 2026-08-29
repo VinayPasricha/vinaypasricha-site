@@ -10,7 +10,7 @@ import {
 // passphrase hash the main gate uses, or the ADMIN_TOKEN master key) may open
 // any participant's workspace read-only for support and review.
 function studioAuthed(req) {
-  const passphrase = String(process.env.STUDIO_PASSPHRASE || 'vik123').trim();
+  const passphrase = String(process.env.STUDIO_PASSPHRASE || '').trim();
   const expected = passphrase ? crypto.createHash('sha256').update('studio:' + passphrase).digest('hex') : '';
   const cookies = {};
   String(req.headers.cookie || '').split(';').forEach((part) => {

@@ -1,36 +1,11 @@
 /* =============================================================
-   studio.js — passphrase gate + shared helpers
+   studio.js — shared helpers
    =============================================================
-   v1: client-side only. The passphrase compares against a hash so
-   the source doesn't reveal it. For real security, this should
-   move to server-side auth. This is "keep casual visitors out",
-   not "stop a determined attacker" — that's what real backend
-   auth is for (planned v1.1, see prompt-studio-requirement.md).
-
-   To change the passphrase: open studio/index.html in a fresh
-   browser, open devtools console, run:
-     await sha256('your-new-passphrase')
-   then paste the resulting hex into PASSPHRASE_HASH below.
+   Access is controlled by the server-side studio gate (admin login
+   → httpOnly cookie). This file reveals the operator UI after that
+   gate has already let the request through, and fires studio:authed
+   so admin pages can boot. There is no client-side passphrase.
    ============================================================= */
-
-// SHA-256 of 'vik123' — personal passphrase. Strengthen before public.
-const PASSPHRASE_HASH = '536d21660e50d9ab4ca788dea02ff597c43ff1e55622953b8cb833d1039a8f4c';
-// Allow simple bypass via the URL: ?key=vik123 (used by the Index menu's Studio link)
-const DEV_KEY = 'vik123';
-
-async function sha256(str) {
-  const buf = new TextEncoder().encode(str);
-  const hash = await crypto.subtle.digest('SHA-256', buf);
-  return Array.from(new Uint8Array(hash))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
-async function checkPassphrase(input) {
-  if (input === DEV_KEY) return true;
-  const hash = await sha256(input);
-  return hash === PASSPHRASE_HASH;
-}
 
 const AUTH_KEY = 'studio.authed';
 const AUTH_TTL = 12 * 60 * 60 * 1000; // 12 hours
