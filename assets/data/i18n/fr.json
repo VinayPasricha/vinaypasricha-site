@@ -907,6 +907,8 @@
     "Talk to the book": "Parlez au livre",
     "Continue from <em>where you left off.</em>": "Reprendre <em>là où vous vous êtes arrêté(e).</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fondateur, GoodSpace AI · Auteur de six livres",
-    "Welcome back": "Bon retour"
+    "Welcome back": "Bon retour",
+    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Relié sur Amazon <span class=\"arrow\">↗</span>",
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Livre numérique Kindle <span class=\"arrow\">↗</span>"
   }
 }

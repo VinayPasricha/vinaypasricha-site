@@ -907,6 +907,8 @@
     "Talk to the book": "本と語り合う",
     "Continue from <em>where you left off.</em>": "<em>中断した箇所から続行。</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 創業者 ・ 6冊の著書を執筆",
-    "Welcome back": "おかえりなさいませ"
+    "Welcome back": "おかえりなさいませ",
+    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazonでハードカバー <span class=\"arrow\">↗</span>",
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle電子書籍 <span class=\"arrow\">↗</span>"
   }
 }

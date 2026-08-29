@@ -907,6 +907,8 @@
     "Talk to the book": "पुस्तक से बात करें",
     "Continue from <em>where you left off.</em>": "<em>जहाँ आपने छोड़ा था,</em> वहीं से जारी रखें।",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — संस्थापक, GoodSpace AI · छह पुस्तकों के लेखक",
-    "Welcome back": "आपका पुनः स्वागत है"
+    "Welcome back": "आपका पुनः स्वागत है",
+    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazon पर हार्डकवर <span class=\"arrow\">↗</span>",
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ई-बुक <span class=\"arrow\">↗</span>"
   }
 }

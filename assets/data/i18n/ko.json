@@ -907,6 +907,8 @@
     "Talk to the book": "책과 대화하세요",
     "Continue from <em>where you left off.</em>": "<em>중단했던 지점부터</em> 이어가세요.",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 창립자 · 여섯 권의 책 저자",
-    "Welcome back": "다시 오신 것을 환영합니다"
+    "Welcome back": "다시 오신 것을 환영합니다",
+    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "아마존에서 하드커버 <span class=\"arrow\">↗</span>",
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 전자책 <span class=\"arrow\">↗</span>"
   }
 }
