@@ -675,6 +675,28 @@ export function createApp() {
   // JSON 404 for unmatched API routes; otherwise let static 404 stand.
   app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));
 
+  // Designed HTML 404 (GET only). API JSON 404s above are left intact.
+  app.use((req, res, next) => {
+    if (req.method !== 'GET') return next();
+    const abs = path.join(SITE_ROOT, '404.html');
+    if (!existsSync(abs)) {
+      res.status(404);
+      res.type('text');
+      return res.send('Not found');
+    }
+    try {
+      const out = stampAssetVersions(injectTracker(readFileSync(abs, 'utf8')));
+      res.status(404);
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'no-cache');
+      return res.send(out);
+    } catch (e) {
+      res.status(404);
+      res.type('text');
+      return res.send('Not found');
+    }
+  });
+
   // Express error handler (e.g. malformed JSON body).
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {

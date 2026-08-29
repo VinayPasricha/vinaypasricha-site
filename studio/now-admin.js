@@ -42,7 +42,7 @@ async function loadNow() {
       };
     }
   } catch (e) {}
-  return { items: [{ verb: 'Writing', subject: 'The Signal' }], page: { lede: '', sections: [] }, as_of: '', updated_at: null };
+  return { items: [{ verb: 'Working', subject: 'the Signal field' }], page: { lede: '', sections: [] }, as_of: '', updated_at: null };
 }
 
 function saveDraft() {

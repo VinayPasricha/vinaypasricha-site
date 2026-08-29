@@ -1,18 +1,27 @@
 {
   "_comment": "The 'Now' line in the topbar AND the /now page. Both edited via Studio → Now.",
-  "updated_at": "2026-05-25",
-  "as_of": "May 25, 2026",
+  "updated_at": "2026-08-29",
+  "as_of": "August 29, 2026",
   "items": [
-    { "verb": "Writing",  "subject": "The Signal" },
-    { "verb": "Building", "subject": "GoodSpace AI" },
-    { "verb": "Running",  "subject": "a live cohort" }
+    {
+      "verb": "Working",
+      "subject": "the Signal field"
+    },
+    {
+      "verb": "Building",
+      "subject": "GoodSpace AI"
+    },
+    {
+      "verb": "Running",
+      "subject": "a private alumni cohort"
+    }
   ],
   "page": {
     "lede": "What I am *currently* doing, thinking, reading. Updated when something actually changes — not on a schedule. Inspired by [Derek Sivers' /now page](https://nownownow.com/about).",
     "sections": [
       {
         "label": "Writing",
-        "body": "*The Signal* is the slow piece, now published. It is the most personal of the books and is being written recursively — each pass produces a deeper version of the same chapters. The companion field — the AI-mediated developmental experience — is now live at [/signal](../signal/) and is being used to pressure-test the architecture as the manuscript matures.\n\n*Organizational Frequency* is published, with a print edition to follow."
+        "body": "*The Signal* is published on Kindle. Recursion continues in the field at [/signal](../signal/), which is live at v0.1.\n\n*Organizational Frequency* is published, with a print edition to follow."
       },
       {
         "label": "Building",
@@ -20,7 +29,7 @@
       },
       {
         "label": "Running",
-        "body": "A cohort of the AI Leadership Course is currently underway — a small group of senior operators working through AI strategy in their own businesses, week by week. Applications for the next cohort are open."
+        "body": "A private five-week cohort for Harvard OPM alumni — the working group already on the WhatsApp list. This is not a public course. Alumni who already have access enter the workspace at [/ai-business-leaders/login](/ai-business-leaders/login)."
       },
       {
         "label": "Reading",
@@ -32,7 +41,7 @@
       },
       {
         "label": "Recent",
-        "body": "*The Signal* field shipped this month. The Studio editing room is now operational across six surfaces — videos, notebook, books, prompts, the rotating *Now* line, and a progress dashboard. The site is now an instrument I can update myself, weekly, without rebuilding from scratch.\n\nThe Notebook is beginning to fill — the first essays are being written now."
+        "body": "*The Signal* is published. The field at [/signal](../signal/) is live at v0.1. The Studio editing room is operational across six surfaces — videos, notebook, books, prompts, the rotating *Now* line, and a progress dashboard.\n\nThe Notebook is empty for now. Watch has two shorts from May 22."
       },
       {
         "label": "Not doing",

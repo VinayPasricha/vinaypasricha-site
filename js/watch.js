@@ -45,7 +45,7 @@ const PLATFORMS = {
 
 // Channels — the subscribe footer pulls from here
 const CHANNELS = {
-  youtube:   'https://www.youtube.com/@vinaypasricha',
+  youtube:   'https://www.youtube.com/@VinayPasrichauthor',
   instagram: 'https://www.instagram.com/vinaypasricha',
   linkedin:  'https://www.linkedin.com/in/vinay-pasricha-a264186/',
   x:         'https://x.com/vinaypasricha',
