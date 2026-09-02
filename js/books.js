@@ -57,6 +57,7 @@ const DEFAULT_BOOKS = [
       'Strategy without hype: questions before answers',
     ],
     amazon: 'https://www.amazon.in/dp/B0GFXXPGP7',
+    amazon_print: 'https://www.amazon.in/dp/9360769622',
     excerpt_path: 'paths/ai-for-business',
   },
   {
@@ -392,11 +393,17 @@ function renderFeaturedBook(book) {
               ? renderNotifyButton(book)
               : (book.amazon
                 ? `<a class="bf-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
-                   <span class="bf-buy-main">Buy on Amazon</span>
+                   <span class="bf-buy-main">${book.amazon_print ? 'Kindle eBook' : 'Buy on Amazon'}</span>
                    <span class="bf-buy-lang">in ${langData.native}</span>
                    <span class="bf-buy-arrow">↗</span>
                  </a>`
                 : '')}
+            ${book.amazon_print && !isUpcoming
+              ? `<a class="bf-buy bf-buy-print" href="${book.amazon_print}" target="_blank" rel="noopener" data-slug="${book.slug}">
+                   <span class="bf-buy-main">Paperback</span>
+                   <span class="bf-buy-arrow">&#8599;</span>
+                 </a>`
+              : ''}
             ${book.try_it
               ? `<a class="bf-try" href="${book.try_it.url}">
                    ${escapeHTML(book.try_it.label)} <span class="arrow">→</span>
@@ -445,11 +452,17 @@ function renderBookCard(book) {
             ? renderNotifyButton(book)
             : (book.amazon
               ? `<a class="bc-buy" href="${amazonURL(book, lang)}" target="_blank" rel="noopener" data-slug="${book.slug}">
-                 <span>Buy on Amazon</span>
+                 <span>${book.amazon_print ? 'Kindle eBook' : 'Buy on Amazon'}</span>
                  <span class="bc-buy-lang">${langData.native}</span>
                  <span class="bc-buy-arrow">↗</span>
                </a>`
               : '')}
+          ${book.amazon_print && !isUpcoming
+            ? `<a class="bc-buy bc-buy-print" href="${book.amazon_print}" target="_blank" rel="noopener" data-slug="${book.slug}">
+                 <span>Paperback</span>
+                 <span class="bc-buy-arrow">&#8599;</span>
+               </a>`
+            : ''}
           ${book.excerpt_path && !isUpcoming
             ? `<a class="bc-excerpt" href="${book.excerpt_path}">Read about this book <span class="arrow">→</span></a>`
             : ''
