@@ -2,7 +2,7 @@
   "_comment": "Tamil translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ta",
   "lang_native": "தமிழ்",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "வளர்ச்சியின் ஆய்வாளர்",
     "Now": "இப்போது",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "<em>நீங்கள் விட்டுச்சென்ற இடத்திலிருந்து</em> தொடரவும்.",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI நிறுவனர் · ஆறு புத்தகங்களின் ஆசிரியர்",
     "Welcome back": "மீண்டும் வருக",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazon-இல் திண் அட்டைப் புத்தகம் <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle மின்புத்தகம் <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle மின்புத்தகம் <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "அமேசானில் மென்பதிப்பு <span class=\"arrow\">↗</span>"
   }
 }

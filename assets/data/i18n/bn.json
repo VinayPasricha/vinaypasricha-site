@@ -2,7 +2,7 @@
   "_comment": "Bengali translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "bn",
   "lang_native": "বাংলা",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "উদ্ভবের অনুসন্ধানকারী",
     "Now": "এখন",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "যেখান থেকে <em>আপনি শেষ করেছিলেন।</em> সেখান থেকে চালিয়ে যান।",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — প্রতিষ্ঠাতা, GoodSpace AI · ছয়টি বইয়ের লেখক",
     "Welcome back": "পুনরায় স্বাগতম",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "হার্ডকভার Amazon-এ <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ইবুক <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ইবুক <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazon-এ পেপারব্যাক <span class=\"arrow\">↗</span>"
   }
 }

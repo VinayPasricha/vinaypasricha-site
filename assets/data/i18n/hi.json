@@ -2,7 +2,7 @@
   "_comment": "Hindi translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "hi",
   "lang_native": "हिन्दी",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "उद्भव के अन्वेषक",
     "Now": "अभी",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "<em>जहाँ आपने छोड़ा था,</em> वहीं से जारी रखें।",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — संस्थापक, GoodSpace AI · छह पुस्तकों के लेखक",
     "Welcome back": "आपका पुनः स्वागत है",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazon पर हार्डकवर <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ई-बुक <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ई-बुक <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "पेपरबैक Amazon पर <span class=\"arrow\">↗</span>"
   }
 }

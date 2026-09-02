@@ -2,7 +2,7 @@
   "_comment": "Kannada translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "kn",
   "lang_native": "ಕನ್ನಡ",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "ಉದ್ಭವದ ಅನ್ವೇಷಕ",
     "Now": "ಈಗ",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "ಮುಂದುವರೆಯಿರಿ, <em>ನೀವು ನಿಲ್ಲಿಸಿದ ಸ್ಥಳದಿಂದ.</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — ಸ್ಥಾಪಕರು, GoodSpace AI · ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕರು",
     "Welcome back": "ಮರಳಿ ಸ್ವಾಗತ",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazon ನಲ್ಲಿ ಹಾರ್ಡ್‌ಕವರ್ <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "ಕಿಂಡಲ್ ಇ-ಪುಸ್ತಕ <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "ಕಿಂಡಲ್ ಇ-ಪುಸ್ತಕ <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazon ನಲ್ಲಿ ಮೆದುಹೊದಿಕೆ ಪುಸ್ತಕ <span class=\"arrow\">↗</span>"
   }
 }

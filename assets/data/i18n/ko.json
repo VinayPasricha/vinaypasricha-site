@@ -2,7 +2,7 @@
   "_comment": "Korean translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ko",
   "lang_native": "한국어",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "출현의 탐구자",
     "Now": "지금",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "<em>중단했던 지점부터</em> 이어가세요.",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 창립자 · 여섯 권의 책 저자",
     "Welcome back": "다시 오신 것을 환영합니다",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "아마존에서 하드커버 <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 전자책 <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 전자책 <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "아마존에서 페이퍼백 <span class=\"arrow\">↗</span>"
   }
 }

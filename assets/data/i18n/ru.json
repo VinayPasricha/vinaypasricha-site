@@ -2,7 +2,7 @@
   "_comment": "Russian translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ru",
   "lang_native": "Русский",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "Исследователь возникающего",
     "Now": "Сейчас",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "Продолжить с <em>того места, где вы остановились.</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Основатель, GoodSpace AI · Автор шести книг",
     "Welcome back": "Добро пожаловать обратно",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Твердый переплет на Amazon <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Электронная книга Kindle <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Электронная книга Kindle <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Мягкая обложка на Amazon <span class=\"arrow\">↗</span>"
   }
 }

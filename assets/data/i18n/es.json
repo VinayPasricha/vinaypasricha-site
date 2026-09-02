@@ -2,7 +2,7 @@
   "_comment": "Spanish translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "es",
   "lang_native": "Español",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "Explorador de la Emergencia",
     "Now": "Ahora",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "Continuar desde <em>donde lo dejaste.</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fundador, GoodSpace AI · Autor de seis libros",
     "Welcome back": "Bienvenido de nuevo",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Tapa dura en Amazon <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle libro electrónico <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle libro electrónico <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Tapa blanda en Amazon <span class=\"arrow\">↗</span>"
   }
 }

@@ -2,7 +2,7 @@
   "_comment": "Japanese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ja",
   "lang_native": "日本語",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "エマージェンスの探求者",
     "Now": "今",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "<em>中断した箇所から続行。</em>",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 創業者 ・ 6冊の著書を執筆",
     "Welcome back": "おかえりなさいませ",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "Amazonでハードカバー <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle電子書籍 <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle電子書籍 <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazonにてペーパーバック <span class=\"arrow\">↗</span>"
   }
 }

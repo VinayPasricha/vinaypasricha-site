@@ -2,7 +2,7 @@
   "_comment": "Simplified Chinese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "zh",
   "lang_native": "中文",
-  "updated_at": "2026-08-30",
+  "updated_at": "2026-09-02",
   "strings": {
     "Explorer of Emergence": "涌现的探索者",
     "Now": "当下",
@@ -908,7 +908,7 @@
     "Continue from <em>where you left off.</em>": "继续<em>上次中断之处</em>。",
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 创始人 · 著有六本著作",
     "Welcome back": "欢迎回来",
-    "Hardcover on Amazon <span class=\"arrow\">↗</span>": "精装版在 Amazon <span class=\"arrow\">↗</span>",
-    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 电子书 <span class=\"arrow\">↗</span>"
+    "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 电子书 <span class=\"arrow\">↗</span>",
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazon 平装本 <span class=\"arrow\">↗</span>"
   }
 }
