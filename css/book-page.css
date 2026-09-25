@@ -1,0 +1,134 @@
+/* =============================================================
+   book-page.css — one landing page per book (/books/<slug>)
+   Inherits the topbar, hero, book card, pillars, defense,
+   continuations, and footer from site.css.
+   ============================================================= */
+
+.pillar .letter {
+  font-size: 64px;
+  letter-spacing: -0.04em;
+}
+
+.book-card-info h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.book-card-info h2 em { font-style: italic; }
+
+.book-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+.book-kicker .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(138, 37, 16, 0.6);
+  animation: pulse 2.4s ease-out infinite;
+}
+
+.book-for {
+  padding: 100px var(--gutter);
+  max-width: 1180px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.book-for .label,
+.book-faq .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 28px;
+}
+.book-for h2,
+.book-faq h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 24px;
+  max-width: 18ch;
+}
+.book-for h2 em,
+.book-faq h2 em { font-style: italic; color: var(--accent); }
+.book-for p {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 42em;
+}
+.book-for p em { font-style: italic; color: var(--ink); }
+
+.book-faq {
+  padding: 100px var(--gutter) 40px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.faq-item {
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+}
+.faq-item:last-child { border-bottom: 1px solid var(--rule); }
+.faq-item h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.faq-item p {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.book-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 36px;
+}
+.book-paths a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 4px;
+}
+.book-paths a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+@media (max-width: 980px) {
+  .book-for,
+  .book-faq { padding: 64px 28px; }
+  .book-for h2,
+  .book-faq h2 { font-size: 34px; }
+  .book-for p { font-size: 18px; }
+  .faq-item h3 { font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-kicker .dot { animation: none; }
+}
