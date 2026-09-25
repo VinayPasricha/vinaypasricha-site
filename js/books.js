@@ -41,6 +41,7 @@ const LANGUAGES = [
 const DEFAULT_BOOKS = [
   {
     slug: 'ai-for-business-leaders',
+    path: '/books/ai-for-business-leaders',
     volume: 'I',
     title: 'AI for Business Leaders',
     subtitle: 'A clear-headed guide to leading with AI without losing the plot.',
@@ -62,6 +63,7 @@ const DEFAULT_BOOKS = [
   },
   {
     slug: 'siv-method',
+    path: '/books/siv-method',
     volume: 'II',
     title: 'The SIV Method',
     subtitle: 'A Brutal Framework for Understanding Reality Before Execution.',
@@ -93,6 +95,7 @@ const DEFAULT_BOOKS = [
   },
   {
     slug: 'execution-doctrine',
+    path: '/books/execution-doctrine',
     volume: 'III',
     title: 'The Execution Doctrine',
     subtitle: 'From understanding to applied force in the world.',
@@ -122,6 +125,7 @@ const DEFAULT_BOOKS = [
   },
   {
     slug: 'organizational-frequency',
+    path: '/books/organizational-frequency',
     volume: 'IV',
     title: 'Organizational Frequency',
     subtitle: 'A new doctrine for hiring in the age of intelligent discovery.',
@@ -141,11 +145,12 @@ const DEFAULT_BOOKS = [
     amazon_by_lang: {
       en: 'https://www.amazon.in/dp/B0H2NTL3XS',
     },
-    excerpt_path: 'paths/hire',
+    excerpt_path: '/books/organizational-frequency',
     series: 'A Doctrine for the Future of Work · 01',
   },
   {
     slug: 'the-signal',
+    path: '/books/the-signal',
     volume: 'V',
     title: 'The Signal',
     subtitle: 'A Practice for Clearer Reception.',
@@ -166,6 +171,7 @@ const DEFAULT_BOOKS = [
   },
   {
     slug: 'civilization',
+    path: '/books/civilization',
     volume: 'VI',
     title: 'Civilization',
     subtitle: 'A framework for evaluating the direction of intelligent civilizations.',
@@ -272,6 +278,14 @@ function amazonURL(book, lang) {
   return book.amazon;
 }
 
+// Dedicated landing page. Cover, title, and "Read about this book" go here —
+// never to a path page. Organizational Frequency used to send readers to the
+// hiring path (paths/hire) by mistake.
+function bookPage(book) {
+  if (book && book.path) return book.path;
+  return '/books/' + (book && book.slug ? book.slug : '');
+}
+
 function langInfo(code) {
   return LANGUAGES.find(l => l.code === code) || LANGUAGES[0];
 }
@@ -366,7 +380,7 @@ function renderFeaturedBook(book) {
       </div>
       <div class="bf-grid">
         <div class="bf-cover">
-          <a href="${book.path}" class="bf-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
+          <a href="${bookPage(book)}" class="bf-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
           ${book.cover
             ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
             : `<div class="bf-cover-placeholder">
@@ -382,7 +396,7 @@ function renderFeaturedBook(book) {
             ${book.pages ? `<span class="dot">·</span><span>${book.pages} pages</span>` : ''}
             ${book.isbn ? `<span class="dot">·</span><span>ISBN ${book.isbn}</span>` : ''}
           </div>
-          <h2 class="bf-title"><a href="${book.path}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h2>
+          <h2 class="bf-title"><a href="${bookPage(book)}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h2>
           <p class="bf-subtitle">${escapeHTML(book.subtitle)}</p>
           <p class="bf-pitch">${escapeHTML(book.pitch)}</p>
           <ul class="bf-topics">
@@ -408,10 +422,9 @@ function renderFeaturedBook(book) {
               ? `<a class="bf-try" href="${book.try_it.url}">
                    ${escapeHTML(book.try_it.label)} <span class="arrow">→</span>
                  </a>`
-              : (book.excerpt_path
-                ? `<a class="bf-try" href="${book.excerpt_path}">
-                     Read the chapter on this <span class="arrow">→</span>
-                   </a>` : '')
+              : `<a class="bf-try" href="${bookPage(book)}">
+                   Read about this book <span class="arrow">→</span>
+                 </a>`
             }
           </div>
           ${!isUpcoming && book.amazon ? renderBookLangChip(book) : ''}
@@ -429,7 +442,7 @@ function renderBookCard(book) {
   return `
     <article class="book-card-v2 ${isUpcoming ? 'upcoming' : ''}" data-slug="${book.slug}">
       <div class="bc-cover">
-        <a href="${book.path}" class="bc-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
+        <a href="${bookPage(book)}" class="bc-cover-link" aria-label="Read about ${escapeHTML(book.title)}" style="display:block">
         ${book.cover
           ? `<img src="${book.cover}" alt="${escapeHTML(book.title)} cover">`
           : `<div class="bc-cover-placeholder">
@@ -444,7 +457,7 @@ function renderBookCard(book) {
           <span>${book.year}</span>
           ${book.pages ? `<span class="dot">·</span><span>${book.pages}p</span>` : ''}
         </div>
-        <h3 class="bc-title"><a href="${book.path}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h3>
+        <h3 class="bc-title"><a href="${bookPage(book)}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h3>
         <p class="bc-subtitle">${escapeHTML(book.subtitle)}</p>
         <p class="bc-pitch">${escapeHTML(book.pitch)}</p>
         <div class="bc-actions">
@@ -463,8 +476,8 @@ function renderBookCard(book) {
                  <span class="bc-buy-arrow">&#8599;</span>
                </a>`
             : ''}
-          ${book.excerpt_path && !isUpcoming
-            ? `<a class="bc-excerpt" href="${book.excerpt_path}">Read about this book <span class="arrow">→</span></a>`
+          ${!isUpcoming
+            ? `<a class="bc-excerpt" href="${bookPage(book)}">Read about this book <span class="arrow">→</span></a>`
             : ''
           }
         </div>

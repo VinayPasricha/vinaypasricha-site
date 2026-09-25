@@ -65,6 +65,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Repo root is two levels up from backend/src -> serves index.html, paths/, etc.
 const SITE_ROOT = path.resolve(__dirname, '..', '..');
 
+// Map a request path to the HTML file the site should render.
+// /books is books.html at the repo root. /books/ must stay that shelf: the
+// books/ directory holds the per-book pages, and a trailing slash would
+// otherwise look for books/index.html and miss the shelf.
+function siteHtmlPath(urlPath) {
+  let rel = decodeURIComponent(urlPath);
+  if (rel === '/books/') return '/books.html';
+  if (rel.endsWith('/')) return rel + 'index.html';
+  if (!path.extname(rel)) return rel + '.html';
+  if (rel.endsWith('.html')) return rel;
+  return null;
+}
+
 // Folders that live in the repo but must never be served publicly.
 const BLOCKED_PREFIXES = ['/uploads', '/_brief', '/_prompts', '/scraps', '/_audit', '/_explorations', '/backend', '/server', '/.git'];
 
@@ -595,10 +608,8 @@ export function createApp() {
   app.get(/.*/, (req, res, next) => {
     const lang = String((req.query && req.query.lang) || '').toLowerCase();
     if (!I18N_LANGS.includes(lang)) return next();
-    let rel = decodeURIComponent(req.path);
-    if (rel.endsWith('/')) rel += 'index.html';
-    else if (!path.extname(rel)) rel += '.html';
-    else return next(); // a real asset (.css/.js/.png/…) — leave to static
+    const rel = siteHtmlPath(req.path);
+    if (!rel) return next(); // a real asset (.css/.js/.png/…) — leave to static
     if (blockedPrefixes().some((p) => rel === p || rel.startsWith(p + '/'))) return next();
     const abs = path.join(SITE_ROOT, rel);
     if (!abs.startsWith(SITE_ROOT) || !existsSync(abs)) return next();
@@ -633,10 +644,8 @@ export function createApp() {
   const trackedHtmlCache = new Map(); // abs+mtime -> injected html
   app.get(/.*/, (req, res, next) => {
     if (req.method !== 'GET') return next();
-    let rel = decodeURIComponent(req.path);
-    if (rel.endsWith('/')) rel += 'index.html';
-    else if (!path.extname(rel)) rel += '.html';
-    else if (!rel.endsWith('.html')) return next(); // a real asset — leave to static
+    const rel = siteHtmlPath(req.path);
+    if (!rel) return next(); // a real asset — leave to static
     if (blockedPrefixes().some((p) => rel === p || rel.startsWith(p + '/'))) return next();
     const abs = path.join(SITE_ROOT, rel);
     if (!abs.startsWith(SITE_ROOT) || !existsSync(abs)) return next();

@@ -4,6 +4,7 @@
   "books": [
     {
       "slug": "ai-for-business-leaders",
+      "path": "/books/ai-for-business-leaders",
       "volume": "I",
       "title": "AI for Business Leaders",
       "subtitle": "A clear-headed guide to leading with AI without losing the plot.",
@@ -25,6 +26,7 @@
     },
     {
       "slug": "siv-method",
+      "path": "/books/siv-method",
       "volume": "II",
       "title": "The SIV Method",
       "subtitle": "A Brutal Framework for Understanding Reality Before Execution.",
@@ -56,6 +58,7 @@
     },
     {
       "slug": "execution-doctrine",
+      "path": "/books/execution-doctrine",
       "volume": "III",
       "title": "The Execution Doctrine",
       "subtitle": "From understanding to applied force in the world.",
@@ -85,6 +88,7 @@
     },
     {
       "slug": "organizational-frequency",
+      "path": "/books/organizational-frequency",
       "volume": "IV",
       "title": "Organizational Frequency",
       "subtitle": "A new doctrine for hiring in the age of intelligent discovery.",
@@ -104,11 +108,12 @@
       "amazon_by_lang": {
         "en": "https://www.amazon.in/dp/B0H2NTL3XS"
       },
-      "excerpt_path": "paths/hire",
+      "excerpt_path": "/books/organizational-frequency",
       "series": "A Doctrine for the Future of Work · 01"
     },
     {
       "slug": "the-signal",
+      "path": "/books/the-signal",
       "volume": "V",
       "title": "The Signal",
       "subtitle": "A Practice for Clearer Reception.",
@@ -129,6 +134,7 @@
     },
     {
       "slug": "civilization",
+      "path": "/books/civilization",
       "volume": "VI",
       "title": "Civilization",
       "subtitle": "A framework for evaluating the direction of intelligent civilizations.",

@@ -13,7 +13,7 @@ India (built 1990–2020, 50,000+ alumni). He is the author of six books:
 *AI for Business Leaders*, *The SIV Method*, *The Execution Doctrine*,
 *Organizational Frequency*, *The Signal* (out now), and *Civilization*.
 He is also writing a speculative-fiction cycle (working title *Between
-Two Dawns*), released here serially. Based in the Delhi NCR, India.
+Two Dawns*), released here serially. Based in Noida, Delhi NCR, India.
 
 ## The entry conversations
 
@@ -31,8 +31,9 @@ listed here.
 - [I know what to do. I'm struggling to execute](https://vinaypasricha.com/paths/execute.html)
   — *The Execution Doctrine* — patterns from three decades of building.
 - [There is noise in my thinking and in my life](https://vinaypasricha.com/paths/evolve.html)
-  — *The Signal* — out now. On evolving through meaningful
-  conversations with AI. <https://www.amazon.in/dp/B0H3WJJH3S>
+  — *The Signal* — a practice for clearer reception, out now.
+  <https://vinaypasricha.com/books/the-signal>
+  <https://www.amazon.in/dp/B0H3WJJH3S>
 - [I need to hire well for my company](https://vinaypasricha.com/paths/hire.html)
   — GoodSpace AI for employers.
 - [I'm looking for my next role](https://vinaypasricha.com/paths/find-work.html)
@@ -56,28 +57,32 @@ listed here.
 
 ## Books
 
-Six published books. Amazon links are the India Kindle pages already
-used on the site.
+Each book has its own page. The shelf is <https://vinaypasricha.com/books>.
+Amazon links are the India Kindle pages already used on the site.
 
 - **AI for Business Leaders** (published · 2025) — a practical guide to
   building your company brain. Frameworks for the AI-ready organisation.
+  <https://vinaypasricha.com/books/ai-for-business-leaders>
   <https://www.amazon.in/dp/B0GFXXPGP7>
 - **The SIV Method** (published · 2026) — Socratic · Iterative · Vinay. A small
   instrument for thinking under pressure.
+  <https://vinaypasricha.com/books/siv-method>
   <https://www.amazon.in/dp/B0GX27LGJX>
 - **The Execution Doctrine** (published · 2026) — the grammar of getting things
   done, built from three decades of trying.
+  <https://vinaypasricha.com/books/execution-doctrine>
   <https://www.amazon.in/dp/B0GXVLX2G9>
-- **Organizational Frequency** (published · 2026) — a doctrine for hiring
-  as intelligent discovery.
+- **Organizational Frequency** (published · 2026) — hiring as discovery, not
+  persuasion.
+  <https://vinaypasricha.com/books/organizational-frequency>
   <https://www.amazon.in/dp/B0H2NTL3XS>
-- **The Signal** (published · 2026 · out now) — on growing through
-  meaningful conversations with AI.
+- **The Signal** (published · 2026 · out now) — a practice for clearer reception.
+  <https://vinaypasricha.com/books/the-signal>
   <https://www.amazon.in/dp/B0H3WJJH3S>
 - **Civilization** (published · 2026 · The Meridian Press) — a framework for
   evaluating the direction of intelligent civilizations: eight directions,
-  four Foundations and four Frontiers. Page:
-  <https://vinaypasricha.com/paths/civilization.html>
+  four Foundations and four Frontiers.
+  <https://vinaypasricha.com/books/civilization>
   <https://www.amazon.in/dp/B0H4GWZND6>
 - **Between Two Dawns** (in progress · fiction · working title) — a
   three-movement speculative cycle: the dawn of humanity, the bridge of

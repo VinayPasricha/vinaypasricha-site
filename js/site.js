@@ -451,7 +451,7 @@ const ANALYTICS = {
               <li><a href="${root}paths/ai-for-business">AI for <em>Business Leaders</em></a></li>
               <li><a href="${root}paths/decisions">The <em>SIV Method</em></a></li>
               <li><a href="${root}paths/execute">The <em>Execution Doctrine</em></a></li>
-              <li><a href="${root}paths/hire"><em>Organizational Frequency</em></a></li>
+              <li><a href="${root}books/organizational-frequency"><em>Organizational Frequency</em></a></li>
               <li><a href="${root}paths/evolve">The <em>Signal</em></a></li>
               <li><a href="${root}paths/civilization"><em>Civilization</em></a></li>
             </ul>
