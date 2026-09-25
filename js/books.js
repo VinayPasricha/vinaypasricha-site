@@ -47,8 +47,11 @@ const DEFAULT_BOOKS = [
     subtitle: 'A clear-headed guide to leading with AI without losing the plot.',
     cover: 'assets/images/ai-for-business-leaders-cover-front.jpg',
     year: '2025',
-    pages: 208,
+    pages: 271,
+    pages_basis: 'Kindle print length',
     isbn: '978-0-9978459-1-4',
+    hardcover_pages: 232,
+    hardcover_isbn13: '978-9360769628',
     status: 'published',
     pitch: 'Most leadership advice on AI is either a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now but want to move clearly.',
     topics: [
@@ -69,7 +72,8 @@ const DEFAULT_BOOKS = [
     subtitle: 'A Brutal Framework for Understanding Reality Before Execution.',
     cover: 'assets/images/siv-method-cover-front.jpg',
     year: '2026',
-    pages: 96,
+    pages: 46,
+    pages_basis: 'Kindle print length',
     isbn: '978-0-9978459-2-1',
     status: 'published',
     pitch: 'Most failure begins not in action but in misunderstanding. SIV is a structured method for examining reality through multiple lenses, applying Socratic pressure to every claim, and converging toward an integrated understanding strong enough to support action.',
@@ -101,7 +105,8 @@ const DEFAULT_BOOKS = [
     subtitle: 'From understanding to applied force in the world.',
     cover: 'assets/images/execution-doctrine-cover-front.jpg',
     year: '2026',
-    pages: 128,
+    pages: 83,
+    pages_basis: 'Kindle print length',
     isbn: '978-0-9978459-3-8',
     status: 'published',
     pitch: 'SIV produces understanding. The Execution Doctrine applies it. Most execution failures are not failures of will — they are failures of design. A field manual for operators who want to be apt rather than merely fast.',
@@ -131,7 +136,8 @@ const DEFAULT_BOOKS = [
     subtitle: 'A new doctrine for hiring in the age of intelligent discovery.',
     cover: 'assets/images/organizational-frequency-cover-front.jpg',
     year: '2026',
-    pages: null,
+    pages: 218,
+    pages_basis: 'Kindle print length',
     isbn: '978-1-7385942-0-3',
     status: 'published',
     pitch: 'Hiring is not convincing people to fit somewhere. It is discovering where they already belong. Every company carries a frequency. Every person carries their own. Great performance happens when the two resonate — most bad hires are not bad people; they are mismatched frequencies, miscast in the wrong environment.',
@@ -156,7 +162,8 @@ const DEFAULT_BOOKS = [
     subtitle: 'A Practice for Clearer Reception.',
     cover: 'assets/images/the-signal-cover-front.jpg',
     year: '2026',
-    pages: null,
+    pages: 86,
+    pages_basis: 'Kindle print length',
     isbn: null,
     status: 'published',
     pitch: 'We live inside an information density no prior generation has had to navigate. The Signal is a cognitive instrument for sustained attention in noisy environments — recursive, longitudinal, the most personal of the books. A practice for clearer reception of what is actually being signalled, beneath the noise.',
@@ -177,7 +184,8 @@ const DEFAULT_BOOKS = [
     subtitle: 'A framework for evaluating the direction of intelligent civilizations.',
     cover: 'assets/images/civilization-cover-front.jpg',
     year: '2026',
-    pages: null,
+    pages: 284,
+    pages_basis: 'Kindle print length',
     isbn: null,
     status: 'published',
     pitch: 'Intelligence does not evolve at random. Beneath the chaos of history runs a hidden order — eight directions every enduring civilization is pulled along. Civilization builds a compass, not a map: a reference frame for telling progress from mere motion, and for measuring any serious vision of the future.',
@@ -393,7 +401,8 @@ function renderFeaturedBook(book) {
         <div class="bf-info">
           <div class="bf-meta">
             <span>${book.year}</span>
-            ${book.pages ? `<span class="dot">·</span><span>${book.pages} pages</span>` : ''}
+            ${book.pages ? `<span class="dot">·</span><span>Kindle print length ${book.pages}</span>` : ''}
+            ${book.hardcover_pages ? `<span class="dot">·</span><span>Hardcover ${book.hardcover_pages} pages</span>` : ''}
             ${book.isbn ? `<span class="dot">·</span><span>ISBN ${book.isbn}</span>` : ''}
           </div>
           <h2 class="bf-title"><a href="${bookPage(book)}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h2>
@@ -414,7 +423,7 @@ function renderFeaturedBook(book) {
                 : '')}
             ${book.amazon_print && !isUpcoming
               ? `<a class="bf-buy bf-buy-print" href="${book.amazon_print}" target="_blank" rel="noopener" data-slug="${book.slug}">
-                   <span class="bf-buy-main">Paperback</span>
+                   <span class="bf-buy-main">Hardcover</span>
                    <span class="bf-buy-arrow">&#8599;</span>
                  </a>`
               : ''}
@@ -455,7 +464,7 @@ function renderBookCard(book) {
       <div class="bc-body">
         <div class="bc-meta">
           <span>${book.year}</span>
-          ${book.pages ? `<span class="dot">·</span><span>${book.pages}p</span>` : ''}
+          ${book.pages ? `<span class="dot">·</span><span>Kindle print length ${book.pages}</span>` : ''}
         </div>
         <h3 class="bc-title"><a href="${bookPage(book)}" style="color:inherit;text-decoration:none">${escapeHTML(book.title)}</a><em>.</em></h3>
         <p class="bc-subtitle">${escapeHTML(book.subtitle)}</p>
@@ -472,7 +481,7 @@ function renderBookCard(book) {
               : '')}
           ${book.amazon_print && !isUpcoming
             ? `<a class="bc-buy bc-buy-print" href="${book.amazon_print}" target="_blank" rel="noopener" data-slug="${book.slug}">
-                 <span>Paperback</span>
+                 <span>Hardcover</span>
                  <span class="bc-buy-arrow">&#8599;</span>
                </a>`
             : ''}

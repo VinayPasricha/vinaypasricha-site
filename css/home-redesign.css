@@ -494,6 +494,13 @@ body.home-redesign {
   font-style: italic;
 }
 
+.section-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .section-link {
   min-height: 44px;
   display: inline-flex;
@@ -1209,6 +1216,10 @@ body.home-redesign {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .section-links {
+    align-items: flex-start;
   }
 
   .section-head h2,
