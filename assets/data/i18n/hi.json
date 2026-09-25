@@ -2,7 +2,7 @@
   "_comment": "Hindi translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "hi",
   "lang_native": "हिन्दी",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "उद्भव के अन्वेषक",
     "Now": "अभी",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — संस्थापक, GoodSpace AI · छह पुस्तकों के लेखक",
     "Welcome back": "आपका पुनः स्वागत है",
     "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle ई-बुक <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "पेपरबैक Amazon पर <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "पेपरबैक Amazon पर <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — GoodSpace AI के संस्थापक और The Signal के लेखक",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "GoodSpace AI के संस्थापक और छह पुस्तकों के लेखक, जिनमें The Signal (अब उपलब्ध) और AI for Business Leaders शामिल हैं। पुस्तकें, निबंध, वीडियो और एक AI नेतृत्व पाठ्यक्रम।",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "अभी — <em>The Signal</em> आ चुकी है · <em>GoodSpace AI</em> बना रहे हैं · AI for Business Leaders का एक लाइव समूह चल रहा है",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "संस्थापक, GoodSpace AI · छह पुस्तकों के लेखक · दिल्ली एनसीआर",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — AI सदी में स्पष्ट सोच",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — संस्थापक, GoodSpace AI (500,000+ नियुक्तियाँ) · संस्थापक, WLC College India (50,000+ पूर्व छात्र) · छह पुस्तकों के लेखक, जिनमें <a href=\"paths/evolve\">The Signal</a> (अब उपलब्ध) शामिल है",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · लाइव समूह",
+    "Already enrolled? Enter your workspace →": "पहले से नामांकित हैं? अपने कार्यक्षेत्र में जाएँ →",
+    "Join the next cohort →": "अगले समूह में शामिल हों →",
+    "One careful essay a month.": "महीने में एक सावधानी से लिखा निबंध।",
+    "None published yet. They appear here as they are written.": "अभी कोई निबंध प्रकाशित नहीं है। वे लिखे जाने पर यहाँ दिखाई देंगे।",
+    "The notebook →": "नोटबुक →",
+    "I'd rather <em>watch</em> than read.": "मैं पढ़ने के बजाय <em>देखना</em> चाहूँगा।",
+    "YouTube · talks and reflections": "YouTube · वार्ता और चिंतन",
+    "Thirteen Conversations": "तेरह संवाद",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "यह साइट <em>Vinay Pasricha</em> द्वारा बनाई गई है — <em>GoodSpace AI</em> के संस्थापक, छह पुस्तकों के लेखक, दिल्ली एनसीआर में। लेकिन यह वास्तव में उनके <em>बारे में</em> नहीं है। यह काम के बारे में है — प्रश्न, ढाँचे, बातचीत। उम्मीद है कि आपको यहाँ कुछ ऐसा मिलेगा जिसका आप उपयोग कर सकते हैं, और वापस आकर, उसका फिर से उपयोग कर सकते हैं।",
+    "Delhi NCR · India · Written in Motion": "दिल्ली एनसीआर · भारत · प्रवाह में लिखित",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "यदि आप धीमे पंजीकरण को पसंद करते हैं, तो उसके सबसे करीब भावना में पुस्तक The Signal है — अब उपलब्ध।",
+    "Buy on Amazon": "Amazon पर खरीदें",
+    "The Signal Field": "The Signal फ़ील्ड",
+    "Privacy": "गोपनीयता",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, GoodSpace AI के संस्थापक और The Signal के लेखक"
   }
 }

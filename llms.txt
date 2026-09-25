@@ -9,14 +9,13 @@
 
 Vinay Pasricha is the founder of GoodSpace AI (an AI-driven hiring
 platform; 500,000+ people hired) and previously founded WLC College
-India (built 1990–2020, 50,000+ alumni). He is the author of
+India (built 1990–2020, 50,000+ alumni). He is the author of six books:
 *AI for Business Leaders*, *The SIV Method*, *The Execution Doctrine*,
-*Organizational Frequency*, and *Civilization* — and is currently writing
-the non-fiction *The Signal*, and a speculative-fiction cycle (working
-title *Between Two Dawns*) being released here serially. Based in
-Delhi, India.
+*Organizational Frequency*, *The Signal* (out now), and *Civilization*.
+He is also writing a speculative-fiction cycle (working title *Between
+Two Dawns*), released here serially. Based in the Delhi NCR, India.
 
-## The twelve entry conversations
+## The entry conversations
 
 Each is a standalone, SEO-indexable landing page, available in 13
 languages. The site uses client-side translation (Claude-powered)
@@ -32,8 +31,8 @@ listed here.
 - [I know what to do. I'm struggling to execute](https://vinaypasricha.com/paths/execute.html)
   — *The Execution Doctrine* — patterns from three decades of building.
 - [There is noise in my thinking and in my life](https://vinaypasricha.com/paths/evolve.html)
-  — *The Signal* — the upcoming book on evolving through meaningful
-  conversations with AI.
+  — *The Signal* — out now. On evolving through meaningful
+  conversations with AI. <https://www.amazon.in/dp/B0H3WJJH3S>
 - [I need to hire well for my company](https://vinaypasricha.com/paths/hire.html)
   — GoodSpace AI for employers.
 - [I'm looking for my next role](https://vinaypasricha.com/paths/find-work.html)
@@ -51,21 +50,35 @@ listed here.
 - [I'd like to read your fiction](https://vinaypasricha.com/paths/fiction.html)
   — *Between Two Dawns* — a speculative cycle, released one chapter
   at a time.
+- [I'd rather watch than read](https://vinaypasricha.com/paths/watch.html)
+  — talks and reflections on YouTube:
+  <https://www.youtube.com/@vinaypasricha>
 
 ## Books
 
-- **AI for Business Leaders** (published) — a practical guide to
+Six published books. Amazon links are the India Kindle pages already
+used on the site.
+
+- **AI for Business Leaders** (published · 2025) — a practical guide to
   building your company brain. Frameworks for the AI-ready organisation.
-- **The Execution Doctrine** (published) — the grammar of getting things
-  done, built from three decades of trying.
-- **The SIV Method** (published) — Socratic · Iterative · Vinay. A small
+  <https://www.amazon.in/dp/B0GFXXPGP7>
+- **The SIV Method** (published · 2026) — Socratic · Iterative · Vinay. A small
   instrument for thinking under pressure.
-- **The Signal** (in progress · non-fiction) — on growing through
+  <https://www.amazon.in/dp/B0GX27LGJX>
+- **The Execution Doctrine** (published · 2026) — the grammar of getting things
+  done, built from three decades of trying.
+  <https://www.amazon.in/dp/B0GXVLX2G9>
+- **Organizational Frequency** (published · 2026) — a doctrine for hiring
+  as intelligent discovery.
+  <https://www.amazon.in/dp/B0H2NTL3XS>
+- **The Signal** (published · 2026 · out now) — on growing through
   meaningful conversations with AI.
-- **Civilization** (published · The Meridian Press) — a framework for
+  <https://www.amazon.in/dp/B0H3WJJH3S>
+- **Civilization** (published · 2026 · The Meridian Press) — a framework for
   evaluating the direction of intelligent civilizations: eight directions,
   four Foundations and four Frontiers. Page:
   <https://vinaypasricha.com/paths/civilization.html>
+  <https://www.amazon.in/dp/B0H4GWZND6>
 - **Between Two Dawns** (in progress · fiction · working title) — a
   three-movement speculative cycle: the dawn of humanity, the bridge of
   the present, and a future two thousand years from now. Released

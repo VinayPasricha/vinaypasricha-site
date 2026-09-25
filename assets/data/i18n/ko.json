@@ -2,7 +2,7 @@
   "_comment": "Korean translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ko",
   "lang_native": "한국어",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "출현의 탐구자",
     "Now": "지금",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 창립자 · 여섯 권의 책 저자",
     "Welcome back": "다시 오신 것을 환영합니다",
     "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle 전자책 <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "아마존에서 페이퍼백 <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "아마존에서 페이퍼백 <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — GoodSpace AI 창립자, The Signal 저자",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "GoodSpace AI 창립자이자 여섯 권의 저자. The Signal(지금 출간)과 AI for Business Leaders를 포함합니다. 에세이, 영상, 그리고 AI 리더십 과정.",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "지금 — <em>The Signal</em> 출간 · <em>GoodSpace AI</em>를 짓는 중 · AI for Business Leaders 라이브 코호트 운영 중",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "창립자, GoodSpace AI · 여섯 권의 저자 · 델리 수도권",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — AI 세기를 분명하게 생각하기",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — 창립자, GoodSpace AI (50만 건 이상의 채용) · 창립자, WLC College India (5만 명 이상의 동문) · 여섯 권의 저자. <a href=\"paths/evolve\">The Signal</a>(지금 출간) 포함",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · 라이브 코호트",
+    "Already enrolled? Enter your workspace →": "이미 등록하셨나요? 작업 공간으로 →",
+    "Join the next cohort →": "다음 코호트에 참여하기 →",
+    "One careful essay a month.": "한 달에 한 편, 정성껏 쓴 에세이.",
+    "None published yet. They appear here as they are written.": "아직 발표된 에세이는 없습니다. 쓰이는 대로 여기에 올라옵니다.",
+    "The notebook →": "노트북 →",
+    "I'd rather <em>watch</em> than read.": "읽기보다 <em>보는</em> 편이 낫습니다.",
+    "YouTube · talks and reflections": "YouTube · 강연과 성찰",
+    "Thirteen Conversations": "열세 가지 대화",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "이 사이트는 <em>Vinay Pasricha</em>가 만들었습니다 — <em>GoodSpace AI</em> 창립자, 여섯 권의 저자, 델리 수도권. 그러나 정말 그에 <em>대한</em> 곳은 아닙니다. 작업에 대한 곳입니다 — 질문, 틀, 대화. 여기서 쓸 수 있는 것을 찾고, 다시 돌아와 또 쓰기를 바랍니다.",
+    "Delhi NCR · India · Written in Motion": "델리 수도권 · 인도 · 움직임 속에서 씀",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "느린 어조를 좋아한다면, 정신적으로 가장 가까운 책은 The Signal입니다 — 지금 출간.",
+    "Buy on Amazon": "Amazon에서 구매",
+    "The Signal Field": "The Signal 필드",
+    "Privacy": "개인정보",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, GoodSpace AI 창립자이자 The Signal 저자"
   }
 }

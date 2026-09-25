@@ -13,6 +13,37 @@ import { JSDOM } from 'jsdom';
 
 export const SUPPORTED = ['hi', 'bn', 'ta', 'te', 'kn', 'es', 'fr', 'pt', 'ja', 'zh', 'ko', 'ru'];
 
+// The English page loads Latin (and Cyrillic-capable Noto) families only.
+// Script fonts are added here for the language actually being rendered.
+const SCRIPT_FONTS = {
+  hi: { family: 'Noto Sans Devanagari', query: 'Noto+Sans+Devanagari:wght@400;500' },
+  bn: { family: 'Noto Sans Bengali', query: 'Noto+Sans+Bengali:wght@400;500' },
+  ta: { family: 'Noto Sans Tamil', query: 'Noto+Sans+Tamil:wght@400;500' },
+  te: { family: 'Noto Sans Telugu', query: 'Noto+Sans+Telugu:wght@400;500' },
+  kn: { family: 'Noto Sans Kannada', query: 'Noto+Sans+Kannada:wght@400;500' },
+  ja: { family: 'Noto Sans JP', query: 'Noto+Sans+JP:wght@400;500' },
+  zh: { family: 'Noto Sans SC', query: 'Noto+Sans+SC:wght@400;500' },
+  ko: { family: 'Noto Sans KR', query: 'Noto+Sans+KR:wght@400;500' },
+};
+
+function ensureScriptFont(doc, lang) {
+  const spec = SCRIPT_FONTS[lang];
+  if (!spec || !doc.head) return;
+  const already = [...doc.querySelectorAll('link[rel="stylesheet"]')].some((link) =>
+    (link.getAttribute('href') || '').includes(spec.query.split(':')[0])
+  );
+  if (!already) {
+    const link = doc.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=' + spec.query + '&display=swap';
+    doc.head.appendChild(link);
+  }
+  const style = doc.createElement('style');
+  style.setAttribute('data-i18n-font', lang);
+  style.textContent = ':root{--serif:"' + spec.family + '","Newsreader","Noto Serif",Georgia,serif;--sans:"' + spec.family + '","Noto Sans",sans-serif;}';
+  doc.head.appendChild(style);
+}
+
 const NO_TRANSLATE_TAGS = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA', 'INPUT', 'KBD', 'NOSCRIPT']);
 const PHRASING_TAGS = new Set([
   'EM', 'STRONG', 'I', 'B', 'SPAN', 'A', 'CODE', 'BR', 'SMALL', 'SUB', 'SUP',
@@ -159,6 +190,8 @@ export function translateHtml(html, lang, siteRoot) {
     doc.documentElement.setAttribute('lang', lang);
     doc.documentElement.setAttribute('data-i18n-ssr', lang);
   } catch (e) {}
+
+  ensureScriptFont(doc, lang);
 
   // canonical/lang are structural improvements even if no strings matched, but
   // only bother returning a rewritten doc when we actually translated content.

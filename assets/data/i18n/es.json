@@ -2,7 +2,7 @@
   "_comment": "Spanish translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "es",
   "lang_native": "Español",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "Explorador de la Emergencia",
     "Now": "Ahora",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fundador, GoodSpace AI · Autor de seis libros",
     "Welcome back": "Bienvenido de nuevo",
     "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle libro electrónico <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Tapa blanda en Amazon <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Tapa blanda en Amazon <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — Fundador de GoodSpace AI y autor de The Signal",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "Fundador de GoodSpace AI y autor de seis libros, entre ellos The Signal (ya disponible) y AI for Business Leaders. Ensayos, vídeos y un curso de liderazgo en IA.",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "Ahora — <em>The Signal</em> ya está · construyendo <em>GoodSpace AI</em> · un grupo en vivo de AI for Business Leaders",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "Fundador, GoodSpace AI · Autor de seis libros · Delhi NCR",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — pensar con claridad en el siglo de la IA",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — Fundador, GoodSpace AI (más de 500.000 contrataciones) · Fundador, WLC College India (más de 50.000 antiguos alumnos) · Autor de seis libros, entre ellos <a href=\"paths/evolve\">The Signal</a> (ya disponible)",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · Grupo en vivo",
+    "Already enrolled? Enter your workspace →": "¿Ya estás inscrito? Entra en tu espacio de trabajo →",
+    "Join the next cohort →": "Únete al próximo grupo →",
+    "One careful essay a month.": "Un ensayo cuidadoso al mes.",
+    "None published yet. They appear here as they are written.": "Aún no hay ningún ensayo publicado. Aparecerán aquí a medida que se escriban.",
+    "The notebook →": "El cuaderno →",
+    "I'd rather <em>watch</em> than read.": "Prefiero <em>ver</em> que leer.",
+    "YouTube · talks and reflections": "YouTube · charlas y reflexiones",
+    "Thirteen Conversations": "Trece conversaciones",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "Este sitio lo construye <em>Vinay Pasricha</em> — fundador de <em>GoodSpace AI</em>, autor de seis libros, en el Delhi NCR. Pero no trata realmente <em>de</em> él. Trata del trabajo: las preguntas, los marcos, las conversaciones. La esperanza es que encuentres algo útil, vuelvas y lo uses de nuevo.",
+    "Delhi NCR · India · Written in Motion": "Delhi NCR · India · Escrito en movimiento",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "Si te gusta el registro pausado, el libro más cercano en espíritu es The Signal — ya disponible.",
+    "Buy on Amazon": "Comprar en Amazon",
+    "The Signal Field": "El campo de The Signal",
+    "Privacy": "Privacidad",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, fundador de GoodSpace AI y autor de The Signal"
   }
 }

@@ -2,7 +2,7 @@
   "_comment": "Japanese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ja",
   "lang_native": "日本語",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "エマージェンスの探求者",
     "Now": "今",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI 創業者 ・ 6冊の著書を執筆",
     "Welcome back": "おかえりなさいませ",
     "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle電子書籍 <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazonにてペーパーバック <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazonにてペーパーバック <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — GoodSpace AI 創業者、The Signal 著者",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "GoodSpace AI の創業者。六冊の著者。The Signal（好評発売中）と AI for Business Leaders を含む。エッセイ、動画、AI リーダーシップ講座。",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "いま — <em>The Signal</em> 刊行 · <em>GoodSpace AI</em> を構築中 · AI for Business Leaders のライブ・コホートを運営中",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "創業者、GoodSpace AI · 六冊の著者 · デリー首都圏",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — AI の世紀を、明瞭に考える",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — 創業者、GoodSpace AI（50万件超の採用） · 創業者、WLC College India（5万人超の卒業生） · 六冊の著者。<a href=\"paths/evolve\">The Signal</a>（好評発売中）を含む",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · ライブ・コホート",
+    "Already enrolled? Enter your workspace →": "すでに受講中ですか？ワークスペースへ →",
+    "Join the next cohort →": "次のコホートに参加する →",
+    "One careful essay a month.": "月に一篇、丁寧なエッセイ。",
+    "None published yet. They appear here as they are written.": "まだ公開されたエッセイはありません。書き上がり次第、ここに載ります。",
+    "The notebook →": "ノートブック →",
+    "I'd rather <em>watch</em> than read.": "読むより、<em>観る</em>ほうがいい。",
+    "YouTube · talks and reflections": "YouTube · 講演と省察",
+    "Thirteen Conversations": "十三の対話",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "このサイトは <em>Vinay Pasricha</em> がつくっています — <em>GoodSpace AI</em> の創業者、六冊の著者、デリー首都圏在住。ただし本当に彼<em>について</em>の場所ではありません。仕事についてです — 問い、枠組み、対話。ここで使える何かを見つけ、また戻ってきて、もう一度使えること。それが願いです。",
+    "Delhi NCR · India · Written in Motion": "デリー首都圏 · インド · 動きのなかで書かれた",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "ゆっくりした調子が好きなら、その精神に最も近い本は The Signal です — 好評発売中。",
+    "Buy on Amazon": "Amazon で購入",
+    "The Signal Field": "The Signal のフィールド",
+    "Privacy": "プライバシー",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha。GoodSpace AI 創業者、The Signal 著者"
   }
 }

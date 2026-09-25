@@ -2,7 +2,7 @@
   "_comment": "Kannada translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "kn",
   "lang_native": "ಕನ್ನಡ",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "ಉದ್ಭವದ ಅನ್ವೇಷಕ",
     "Now": "ಈಗ",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — ಸ್ಥಾಪಕರು, GoodSpace AI · ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕರು",
     "Welcome back": "ಮರಳಿ ಸ್ವಾಗತ",
     "Kindle eBook <span class=\"arrow\">↗</span>": "ಕಿಂಡಲ್ ಇ-ಪುಸ್ತಕ <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazon ನಲ್ಲಿ ಮೆದುಹೊದಿಕೆ ಪುಸ್ತಕ <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Amazon ನಲ್ಲಿ ಮೆದುಹೊದಿಕೆ ಪುಸ್ತಕ <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — GoodSpace AI ಸ್ಥಾಪಕ ಮತ್ತು The Signal ಲೇಖಕ",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "GoodSpace AI ಸ್ಥಾಪಕ ಮತ್ತು ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕ. ಅವುಗಳಲ್ಲಿ The Signal (ಈಗ ಲಭ್ಯ) ಮತ್ತು AI for Business Leaders ಸೇರಿವೆ. ಪ್ರಬಂಧಗಳು, ವೀಡಿಯೊಗಳು ಮತ್ತು ಒಂದು AI ನಾಯಕತ್ವ ಕೋರ್ಸ್.",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "ಈಗ — <em>The Signal</em> ಬಂದಿದೆ · <em>GoodSpace AI</em> ನಿರ್ಮಿಸುತ್ತಿದ್ದೇನೆ · AI for Business Leaders ನೇರ ತಂಡ ನಡೆಯುತ್ತಿದೆ",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "ಸ್ಥಾಪಕ, GoodSpace AI · ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕ · ದೆಹಲಿ ಎನ್‌ಸಿಆರ್",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — AI ಶತಮಾನದಲ್ಲಿ ಸ್ಪಷ್ಟ ಚಿಂತನೆ",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — ಸ್ಥಾಪಕ, GoodSpace AI (500,000+ ನೇಮಕಾತಿಗಳು) · ಸ್ಥಾಪಕ, WLC College India (50,000+ ಹಳೆ ವಿದ್ಯಾರ್ಥಿಗಳು) · ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕ, ಅವುಗಳಲ್ಲಿ <a href=\"paths/evolve\">The Signal</a> (ಈಗ ಲಭ್ಯ) ಸೇರಿದೆ",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · ನೇರ ತಂಡ",
+    "Already enrolled? Enter your workspace →": "ಈಗಾಗಲೇ ಸೇರಿದ್ದೀರಾ? ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳಕ್ಕೆ ಹೋಗಿ →",
+    "Join the next cohort →": "ಮುಂದಿನ ತಂಡಕ್ಕೆ ಸೇರಿ →",
+    "One careful essay a month.": "ತಿಂಗಳಿಗೆ ಒಂದು ಎಚ್ಚರಿಕೆಯ ಪ್ರಬಂಧ.",
+    "None published yet. They appear here as they are written.": "ಇನ್ನೂ ಯಾವ ಪ್ರಬಂಧವೂ ಪ್ರಕಟವಾಗಿಲ್ಲ. ಬರೆದಂತೆ ಅವು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ.",
+    "The notebook →": "ನೋಟ್‌ಬುಕ್ →",
+    "I'd rather <em>watch</em> than read.": "ಓದುವುದಕ್ಕಿಂತ ನಾನು <em>ನೋಡಲು</em> ಇಷ್ಟಪಡುತ್ತೇನೆ.",
+    "YouTube · talks and reflections": "YouTube · ಭಾಷಣಗಳು ಮತ್ತು ಚಿಂತನೆಗಳು",
+    "Thirteen Conversations": "ಹದಿಮೂರು ಸಂವಾದಗಳು",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "ಈ ಸೈಟ್ ಅನ್ನು ನಿರ್ಮಿಸಿದವರು <em>Vinay Pasricha</em> — <em>GoodSpace AI</em> ಸ್ಥಾಪಕ, ಆರು ಪುಸ್ತಕಗಳ ಲೇಖಕ, ದೆಹಲಿ ಎನ್‌ಸಿಆರ್‌ನಲ್ಲಿ. ಆದರೆ ಇದು ನಿಜಕ್ಕೂ ಅವರ <em>ಬಗ್ಗೆ</em> ಅಲ್ಲ. ಇದು ಕೆಲಸದ ಬಗ್ಗೆ — ಪ್ರಶ್ನೆಗಳು, ಚೌಕಟ್ಟುಗಳು, ಸಂವಾದಗಳು. ಇಲ್ಲಿ ಉಪಯುಕ್ತವಾದದ್ದನ್ನು ಕಂಡು, ಮರಳಿ ಬಂದು ಮತ್ತೆ ಬಳಸುವಿರಿ ಎಂಬ ಆಶೆ.",
+    "Delhi NCR · India · Written in Motion": "ದೆಹಲಿ ಎನ್‌ಸಿಆರ್ · ಭಾರತ · ಚಲನೆಯಲ್ಲಿ ಬರೆದದ್ದು",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "ನಿಧಾನ ಧ್ವನಿ ಇಷ್ಟವಾದರೆ, ಆ ಮನೋಭಾವಕ್ಕೆ ಹತ್ತಿರದ ಪುಸ್ತಕ The Signal — ಈಗ ಲಭ್ಯ.",
+    "Buy on Amazon": "Amazonನಲ್ಲಿ ಖರೀದಿಸಿ",
+    "The Signal Field": "The Signal ಕ್ಷೇತ್ರ",
+    "Privacy": "ಗೌಪ್ಯತೆ",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, GoodSpace AI ಸ್ಥಾಪಕ ಮತ್ತು The Signal ಲೇಖಕ"
   }
 }

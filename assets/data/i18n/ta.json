@@ -2,7 +2,7 @@
   "_comment": "Tamil translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "ta",
   "lang_native": "தமிழ்",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "வளர்ச்சியின் ஆய்வாளர்",
     "Now": "இப்போது",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — GoodSpace AI நிறுவனர் · ஆறு புத்தகங்களின் ஆசிரியர்",
     "Welcome back": "மீண்டும் வருக",
     "Kindle eBook <span class=\"arrow\">↗</span>": "Kindle மின்புத்தகம் <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "அமேசானில் மென்பதிப்பு <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "அமேசானில் மென்பதிப்பு <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — GoodSpace AI நிறுவனர் மற்றும் The Signal ஆசிரியர்",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "GoodSpace AI நிறுவனர் மற்றும் ஆறு நூல்களின் ஆசிரியர். அவற்றில் The Signal (இப்போது வெளியீடு) மற்றும் AI for Business Leaders அடங்கும். கட்டுரைகள், காணொளிகள் மற்றும் ஒரு AI தலைமைப் பாடநெறி.",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "இப்போது — <em>The Signal</em> வெளியாகியது · <em>GoodSpace AI</em> கட்டமைக்கிறேன் · AI for Business Leaders நேரடி குழு இயங்குகிறது",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "நிறுவனர், GoodSpace AI · ஆறு நூல்களின் ஆசிரியர் · டெல்லி என்சிஆர்",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — AI நூற்றாண்டில் தெளிவாகச் சிந்தித்தல்",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — நிறுவனர், GoodSpace AI (500,000+ நியமனங்கள்) · நிறுவனர், WLC College India (50,000+ பழைய மாணவர்கள்) · ஆறு நூல்களின் ஆசிரியர், அவற்றில் <a href=\"paths/evolve\">The Signal</a> (இப்போது வெளியீடு) அடங்கும்",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · நேரடி குழு",
+    "Already enrolled? Enter your workspace →": "ஏற்கெனவே சேர்ந்திருக்கிறீர்களா? உங்கள் பணியிடத்திற்குச் செல்லுங்கள் →",
+    "Join the next cohort →": "அடுத்த குழுவில் சேருங்கள் →",
+    "One careful essay a month.": "மாதத்திற்கு ஒரு கவனமான கட்டுரை.",
+    "None published yet. They appear here as they are written.": "இன்னும் எந்தக் கட்டுரையும் வெளியாகவில்லை. எழுதப்படும்போது அவை இங்கே தோன்றும்.",
+    "The notebook →": "குறிப்பேடு →",
+    "I'd rather <em>watch</em> than read.": "படிப்பதை விட நான் <em>பார்க்க</em> விரும்புகிறேன்.",
+    "YouTube · talks and reflections": "YouTube · உரைகள் மற்றும் சிந்தனைகள்",
+    "Thirteen Conversations": "பதிமூன்று உரையாடல்கள்",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "இந்தத் தளத்தை உருவாக்கியவர் <em>Vinay Pasricha</em> — <em>GoodSpace AI</em> நிறுவனர், ஆறு நூல்களின் ஆசிரியர், டெல்லி என்சிஆர்-இல். ஆனால் இது உண்மையில் அவரைப் <em>பற்றியது</em> அல்ல. இது வேலையைப் பற்றியது — கேள்விகள், கட்டமைப்புகள், உரையாடல்கள். இங்கே பயன்படும் ஒன்றைக் கண்டு, திரும்பி வந்து மீண்டும் பயன்படுத்துவீர்கள் என்பதே நம்பிக்கை.",
+    "Delhi NCR · India · Written in Motion": "டெல்லி என்சிஆர் · இந்தியா · இயக்கத்தில் எழுதப்பட்டது",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "மெதுவான தொனி பிடித்திருந்தால், அதற்கு மிக நெருக்கமான நூல் The Signal — இப்போது வெளியீடு.",
+    "Buy on Amazon": "Amazon-இல் வாங்குங்கள்",
+    "The Signal Field": "The Signal புலம்",
+    "Privacy": "தனியுரிமை",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, GoodSpace AI நிறுவனர் மற்றும் The Signal ஆசிரியர்"
   }
 }

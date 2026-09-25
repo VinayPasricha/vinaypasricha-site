@@ -2,7 +2,7 @@
   "_comment": "Portuguese translation pack for vinaypasricha.com. Source-keyed. Generated 2026-06-10.",
   "lang": "pt",
   "lang_native": "Português",
-  "updated_at": "2026-09-20",
+  "updated_at": "2026-09-25",
   "strings": {
     "Explorer of Emergence": "Explorador da Emergência",
     "Now": "Agora",
@@ -909,6 +909,28 @@
     "Vinay Pasricha — Founder, GoodSpace AI · Author of six books": "Vinay Pasricha — Fundador, GoodSpace AI · Autor de seis livros",
     "Welcome back": "Bem-vindo de volta",
     "Kindle eBook <span class=\"arrow\">↗</span>": "eBook Kindle <span class=\"arrow\">↗</span>",
-    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Capa mole na Amazon <span class=\"arrow\">↗</span>"
+    "Paperback on Amazon <span class=\"arrow\">↗</span>": "Capa mole na Amazon <span class=\"arrow\">↗</span>",
+    "Vinay Pasricha — GoodSpace AI Founder & Author of The Signal": "Vinay Pasricha — Fundador da GoodSpace AI e autor de The Signal",
+    "Founder of GoodSpace AI and author of six books, including The Signal (out now) and AI for Business Leaders. Books, essays, videos and an AI leadership course.": "Fundador da GoodSpace AI e autor de seis livros, incluindo The Signal (já disponível) e AI for Business Leaders. Ensaios, vídeos e um curso de liderança em IA.",
+    "Now — <em>The Signal</em> is out · building <em>GoodSpace AI</em> · running a live AI for Business Leaders cohort": "Agora — <em>The Signal</em> já saiu · a construir a <em>GoodSpace AI</em> · uma turma ao vivo de AI for Business Leaders",
+    "Founder, GoodSpace AI · Author of six books · Delhi NCR": "Fundador, GoodSpace AI · Autor de seis livros · Delhi NCR",
+    "Vinay Pasricha — thinking clearly through the AI century": "Vinay Pasricha — pensar com clareza no século da IA",
+    "Vinay Pasricha — Founder, GoodSpace AI (500,000+ hires) · Founder, WLC College India (50,000+ alumni) · Author of six books, including <a href=\"paths/evolve\">The Signal</a> (out now)": "Vinay Pasricha — Fundador, GoodSpace AI (mais de 500.000 contratações) · Fundador, WLC College India (mais de 50.000 alumni) · Autor de seis livros, incluindo <a href=\"paths/evolve\">The Signal</a> (já disponível)",
+    "AI for Business Leaders · Live cohort": "AI for Business Leaders · Turma ao vivo",
+    "Already enrolled? Enter your workspace →": "Já está inscrito? Entre no seu espaço →",
+    "Join the next cohort →": "Junte-se à próxima turma →",
+    "One careful essay a month.": "Um ensaio cuidadoso por mês.",
+    "None published yet. They appear here as they are written.": "Ainda não há nenhum ensaio publicado. Aparecem aqui à medida que são escritos.",
+    "The notebook →": "O caderno →",
+    "I'd rather <em>watch</em> than read.": "Prefiro <em>ver</em> a ler.",
+    "YouTube · talks and reflections": "YouTube · palestras e reflexões",
+    "Thirteen Conversations": "Treze conversas",
+    "This site is built by <em>Vinay Pasricha</em> — founder of <em>GoodSpace AI</em>, author of six books, in the Delhi NCR. But it is not really <em>about</em> him. It is about the work — the questions, the frameworks, the conversations. The hope is that you find something here you can use, and come back, and use it again.": "Este sítio é construído por <em>Vinay Pasricha</em> — fundador da <em>GoodSpace AI</em>, autor de seis livros, no Delhi NCR. Mas não é realmente <em>sobre</em> ele. É sobre o trabalho — as perguntas, os quadros, as conversas. A esperança é que encontre aqui algo útil, volte e o use de novo.",
+    "Delhi NCR · India · Written in Motion": "Delhi NCR · Índia · Escrito em movimento",
+    "If you like the slow register, the book closest in spirit to it is The Signal — out now.": "Se gosta do registo lento, o livro mais próximo em espírito é The Signal — já disponível.",
+    "Buy on Amazon": "Comprar na Amazon",
+    "The Signal Field": "O campo de The Signal",
+    "Privacy": "Privacidade",
+    "Vinay Pasricha, founder of GoodSpace AI and author of The Signal": "Vinay Pasricha, fundador da GoodSpace AI e autor de The Signal"
   }
 }

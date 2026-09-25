@@ -35,9 +35,14 @@ test("homepage contains every redesigned section and the requested grouping", as
     assert.ok(html.includes(group), `missing ${group}`);
   }
   assert.equal((html.match(/class="book"/g) || []).length, 6);
-  assert.equal((html.match(/class="conversation-card c\d\d"/g) || []).length, 12);
-  assert.match(html, /Private Cohort · Harvard OPM Alumni/i);
-  assert.match(html, /The first essay lands soon\./);
+  assert.equal((html.match(/class="conversation-card c\d\d"/g) || []).length, 13);
+  assert.match(html, /AI for Business Leaders · Live cohort/);
+  assert.match(html, /One careful essay a month\./);
+  assert.match(html, /Buy on Amazon/);
+  assert.match(html, /amazon\.in\/dp\/B0H3WJJH3S/);
+  assert.doesNotMatch(html, /The first essay lands soon/);
+  assert.doesNotMatch(html, /pipeline-check/);
+  assert.doesNotMatch(html, /Consciousness Forger/);
 });
 
 test("homepage follows the dark amber design contract", async () => {

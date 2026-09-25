@@ -1,5 +1,7 @@
 # vinaypasricha.com — robots.txt
 # Welcome both search engines and AI model crawlers.
+# A specific User-agent group replaces the * group, so every AI crawler
+# repeats the same Disallow lines as everyone else.
 
 User-agent: *
 Disallow: /studio/
@@ -9,28 +11,23 @@ Disallow: /_explorations/
 Disallow: /_prompts/
 Allow: /
 
-# Major AI / LLM crawlers — explicitly allowed.
+# Major AI / LLM crawlers — same public paths as everyone else.
 User-agent: GPTBot
-Allow: /
 User-agent: ChatGPT-User
-Allow: /
 User-agent: ClaudeBot
-Allow: /
 User-agent: Claude-Web
-Allow: /
 User-agent: anthropic-ai
-Allow: /
 User-agent: Google-Extended
-Allow: /
 User-agent: CCBot
-Allow: /
 User-agent: PerplexityBot
-Allow: /
 User-agent: cohere-ai
-Allow: /
 User-agent: Amazonbot
-Allow: /
 User-agent: Applebot-Extended
+Disallow: /studio/
+Disallow: /uploads/
+Disallow: /_brief/
+Disallow: /_explorations/
+Disallow: /_prompts/
 Allow: /
 
 Sitemap: https://vinaypasricha.com/sitemap.xml
