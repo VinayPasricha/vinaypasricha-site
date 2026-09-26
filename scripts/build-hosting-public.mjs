@@ -49,6 +49,17 @@ export const COPY_ROOTS = [
   'frequency',
 ];
 
+// Google Search Console HTML-file verification. The file lives at the repo
+// root (Cloud Run serves it from there, see backend/src/app.js). Hosting has
+// cleanUrls on, so a public/<name>.html file would 301 to /<name>; Google
+// needs a plain 200 at the .html URL. The build publishes it as <name>.htm
+// and firebase.json rewrites /<name>.html to that file (served as text/html).
+export const SEARCH_CONSOLE_VERIFICATION_FILES = ['google2a52843db1b2236c.html'];
+
+export function verificationHostingName(name) {
+  return name.replace(/\.html$/, '.htm');
+}
+
 const TRACKER_TAG = '<script defer src="/js/track.js"></script>';
 
 export function injectTracker(html) {
@@ -93,6 +104,13 @@ export function buildHostingPublic({ root = REPO_ROOT, outDir = path.join(REPO_R
         return base !== 'node_modules' && base !== '.git' && base !== '.env';
       },
     });
+  }
+  for (const name of SEARCH_CONSOLE_VERIFICATION_FILES) {
+    const from = path.join(root, name);
+    if (!existsSync(from)) throw new Error('missing hosting source ' + name);
+    // Copied verbatim: no tracker, no asset stamping (the .htm name keeps it
+    // out of the .html pass below).
+    cpSync(from, path.join(outDir, verificationHostingName(name)));
   }
   for (const file of walkFiles(outDir)) {
     if (!file.endsWith('.html')) continue;
