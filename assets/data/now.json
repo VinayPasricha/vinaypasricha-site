@@ -1,9 +1,9 @@
 {
   "_comment": "The 'Now' line in the topbar AND the /now page. Both edited via Studio → Now.",
-  "updated_at": "2026-05-25",
+  "updated_at": "2026-09-26",
   "as_of": "May 25, 2026",
   "items": [
-    { "verb": "Writing",  "subject": "The Signal" },
+    { "verb": "Publishing", "subject": "across languages" },
     { "verb": "Building", "subject": "GoodSpace AI" },
     { "verb": "Running",  "subject": "a live cohort" }
   ],
