@@ -435,9 +435,14 @@ if (mount) {
           removeParallaxListeners();
           if (!mount.querySelector("img")) {
             const fallbackImage = document.createElement("img");
-            fallbackImage.src = "/assets/images/brand/favicon-512.png";
+            fallbackImage.src = "/assets/images/brand/favicon-512.webp";
+            fallbackImage.addEventListener("error", () => {
+              fallbackImage.src = "/assets/images/brand/favicon-512.png";
+            }, { once: true });
             fallbackImage.alt =
               "Signal × Spacetime — the mark of Vinay Pasricha";
+            fallbackImage.width = 512;
+            fallbackImage.height = 512;
             mount.prepend(fallbackImage);
           }
           renderer.domElement.remove();

@@ -9,14 +9,13 @@
 
 Vinay Pasricha is the founder of GoodSpace AI (an AI-driven hiring
 platform; 500,000+ people hired) and previously founded WLC College
-India (built 1990–2020, 50,000+ alumni). He is the author of
+India (built 1990–2020, 50,000+ alumni). He is the author of six books:
 *AI for Business Leaders*, *The SIV Method*, *The Execution Doctrine*,
 *Organizational Frequency*, *The Signal* (out now), and *Civilization*.
-He is also writing a speculative-fiction cycle (working
-title *Between Two Dawns*) being released here serially. Based in
-Delhi, India.
+He is also writing a speculative-fiction cycle (working title *Between
+Two Dawns*), released here serially. Based in Noida, Delhi NCR, India.
 
-## The twelve entry conversations
+## The entry conversations
 
 Each is a standalone, SEO-indexable landing page, available in 13
 languages. The site uses client-side translation (Claude-powered)
@@ -34,6 +33,7 @@ listed here.
 - [There is noise in my thinking and in my life](https://vinaypasricha.com/paths/evolve.html)
   — *The Signal* — a practice for clearer reception, out now.
   <https://vinaypasricha.com/books/the-signal>
+  <https://www.amazon.in/dp/B0H3WJJH3S>
 - [I need to hire well for my company](https://vinaypasricha.com/paths/hire.html)
   — GoodSpace AI for employers.
 - [I'm looking for my next role](https://vinaypasricha.com/paths/find-work.html)
@@ -51,28 +51,49 @@ listed here.
 - [I'd like to read your fiction](https://vinaypasricha.com/paths/fiction.html)
   — *Between Two Dawns* — a speculative cycle, released one chapter
   at a time.
+- [I'd rather watch than read](https://vinaypasricha.com/paths/watch.html)
+  — talks and reflections on YouTube:
+  <https://www.youtube.com/@vinaypasricha>
 
 ## Books
 
 Each book has its own page. The shelf is <https://vinaypasricha.com/books>.
+Amazon links are the India Kindle pages already used on the site.
+Page counts are Kindle print length, the same on amazon.in and amazon.com.
+Author pages:
+<https://www.amazon.in/stores/Vinay-Pasricha/author/B0GX6CVZ51>
+<https://www.amazon.com/stores/Vinay-Pasricha/author/B0GX6CVZ51>
+Selected titles are also available on Amazon in Hindi, Spanish, Portuguese,
+French, German, Dutch, Tamil and Japanese. The SIV Method: Dutch, Portuguese,
+French, German, Tamil, Japanese. The Execution Doctrine: Hindi, Spanish,
+Portuguese, French, German, Tamil. The other four are English only.
 
-- **AI for Business Leaders** (published) — a practical guide to
+- **AI for Business Leaders** (published · 2025 · Kindle print length 271;
+  Amazon.in hardcover 232 pages, ISBN-13 978-9360769628) — a practical guide to
   building your company brain. Frameworks for the AI-ready organisation.
   <https://vinaypasricha.com/books/ai-for-business-leaders>
-- **The SIV Method** (published) — Socratic · Iterative · Vinay. A small
+  <https://www.amazon.in/dp/B0GFXXPGP7>
+  <https://www.amazon.in/dp/9360769622>
+- **The SIV Method** (published · 2026 · Kindle print length 46) — Socratic · Iterative · Vinay. A small
   instrument for thinking under pressure.
   <https://vinaypasricha.com/books/siv-method>
-- **The Execution Doctrine** (published) — the grammar of getting things
+  <https://www.amazon.in/dp/B0GX27LGJX>
+- **The Execution Doctrine** (published · 2026 · Kindle print length 83) — the grammar of getting things
   done, built from three decades of trying.
   <https://vinaypasricha.com/books/execution-doctrine>
-- **Organizational Frequency** (published) — hiring as discovery, not
-  persuasion. <https://vinaypasricha.com/books/organizational-frequency>
-- **The Signal** (published · out now) — a practice for clearer reception.
+  <https://www.amazon.in/dp/B0GXVLX2G9>
+- **Organizational Frequency** (published · 2026 · Kindle print length 218) — hiring as discovery, not
+  persuasion.
+  <https://vinaypasricha.com/books/organizational-frequency>
+  <https://www.amazon.in/dp/B0H2NTL3XS>
+- **The Signal** (published · 2026 · out now · Kindle print length 86) — a practice for clearer reception.
   <https://vinaypasricha.com/books/the-signal>
-- **Civilization** (published · The Meridian Press) — a framework for
+  <https://www.amazon.in/dp/B0H3WJJH3S>
+- **Civilization** (published · 2026 · The Meridian Press · Kindle print length 284) — a framework for
   evaluating the direction of intelligent civilizations: eight directions,
   four Foundations and four Frontiers.
   <https://vinaypasricha.com/books/civilization>
+  <https://www.amazon.in/dp/B0H4GWZND6>
 - **Between Two Dawns** (in progress · fiction · working title) — a
   three-movement speculative cycle: the dawn of humanity, the bridge of
   the present, and a future two thousand years from now. Released

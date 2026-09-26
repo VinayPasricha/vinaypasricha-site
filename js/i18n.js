@@ -193,9 +193,13 @@ function i18nWireSwitcher() {
   items.forEach(a => {
     const code = a.querySelector('.code')?.textContent?.toLowerCase();
     if (!code || !I18N_LANGUAGES[code]) return;
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      i18nSetLang(code);
+    // Real ?lang= hrefs are the navigation. Remember the choice so a later
+    // visit without a query does not bounce back to a stored language.
+    if (!a.getAttribute('href') || a.getAttribute('href') === '#') {
+      a.setAttribute('href', code === 'en' ? '?' : '?lang=' + code);
+    }
+    a.addEventListener('click', () => {
+      try { localStorage.setItem(I18N_LANG_KEY, code); } catch (e) {}
     });
     // Reflect current
     if (code === i18nCurrentLang) a.classList.add('current');

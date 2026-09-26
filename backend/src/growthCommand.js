@@ -15,7 +15,7 @@ const BOOKS = [
   { name: 'AI for Business Leaders', path: '/paths/ai-for-business', keyword: 'AI for business leaders' },
   { name: 'The SIV Method', path: '/paths/decisions', keyword: 'decision making framework for leaders' },
   { name: 'The Execution Doctrine', path: '/paths/execute', keyword: 'business execution system' },
-  { name: 'Organizational Frequency', path: '/paths/hire', keyword: 'organizational alignment and hiring' },
+  { name: 'Organizational Frequency', path: '/books/organizational-frequency', keyword: 'organizational alignment and hiring' },
   { name: 'The Signal', path: '/paths/evolve', keyword: 'AI and human evolution' },
   { name: 'Civilization', path: '/paths/civilization', keyword: 'future of civilization and AI' },
 ];

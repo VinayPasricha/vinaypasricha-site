@@ -23,11 +23,13 @@ const BOOKS = [
     asin: 'B0GFXXPGP7',
     isbn: '978-0-9978459-1-4',
     pages: 271,
+    hardcoverPages: 232,
+    hardcoverIsbn: '978-9360769628',
     published: '10 January 2026',
     datePublished: '2026-01-10',
     paperback: 'https://www.amazon.in/dp/9360769622',
     kicker: 'Volume I · Kindle edition',
-    description: 'AI for Business Leaders by Vinay Pasricha. AI scales clarity or chaos. Design the company brain before the tools. Kindle, 271 pages.',
+    description: 'AI for Business Leaders by Vinay Pasricha. AI scales clarity or chaos. Design the company brain before the tools. Kindle print length 271.',
     synopsis: 'AI does not fix chaos. It scales it. <em>AI for Business Leaders</em> is Vinay Pasricha’s guide for founders and operators who must move now and still want to move clearly — design the organisation as a brain, with memory, reasoning, action, and feedback, before any tool is allowed to amplify what is already there.',
     audienceTitle: 'For leaders who must move, <em>and still think.</em>',
     audience: 'Founders, CEOs, CXOs, operators, and business heads. The book assumes you know how to run a company and asks where AI fits inside that craft. It is not a technical manual: no code, no jargon, and no futurism. The site’s own line for it is the short one — <em>questions before answers.</em>',
@@ -50,7 +52,7 @@ const BOOKS = [
     faqs: [
       ['What is AI for Business Leaders by Vinay Pasricha?', 'A leadership guide to using AI without scaling the chaos you already have. It treats the company as a brain — memory, reasoning, action, and feedback — and asks leaders to design that brain before they deploy tools.'],
       ['Who is AI for Business Leaders for?', 'Founders, CEOs, CXOs, operators, and business heads who want AI to work for the organisation. It does not require a technical background.'],
-      ['How long is AI for Business Leaders, and when did it come out?', 'The Kindle edition (ASIN B0GFXXPGP7) lists a print length of 271 pages. Amazon lists the publication date as 10 January 2026. A paperback edition is also listed on Amazon.in.'],
+      ['How long is AI for Business Leaders, and when did it come out?', 'The Kindle edition (ASIN B0GFXXPGP7) lists a print length of 271 pages. Amazon lists the publication date as 10 January 2026. The Amazon.in hardcover is 232 pages, ISBN-13 978-9360769628.'],
       ['How does this book sit with the others?', 'It is Volume I. The later books — The SIV Method, The Execution Doctrine, Organizational Frequency — take up decisions, execution, and hiring once the AI question has a frame. The AI Leadership Course on this site is the six-week cohort built around the same framework.'],
     ],
   },
@@ -68,7 +70,7 @@ const BOOKS = [
     published: '13 April 2026',
     datePublished: '2026-04-13',
     kicker: 'Volume II · Kindle edition',
-    description: 'The SIV Method by Vinay Pasricha. Most failure begins in misunderstanding, not in the move. See reality before you act. 46 pages.',
+    description: 'The SIV Method by Vinay Pasricha. Most failure begins in misunderstanding, not in the move. See reality before you act. Kindle print length 46.',
     synopsis: 'Most failure does not begin in action. It begins in misunderstanding. <em>The SIV Method</em> — Socratic, Iterative, Vinay — is Vinay Pasricha’s framework for closing the gap between interpretation and reality before power is applied. Lenses are generated from the issue itself, then held under Socratic pressure until the understanding is strong enough to support a move.',
     audienceTitle: 'For people who decide, <em>and are tired of the cost.</em>',
     audience: 'People who work — who decide, lead, build, treat, and shape — in health, relationships, careers, organisations, and policy. It is not a philosophy and not a productivity system. It is a method for anyone tired of paying for shallow interpretation. You can try the same sequence on a live decision, on this site, before you buy the book.',
@@ -109,7 +111,7 @@ const BOOKS = [
     published: '29 April 2026',
     datePublished: '2026-04-29',
     kicker: 'Volume III · Kindle edition · 18 chapters',
-    description: 'The Execution Doctrine by Vinay Pasricha. Find the one constraint that limits output, then strengthen it. A field manual for operators.',
+    description: 'The Execution Doctrine by Vinay Pasricha. Find the constraint that limits output, then strengthen it. Kindle print length 83.',
     synopsis: 'SIV produces understanding. <em>The Execution Doctrine</em> applies it. Vinay Pasricha’s field manual treats execution as a craft: see the work as a sequence, find the current limiting factor, and strengthen that point cycle after cycle until the capacity of the whole rises. It is not a productivity book and not a list of habits.',
     audienceTitle: 'For operators who want to be <em>apt, not merely fast.</em>',
     audience: 'Builders, operators, and founders — and the teams, companies, and missions they run. The doctrine is written for people who already execute and want a sharper grammar for it. The domain can change. The underlying logic does not.',
@@ -150,7 +152,7 @@ const BOOKS = [
     published: '23 May 2026',
     datePublished: '2026-05-23',
     kicker: 'Volume IV · Doctrine for the Future of Work · 01',
-    description: 'Organizational Frequency by Vinay Pasricha. Hiring is discovery, not persuasion. A doctrine for founders and hiring leaders. 218 pages.',
+    description: 'Organizational Frequency by Vinay Pasricha. Hiring is discovery, not persuasion. A doctrine for founders and hiring leaders. Kindle print length 218.',
     synopsis: 'Hiring is not convincing people to fit somewhere. It is discovering where they already belong. <em>Organizational Frequency</em> is Vinay Pasricha’s doctrine for talent: every company carries a frequency, every person carries their own, and great performance happens when the two resonate. Most bad hires are not bad people. They are mismatched frequencies.',
     audienceTitle: 'For people who hire, <em>and people who have been hired wrong.</em>',
     audience: 'Founders, hiring leaders, and HR partners — and anyone who has made a bad hire, or been the wrong hire. It is Doctrine 01 in a series on the future of work: short, dense, and aimed at the moment a person who looked right on paper turned out wrong in the room. The practical platform built from the doctrine is <a href="https://www.goodspace.ai" target="_blank" rel="noopener">GoodSpace AI</a>. This page is the book.',
@@ -191,7 +193,7 @@ const BOOKS = [
     published: '3 June 2026',
     datePublished: '2026-06-03',
     kicker: 'Volume V · Out now',
-    description: 'The Signal by Vinay Pasricha. A practice for clearer reception beneath the noise. The latest book, out now. Kindle, 86 pages.',
+    description: 'The Signal by Vinay Pasricha. A practice for clearer reception beneath the noise. Out now. Kindle print length 86.',
     synopsis: 'There is something happening inside the modern mind that has not yet been adequately named. Not depression, not anxiety, not burnout — a persistent sense that something has gone slightly wrong with the way we think. <em>The Signal</em>, by Vinay Pasricha, calls it a failure of reception: the faculty intelligence depends on, and that almost no one has trained. The book is out now.',
     audienceTitle: 'For anyone who can feel the noise, <em>and cannot yet name it.</em>',
     audience: 'For anyone who has noticed that something is wrong with the way they have been thinking, and has not had words for it yet. Decisions that take too long. The same conversation, every year. Books read and forgotten by morning. The earlier books are about how to act. This one is about what to pay attention to in the first place.',
@@ -233,7 +235,7 @@ const BOOKS = [
     datePublished: '2026-06-08',
     publisher: 'The Meridian Press',
     kicker: 'Volume VI · The Meridian Press',
-    description: 'Civilization by Vinay Pasricha. Eight directions for reading where an intelligent civilization is heading. A compass, not a map. 284 pages.',
+    description: 'Civilization by Vinay Pasricha. Eight directions for where an intelligent civilization is heading. A compass, not a map. Kindle print length 284.',
     synopsis: 'Intelligence does not evolve at random. <em>Civilization</em>, by Vinay Pasricha, offers a compass rather than a map: eight directions every enduring civilization is pulled along. Four Foundations — Continuity, Truth, Capability, Cooperation — hold it together. Four Frontiers — Expansion, Creation, Recursion, Purpose — carry it forward. The book does not predict the future. It tries to identify the currents that create one.',
     audienceTitle: 'For readers who need a compass, <em>not another map.</em>',
     audience: 'Anyone trying to tell progress from mere motion — in a society, an institution, a technology, or a serious vision of the future. The book is a civilizational framework, not a manifesto and not a work of science fiction. Volume I turns the same eight directions on Rome, China, modernity, and artificial intelligence.',
@@ -299,6 +301,8 @@ function jsonLd(book) {
         sameAs: [
           'https://www.linkedin.com/in/vinay-pasricha-a264186/',
           'https://www.goodspace.ai',
+          'https://www.amazon.in/stores/Vinay-Pasricha/author/B0GX6CVZ51',
+          'https://www.amazon.com/stores/Vinay-Pasricha/author/B0GX6CVZ51',
         ],
       },
       {
@@ -376,7 +380,9 @@ function page(book) {
   const metaBits = [
     'Vinay Pasricha',
     book.published,
-    `Kindle · ${book.pages} pages`,
+    `Kindle print length · ${book.pages}`,
+    book.hardcoverPages ? `Hardcover · ${book.hardcoverPages} pages` : null,
+    book.hardcoverIsbn ? `ISBN-13 ${book.hardcoverIsbn}` : null,
     book.isbn ? `ISBN ${book.isbn}` : null,
   ].filter(Boolean);
 
@@ -395,7 +401,7 @@ function page(book) {
 
   const pathLinks = book.paths.map(([href, label]) => `<a href="${esc(href)}">${esc(label)}</a>`).join('\n      ');
   const paperback = book.paperback
-    ? `\n        <a class="ghost" href="${esc(book.paperback)}" target="_blank" rel="noopener">Paperback on Amazon.in <span class="arrow">↗</span></a>`
+    ? `\n        <a class="ghost" href="${esc(book.paperback)}" target="_blank" rel="noopener">Hardcover on Amazon.in <span class="arrow">↗</span></a>`
     : '';
 
   return `<!doctype html>
