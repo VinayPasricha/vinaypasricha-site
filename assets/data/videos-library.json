@@ -1,0 +1,1403 @@
+{
+  "_comment": "Source of truth for the public /watch pages. Content fields are copied verbatim from the video briefs. editor_notes, proposed_pages, title_note, and transcript paths are omitted. Regenerate HTML with scripts/build-watch-pages.mjs. Channel: https://www.youtube.com/@VinayPasrichauthor",
+  "updated_at": "2026-09-26",
+  "videos": [
+    {
+      "id": "gHlnhWpd9Mg",
+      "url": "https://www.youtube.com/watch?v=gHlnhWpd9Mg",
+      "title": "India’s Fire Safety Scam",
+      "suggested_title": null,
+      "slug": "india-fire-safety-corruption",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-13",
+      "duration_iso": "PT2M30S",
+      "thumbnail": "https://i.ytimg.com/vi/gHlnhWpd9Mg/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "India's Fire Safety Scam: Why Fire Tragedies Repeat",
+      "meta_description": "Why India's fire tragedies repeat: the rules exist, but a corruption \"extraction system\" keeps exits blocked. Vinay Pasricha's fix: public accountability.",
+      "primary_keyword": "india fire safety corruption",
+      "secondary_keywords": [
+        "fire noc corruption india",
+        "why fire accidents happen in india",
+        "fire safety rules india",
+        "governance failure india",
+        "public accountability india",
+        "malviya nagar fire"
+      ],
+      "summary": "In this video from the Justice Delayed series, Vinay Pasricha looks at why fire tragedies in India follow the same script every time. The owner is blamed, a missing fire NOC is discovered, a junior officer is suspended, a committee is formed, and then everyone moves on. He argues this is not the full truth. India does not lack fire safety rules: codes, inspections and compliance checklists all exist on paper. The problem is that fire safety has become part of a larger \"extraction system\". The fire officer is often trapped himself: he is punished if he does not collect and isolated if he tries to stay honest. The same pattern runs through municipal approvals, building permissions and police permissions. Vinay calls the junior officer the \"retail face\" of corruption. The \"wholesale\" system sits above him, in the bureaucracy, the licensing machinery and a slow judiciary. That is why a building owner decides that if he has to pay anyway, spending lakhs on real safety isn't worth it, and so exits stay blocked and wiring stays unsafe. After a fire, he says, the theatre of arrests and suspensions leaves the senior chain untouched. His answer is not more rules but public accountability: every fire NOC online, every inspection video-recorded and every approval chain visible.",
+      "key_points": [
+        "India already has fire safety codes, inspections and checklists. The failure is in enforcement, not in the rules.",
+        "Fire safety has become part of an \"extraction system\" that makes corruption easier than honesty, even for officers who want to be honest.",
+        "Junior officers are the \"retail face\" of corruption. The \"wholesale\" system sits in the bureaucracy, the licensing machinery and a slow judiciary.",
+        "After a tragedy, arrests and suspensions are theatre that leaves the senior chain untouched.",
+        "His proposed fix is public accountability: fire NOCs online, video-recorded inspections and visible approval chains."
+      ],
+      "notable_quote": "Fire safety is not paperwork. It is life."
+    },
+    {
+      "id": "S593sqZRLY0",
+      "url": "https://www.youtube.com/watch?v=S593sqZRLY0",
+      "title": "10 Initiatives. Zero Improvement. | Execution Doctrine",
+      "suggested_title": null,
+      "slug": "find-the-constraint-execution-doctrine",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M13S",
+      "thumbnail": "https://i.ytimg.com/vi/S593sqZRLY0/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": "execution-doctrine",
+      "related_pages": [
+        "/books/execution-doctrine",
+        "/paths/execute",
+        "/paths/watch"
+      ],
+      "seo_title": "10 Initiatives, Zero Improvement: Find the Constraint",
+      "meta_description": "Why ten initiatives at once move nothing, and how the capacity expansion engine from Execution Doctrine focuses effort on the one real constraint.",
+      "primary_keyword": "find the bottleneck in your business",
+      "secondary_keywords": [
+        "theory of constraints for leaders",
+        "too many initiatives at once",
+        "capacity expansion engine",
+        "execution doctrine vinay pasricha",
+        "how to improve business output",
+        "focus on one constraint"
+      ],
+      "summary": "Vinay Pasricha describes a familiar company: ten improvement efforts running at once, including a new training programme, a process redesign, a hiring push, a tool migration and a culture initiative. Each one is defensible and resourced, yet output has not moved. His explanation is that spreading improvement across ten areas gives each one about ten percent of the effort it actually needs. The real constraint, the one bottleneck quietly governing total output, gets the same diffused attention as everything else, so it never gets stronger. He built Execution Doctrine around one operating principle: in any system there is a single current limiting factor. Find it and strengthen it, and the whole system rises. Then find the next one. He calls this cycle, repeated with discipline, the capacity expansion engine. The people, budget and hours stay the same; only where the effort goes changes. He sketches how the effect compounds: modest gains in year one, an unrecognisable system by year three, and competitors unable to explain it by year five. He positions the book for builders who are done confusing effort with progress.",
+      "key_points": [
+        "Running ten improvement initiatives at once gives each about ten percent of the effort it needs.",
+        "The real bottleneck gets the same diffused attention as everything else, so nothing changes.",
+        "Execution Doctrine rests on one principle: every system has one current limiting factor.",
+        "Find the constraint, strengthen it, then find the next one. This is the capacity expansion engine.",
+        "Same people, budget and hours; only the allocation of effort changes, and the gains compound over years."
+      ],
+      "notable_quote": "Same people, same budget, same hours. The only difference is where the effort goes."
+    },
+    {
+      "id": "hPfffrKtHWw",
+      "url": "https://www.youtube.com/watch?v=hPfffrKtHWw",
+      "title": "The 4 Capabilities Every AI-Ready Company Needs",
+      "suggested_title": null,
+      "slug": "ai-ready-company-four-capabilities",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-11",
+      "duration_iso": "PT1M51S",
+      "thumbnail": "https://i.ytimg.com/vi/hPfffrKtHWw/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/course",
+        "/paths/watch"
+      ],
+      "seo_title": "The 4 Capabilities Every AI-Ready Company Needs",
+      "meta_description": "Vinay Pasricha explains the Company Brain: memory, reasoning, action and feedback, and how AI amplifies all four so a company gets smarter every cycle.",
+      "primary_keyword": "ai ready company",
+      "secondary_keywords": [
+        "company brain framework",
+        "how to use ai in business",
+        "ai for business leaders book",
+        "ai feedback loops business",
+        "ai strategy for founders",
+        "compounding intelligence ai"
+      ],
+      "summary": "Vinay Pasricha opens with the idea of a company that gets smarter every week. The gain doesn't come from a new hire or a training programme but from the system itself learning. He argues that speed is the smallest advantage AI offers and that the real advantage is compounding intelligence. Every sales deal produces a signal, every customer interaction a pattern, and every hiring decision a data point. Today most of that disappears into inboxes, spreadsheets and the memory of people who may leave. With the right feedback loops, AI captures those signals and feeds them back, so each decision is better informed than the last. He then introduces the framework from AI for Business Leaders that he calls the company brain. Every organisation already runs on four capabilities: memory, reasoning, action and feedback. AI does not replace any of them; it amplifies all of them. Structured memory stops teams relearning what they already knew. Augmented reasoning makes decisions faster without making them reckless. A well-designed action layer moves work without constant follow-up. Closed feedback loops let the whole system compound. He says the result is not automation but a company that gets measurably better every cycle, and he invites leaders who want to see how AI fits inside their company to read the book.",
+      "key_points": [
+        "Speed is the smallest advantage AI offers. The real advantage is compounding intelligence.",
+        "Sales deals, customer interactions and hiring decisions all produce signals that most companies lose.",
+        "AI-enabled feedback loops feed those signals back so each decision is better informed than the last.",
+        "The company brain framework: every organisation runs on memory, reasoning, action and feedback.",
+        "AI amplifies these four capabilities rather than replacing them. The goal is a company that improves every cycle, not mere automation."
+      ],
+      "notable_quote": "AI does not replace any of them. It amplifies all of them."
+    },
+    {
+      "id": "V4JFNB1dJS8",
+      "url": "https://www.youtube.com/watch?v=V4JFNB1dJS8",
+      "title": "Why Smart People Misread Reality — The SIV Method Explained",
+      "suggested_title": null,
+      "slug": "siv-method-explained",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-09",
+      "duration_iso": "PT2M34S",
+      "thumbnail": "https://i.ytimg.com/vi/V4JFNB1dJS8/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Decisions & the SIV Method",
+      "related_book": "siv-method",
+      "related_pages": [
+        "/books/siv-method",
+        "/paths/decisions",
+        "/paths/watch"
+      ],
+      "seo_title": "Why Smart People Misread Reality: The SIV Method",
+      "meta_description": "The SIV Method explained: premature closure, borrowed certainty and pressure before commitment. Vinay Pasricha on examining reality before you act.",
+      "primary_keyword": "siv method",
+      "secondary_keywords": [
+        "why smart people make bad decisions",
+        "premature closure",
+        "borrowed certainty",
+        "critical thinking framework for founders",
+        "socratic method decision making",
+        "decision making framework"
+      ],
+      "summary": "Vinay Pasricha argues that most failed decisions aren't failures of execution. They are \"failures of understanding disguised as confidence.\" The SIV Method, which he describes as a brutal framework for understanding reality before acting on it, starts from an uncomfortable premise: the mind doesn't want truth, it wants resolution. To end the discomfort of not knowing, it closes the question early and offers a clean answer that feels like clarity but is really relief. He gives founder examples such as \"our users churn because of price\" and \"this hire didn't work out because of attitude\", and calls each one premature closure. Every plan built on such a distortion inherits the crack. His remedy is to stop trusting a single point of view, including your own. In the book this becomes a set of named lenses, deliberate angles of inquiry that bring up the dimensions you are blind to: not thinking harder, but thinking from more places. He warns against borrowed certainty, taking one confident perspective as the whole truth. The final principle is pressure before commitment: a claim earns the right to guide action only by surviving Socratic interrogation. He sums up the method in one line, and warns that shallow understanding doesn't feel shallow. It feels like speed and decisiveness, until months later you find you executed brilliantly on the wrong thing.",
+      "key_points": [
+        "Most failed decisions are failures of understanding disguised as confidence, not failures of execution.",
+        "The mind seeks resolution, not truth, which leads to premature closure (for example, \"users churn because of price\").",
+        "Every plan built on a distortion inherits the crack.",
+        "Use multiple named lenses to think from more places instead of trusting one perspective. Borrowed certainty is how intelligent people walk off a cliff.",
+        "Pressure before commitment: a claim must survive Socratic interrogation before it guides action."
+      ],
+      "notable_quote": "Before power is applied, reality must be examined hard enough to deserve action."
+    },
+    {
+      "id": "jz2H9oeeYgs",
+      "url": "https://www.youtube.com/watch?v=jz2H9oeeYgs",
+      "title": "Would Your Best Employee Hire YOU Back?",
+      "suggested_title": null,
+      "slug": "would-your-best-employee-hire-you-back",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-08",
+      "duration_iso": "PT53S",
+      "thumbnail": "https://i.ytimg.com/vi/jz2H9oeeYgs/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "Would Your Best Employee Hire You Back? | Vinay Pasricha",
+      "meta_description": "A one-question retention test for leaders: if your best people could choose their company again today, would they choose yours? Vinay Pasricha explains.",
+      "primary_keyword": "would your best employee hire you back",
+      "secondary_keywords": [
+        "employee retention question for leaders",
+        "why good employees leave",
+        "organizational frequency",
+        "leadership self assessment",
+        "company culture retention",
+        "two way hiring"
+      ],
+      "summary": "In this short video, Vinay Pasricha asks leaders one question and tells them to answer it honestly: would your best employee hire you back? He points out that hiring was never a one-way decision, because the best people are always quietly judging the company in return. If the person you are most afraid to lose could choose their company again today, would they choose yours? He says most leaders never ask this because the answer is frightening, yet \"would my people choose me again?\" is the real signal. He suggests walking through the team name by name. The names where a leader hesitates, he argues, point not to a people problem but to a frequency problem, the idea at the centre of his book Organizational Frequency, and the only one worth solving.",
+      "key_points": [
+        "Hiring is two-way: your best people are always quietly judging you back.",
+        "The key test: if your most valued employee could choose their company again today, would they choose yours?",
+        "Most leaders avoid the question because the answer is frightening.",
+        "Hesitation over a name signals a frequency problem, not a people problem."
+      ],
+      "notable_quote": "Would your best employee hire you back?"
+    },
+    {
+      "id": "ifyw6MQz-MQ",
+      "url": "https://www.youtube.com/watch?v=ifyw6MQz-MQ",
+      "title": "he Hiring Mistake Every Company Makes (And Marriage Got Right 100 Years Ago)",
+      "suggested_title": "The Hiring Mistake Every Company Makes (And Marriage Got Right 100 Years Ago)",
+      "slug": "hiring-mistake-frequency-matching",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-06-07",
+      "duration_iso": "PT1M46S",
+      "thumbnail": "https://i.ytimg.com/vi/ifyw6MQz-MQ/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "The Hiring Mistake Marriage Got Right 100 Years Ago",
+      "meta_description": "Companies make a marriage-sized decision with a matrimonial-ad-sized process. Vinay Pasricha on why hiring should discover frequencies, not read profiles.",
+      "primary_keyword": "hiring mistakes companies make",
+      "secondary_keywords": [
+        "culture fit hiring",
+        "why good hires fail",
+        "resume vs fit",
+        "organizational frequency book",
+        "better hiring process",
+        "hiring for compatibility"
+      ],
+      "summary": "Vinay Pasricha compares hiring to how marriages have traditionally been arranged \"in our part of the world.\" Before any meeting, families ask whether the two people come from similar worlds: background, family values, ways of living and celebrating, handling money and handling conflict. Over centuries, he says, people understood that two people don't just have to like each other; their frequencies have to match. Families built systems to check this through networks, long conversations and references from people who knew both sides. Those systems were imperfect, but the intent was right: compatibility checked in depth, over time. He then points out the absurdity of modern hiring. Nobody gets married after reading a one-page profile and having a single 45-minute meeting where both sides are on their best behaviour, yet companies hire exactly that way. One resume and one rehearsed interview lead to a commitment of nine hours a day, five days a week, for years: a marriage-sized decision made with a matrimonial-ad-sized process. He acknowledges that a job is not a marriage, since it is a contract you can leave. But he argues the core truth is the same: when frequencies don't match, no amount of skill or salary fixes it, and the mismatch shows up every Monday morning. His closing advice is not to hire from profiles but to discover frequencies, the idea behind his book Organizational Frequency.",
+      "key_points": [
+        "Traditional matchmaking checked compatibility in depth, over time, through people who knew both sides.",
+        "Companies hire from one resume and one rehearsed interview, with both sides performing.",
+        "A marriage-sized commitment made with a matrimonial-ad-sized process.",
+        "A job is a contract, not a vow, but frequency mismatch still can't be fixed by skill or salary.",
+        "Don't hire from profiles; discover frequencies."
+      ],
+      "notable_quote": "The mismatch shows up every Monday morning."
+    },
+    {
+      "id": "JSwvSdr5zLw",
+      "url": "https://www.youtube.com/watch?v=JSwvSdr5zLw",
+      "title": "The System Failure: Beyond Politics /  सिस्टम की विफलता: राजनीति से परे",
+      "suggested_title": null,
+      "slug": "indian-state-system-failure",
+      "type": "video",
+      "language": "hi",
+      "upload_date": "2026-06-07",
+      "duration_iso": "PT4M36S",
+      "thumbnail": "https://i.ytimg.com/vi/JSwvSdr5zLw/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "The System Failure: Beyond Politics | Indian State (Hindi)",
+      "meta_description": "Hindi editorial by Vinay Pasricha: exam leaks, stalled police reform and slow courts point to an Indian state that rewards compliance over competence.",
+      "primary_keyword": "indian system failure",
+      "secondary_keywords": [
+        "neet paper leak system failure",
+        "indian state accountability",
+        "security through obscurity india",
+        "police reform india",
+        "governance reform india hindi",
+        "सिस्टम की विफलता"
+      ],
+      "summary": "Speaking in Hindi, Vinay Pasricha says up front that this video is not about the BJP, the Congress or any party. Parties, governments and prime ministers change, but the Indian state stays largely the same, and that is the real problem. He cites a recent report that some teenagers, one only 16, found flaws in India's examination systems from their bedrooms. Officers, contractors, consultants and auditors had either missed those flaws or failed to fix them. Running fair, reliable exams is among the most basic duties of a modern state, yet every year brings NEET controversies, paper leaks, technical failures and administrative confusion. Exams, he says, are only the start: citizens wait years for approvals, court cases run for decades and police reform has been discussed for generations. He then asks how citizens can trust the same state on national security, borders, intelligence, the power grid and cyber systems when its visible systems leak and the official response is to hide the problems, relying on what one student called \"security through obscurity\". A state earns trust on what we cannot see by being competent at what we can. He argues that India lacks neither talent nor resources. The problem is a system that rewards compliance over competence, procedure over outcomes, hierarchy over accountability and power over service. The real tragedy is that people have got used to it. He asks whether anyone has the courage to change the system itself, and urges viewers to share the video.",
+      "key_points": [
+        "The problem isn't any one party: governments change, but the Indian state and its institutions stay the same.",
+        "Teenagers reportedly found exam-system flaws that officials, contractors and auditors missed. NEET controversies and paper leaks recur every year.",
+        "If visible systems leak and the response is \"security through obscurity\", citizens have little basis to trust the state on hidden systems like national security.",
+        "India lacks neither talent nor resources. The system rewards compliance over competence, procedure over outcomes and hierarchy over accountability.",
+        "The real tragedy is that citizens have got used to failure. The question is who will change the system itself."
+      ],
+      "notable_quote": "एक स्टेट अपने सिटीजंस की सेवा के लिए होता है। सिटीजंस स्टेट की सेवा के लिए नहीं होते।",
+      "summary_hi": "इस हिंदी वीडियो में विनय पसरीचा साफ़ करते हैं कि बात किसी पार्टी की नहीं है। पार्टियाँ और सरकारें बदलती हैं, पर भारतीय स्टेट लगभग वैसा ही रहता है, और असली समस्या यही है। वे एक रिपोर्ट का ज़िक्र करते हैं जिसमें कुछ टीनएजर्स ने, जिनमें एक सिर्फ़ 16 साल का था, परीक्षा प्रणालियों की ऐसी खामियाँ ढूंढ निकालीं जो अफ़सर, कॉन्ट्रैक्टर और ऑडिटर नहीं पकड़ पाए। हर साल नीट विवाद, पेपर लीक और तकनीकी गड़बड़ियाँ होती हैं। अगर स्टेट एक परीक्षा तक ठीक से नहीं करवा सकता, तो सुरक्षा, बॉर्डर, पावर ग्रिड और साइबर सिस्टम पर भरोसा किस आधार पर करें, जब जवाब खामियाँ ठीक करने के बजाय \"सिक्योरिटी थ्रू ऑब्सक्योरिटी\" हो? उनके अनुसार कमी टैलेंट या संसाधनों की नहीं, बल्कि उस सिस्टम की है जो काबिलियत से ज़्यादा कंप्लायंस, नतीजों से ज़्यादा प्रक्रिया और जवाबदेही से ज़्यादा पदानुक्रम को इनाम देता है। सबसे बड़ी त्रासदी यह है कि हमें इसकी आदत पड़ गई है। सवाल यह है कि क्या किसी में सिस्टम बदलने की हिम्मत है।"
+    },
+    {
+      "id": "PY-BWmDuXxA",
+      "url": "https://www.youtube.com/watch?v=PY-BWmDuXxA",
+      "title": "जब न्याय की कीमत न्याय से अधिक हो जाए",
+      "suggested_title": null,
+      "slug": "cost-of-justice-india",
+      "type": "video",
+      "language": "hi",
+      "upload_date": "2026-06-05",
+      "duration_iso": "PT1M53S",
+      "thumbnail": "https://i.ytimg.com/vi/PY-BWmDuXxA/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "When Justice Costs More Than Justice | India Courts (Hindi)",
+      "meta_description": "A Hindi video by Vinay Pasricha: winning a case after 20 years is not victory. Why India needs time-bound justice that arrives within a citizen's lifetime.",
+      "primary_keyword": "justice delayed india",
+      "secondary_keywords": [
+        "court case delay india",
+        "judicial reform india",
+        "justice with deadline",
+        "land dispute court case india",
+        "न्याय में देरी",
+        "भारतीय न्याय व्यवस्था"
+      ],
+      "summary": "In this Hindi video, Vinay Pasricha asks viewers to imagine that someone has seized their land. They have every document and piece of evidence, the law is on their side, and they win the case after 20 years. He questions whether that is really justice. Over those two decades they paid lawyers, made endless court visits, and watched their children grow up and their parents grow old, only for the court to confirm what they knew from the start. He argues that India's problem goes deeper than \"justice delayed is justice denied\". Justice does arrive, but by then its value has died, and the process itself becomes the punishment. He asks whether someone who spends 15 lakh to recover 10 lakh has won, or someone whose business collapses before the verdict, or a family that breaks apart over a property dispute. On paper one side wins, but in reality everyone loses, and the biggest loss is trust in the justice system. He compares this with a hospital that treats a patient after death or a school that grants a degree at 60, and says justice too has an expiry date. His conclusion is that India needs timely verdicts, not just more of them: justice that reaches citizens within their lifetime and produces winners, not exhausted survivors. He invites viewers to comment \"Justice with deadline\".",
+      "key_points": [
+        "Winning a land case after 20 years may only be an official stamp on a truth the citizen already knew.",
+        "In India, the process itself becomes the punishment, and justice arrives after its value has died.",
+        "Spending 15 lakh to recover 10 lakh, or losing a business before the verdict, is not victory.",
+        "Justice has an expiry date, just as treatment after death is not medical success.",
+        "India needs timely verdicts, not just more verdicts: justice within a citizen's lifetime."
+      ],
+      "notable_quote": "न्याय की भी एक एक्सपायरी डेट होती है",
+      "summary_hi": "इस वीडियो में विनय पसरीचा कहते हैं कि कल्पना कीजिए किसी ने आपकी ज़मीन पर कब्ज़ा कर लिया। आपके पास सारे कागज़ और सबूत हैं, और 20 साल बाद आप मुकदमा जीत जाते हैं। पर क्या यह सचमुच न्याय है? इन सालों में वकीलों की फ़ीस, अदालतों के चक्कर, बच्चे बड़े हो गए और माता-पिता बूढ़े हो गए, और अदालत ने बस इतना बताया कि आप शुरू से सही थे। उनका कहना है कि भारत की बीमारी \"न्याय में देरी, न्याय से इनकार\" से भी गहरी है: न्याय मिलता है, पर तब तक उसकी कीमत मर चुकी होती है और प्रक्रिया ही सज़ा बन जाती है। 10 लाख वापस पाने में 15 लाख खर्च हो जाएँ, या फ़ैसले से पहले धंधा खत्म हो जाए, तो क्या यह जीत है? न्याय की भी एक एक्सपायरी डेट होती है। भारत को सिर्फ़ ज़्यादा फ़ैसले नहीं, समय पर फ़ैसले चाहिए, ऐसा न्याय जो नागरिक के जीवनकाल में पहुँचे।"
+    },
+    {
+      "id": "LOiVjlRTlvA",
+      "url": "https://www.youtube.com/watch?v=LOiVjlRTlvA",
+      "title": "पुलिस किसकी सुनती है    पुलिस सुधार",
+      "suggested_title": "पुलिस किसकी सुनती है | पुलिस सुधार",
+      "slug": "police-reform-india-transfers",
+      "type": "video",
+      "language": "hi",
+      "upload_date": "2026-06-05",
+      "duration_iso": "PT1M53S",
+      "thumbnail": "https://i.ytimg.com/vi/LOiVjlRTlvA/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "Who Do the Police Listen To? Police Reform in India (Hindi)",
+      "meta_description": "Hindi video: the transfer button makes India's police answer to politicians, not law. Why the 2006 Supreme Court fix still isn't implemented.",
+      "primary_keyword": "police reform india",
+      "secondary_keywords": [
+        "police transfer political interference",
+        "prakash singh judgment",
+        "fir not registered india",
+        "पुलिस सुधार",
+        "police accountability india",
+        "fixed tenure police officers"
+      ],
+      "summary": "In this Hindi video, Vinay Pasricha starts with a simple question: when trouble strikes, the first call goes to the police, but how many Indians can walk into a police station without fear? For crores of people, he says, the thana is a place of fear rather than safety. The ordinary citizen never meets a judge or a minister, so the police officer is the government, and too often the citizen meets scolding, humiliation and suspicion even as a victim. He insists the problem is not the constable, who works 14-hour shifts and is also a prisoner of the system. To show what is broken, he tells the story of two officers from the same city and batch. One refuses to register your FIR but never says no to a call from above, and gets the best postings. The other registers a case against a powerful man's nephew and is transferred 400 km away within 24 hours. The lesson every officer learns is to listen to the boss, not the law, because whoever controls the transfer button controls the police. He notes that the cure already exists: in 2006 the Supreme Court ordered fixed tenures for officers and transfer decisions by an independent board, yet 20 years later no state has fully implemented it. He urges viewers to ask their MLA one question, who decides police transfers in our state, and to comment \"Serve, not control\".",
+      "key_points": [
+        "For crores of Indians, the police station is a place of fear, not safety, and the police officer is the face of government.",
+        "The constable is not the villain; he works 14-hour shifts inside the same broken system.",
+        "The officer who obeys calls from above gets the best postings. The one who books a powerful man's nephew is transferred 400 km away within 24 hours.",
+        "Whoever controls the transfer button controls the police.",
+        "The Supreme Court's 2006 order on fixed tenure and independent transfer boards has not been fully implemented by any state in 20 years."
+      ],
+      "notable_quote": "कानून की नहीं बॉस की सुनो।",
+      "summary_hi": "इस वीडियो में विनय पसरीचा पूछते हैं कि मुसीबत में हम सबसे पहले पुलिस को फ़ोन करते हैं, पर कितने भारतीय बिना डरे थाने में घुस पाते हैं? करोड़ों लोगों के लिए थाना सुरक्षा की नहीं, डर की जगह है। आम आदमी के लिए पुलिस वाला ही सरकार है। वे कहते हैं कि समस्या 14 घंटे ड्यूटी करने वाला कांस्टेबल नहीं है, वह भी इसी सिस्टम का कैदी है। दो अफ़सरों की कहानी से वे समझाते हैं: एक एफ़आईआर नहीं लिखता पर ऊपर के फ़ोन को मना नहीं करता, और उसे सबसे अच्छी पोस्टिंग मिलती है। दूसरा एक ताकतवर आदमी के भतीजे पर केस दर्ज करता है और 24 घंटे में 400 किमी दूर ट्रांसफ़र हो जाता है। इसलिए हर अफ़सर सीखता है: कानून की नहीं, बॉस की सुनो। इलाज मौजूद है: 2006 में सुप्रीम कोर्ट ने फ़िक्स टेन्योर और स्वतंत्र बोर्ड से ट्रांसफ़र का आदेश दिया था, पर 20 साल में एक भी राज्य ने इसे पूरी तरह लागू नहीं किया। वे कहते हैं कि अपने एमएलए से पूछिए कि राज्य में पुलिस ट्रांसफ़र कौन तय करता है।"
+    },
+    {
+      "id": "sBK5P2EU8Mk",
+      "url": "https://www.youtube.com/watch?v=sBK5P2EU8Mk",
+      "title": "The Hiring Industry's Open Secret: Interviews Are Performances | Vinay Pasricha",
+      "suggested_title": null,
+      "slug": "interviews-are-performances",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-05-30",
+      "duration_iso": "PT1M27S",
+      "thumbnail": "https://i.ytimg.com/vi/sBK5P2EU8Mk/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "Interviews Are Performances: Hiring's Open Secret",
+      "meta_description": "Vinay Pasricha on 'professional theater': why the skill that wins an interview isn't the skill that wins the job, and why hiring must shift to discovery.",
+      "primary_keyword": "job interviews are performances",
+      "secondary_keywords": [
+        "why interviews fail to predict performance",
+        "professional theater hiring",
+        "bad hires after interview",
+        "discovery based hiring",
+        "organizational frequency book",
+        "hiring senior candidates"
+      ],
+      "summary": "Vinay Pasricha, founder of GoodSpace AI, asks hiring managers a hard question: when did your interview process last tell you the truth? Every senior candidate in the room, he says, is performing. They have read the job description twice, rehearsed their answers and been coached by a friend in talent acquisition. He calls this \"professional theater\" and argues that most hiring managers are unknowingly running auditions, not interviews. The core issue is that the skills that win an interview (verbal polish, structured storytelling, fast pattern matching) are not the skills that win on the job in month nine. Companies end up hiring great performers and then wonder six months later why the team feels flat. In his book Organizational Frequency, he argues that the next decade of hiring will be won not by the company with the toughest interview but by the one that learns to discover rather than interrogate. He says GoodSpace AI built its workforce intelligence layer on one line: hiring is not convincing people to fit somewhere, it is discovering where they already belong. He closes by urging viewers to stop running auditions and start running discovery, and points them to the book and the resonance runtime on his website.",
+      "key_points": [
+        "Senior candidates arrive rehearsed and coached. Interviews have become \"professional theater\".",
+        "Most hiring managers are running auditions, not interviews.",
+        "Interview skills (verbal polish, storytelling, fast pattern matching) differ from the skills that matter on the job in month nine.",
+        "The next decade of hiring will be won by companies that discover rather than interrogate.",
+        "GoodSpace AI's principle: hiring means discovering where people already belong."
+      ],
+      "notable_quote": "Stop running auditions. Start running discovery."
+    },
+    {
+      "id": "q5h5b2SI04Q",
+      "url": "https://www.youtube.com/watch?v=q5h5b2SI04Q",
+      "title": "The Future Workplace Will Not Hire Skills. It Will Hire Frequencies.",
+      "suggested_title": null,
+      "slug": "future-workplace-hires-frequencies",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-05-29",
+      "duration_iso": "PT1M22S",
+      "thumbnail": "https://i.ytimg.com/vi/q5h5b2SI04Q/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Career & Finding Work",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/career",
+        "/paths/find-work",
+        "/paths/watch"
+      ],
+      "seo_title": "The Future Workplace Will Hire Frequencies, Not Skills",
+      "meta_description": "Vinay Pasricha on the shift from 'What can you do?' to 'Where do you resonate?' and why senior professionals must choose their workplace on purpose.",
+      "primary_keyword": "future of work careers",
+      "secondary_keywords": [
+        "skills vs culture fit",
+        "career advice for senior professionals",
+        "where do you resonate",
+        "organizational frequency book",
+        "choosing the right company to work for",
+        "future workplace hiring"
+      ],
+      "summary": "Vinay Pasricha describes the workplace he believes is coming, and warns that most senior professionals are still optimising for the one that is leaving. In the old model, a career rested on one question: what can you do? You collected skills, titles and years, and moved up. In the new model, he says, the question becomes harder and more honest: where do you resonate? The future workplace will not hire skills; it will hire frequencies, with companies designed around how humans actually function rather than how they perform on a quarterly review. In his book Organizational Frequency, he argues that the next decade belongs to workplaces that understand their own frequency and to professionals who know theirs. People will be valued not for fitting in but for the environments they uniquely make better. He says GoodSpace AI is quietly building the workforce intelligence layer for that world. His central observation is that the same person can be extraordinary in one frequency and ineffective in another, so the senior professionals who win the next decade will be those who learn to choose their environment deliberately. He points viewers to the book and to the resonance runtime system on vinaypasricha.com.",
+      "key_points": [
+        "The old career question was \"What can you do?\": skills, titles, years.",
+        "The new question is \"Where do you resonate?\"",
+        "Future workplaces will hire frequencies and be designed around how humans actually function.",
+        "The same person can be extraordinary in one frequency and ineffective in another.",
+        "Senior professionals who choose their environments deliberately will win the next decade."
+      ],
+      "notable_quote": "The future workplace will not hire skills. It will hire frequencies."
+    },
+    {
+      "id": "46sXjH5HCRE",
+      "url": "https://www.youtube.com/watch?v=46sXjH5HCRE",
+      "title": "You Don't Have a Strategy Problem. You Have an Execution Problem.",
+      "suggested_title": null,
+      "slug": "execution-problem-not-strategy",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-05-28",
+      "duration_iso": "PT1M52S",
+      "thumbnail": "https://i.ytimg.com/vi/46sXjH5HCRE/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": "execution-doctrine",
+      "related_pages": [
+        "/books/execution-doctrine",
+        "/paths/execute",
+        "/paths/watch"
+      ],
+      "seo_title": "Not a Strategy Problem. An Execution Problem.",
+      "meta_description": "Strategy is the easy 10%. Vinay Pasricha on where great plans die, in the silence after the meeting, and how to make execution a discipline, not a trait.",
+      "primary_keyword": "execution problem vs strategy problem",
+      "secondary_keywords": [
+        "why strategies fail to execute",
+        "strategy execution gap",
+        "how to execute a plan",
+        "execution discipline for teams",
+        "execution doctrine book",
+        "busy vs effective"
+      ],
+      "summary": "Vinay Pasricha begins with a scene most leaders recognise. Nobody fails at the whiteboard. The strategy looks brilliant, the slides are clean, everyone agrees and leaves motivated, and then nothing moves. A week passes, then a month, and nobody can say why. His diagnosis is blunt: you don't have a strategy problem, you have an execution problem. He says he has seen it in companies of every size: brilliant people, the right plan, and still the work doesn't ship. Strategy, in his words, is the easy 10%. The hard part is everything after: who owns it and by when, what gets cut to make room, what happens the first time it slips, and the hundred small decisions nobody wants to make, repeated long after the excitement wears off. That is where plans quietly die, \"not in a meeting, in the silence after one.\" Teams that actually execute, he argues, aren't smarter and don't work longer hours; they refuse to let the gap between deciding and doing stay open. They have made execution a discipline they run on purpose every day until shipping becomes the default. That discipline is not a personality trait: it can be taught and built into any team honest enough to admit where it keeps breaking. He presents Execution Doctrine as an operating system for turning decisions into delivered outcomes, not motivation or another framework to admire.",
+      "key_points": [
+        "Strategy is the easy 10%. The hard part is ownership, deadlines, trade-offs and what happens when things slip.",
+        "Plans die in the hundred small decisions made after the excitement fades, \"in the silence after\" the meeting.",
+        "Teams that execute aren't smarter or working longer; they refuse to leave the gap between deciding and doing open.",
+        "Execution is a discipline that can be taught, not a personality trait.",
+        "Execution Doctrine is positioned as an operating system for turning decisions into delivered outcomes."
+      ],
+      "notable_quote": "Strategy is the easy 10%."
+    },
+    {
+      "id": "8OXPQ1KqK9M",
+      "url": "https://www.youtube.com/watch?v=8OXPQ1KqK9M",
+      "title": "Why the Best Talent Will Never Apply to Your Job Posting | Vinay Pasricha",
+      "suggested_title": null,
+      "slug": "best-talent-never-applies",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-05-28",
+      "duration_iso": "PT1M48S",
+      "thumbnail": "https://i.ytimg.com/vi/8OXPQ1KqK9M/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/find-work",
+        "/paths/watch"
+      ],
+      "seo_title": "Why the Best Talent Will Never Apply to Your Job Posting",
+      "meta_description": "Most companies don't have a hiring problem; they have a discovery problem. Vinay Pasricha on why post-and-pray hiring filters out the people you need.",
+      "primary_keyword": "best talent never applies",
+      "secondary_keywords": [
+        "passive candidates hiring",
+        "job postings dont work",
+        "talent discovery",
+        "ai talent matching",
+        "how to find top talent",
+        "organizational frequency book"
+      ],
+      "summary": "Vinay Pasricha argues that most companies don't have a hiring problem; they have a discovery problem. He describes how hiring usually works: write a job description, post it and hope the right person happens to see it, be looking and apply. \"That's not a strategy, that's a lottery.\" You end up finding the best person who applied, not the best person for the role, and those are almost never the same. The people you actually need are already employed, good at what they do and too busy doing it well to search job boards, so the old model filters them out by design. It rewards availability over ability. He says he wrote Organizational Frequency to close this gap, because this is the age of intelligent discovery: companies no longer have to wait to be found and can match a role to the right person on actual fit, meaning what they have done, how they think and whether they genuinely thrive. But he stresses that technology is only half of it; the other half is doctrine, meaning how you think about talent and structure decisions, treating hiring as a discipline that compounds rather than a reactive scramble. A company's frequency is set by the people inside it: get them right and everything downstream gets easier; get them wrong and no strategy survives. The book, he says, is about getting people right on purpose, at scale.",
+      "key_points": [
+        "Most companies have a discovery problem, not a hiring problem.",
+        "Post-and-wait hiring is a lottery that finds the best applicant, not the best person.",
+        "The right people are usually employed and not looking, so job postings filter them out and reward availability over ability.",
+        "Intelligent discovery lets companies match roles on actual fit, but it must be paired with a hiring doctrine.",
+        "A company's frequency is set by the people inside it."
+      ],
+      "notable_quote": "That's not a strategy, that's a lottery."
+    },
+    {
+      "id": "I0FDttzhxWI",
+      "url": "https://www.youtube.com/watch?v=I0FDttzhxWI",
+      "title": "I wrote three books. Here's what each one fixes.",
+      "suggested_title": null,
+      "slug": "vinay-pasricha-three-books",
+      "type": "video",
+      "language": "en",
+      "upload_date": "2026-05-22",
+      "duration_iso": "PT48S",
+      "thumbnail": "https://i.ytimg.com/vi/I0FDttzhxWI/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": null,
+      "related_pages": [
+        "/books",
+        "/paths/story",
+        "/paths/faq",
+        "/books/execution-doctrine",
+        "/books/ai-for-business-leaders",
+        "/books/siv-method",
+        "/paths/watch"
+      ],
+      "seo_title": "Vinay Pasricha's Three Books and What Each One Fixes",
+      "meta_description": "A 48-second intro from Vinay Pasricha to Execution Doctrine, AI for Business Leaders and The SIV Method, and who each book is written for.",
+      "primary_keyword": "vinay pasricha books",
+      "secondary_keywords": [
+        "execution doctrine book",
+        "ai for business leaders book",
+        "siv method book",
+        "books for founders",
+        "leadership books 2026",
+        "business books for ceos"
+      ],
+      "summary": "In this short introduction, Vinay Pasricha explains why he wrote his books. For years he watched smart leaders with great strategies still fail to deliver, and he says the problem is almost never the idea; it is the execution. He then introduces three books. Execution Doctrine is about closing the gap between what you decide and what actually gets done. AI for Business Leaders shows how to use AI as a force multiplier without hype or jargon. The SIV Method offers a simple framework for thinking and acting with clarity under pressure. He says the books are not theory but come from real decisions, real teams and real results, and are written for people who lead teams, run companies or build something that matters.",
+      "key_points": [
+        "Smart leaders with good strategies often fail at execution, not ideas.",
+        "Execution Doctrine closes the gap between deciding and doing.",
+        "AI for Business Leaders treats AI as a force multiplier without hype or jargon.",
+        "The SIV Method is a framework for clear thinking and action under pressure."
+      ],
+      "notable_quote": "The problem is almost never the idea."
+    },
+    {
+      "id": "YJIukVVO924",
+      "url": "https://www.youtube.com/shorts/YJIukVVO924",
+      "title": "How We Figured Out Where AI Belongs in Hiring #shorts",
+      "suggested_title": "How We Figured Out Where AI Belongs in Hiring",
+      "slug": "ai-in-hiring-goodspace",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-09-25",
+      "duration_iso": "PT55S",
+      "thumbnail": "https://i.ytimg.com/vi/YJIukVVO924/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "Where AI Belongs in Hiring: The GoodSpace Story",
+      "meta_description": "How GoodSpace put AI only where hiring kept breaking: screening, offer follow-up and evidence-based decisions. Same team, less chaos, better hires.",
+      "primary_keyword": "ai in hiring",
+      "secondary_keywords": [
+        "ai interviewer",
+        "ai candidate screening",
+        "offer dropout follow up",
+        "where to use ai in business",
+        "ai for business leaders book",
+        "goodspace ai hiring"
+      ],
+      "summary": "Vinay Pasricha shows what hiring at GoodSpace used to look like: hundreds of CVs for one job, each read by hand; candidates who accepted an offer and then stopped answering the phone; and feedback like \"candidate was good\" with nothing behind it. The lesson, he says, was that they didn't need AI everywhere, only exactly where work kept breaking: screening, follow-up and judging people fairly. Now an AI interviewer meets every candidate, every offer is tracked until joining day, and managers decide on evidence. The result was the same team, less chaos and better hires, not from buying more AI but from knowing where it belonged. He presents AI for Business Leaders as a guide to finding where AI belongs in a company, department by department.",
+      "key_points": [
+        "GoodSpace's hiring pain points were manual CV screening, offer dropouts and vague feedback.",
+        "AI was applied only where work kept breaking: screening, follow-up and fair evaluation.",
+        "An AI interviewer meets every candidate, offers are tracked until joining, and managers decide on evidence.",
+        "The gain came from knowing where AI belongs, not from buying more AI."
+      ],
+      "notable_quote": "We didn't need AI everywhere. We needed it exactly where work kept breaking."
+    },
+    {
+      "id": "Clp0lARA_Xw",
+      "url": "https://www.youtube.com/shorts/Clp0lARA_Xw",
+      "title": "He Wasn't Losing to AI. He Was Losing to a Company That Used It Better #shorts",
+      "suggested_title": "He Wasn't Losing to AI. He Was Losing to a Company That Used It Better",
+      "slug": "competing-with-companies-using-ai",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-09-23",
+      "duration_iso": "PT59S",
+      "thumbnail": "https://i.ytimg.com/vi/Clp0lARA_Xw/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/course",
+        "/paths/watch"
+      ],
+      "seo_title": "He Wasn't Losing to AI. He Was Losing to Faster Rivals",
+      "meta_description": "A ₹180 crore business losing to a smaller rival that used AI better. Vinay Pasricha on the Company Brain and rebuilding it on purpose with a 90-day plan.",
+      "primary_keyword": "ai for traditional businesses",
+      "secondary_keywords": [
+        "competing with ai-enabled companies",
+        "company brain framework",
+        "ai for msme india",
+        "ai 90 day plan",
+        "ai for business leaders book",
+        "ai adoption for founders"
+      ],
+      "summary": "Vinay Pasricha tells the story of Rajiv, who runs a ₹180 crore company. A loyal client tells him his quality is good but newer suppliers are faster: their quotes arrive the same day, while his take a week. Vinay's point is that Rajiv wasn't losing to AI but to a smaller rival that used AI better. \"You are not competing with AI\"; you are competing with companies that use it to become faster, sharper and more disciplined. He repeats the company brain idea: every company already runs on memory, reasoning, action and feedback, but most run all four by accident. Knowledge sits in one person's head, decisions go to the loudest voice, follow-ups get forgotten and lessons disappear by next quarter. He says AI for Business Leaders shows how to rebuild all four on purpose with a 90-day plan.",
+      "key_points": [
+        "A ₹180 crore company loses ground because rivals quote the same day while it takes a week.",
+        "The threat isn't AI itself but competitors who use AI to become faster and more disciplined.",
+        "Every company runs on memory, reasoning, action and feedback, and most run them by accident.",
+        "The book offers a 90-day plan to rebuild all four on purpose."
+      ],
+      "notable_quote": "You are not competing with AI."
+    },
+    {
+      "id": "zjfjYZDR2qk",
+      "url": "https://www.youtube.com/shorts/zjfjYZDR2qk",
+      "title": "The Loop Nobody Runs Properly",
+      "suggested_title": null,
+      "slug": "pdca-loop-act-stage",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M16S",
+      "thumbnail": "https://i.ytimg.com/vi/zjfjYZDR2qk/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": "execution-doctrine",
+      "related_pages": [
+        "/books/execution-doctrine",
+        "/paths/execute",
+        "/paths/watch"
+      ],
+      "seo_title": "The PDCA Loop Nobody Runs Properly: The Act Stage",
+      "meta_description": "Plan-Do-Check-Act breaks at 'Act'. Vinay Pasricha on strengthening the one constraint that limited output before the next cycle begins.",
+      "primary_keyword": "pdca cycle act stage",
+      "secondary_keywords": [
+        "plan do check act explained",
+        "continuous improvement loop",
+        "why pdca fails",
+        "capacity expansion engine",
+        "execution doctrine book",
+        "constraint based improvement"
+      ],
+      "summary": "Vinay Pasricha notes that in the 1950s the plan-do-check-act loop helped rebuild Japan's manufacturing base, and that nearly every serious organisation now claims to run it, though almost none do. They plan, they do and sometimes they check, but the loop breaks at \"act\", the stage where the system is supposed to get stronger. Act, he says, does not mean trying harder next quarter; it means identifying the one thing that most limited output and redesigning the next cycle so that thing is stronger. That is what Execution Doctrine formalises: each cycle the governing constraint is identified and specifically strengthened, and the system carries more, through method rather than effort. He calls this the capacity expansion engine.",
+      "key_points": [
+        "PDCA helped rebuild Japan's manufacturing after the 1950s, but most organisations don't run it properly.",
+        "The loop usually breaks at the Act stage.",
+        "\"Act\" means strengthening the one thing that most limited output, not trying harder.",
+        "Execution Doctrine formalises this as the capacity expansion engine."
+      ],
+      "notable_quote": "Act does not mean try harder next quarter."
+    },
+    {
+      "id": "Saie_7FYnaw",
+      "url": "https://www.youtube.com/shorts/Saie_7FYnaw",
+      "title": "The Plan Was Never the Problem | Execution Doctrine",
+      "suggested_title": null,
+      "slug": "plan-was-never-the-problem",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M2S",
+      "thumbnail": "https://i.ytimg.com/vi/Saie_7FYnaw/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": "execution-doctrine",
+      "related_pages": [
+        "/books/execution-doctrine",
+        "/paths/execute",
+        "/paths/watch"
+      ],
+      "seo_title": "The Plan Was Never the Problem | Execution Doctrine",
+      "meta_description": "Why working harder doesn't close the gap between deciding and doing, and why finding your one limiting factor does. From Execution Doctrine.",
+      "primary_keyword": "why plans fail",
+      "secondary_keywords": [
+        "working harder vs working smarter",
+        "limiting factor",
+        "gap between deciding and doing",
+        "personal productivity bottleneck",
+        "execution doctrine book",
+        "how to follow through on plans"
+      ],
+      "summary": "Vinay Pasricha describes a clear, honest plan that will sit untouched six weeks from now because something quietly killed it. Most people respond by working harder, with longer hours, more discipline and more pressure. That works briefly, he says, and then the same gap reopens, because effort treats symptoms. The simpler question nobody asks is: what is the one thing that actually stopped you? Every system, including a person, has a current limiting factor that governs everything. Strengthen it and the whole system rises; ignore it and no amount of effort changes the outcome. That, he says, is the difference between working harder, which exhausts you, and getting stronger, which compounds.",
+      "key_points": [
+        "Clear plans stall because something specific quietly stops them.",
+        "Working harder treats symptoms, so the gap reopens.",
+        "Every system, including an individual, has one current limiting factor.",
+        "Strengthening that constraint compounds; more effort only exhausts."
+      ],
+      "notable_quote": "Because effort treats symptoms."
+    },
+    {
+      "id": "yCiLpJVrwoA",
+      "url": "https://www.youtube.com/shorts/yCiLpJVrwoA",
+      "title": "Gen Z Cockroaches Won't Compromise Like We Did India #genz",
+      "suggested_title": "Gen Z 'Cockroaches' Won't Compromise Like We Did | India",
+      "slug": "gen-z-wont-compromise-india",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT58S",
+      "thumbnail": "https://i.ytimg.com/vi/yCiLpJVrwoA/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "Gen Z Won't Compromise Like We Did | India",
+      "meta_description": "Vinay Pasricha on how India's older generations compromised with corruption, and why Gen Z's refusal to adjust is the republic's hope.",
+      "primary_keyword": "gen z india corruption",
+      "secondary_keywords": [
+        "gen z youth movement india",
+        "corruption in india generations",
+        "save the republic india",
+        "indian youth against corruption",
+        "gen z cockroaches"
+      ],
+      "summary": "In this English Short, Vinay Pasricha says India is being destroyed bit by bit, not by outsiders but by its own silence. Grandfathers saw the first cracks of corruption and didn't push back hard enough; fathers, busy feeding families, adjusted and compromised on small things; his own generation built careers and businesses while the system rotted, politicians became predators and the bureaucracy became a steel cage. Now, he says, the \"cockroaches\" are rising: Gen Z refuses to compromise, sees the predatory system clearly and won't stay silent or adjust. He calls this the nation's hope and asks viewers to support them.",
+      "key_points": [
+        "India is being damaged by its own silence, not by outsiders.",
+        "Each earlier generation adjusted and compromised as corruption took root.",
+        "Gen Z refuses to adjust to a predatory system.",
+        "He frames Gen Z's resistance as the republic's hope and calls for support."
+      ],
+      "notable_quote": "Not by outsiders, but by our own silence."
+    },
+    {
+      "id": "1IUcqi97ueA",
+      "url": "https://www.youtube.com/shorts/1IUcqi97ueA",
+      "title": "400 Million TB a Day. So Why Don't We Trust Each Other?",
+      "suggested_title": null,
+      "slug": "information-overload-trust-civilization",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M15S",
+      "thumbnail": "https://i.ytimg.com/vi/1IUcqi97ueA/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Civilization & the Future",
+      "related_book": "civilization",
+      "related_pages": [
+        "/books/civilization",
+        "/paths/civilization",
+        "/paths/watch"
+      ],
+      "seo_title": "400 Million TB a Day. So Why Don't We Trust Each Other?",
+      "meta_description": "The most informed society in history is losing a shared picture of reality. Vinay Pasricha on truth as one of eight directions of intelligence.",
+      "primary_keyword": "information overload and trust",
+      "secondary_keywords": [
+        "why trust in institutions is declining",
+        "shared reality fragmentation",
+        "signal vs noise society",
+        "directions of intelligence",
+        "the civilization book vinay pasricha",
+        "is progress just activity"
+      ],
+      "summary": "Vinay Pasricha notes that humanity produces around 400 million terabytes of information every day, making it the most connected society ever. Yet, he says, seven out of ten people now hesitate to trust anyone who sees the world differently, and trust in shared institutions keeps draining. The most informed society in history is losing what information was for: a common picture of reality. He asks whether all this motion is advancement or just activity. His book The Civilization argues that intelligence, wherever it emerges, moves along eight identifiable directions. One of them is truth: a society either compounds its understanding of reality or compounds its noise. \"Louder is not wiser. Connected is not aligned.\"",
+      "key_points": [
+        "Information volume is at a historic high while trust across differences is falling.",
+        "The most informed society risks losing a common picture of reality.",
+        "Intelligence moves along eight identifiable directions, and truth is one of them.",
+        "A society compounds either its understanding or its noise; speed without direction isn't progress."
+      ],
+      "notable_quote": "Louder is not wiser. Connected is not aligned."
+    },
+    {
+      "id": "h2C9IUrHLzI",
+      "url": "https://www.youtube.com/shorts/h2C9IUrHLzI",
+      "title": "The Universe Took 14 Billion Years to Ask This Question",
+      "suggested_title": null,
+      "slug": "does-intelligence-have-a-direction",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M19S",
+      "thumbnail": "https://i.ytimg.com/vi/h2C9IUrHLzI/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Civilization & the Future",
+      "related_book": "civilization",
+      "related_pages": [
+        "/books/civilization",
+        "/paths/civilization",
+        "/paths/watch"
+      ],
+      "seo_title": "Does Intelligence Have a Direction? | The Civilization",
+      "meta_description": "Compress 14 billion years into one calendar year and all of history fits in the last seconds. Vinay Pasricha asks whether intelligence has a direction.",
+      "primary_keyword": "does intelligence have a direction",
+      "secondary_keywords": [
+        "cosmic calendar",
+        "future of intelligence ai",
+        "what is progress",
+        "directions of intelligence",
+        "the civilization book vinay pasricha",
+        "civilization and ai"
+      ],
+      "summary": "Vinay Pasricha compresses the universe's 14 billion years into a single calendar year, in which every empire, religion and invention fits into the last few seconds of December 31st. Inside those seconds matter learned to think, and now those same seconds are producing minds that are not biological. Yet one question, he says, has never been asked seriously: does intelligence itself have a direction? His answer, developed in The Civilization, is that intelligence moves along eight identifiable directions wherever it emerges: not political or cultural but universal. Against them a technology, society, nation or species can be read, which makes progress a matter of alignment rather than opinion. A civilization can move very fast in the wrong direction.",
+      "key_points": [
+        "On a one-year cosmic calendar, all of human history fits in the last seconds of December 31st.",
+        "Those seconds now produce non-biological minds.",
+        "He proposes that intelligence moves along eight universal directions.",
+        "Progress is a matter of alignment, not opinion; speed in the wrong direction is possible."
+      ],
+      "notable_quote": "A civilization can move very fast in the wrong direction."
+    },
+    {
+      "id": "llpY884VapU",
+      "url": "https://www.youtube.com/shorts/llpY884VapU",
+      "title": "Rome Didn't Fall. It Drifted.",
+      "suggested_title": null,
+      "slug": "rome-didnt-fall-it-drifted",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-12",
+      "duration_iso": "PT1M2S",
+      "thumbnail": "https://i.ytimg.com/vi/llpY884VapU/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Civilization & the Future",
+      "related_book": "civilization",
+      "related_pages": [
+        "/books/civilization",
+        "/paths/civilization",
+        "/paths/watch"
+      ],
+      "seo_title": "Rome Didn't Fall. It Drifted. | The Civilization",
+      "meta_description": "Why did Rome fall? Vinay Pasricha argues it drifted: small misalignments compounding for generations. History grades direction, not strength.",
+      "primary_keyword": "why did rome fall",
+      "secondary_keywords": [
+        "fall of the roman empire causes",
+        "civilizational decline",
+        "how nations decline",
+        "the civilization book vinay pasricha",
+        "strategic drift",
+        "history lessons for leaders"
+      ],
+      "summary": "Vinay Pasricha points out that when the Roman Empire ended in 476, almost nobody noticed. There was no final battle worth the name; the end had been arriving for centuries. When experts produce so many explanations (the description cites more than 210), he says, they are describing symptoms. The simpler pattern underneath is that Rome didn't fall, it drifted: small misalignments compounding for generations. He says his book The Civilization asks whether drift can be detected in time, using eight directions of intelligence against which a nation can be read like an instrument panel. His line: strength is speed, but history grades direction, and collapse is rarely the event; it is the verdict.",
+      "key_points": [
+        "Rome's end in 476 went almost unnoticed because it had been arriving for centuries.",
+        "The many explanations for Rome's fall describe symptoms, not the cause.",
+        "The underlying pattern is drift: small misalignments compounding over generations.",
+        "History grades direction, not just strength; collapse is the verdict, not the event."
+      ],
+      "notable_quote": "Rome didn't fall, it drifted."
+    },
+    {
+      "id": "PCucG8_3QA4",
+      "url": "https://www.youtube.com/shorts/PCucG8_3QA4",
+      "title": "Corruption is a low risk high return business in India.",
+      "suggested_title": "Corruption Is a Low-Risk, High-Return Business in India",
+      "slug": "corruption-low-risk-high-return-india",
+      "type": "short",
+      "language": "hi",
+      "upload_date": "2026-06-11",
+      "duration_iso": "PT56S",
+      "thumbnail": "https://i.ytimg.com/vi/PCucG8_3QA4/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "Corruption Is a Low-Risk, High-Return Business in India",
+      "meta_description": "A Hindi Short by Vinay Pasricha: why a corrupt officer can offer an absurd explanation calmly. In India the process itself is the escape route.",
+      "primary_keyword": "corruption in india",
+      "secondary_keywords": [
+        "low conviction rate corruption india",
+        "disproportionate assets case india",
+        "why corruption continues in india",
+        "भ्रष्टाचार भारत",
+        "government officer corruption"
+      ],
+      "summary": "In this Hindi Short, Vinay Pasricha describes assets seized from the home of a joint director in Madhya Pradesh, including gold jewellery, a two-storey gym, plots and agricultural land. Asked where it came from, the officer credited his wife's sewing and knitting. Vinay's question is why the officer was so comfortable giving that answer. His explanation: the officer knows the explanation doesn't need to be good, only that a process must start, and in India the process is the escape route: inquiry, suspension, appeal, date after date. Two years later the file is still open and the officer is on pension. With conviction rates so low, getting caught is an inconvenience, not a punishment. He argues this is not about one officer or party but a system that has made corruption a low-risk, high-return investment.",
+      "key_points": [
+        "An officer explained seized assets as income from his wife's sewing and knitting, and was comfortable doing so.",
+        "In India the process (inquiry, suspension, appeal, adjournments) is the escape route.",
+        "Low conviction rates make getting caught an inconvenience, not a punishment.",
+        "The system, not one officer or party, has made corruption low-risk and high-return."
+      ],
+      "notable_quote": "कन्विक्शन रेट इतना लो है कि पकड़े जाना पनिशमेंट नहीं सिर्फ इनकन्वीनियंस है।",
+      "summary_hi": "इस हिंदी शॉर्ट में विनय पसरीचा मध्य प्रदेश के एक जॉइंट डायरेक्टर के घर से ज़ब्त हुई संपत्ति का ज़िक्र करते हैं: सोने के गहने, दो मंज़िल का जिम, प्लॉट्स और खेती की ज़मीन। पूछने पर जवाब मिला कि यह सब पत्नी की सिलाई और निटिंग से आया। वे पूछते हैं कि वह इतने आराम से ऐसा जवाब कैसे दे पाया? क्योंकि उसे पता है कि जवाब अच्छा होना ज़रूरी नहीं, बस प्रक्रिया शुरू होनी चाहिए, और भारत में प्रक्रिया ही बच निकलने का रास्ता है: इंक्वायरी, सस्पेंशन, अपील, तारीख पे तारीख। दो साल बाद फ़ाइल खुली है और अफ़सर पेंशन पर है। कन्विक्शन रेट इतना कम है कि पकड़े जाना सज़ा नहीं, सिर्फ़ असुविधा है। यह किसी एक अफ़सर या पार्टी की नहीं, उस सिस्टम की बात है जिसने भ्रष्टाचार को कम जोखिम, ज़्यादा मुनाफ़े का निवेश बना दिया है।"
+    },
+    {
+      "id": "bsiwM796fxQ",
+      "url": "https://www.youtube.com/shorts/bsiwM796fxQ",
+      "title": "Stop Chasing AI Trends. Start Building AI Systems.",
+      "suggested_title": null,
+      "slug": "build-ai-systems-not-trends",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-11",
+      "duration_iso": "PT38S",
+      "thumbnail": "https://i.ytimg.com/vi/bsiwM796fxQ/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/course",
+        "/paths/watch"
+      ],
+      "seo_title": "Stop Chasing AI Trends. Start Building AI Systems.",
+      "meta_description": "The companies winning with AI have the clearest thinking, not the best tools. Vinay Pasricha on AI as an execution layer designed into the company.",
+      "primary_keyword": "ai strategy for business leaders",
+      "secondary_keywords": [
+        "ai adoption strategy",
+        "ai execution layer",
+        "company brain framework",
+        "ai for business leaders book",
+        "ai hype vs reality business"
+      ],
+      "summary": "Vinay Pasricha argues that the companies winning with AI are not the ones with the best tools but the ones with the clearest thinking. When a leader understands where AI fits inside memory, reasoning, action and feedback, everything accelerates: decisions get faster, teams get sharper and each cycle produces more than the last. AI, he says, is not a department you build but an execution layer you design into the company itself, and that clarity is what AI for Business Leaders aims to give.",
+      "key_points": [
+        "Clear thinking, not better tools, separates companies winning with AI.",
+        "Leaders should understand where AI fits in memory, reasoning, action and feedback.",
+        "AI is an execution layer designed into the company, not a separate department."
+      ],
+      "notable_quote": "AI is not a department you build."
+    },
+    {
+      "id": "x7XqEwYObmY",
+      "url": "https://www.youtube.com/shorts/x7XqEwYObmY",
+      "title": "Why Most AI Projects Fail Inside Organisations",
+      "suggested_title": null,
+      "slug": "biggest-ai-risk-is-waiting",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-11",
+      "duration_iso": "PT36S",
+      "thumbnail": "https://i.ytimg.com/vi/x7XqEwYObmY/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/watch"
+      ],
+      "seo_title": "The Biggest AI Risk for Leaders Is Waiting",
+      "meta_description": "Many leaders fear moving too fast with AI. Vinay Pasricha argues the bigger risk is waiting while competitors learn, build and compound.",
+      "primary_keyword": "ai adoption risk for businesses",
+      "secondary_keywords": [
+        "cost of waiting on ai",
+        "ai competitive advantage",
+        "why ai projects stall",
+        "ai for business leaders book",
+        "learning organisation ai"
+      ],
+      "summary": "Vinay Pasricha challenges the view that the biggest AI risk is moving too fast. He argues the opposite: the biggest risk is waiting. While a company debates policies, competitors are learning; while it evaluates tools, they are building capabilities; while it plans, they are compounding. AI rewards organisations that learn faster than everyone else, not those that wait for certainty. He positions AI for Business Leaders as a way to move forward without the hype and without the fear.",
+      "key_points": [
+        "The bigger AI risk is waiting, not moving too fast.",
+        "Competitors learn, build and compound while others debate policies and evaluate tools.",
+        "AI rewards organisations that learn faster, not those that wait for certainty."
+      ],
+      "notable_quote": "The biggest risk is waiting"
+    },
+    {
+      "id": "k3u2SIMtXiE",
+      "url": "https://www.youtube.com/shorts/k3u2SIMtXiE",
+      "title": "AI Isn't a Tool. It's Your Company's Second Brain.",
+      "suggested_title": null,
+      "slug": "adaptability-beats-experience-ai",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-11",
+      "duration_iso": "PT36S",
+      "thumbnail": "https://i.ytimg.com/vi/k3u2SIMtXiE/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "AI for Business",
+      "related_book": "ai-for-business-leaders",
+      "related_pages": [
+        "/books/ai-for-business-leaders",
+        "/paths/ai-for-business",
+        "/paths/watch"
+      ],
+      "seo_title": "In the AI Era, Adaptability Beats Experience",
+      "meta_description": "AI makes information nearly free, so the gap is between people who learn faster, not those who know more. Vinay Pasricha on a shift leaders miss.",
+      "primary_keyword": "adaptability vs experience ai",
+      "secondary_keywords": [
+        "ai and leadership skills",
+        "learning agility in the ai era",
+        "does experience still matter with ai",
+        "ai for business leaders book",
+        "future of leadership ai"
+      ],
+      "summary": "Vinay Pasricha notes that for decades experience was a competitive advantage: the person with 20 years of knowledge usually made the best decisions. AI changes that, he argues, because access to information is now almost free. The gap is no longer between people who know more but between people who learn faster. In the AI era adaptability beats experience, a shift he says most leaders haven't fully understood, and one of the ideas explored in AI for Business Leaders.",
+      "key_points": [
+        "Experience used to be the main decision-making advantage.",
+        "AI makes access to information almost free.",
+        "The new gap is between people who learn faster, not those who know more.",
+        "Adaptability beats experience in the AI era."
+      ],
+      "notable_quote": "In the AI era, adaptability beats experience"
+    },
+    {
+      "id": "CuZposKXu0Y",
+      "url": "https://www.youtube.com/shorts/CuZposKXu0Y",
+      "title": "Pressure Test Your Ideas Before Reality Does | The SIV Method",
+      "suggested_title": null,
+      "slug": "pressure-test-your-ideas",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-09",
+      "duration_iso": "PT33S",
+      "thumbnail": "https://i.ytimg.com/vi/CuZposKXu0Y/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Decisions & the SIV Method",
+      "related_book": "siv-method",
+      "related_pages": [
+        "/books/siv-method",
+        "/paths/decisions",
+        "/paths/watch"
+      ],
+      "seo_title": "Pressure Test Your Ideas Before Reality Does | SIV Method",
+      "meta_description": "One rule before any commitment: attack your own idea on purpose. Vinay Pasricha on Socratic pressure from The SIV Method.",
+      "primary_keyword": "pressure test your ideas",
+      "secondary_keywords": [
+        "how to test a business idea",
+        "socratic questioning decisions",
+        "stress test assumptions",
+        "siv method book",
+        "decision making framework"
+      ],
+      "summary": "Vinay Pasricha tells viewers to stop trusting their ideas just because they believe them. In the SIV Method there is one rule before any commitment: pressure. You interrogate the claim, attack it and try to break it on purpose; only the ideas that survive Socratic pressure are strong enough to build on. He quotes the line he says the whole book turns on.",
+      "key_points": [
+        "Believing an idea is not a reason to trust it.",
+        "Before committing, interrogate and deliberately try to break the claim.",
+        "Only ideas that survive Socratic pressure are strong enough to build on."
+      ],
+      "notable_quote": "Before power is applied, reality must be examined hard enough to deserve action."
+    },
+    {
+      "id": "LKzxs7hjLmg",
+      "url": "https://www.youtube.com/shorts/LKzxs7hjLmg",
+      "title": "Certainty You Didn't Earn Isn't Yours — Borrowed Certainty | SIV Method",
+      "suggested_title": null,
+      "slug": "borrowed-certainty",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-09",
+      "duration_iso": "PT45S",
+      "thumbnail": "https://i.ytimg.com/vi/LKzxs7hjLmg/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Decisions & the SIV Method",
+      "related_book": "siv-method",
+      "related_pages": [
+        "/books/siv-method",
+        "/paths/decisions",
+        "/paths/watch"
+      ],
+      "seo_title": "Borrowed Certainty: Why Smart People Fail | SIV Method",
+      "meta_description": "Smart people fail from borrowed certainty, treating one confident view as all of reality. Vinay Pasricha on using many lenses instead of one.",
+      "primary_keyword": "borrowed certainty",
+      "secondary_keywords": [
+        "why smart people fail",
+        "multiple perspectives decision making",
+        "cognitive bias founders",
+        "siv method book",
+        "critical thinking for leaders"
+      ],
+      "summary": "Vinay Pasricha argues that smart people don't fail from a lack of intelligence but from borrowed certainty: taking one confident perspective (their own, their investors', their loudest customers') and treating it as the whole of reality. The fix, he says, isn't to think harder but to think from more places. In the SIV Method he runs every real decision through named lenses, angles of inquiry that force the hidden dimensions of a problem to show themselves.",
+      "key_points": [
+        "Borrowed certainty means treating one confident perspective as the whole of reality.",
+        "The perspective can be your own, your investors' or your loudest customers'.",
+        "The fix is thinking from more places, not thinking harder.",
+        "Named lenses surface a problem's hidden dimensions."
+      ],
+      "notable_quote": "One lens gives you confidence, many lenses give you reality."
+    },
+    {
+      "id": "PlLJtfwrqGQ",
+      "url": "https://www.youtube.com/shorts/PlLJtfwrqGQ",
+      "title": "You Never See Reality First — The First Distortion | The SIV Method",
+      "suggested_title": null,
+      "slug": "first-distortion-premature-closure",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-06-09",
+      "duration_iso": "PT43S",
+      "thumbnail": "https://i.ytimg.com/vi/PlLJtfwrqGQ/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Decisions & the SIV Method",
+      "related_book": "siv-method",
+      "related_pages": [
+        "/books/siv-method",
+        "/paths/decisions",
+        "/paths/watch"
+      ],
+      "seo_title": "The First Distortion: Premature Closure | SIV Method",
+      "meta_description": "Your mind crushes complexity into one clean idea and calls it clarity. Vinay Pasricha on premature closure, the first distortion in The SIV Method.",
+      "primary_keyword": "premature closure",
+      "secondary_keywords": [
+        "cognitive distortion decision making",
+        "false clarity",
+        "oversimplifying problems",
+        "siv method book",
+        "root cause thinking"
+      ],
+      "summary": "Vinay Pasricha explains that faced with complexity, the mind doesn't sit in the discomfort; it crushes the problem into one small, clean idea so it can feel resolved. \"Users left because of price.\" \"That hire failed on attitude.\" It feels like understanding but is premature closure, which he calls the first distortion. Every decision built on it inherits the crack, and the danger is that it never feels shallow; it feels like being decisive.",
+      "key_points": [
+        "The mind compresses complexity into one clean idea to feel resolved.",
+        "Examples: \"users left because of price\", \"that hire failed on attitude\".",
+        "This premature closure is the first distortion, and decisions built on it inherit the crack.",
+        "It feels like decisiveness, not shallowness."
+      ],
+      "notable_quote": "Your brain lies to you, and it feels exactly like clarity."
+    },
+    {
+      "id": "S5K0cFMSQqg",
+      "url": "https://www.youtube.com/shorts/S5K0cFMSQqg",
+      "title": "जब जनता अदालत नहीं, एनकाउंटर मांगने लगे | भारत की न्याय व्यवस्था का संकट",
+      "suggested_title": null,
+      "slug": "court-delays-encounter-justice-india",
+      "type": "short",
+      "language": "hi",
+      "upload_date": "2026-06-05",
+      "duration_iso": "PT1M43S",
+      "thumbnail": "https://i.ytimg.com/vi/S5K0cFMSQqg/maxresdefault.jpg",
+      "playlist": "Justice Delayed",
+      "topic": "India & Systems",
+      "related_book": null,
+      "related_pages": [
+        "/paths/watch"
+      ],
+      "seo_title": "When People Demand Encounters, Not Courts | India (Hindi)",
+      "meta_description": "A Hindi Short by Vinay Pasricha: crores of pending cases push citizens to cheer encounters over courts. Why judicial reform must be a national priority.",
+      "primary_keyword": "pending court cases india",
+      "secondary_keywords": [
+        "judicial reform india",
+        "encounter killings public support",
+        "judges per million india",
+        "justice delayed is justice denied",
+        "न्यायिक सुधार",
+        "undertrial prisoners india"
+      ],
+      "summary": "In this Hindi Short, Vinay Pasricha describes a family whose land is grabbed. The lawyer promises a strong case, then the dates keep coming, and by the time the verdict arrives their hair has turned grey. He says this is the reality for crores of Indian families, stating that more than 5 crore cases are pending, roughly one case for every 25 Indians. Civilisation rests on a simple link: a crime happens and a court delivers a verdict. In India, he argues, that link is breaking. Victims pay the price, and lakhs of people sit in jail for years awaiting trial. As trust in courts erodes, people demand instant action, even the bullet, and where people trust the gun more than the court, the rule of law weakens. Citing 22 judges per million people, he calls for modern courts and for judicial reform as a national priority: \"India doesn't need mob justice; it needs courts that work.\"",
+      "key_points": [
+        "He states that more than 5 crore cases are pending, about one for every 25 Indians.",
+        "Endless delay breaks the basic link between crime and verdict.",
+        "Loss of trust in courts drives public demand for encounters, which weakens the rule of law.",
+        "With 22 judges per million people, he calls for modern courts and judicial reform as a national priority."
+      ],
+      "notable_quote": "भारत को भीड़ का न्याय नहीं चाहिए। भारत को काम करने वाली अदालतें चाहिए।",
+      "summary_hi": "इस हिंदी शॉर्ट में विनय पसरीचा एक परिवार की कहानी से शुरू करते हैं जिसकी ज़मीन पर कब्ज़ा हो जाता है। वकील कहता है केस मज़बूत है, फिर तारीख पर तारीख मिलती है, और फ़ैसला आने तक बाल सफ़ेद हो जाते हैं। उनके अनुसार अदालतों में 5 करोड़ से ज़्यादा केस पेंडिंग हैं, यानी हर 25 में से एक भारतीय का केस अटका है। सभ्यता इस सिद्धांत पर टिकी है कि अपराध हो तो अदालत फ़ैसला दे, पर भारत में यह कड़ी टूट रही है। लाखों लोग सालों तक सिर्फ़ ट्रायल का इंतज़ार करते हैं। जब लोग अदालत पर भरोसा खो देते हैं तो वे गोली की माँग करने लगते हैं, और जहाँ बंदूक पर भरोसा अदालत से ज़्यादा हो, वहाँ कानून का राज कमज़ोर होता है। हर 10 लाख लोगों पर सिर्फ़ 22 जज हैं। वे आधुनिक अदालतों और न्यायिक सुधार को राष्ट्रीय प्राथमिकता बनाने की माँग करते हैं।"
+    },
+    {
+      "id": "-9MpB9-dJH0",
+      "url": "https://www.youtube.com/shorts/-9MpB9-dJH0",
+      "title": "Find Where You Belong #motivation #disruptivethinking #execution",
+      "suggested_title": "Find Where You Belong",
+      "slug": "find-where-you-belong",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-30",
+      "duration_iso": "PT37S",
+      "thumbnail": "https://i.ytimg.com/vi/-9MpB9-dJH0/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Career & Finding Work",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/paths/career",
+        "/paths/find-work",
+        "/books/organizational-frequency",
+        "/paths/watch"
+      ],
+      "seo_title": "Brilliant in One Job, Ordinary in the Next? Find Your Fit",
+      "meta_description": "Same skills, same effort, different result. Vinay Pasricha on frequency mismatch and why senior careers stall in the wrong environment.",
+      "primary_keyword": "find where you belong at work",
+      "secondary_keywords": [
+        "career stalled senior professional",
+        "wrong company fit",
+        "frequency mismatch",
+        "organizational frequency book",
+        "how to choose the right job"
+      ],
+      "summary": "Vinay Pasricha speaks to professionals who were brilliant in one company and somehow ordinary in the next, with the same skills, effort and different results. That, he says, isn't failure but frequency mismatch: the same person can be extraordinary in one environment and ineffective in another, and most senior careers stall not from lack of talent but from working in the wrong frequency. He points viewers to his book Organizational Frequency and the Resonance Runtime system on his website.",
+      "key_points": [
+        "Performing brilliantly in one company and ordinarily in another signals mismatch, not failure.",
+        "The same person can be extraordinary in one environment and ineffective in another.",
+        "Most senior careers stall from working in the wrong frequency, not from lack of talent."
+      ],
+      "notable_quote": "That is not you failing. That is frequency mismatch."
+    },
+    {
+      "id": "eVv_SJSASs0",
+      "url": "https://www.youtube.com/shorts/eVv_SJSASs0",
+      "title": "It's Not a Performance Issue. It's a Resonance Failure. #execution #leadership",
+      "suggested_title": "It's Not a Performance Issue. It's a Resonance Failure.",
+      "slug": "resonance-failure-not-performance",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-30",
+      "duration_iso": "PT31S",
+      "thumbnail": "https://i.ytimg.com/vi/eVv_SJSASs0/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "It's Not a Performance Issue. It's a Resonance Failure.",
+      "meta_description": "Your best recent hire may already be disengaging. Vinay Pasricha on resonance failure, a frequency mismatch you can't see in the interview room.",
+      "primary_keyword": "new hire disengagement",
+      "secondary_keywords": [
+        "early signs of disengagement",
+        "performance issue vs fit",
+        "resonance failure",
+        "organizational frequency book",
+        "employee engagement leaders"
+      ],
+      "summary": "Vinay Pasricha warns leaders that last quarter's best hire may already be quietly disengaging. It won't show in their output yet, but in their meeting energy. He calls this a resonance failure: not a performance issue but a frequency mismatch that couldn't be seen in the interview room. He says his book Organizational Frequency shows how to spot it before making the offer.",
+      "key_points": [
+        "Disengagement shows in meeting energy before it shows in output.",
+        "What looks like a performance issue can be a resonance failure.",
+        "The mismatch is invisible in interviews; the book aims to catch it before the offer."
+      ],
+      "notable_quote": "It is not a performance issue."
+    },
+    {
+      "id": "VGUhmOzQz_w",
+      "url": "https://www.youtube.com/shorts/VGUhmOzQz_w",
+      "title": "Right on Paper, Wrong in Practice #motivation #execution #thinking",
+      "suggested_title": "Right on Paper, Wrong in Practice",
+      "slug": "resume-static-representation",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-30",
+      "duration_iso": "PT36S",
+      "thumbnail": "https://i.ytimg.com/vi/VGUhmOzQz_w/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Career & Finding Work",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/paths/find-work",
+        "/paths/career",
+        "/books/organizational-frequency",
+        "/paths/watch"
+      ],
+      "seo_title": "Right on Paper, Wrong in Practice: What Your Resume Misses",
+      "meta_description": "Your resume can't say which environments make you sharp. Vinay Pasricha on 'static representation' and why roles that look right can feel wrong.",
+      "primary_keyword": "resume limitations",
+      "secondary_keywords": [
+        "job looks right on paper but feels wrong",
+        "wrong role senior professional",
+        "static representation",
+        "organizational frequency book",
+        "finding the right work environment"
+      ],
+      "summary": "Vinay Pasricha argues that a resume cannot say the truest thing about a person: which environments make them sharp, which teams make them quiet, and which kinds of work make them indispensable. He calls this the problem of static representation, and says it is why so many senior professionals are stuck in roles that look right on paper and feel wrong in practice. In Organizational Frequency he writes about a move to continuous understanding, a layer he says GoodSpace AI is building.",
+      "key_points": [
+        "Resumes can't capture which environments and teams bring out your best.",
+        "He calls this the problem of static representation.",
+        "It leaves senior professionals in roles that look right on paper but feel wrong.",
+        "He proposes continuous understanding instead."
+      ],
+      "notable_quote": "Your resume cannot say the truest thing about you."
+    },
+    {
+      "id": "QmO2V-meJrM",
+      "url": "https://www.youtube.com/shorts/QmO2V-meJrM",
+      "title": "Your Best Engineer Isn't the Most Brilliant One #motivation #execution #thinking",
+      "suggested_title": "Your Best Engineer Isn't the Most Brilliant One",
+      "slug": "goodness-layer-reliable-engineer",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-30",
+      "duration_iso": "PT29S",
+      "thumbnail": "https://i.ytimg.com/vi/QmO2V-meJrM/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Hiring & Organizational Frequency",
+      "related_book": "organizational-frequency",
+      "related_pages": [
+        "/books/organizational-frequency",
+        "/paths/hire",
+        "/paths/watch"
+      ],
+      "seo_title": "Your Best Engineer Isn't the Most Brilliant One",
+      "meta_description": "Reliability, honesty, kindness and helpfulness aren't soft skills. Vinay Pasricha on the 'goodness layer' and how to screen for it.",
+      "primary_keyword": "hiring for reliability",
+      "secondary_keywords": [
+        "soft skills in hiring",
+        "hiring engineers for character",
+        "goodness layer",
+        "organizational frequency book",
+        "what to look for when hiring"
+      ],
+      "summary": "Vinay Pasricha says a team's best engineer this year is not the most brilliant one but the most reliable one. Reliability, honesty, kindness and helpfulness are usually called soft skills; at GoodSpace AI, he says, they call them the goodness layer, the most underestimated economic multiplier in a company. In Organizational Frequency he shows how to screen for them deliberately.",
+      "key_points": [
+        "The most reliable engineer beats the most brilliant one.",
+        "Reliability, honesty, kindness and helpfulness form a \"goodness layer\".",
+        "He calls it the most underestimated economic multiplier and says it can be screened for deliberately."
+      ],
+      "notable_quote": "It is the most reliable one."
+    },
+    {
+      "id": "9p9KzBxCKD4",
+      "url": "https://www.youtube.com/shorts/9p9KzBxCKD4",
+      "title": "Your Dashboard is Lying to You  #leadership #thinking #criticalthinking #decisionmaking #execution",
+      "suggested_title": "Your Dashboard Is Lying to You",
+      "slug": "dashboard-lying-hidden-bottleneck",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-22",
+      "duration_iso": "PT26S",
+      "thumbnail": "https://i.ytimg.com/vi/9p9KzBxCKD4/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Execution",
+      "related_book": "execution-doctrine",
+      "related_pages": [
+        "/books/execution-doctrine",
+        "/paths/execute",
+        "/paths/watch"
+      ],
+      "seo_title": "Your Dashboard Is Lying to You | Execution Doctrine",
+      "meta_description": "You only measure what you chose to measure. Vinay Pasricha on why green metrics hide the real bottleneck: the waiting, the handoff, the unowned step.",
+      "primary_keyword": "dashboard metrics misleading",
+      "secondary_keywords": [
+        "vanity metrics",
+        "hidden bottleneck",
+        "kpi blind spots",
+        "theory of constraints",
+        "execution doctrine book"
+      ],
+      "summary": "Vinay Pasricha points out that you only ever measure what you decided to measure, so every metric tells you the instrumented parts are working. The real problem sits where nobody built a tracker: the waiting, the handoff, the bottleneck nobody owns. Green numbers, he says, don't mean it's working; they mean you aren't looking at the broken part.",
+      "key_points": [
+        "Dashboards only reflect what you chose to measure.",
+        "Real bottlenecks hide in waiting time, handoffs and unowned steps.",
+        "Green metrics can mean you're not looking at the broken part."
+      ],
+      "notable_quote": "Green numbers don't mean it's working."
+    },
+    {
+      "id": "FWknG4jZDUE",
+      "url": "https://www.youtube.com/shorts/FWknG4jZDUE",
+      "title": "The Learning Trap",
+      "suggested_title": null,
+      "slug": "learning-trap-one-change-at-a-time",
+      "type": "short",
+      "language": "en",
+      "upload_date": "2026-05-22",
+      "duration_iso": "PT26S",
+      "thumbnail": "https://i.ytimg.com/vi/FWknG4jZDUE/maxresdefault.jpg",
+      "playlist": null,
+      "topic": "Learning & Thinking",
+      "related_book": "siv-method",
+      "related_pages": [
+        "/books/siv-method",
+        "/paths/decisions",
+        "/paths/watch"
+      ],
+      "seo_title": "The Learning Trap: Change Five Things, Learn Nothing",
+      "meta_description": "Change your diet, gym, sleep and apps at once and you can't tell what worked. Vinay Pasricha on why running five experiments teaches you nothing.",
+      "primary_keyword": "the learning trap",
+      "secondary_keywords": [
+        "change one variable at a time",
+        "personal experiments",
+        "cause and effect thinking",
+        "siv method book",
+        "self improvement mistakes"
+      ],
+      "summary": "Vinay Pasricha imagines someone changing their diet, gym routine, sleep schedule and apps all in the same month. Six weeks later they feel better or worse but can't tell which change caused it: the result is real but the cause is invisible. Running five experiments at once, he says, doesn't teach you five things; it teaches you nothing five times. The Short ends with a pointer to The SIV Method.",
+      "key_points": [
+        "Changing many things at once hides which one caused the result.",
+        "The result is real, but the cause becomes invisible.",
+        "Running five experiments together teaches nothing five times."
+      ],
+      "notable_quote": "It means you learn nothing five times."
+    }
+  ]
+}

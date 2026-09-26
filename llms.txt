@@ -51,7 +51,7 @@ listed here.
 - [I'd like to read your fiction](https://vinaypasricha.com/paths/fiction.html)
   — *Between Two Dawns* — a speculative cycle, released one chapter
   at a time.
-- [I'd rather watch than read](https://vinaypasricha.com/paths/watch.html)
+- [I'd rather watch than read](https://vinaypasricha.com/watch)
   — talks and reflections on YouTube:
   <https://www.youtube.com/@VinayPasrichauthor>
 
@@ -103,7 +103,7 @@ Portuguese, French, German, Tamil. The other four are English only.
 
 - [The Notebook · monthly essays](https://vinaypasricha.com/paths/blog.html)
 - [The bookshelf](https://vinaypasricha.com/books.html)
-- [Watch · talks & conversations](https://vinaypasricha.com/paths/watch.html)
+- [Watch · talks & conversations](https://vinaypasricha.com/watch)
 - [FAQ](https://vinaypasricha.com/paths/faq.html)
 
 ## Languages
