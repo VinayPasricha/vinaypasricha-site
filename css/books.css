@@ -104,6 +104,22 @@
 }
 
 /* ----------------- BOOKS MATRIX ----------------- */
+/* Static list is the no-JS shelf. books.js replaces #books-matrix contents. */
+.books-static-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 40rem;
+}
+.books-static-list li + li { margin-top: 18px; }
+.books-static-list a {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.25;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
 .books-matrix-section {
   padding: 80px var(--gutter) 120px;
   max-width: 1280px;
