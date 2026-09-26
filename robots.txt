@@ -1,17 +1,29 @@
-# vinaypasricha.com — robots.txt
-# Welcome both search engines and AI model crawlers.
-# A specific User-agent group replaces the * group, so every AI crawler
-# repeats the same Disallow lines as everyone else.
+# vinaypasricha.com robots.txt
+# Search engines and AI crawlers may read the public site.
+# A named user-agent group replaces the * group, so every AI crawler
+# repeats the same private-path rules. Allow is listed before Disallow
+# so a first-match reader still permits the public pages; a standards
+# reader uses the longer Disallow and still skips the private paths.
+# Do not disallow the whole site. Firebase Hosting treats a full-site
+# block as a failed Googlebot fetch and answers HTTP 500.
 
-User-agent: *
+User-agent: Googlebot
+Allow: /
 Disallow: /studio/
 Disallow: /uploads/
 Disallow: /_brief/
 Disallow: /_explorations/
 Disallow: /_prompts/
-Allow: /
 
-# Major AI / LLM crawlers — same public paths as everyone else.
+User-agent: *
+Allow: /
+Disallow: /studio/
+Disallow: /uploads/
+Disallow: /_brief/
+Disallow: /_explorations/
+Disallow: /_prompts/
+
+# AI / LLM crawlers: same public paths as everyone else.
 User-agent: GPTBot
 User-agent: ChatGPT-User
 User-agent: ClaudeBot
@@ -23,11 +35,11 @@ User-agent: PerplexityBot
 User-agent: cohere-ai
 User-agent: Amazonbot
 User-agent: Applebot-Extended
+Allow: /
 Disallow: /studio/
 Disallow: /uploads/
 Disallow: /_brief/
 Disallow: /_explorations/
 Disallow: /_prompts/
-Allow: /
 
 Sitemap: https://vinaypasricha.com/sitemap.xml
