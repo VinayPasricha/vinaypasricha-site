@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for the videos. Edited by the studio at /studio/videos.html. The watch page fetches this file on load.",
+  "_comment": "Studio catalogue for /studio/videos.html and js/watch.js (id, title, blurb, platform, platform_id, duration, date, topic, hashtags). The public Watch pages are generated from assets/data/videos-library.json.",
   "updated_at": "2026-05-23",
   "videos": [
     {

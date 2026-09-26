@@ -276,7 +276,7 @@ const ANALYTICS = {
   // Works from /paths/, /signal/, /studio/, /frequency/, /library/ and
   // nested dirs like /runtime/sequence/.
   function siteRootPrefix() {
-    const KNOWN = ['paths', 'signal', 'studio', 'frequency', 'runtime', 'library'];
+    const KNOWN = ['paths', 'signal', 'studio', 'frequency', 'runtime', 'library', 'watch'];
     const dir = window.location.pathname.replace(/[^/]*$/, '');
     const segs = dir.split('/').filter(Boolean);
     for (let i = 0; i < segs.length; i++) {
@@ -470,7 +470,7 @@ const ANALYTICS = {
           <div>
             <h5>Read &middot; Watch &middot; Try</h5>
             <ul>
-              <li><a href="${root}paths/watch"><em>Watch</em> &middot; videos &amp; talks</a></li>
+              <li><a href="/watch"><em>Watch</em> &middot; videos &amp; talks</a></li>
               <li><a href="${root}paths/decisions#begin">Try <em>SIV</em> on a decision</a></li>
               <li><a href="${root}paths/blog">Monthly <em>notebook</em></a></li>
               <li><a href="${root}paths/essay">The <em>essay</em></a></li>

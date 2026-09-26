@@ -68,10 +68,11 @@ const SITE_ROOT = path.resolve(__dirname, '..', '..');
 // Map a request path to the HTML file the site should render.
 // /books is books.html at the repo root. /books/ must stay that shelf: the
 // books/ directory holds the per-book pages, and a trailing slash would
-// otherwise look for books/index.html and miss the shelf.
+// otherwise look for books/index.html and miss the shelf. /watch is the
+// same shape: watch.html at the root, watch/<slug>.html beside it.
 function siteHtmlPath(urlPath) {
   let rel = decodeURIComponent(urlPath);
-  if (rel === '/books/') return '/books.html';
+  if (rel === '/books/' || rel === '/watch/') return rel.slice(0, -1) + '.html';
   if (rel.endsWith('/')) return rel + 'index.html';
   if (!path.extname(rel)) return rel + '.html';
   if (rel.endsWith('.html')) return rel;
@@ -573,6 +574,13 @@ export function createApp() {
     } catch (err) {
       return next();
     }
+  });
+
+  // The public video hub moved from /paths/watch to /watch. Older links,
+  // including YouTube descriptions, still use the path URL.
+  app.get(/^\/paths\/watch(?:\.html)?\/?$/i, (req, res) => {
+    const qs = req.originalUrl.slice(req.path.length);
+    return res.redirect(301, '/watch' + qs);
   });
 
   // Legacy numbered conversation pages. The original architecture numbered

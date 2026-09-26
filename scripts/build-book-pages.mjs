@@ -6,6 +6,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BOOK_EMBEDS } from './lib/watch-embeds.mjs';
+import { renderWatchSection } from './lib/watch-render.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ORIGIN = 'https://vinaypasricha.com';
@@ -445,6 +447,7 @@ ${hreflang('/books/' + book.slug)}
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/i18n.css">
   <link rel="stylesheet" href="/css/book-page.css">
+  <link rel="stylesheet" href="/css/watch-library.css">
 
   <script type="application/ld+json">${jsonLd(book)}</script>
 </head>
@@ -553,6 +556,8 @@ ${hreflang('/books/' + book.slug)}
   ${faqHtml}
 </section>
 
+${renderWatchSection(BOOK_EMBEDS[book.slug] || { ids: [] })}
+
 <section class="continuations">
   <div class="continuations-inner">
     <div class="label">— The other five</div>
@@ -571,11 +576,12 @@ ${hreflang('/books/' + book.slug)}
     <div class="foot-tag">"Before power is applied, reality must be examined hard enough to deserve action."</div>
   </div>
   <div class="foot-right">
-    © 2026 · <a href="/">Index</a><a href="/books">Books</a><a href="/paths/watch">Watch</a><a href="/paths/connect">Connect</a>
+    © 2026 · <a href="/">Index</a><a href="/books">Books</a><a href="/watch">Watch</a><a href="/paths/connect">Connect</a>
   </div>
 </footer>
 
 <script src="/js/site.js"></script>
+<script src="/js/watch-facade.js"></script>
 <script src="/js/i18n.js"></script>
 <script src="/js/claude-bridge.js"></script>
 </body>
