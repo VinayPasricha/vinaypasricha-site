@@ -575,6 +575,34 @@ export function createApp() {
     }
   });
 
+  // Legacy numbered conversation pages. The original architecture numbered
+  // each visitor path (see the "Path NN" label still on the live pages, and
+  // the locked list in _brief/context-for-gpt.md). Those URLs were published
+  // as /pages/pathN.html — including from YouTube descriptions — but the
+  // files were never stored under that name. Registered before the generic
+  // *.html stripper so /pages/path6.html and /pages/path6 both 301 once,
+  // straight to the current page, keeping any query string.
+  const LEGACY_NUMBERED_PATHS = {
+    1: '/paths/ai-for-business',
+    2: '/paths/decisions',
+    3: '/paths/execute',
+    4: '/paths/evolve',
+    5: '/paths/hire',
+    6: '/paths/find-work',
+    7: '/paths/career',
+    8: '/paths/connect',
+    9: '/paths/blog',
+    10: '/paths/course',
+    11: '/paths/story',
+    12: '/paths/fiction',
+  };
+  app.get(/^\/pages\/path0*(\d+)(?:\.html)?$/i, (req, res, next) => {
+    const dest = LEGACY_NUMBERED_PATHS[Number(req.params[0])];
+    if (!dest) return next();
+    const qs = req.originalUrl.slice(req.path.length);
+    return res.redirect(301, dest + qs);
+  });
+
   // ---- Clean URLs: redirect *.html to extensionless paths ----
   // The address bar should never show "index.html" or a page's filename. The
   // static server already serves extensionless paths (extensions: ['html']);
