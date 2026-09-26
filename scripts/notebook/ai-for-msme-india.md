@@ -6,7 +6,7 @@ I'm Vinay Pasricha. I run GoodSpace AI, a hiring company in Noida that has serve
 
 ## Why MSMEs should start now
 
-MSMEs aren't a side story in India's economy. According to the Economic Survey 2025-26, they account for about 31.1% of GDP, 35.4% of manufacturing output and 48.58% of exports. As of 31 July 2026, the Ministry of MSME's Udyam dashboard showed more than 9.16 crore enterprises registered on the Udyam and Udyam Assist platforms. (If you're not sure you're an MSME: from 1 April 2025, a micro enterprise has up to ₹2.5 crore in plant and machinery and up to ₹10 crore turnover. The limits are ₹25 crore and ₹100 crore for small, and ₹125 crore and ₹500 crore for medium.)
+MSMEs aren't a side story in India's economy. According to the Economic Survey 2025-26, they account for about 31.1% of GDP, 35.4% of manufacturing output and 48.58% of exports. As of 22 September 2026, the Ministry of MSME's Udyam dashboard showed more than 9.67 crore enterprises registered on the Udyam and Udyam Assist platforms. (If you're not sure you're an MSME: from 1 April 2025, a micro enterprise has up to ₹2.5 crore in plant and machinery and up to ₹10 crore turnover. The limits are ₹25 crore and ₹100 crore for small, and ₹125 crore and ₹500 crore for medium.)
 
 Most owners I meet already know AI matters. They just don't know where it fits. A 2025 World Economic Forum playbook on AI for India's SMEs found the same thing in its interviews: most SMEs are "aware that AI deployment could benefit them but they are not sure how."
 
