@@ -62,8 +62,44 @@ export function slugify(s) {
     .slice(0, 80);
 }
 
+// Letters, numbers, and the punctuation that shows up in real company names.
+export const COMPANY_NAME_PATTERN = /^[\p{L}\p{N} .,&'()-]{2,80}$/u;
+
+export function validCompanyName(name) {
+  return COMPANY_NAME_PATTERN.test(String(name ?? '').trim());
+}
+
+// A bare hostname (example.com, sub.example.co.uk). Empty when the value is
+// not one — callers must not publish anything else into the public page.
+export function hostnameOf(value) {
+  let host = String(value ?? '').trim().toLowerCase();
+  if (!host) return '';
+  host = host.replace(/^[a-z][a-z0-9+.-]*:\/\//, '');
+  host = host.split(/[/?#]/)[0].replace(/:\d+$/, '').replace(/\.$/, '');
+  if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(host)) return '';
+  return host;
+}
+
+export function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// JSON embedded in a <script> block. Escaping `<` stops `</script>` from
+// closing the element; U+2028/U+2029 are line terminators in JavaScript strings.
+export function jsonForScript(value) {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
 function host(u) {
-  return String(u || '').replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+  return hostnameOf(u);
 }
 
 // Strip HTML and cap length on every string in an object tree — the data is
@@ -274,7 +310,7 @@ export function buildStore(name, url, prof, stage = 2) {
       research_id: rid,
       company_name: name,
       website_url: url,
-      discovered_domain: prof.domain || host(url),
+      discovered_domain: hostnameOf(prof.domain) || hostnameOf(url),
       source_inventory: sources,
     }],
     pub_contradictions: contradictions,
@@ -311,17 +347,34 @@ export async function listCompanyProfiles(limit = 200) {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
+// Copy used when embedding a saved profile. Domain links only survive if they
+// are hostnames; the page script reads this field into an href.
+export function publicStore(store) {
+  if (!store || typeof store !== 'object') return store || {};
+  const research = Array.isArray(store.pub_research)
+    ? store.pub_research.map((row) => {
+      if (!row || typeof row !== 'object') return row;
+      return { ...row, discovered_domain: hostnameOf(row.discovered_domain) };
+    })
+    : store.pub_research;
+  return { ...store, pub_research: research };
+}
+
 // ---- Render the company.html template with this company's data ------------
 // The page is served one level deeper (/frequency/company/<slug>) than the
 // template (/frequency/company.html), so inject <base href="/frequency/"> to
 // keep every relative asset path (company.js, ../favicon.png, ./) resolving.
 export function renderCompanyPage(template, { name, domain, slug }, store) {
-  const fileslug = slug;
+  const fileslug = String(slug || '');
+  const safeName = escapeHtml(name);
+  // A real hostname is shown as-is. Anything else is still escaped so a stored
+  // bad value cannot break out of the template.
+  const shownDomain = escapeHtml(hostnameOf(domain) || domain || '');
   let html = template
-    .split('Helio&nbsp;Robotics').join(name)
-    .split('Helio Robotics').join(name)
-    .split('heliorobotics.com').join(domain || host(''))
-    .split('https://vinaypasricha.com/frequency/company').join('https://vinaypasricha.com/frequency/company/' + fileslug);
+    .split('Helio&nbsp;Robotics').join(safeName)
+    .split('Helio Robotics').join(safeName)
+    .split('heliorobotics.com').join(shownDomain)
+    .split('https://vinaypasricha.com/frequency/company').join('https://vinaypasricha.com/frequency/company/' + escapeHtml(fileslug));
 
   // <base> so deeper URL keeps relative paths working.
   html = html.replace('<meta name="viewport" content="width=device-width, initial-scale=1.0">',
@@ -332,8 +385,10 @@ export function renderCompanyPage(template, { name, domain, slug }, store) {
     '<meta name="robots" content="noindex, nofollow">');
 
   // Inject the baked data right before company.js loads.
+  // company.js JSON.parses this string. Double-encoding keeps that contract;
+  // jsonForScript stops the string from closing the surrounding script tag.
   const inject =
-    '  <script>window.__OF_COMPANY_DATA__ = ' + JSON.stringify(JSON.stringify(store)) + ';</script>\n' +
+    '  <script>window.__OF_COMPANY_DATA__ = ' + jsonForScript(JSON.stringify(store ?? {})) + ';</script>\n' +
     '  <script src="company.js"></script>';
   html = html.replace('  <script src="company.js"></script>', inject);
 

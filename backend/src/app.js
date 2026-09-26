@@ -21,7 +21,10 @@ import {
   getCompanyProfile,
   listCompanyProfiles,
   renderCompanyPage,
+  publicStore,
   slugify,
+  validCompanyName,
+  hostnameOf,
   profileAccuracy,
   STAGE_LABELS,
 } from './services/companyProfiles.js';
@@ -136,7 +139,10 @@ export function rateLimit({ windowMs, max }) {
   return (req, res, next) => {
     // Admin token (e.g. the translation pipeline) bypasses the limit.
     if (config.adminToken && req.get('x-admin-token') === config.adminToken) return next();
-    const ip = String(req.get('x-forwarded-for') || req.ip || 'unknown').split(',')[0].trim();
+    // Same trusted tail as the book reader. Cloud Run appends the real client
+    // and the load balancer, so a forged leading X-Forwarded-For value cannot
+    // reset the limit. Every route that uses this limiter gets that key.
+    const ip = stableBookAddress(req);
     const now = Date.now();
     const recent = (hits.get(ip) || []).filter((t) => now - t < windowMs);
     if (recent.length >= max) {
@@ -152,17 +158,76 @@ export function rateLimit({ windowMs, max }) {
   };
 }
 
+function hostAllowed(url) {
+  const host = url.hostname.toLowerCase();
+  if (url.protocol !== 'https:' && host !== 'localhost' && host !== '127.0.0.1') return false;
+  return host === 'vinaypasricha.com' || host === 'www.vinaypasricha.com' ||
+    host === 'localhost' || host === '127.0.0.1' ||
+    (host.endsWith('.run.app') && (host.startsWith('vinay-site-') || host.startsWith('vinay-site-staging-')));
+}
+
 function bookRequestAllowed(req) {
   const origin = String(req.get('origin') || '').trim();
   if (!origin) return false;
-  try {
-    const url = new URL(origin);
-    const host = url.hostname.toLowerCase();
-    if (url.protocol !== 'https:' && host !== 'localhost' && host !== '127.0.0.1') return false;
-    return host === 'vinaypasricha.com' || host === 'www.vinaypasricha.com' ||
-      host === 'localhost' || host === '127.0.0.1' ||
-      (host.endsWith('.run.app') && (host.startsWith('vinay-site-') || host.startsWith('vinay-site-staging-')));
-  } catch (_) { return false; }
+  try { return hostAllowed(new URL(origin)); } catch (_) { return false; }
+}
+
+// Browser calls send Origin. A same-tab navigation that only has Referer is
+// accepted when it is the same allowlist. Anything else is rejected.
+function aiProxyAllowed(req) {
+  const origin = String(req.get('origin') || '').trim();
+  if (origin) {
+    try { return hostAllowed(new URL(origin)); } catch (_) { return false; }
+  }
+  const referer = String(req.get('referer') || '').trim();
+  if (!referer) return false;
+  try { return hostAllowed(new URL(referer)); } catch (_) { return false; }
+}
+
+// Caps for the public Gemini proxy. Sized for the largest live caller:
+// the Sequence Chamber sends ~28KB of the Execution Doctrine plus its spec,
+// and library.ask sends that book's full manuscript (~94KB). A full
+// Civilization manuscript does not fit; no page sends it.
+export const AI_INPUT_LIMITS = {
+  maxMessages: 40,
+  maxSystemChars: 96 * 1024,
+  maxInputChars: 96 * 1024,
+  maxOutputTokens: 2048,
+};
+
+export function prepareAiComplete(body) {
+  const system = body && body.system != null ? String(body.system) : '';
+  if (system.length > AI_INPUT_LIMITS.maxSystemChars) {
+    const err = new Error('too_large');
+    err.status = 400;
+    throw err;
+  }
+  const messages = body && body.messages;
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > AI_INPUT_LIMITS.maxMessages) {
+    const err = new Error('bad_messages');
+    err.status = 400;
+    throw err;
+  }
+  let total = system.length;
+  for (const message of messages) {
+    if (!message || typeof message.content !== 'string') {
+      const err = new Error('bad_messages');
+      err.status = 400;
+      throw err;
+    }
+    total += message.content.length;
+    if (total > AI_INPUT_LIMITS.maxInputChars) {
+      const err = new Error('too_large');
+      err.status = 400;
+      throw err;
+    }
+  }
+  if (!messages.some((message) => message.content.trim())) {
+    const err = new Error('bad_messages');
+    err.status = 400;
+    throw err;
+  }
+  return { system, messages };
 }
 
 function stableBookAddress(req) {
@@ -176,20 +241,23 @@ function stableBookAddress(req) {
 
 export function createApp() {
   const app = express();
-  // Transcript uploads are admin-only and capped again at 6 MB by the ABL
-  // parser. The larger envelope allows PDF/DOCX bytes to travel as base64.
-  app.use(express.json({ limit: '10mb' }));
+  // Public JSON stays small. Admin uploads (transcripts, participant files,
+  // course PDFs, notebook images and full essays) still need the larger
+  // envelope so those Studio flows keep working.
+  const LARGE_JSON_BODY = /^\/api\/(?:abl\/participants\/[^/]+\/(?:transcripts|assets)|abl\/workspace\/admin\/materials\/upload|studio\/notebook\/(?:images|essays))$/;
+  app.use((req, res, next) => {
+    const limit = LARGE_JSON_BODY.test(req.path) ? '10mb' : '100kb';
+    return express.json({ limit })(req, res, next);
+  });
 
   app.use(
     cors({
       origin(origin, cb) {
-        // Allow same-origin / tools with no Origin header. If an allow-list is
-        // configured, enforce it; otherwise allow all (the API is anonymous).
-        if (!origin) return cb(null, true);
-        if (!config.allowedOrigins.length || config.allowedOrigins.includes(origin)) {
-          return cb(null, true);
-        }
-        cb(new Error('Origin not allowed by CORS'));
+        // No Origin: same-origin navigation and non-browser tools. A listed
+        // origin is reflected. Anything else is not echoed and not an error,
+        // so the route can still answer 403.
+        if (!origin || config.allowedOrigins.includes(origin)) return cb(null, true);
+        return cb(null, false);
       },
     })
   );
@@ -307,11 +375,19 @@ export function createApp() {
   // browser bridge forwards here. Returns { completion: "<text>" }.
   app.post('/api/ai/complete', rateLimit({ windowMs: 60000, max: 60 }), async (req, res) => {
     try {
-      const { system, messages } = req.body || {};
-      const completion = await aiComplete({ system, messages });
+      if (!aiProxyAllowed(req)) {
+        return res.status(403).json({ error: 'origin_required', detail: 'Open this page on vinaypasricha.com.' });
+      }
+      const { system, messages } = prepareAiComplete(req.body);
+      const completion = await aiComplete({ system, messages, maxOutputTokens: AI_INPUT_LIMITS.maxOutputTokens });
       res.json({ completion });
     } catch (err) {
-      res.status(500).json({ error: 'ai_error', detail: err.message });
+      const status = err && err.status === 400 ? 400 : 500;
+      if (status === 500) console.error('[ai/complete]', err);
+      const detail = status === 400
+        ? (err.message === 'too_large' ? 'That request is too large.' : 'Send the conversation as a short list of messages.')
+        : 'The assistant is unavailable right now.';
+      res.status(status).json({ error: status === 400 ? 'bad_request' : 'ai_error', detail });
     }
   });
 
@@ -424,12 +500,33 @@ export function createApp() {
     try {
       const name = String((req.body && req.body.name) || '').trim();
       const url = String((req.body && req.body.url) || '').trim();
+      const suppliedDomain = req.body && req.body.domain != null ? String(req.body.domain).trim() : '';
       const context = String((req.body && req.body.context) || '').slice(0, 4000);
       const stage = Math.min(4, Math.max(2, parseInt((req.body && req.body.stage) || 2, 10) || 2));
       const sessionId = (req.body && req.body.sessionId) || '';
-      if (!name) return res.status(400).json({ error: 'bad_request', detail: 'name is required' });
+      if (!validCompanyName(name)) {
+        return res.status(400).json({ error: 'bad_request', detail: 'Enter the company name using letters, numbers, and basic punctuation.' });
+      }
+      if (suppliedDomain && !hostnameOf(suppliedDomain)) {
+        return res.status(400).json({ error: 'bad_request', detail: 'Enter the company domain as a hostname, such as example.com.' });
+      }
       const slug = slugify(name);
-      if (!slug) return res.status(400).json({ error: 'bad_request', detail: 'name produces an empty slug' });
+      if (!slug) return res.status(400).json({ error: 'bad_request', detail: 'That company name could not be used for a page address.' });
+
+      // An anonymous caller must not replace a page that already exists.
+      const existing = await getCompanyProfile(slug);
+      if (existing) {
+        const existingStage = existing.stage || 2;
+        return res.json({
+          ok: true,
+          slug: existing.slug || slug,
+          url: '/frequency/company/' + (existing.slug || slug),
+          stage: existingStage,
+          stageLabel: STAGE_LABELS[existingStage] || '',
+          accuracy: existing.store ? profileAccuracy(existing.store, existingStage) : undefined,
+          essence: (existing.research && existing.research.essence) || '',
+        });
+      }
 
       const prof = await runResearch(name, url, context);
       // Refuse to publish a failed or empty research — no misleading blank pages.
@@ -441,9 +538,11 @@ export function createApp() {
           detail: 'Could not assemble a profile for "' + name + '" right now — it may be too broad or ambiguous. Try the exact company name and its website, or run it again.',
         });
       }
+      const domain = hostnameOf(prof.domain) || hostnameOf(url) || hostnameOf(suppliedDomain);
+      prof.domain = domain;
       const store = buildStore(name, url, prof, stage);
       await saveCompanyProfile({
-        slug, name, domain: prof.domain || '', url, store, stage, sessionId,
+        slug, name, domain, url, store, stage, sessionId,
         research: { essence: prof.essence || '', queries: prof._searchQueries || [], sources: prof.sources || [], error: prof._error || null },
       });
       res.json({
@@ -452,7 +551,8 @@ export function createApp() {
         accuracy: profileAccuracy(store, stage), essence: prof.essence || '',
       });
     } catch (err) {
-      res.status(500).json({ error: 'server_error', detail: err.message });
+      console.error('[company-profiles]', err);
+      res.status(500).json({ error: 'server_error', detail: 'The profile could not be published right now.' });
     }
   });
 
@@ -568,7 +668,11 @@ export function createApp() {
       if (companyTemplate == null) {
         companyTemplate = readFileSync(path.join(SITE_ROOT, 'frequency', 'company.html'), 'utf8');
       }
-      const html = injectTracker(renderCompanyPage(companyTemplate, { name: prof.name, domain: prof.domain, slug: prof.slug }, prof.store));
+      const html = injectTracker(renderCompanyPage(
+        companyTemplate,
+        { name: prof.name, domain: hostnameOf(prof.domain), slug: prof.slug },
+        publicStore(prof.store),
+      ));
       res.set('Content-Type', 'text/html; charset=utf-8');
       return res.send(html);
     } catch (err) {
@@ -723,7 +827,12 @@ export function createApp() {
   // Express error handler (e.g. malformed JSON body).
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
-    res.status(400).json({ error: 'request_error', detail: err.message });
+    const quiet = req.path === '/api/ai/complete' || req.path === '/api/company-profiles';
+    const tooLarge = !!(err && (err.type === 'entity.too.large' || err.status === 413));
+    const detail = quiet
+      ? (tooLarge ? 'That request is too large.' : 'The request could not be read.')
+      : (err && err.message) || 'The request could not be read.';
+    res.status(400).json({ error: 'request_error', detail });
   });
 
   return app;

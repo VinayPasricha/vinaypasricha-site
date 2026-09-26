@@ -311,8 +311,8 @@
 
     var rating = m.glassdoor_rating || m.ambitionbox_rating;
     chip('Employee rating', rating ? '★ ' + esc(rating) : '', m.glassdoor_reviews ? esc(m.glassdoor_reviews) + ' reviews' : '');
-    chip('Recommend to a friend', pct(m.recommend_pct) ? '<em>' + pct(m.recommend_pct) + '</em>' : '', '');
-    chip('CEO approval', pct(m.ceo_approval_pct) ? '<em>' + pct(m.ceo_approval_pct) + '</em>' : '', '');
+    chip('Recommend to a friend', pct(m.recommend_pct) ? '<em>' + esc(pct(m.recommend_pct)) + '</em>' : '', '');
+    chip('CEO approval', pct(m.ceo_approval_pct) ? '<em>' + esc(pct(m.ceo_approval_pct)) + '</em>' : '', '');
     // Headcount: a number or band only, never a sentence.
     var hc = String(m.headcount || '').trim();
     var hcRange = hc.match(/\d[\d,]*\s*(?:[-–]|to)\s*\d[\d,]*/i);
@@ -357,14 +357,16 @@
     var name = MODE === 'live' ? profile.name : DEMO.name;
     var domain = MODE === 'live' ? profile.domain : DEMO.domain;
 
-    // title + h1
+    // title + h1. The saved profile is untrusted: escape before innerHTML.
+    // Spaces become nbsp only after escaping, so an ampersand stays an entity.
     document.title = name + ' — Organizational Frequency (Public Profile)';
-    el('co-name').innerHTML = 'The Organizational Frequency of <em>' + name.replace(/ /g, '&nbsp;') + '</em>';
+    el('co-name').innerHTML = 'The Organizational Frequency of <em>' + esc(name).replace(/ /g, '&nbsp;') + '</em>';
 
     // hero meta (+ company switcher in live mode)
     var facts = MODE === 'live' ? profile.facts : DEMO.facts;
-    var metaHTML = facts.map(function (f) { return '<span>' + f + '</span>'; }).join('');
-    if (domain) metaHTML += '<span><a class="lk" href="https://' + domain + '" target="_blank" rel="noopener nofollow">' + domain + ' ↗</a></span>';
+    var metaHTML = facts.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('');
+    var host = safeHost(domain);
+    if (host) metaHTML += '<span><a class="lk" href="https://' + host + '" target="_blank" rel="noopener nofollow">' + esc(host) + ' ↗</a></span>';
     el('co-meta').innerHTML = metaHTML;
 
     // essence
@@ -405,7 +407,7 @@
     }).join('');
 
     if (MODE === 'live') {
-      el('stage-cap').innerHTML = '<b>' + name + '</b> is at <b>stage ' + s + ' · ' + STAGES[s].label + '</b> in the runtime. This reading reflects the real confidence the engine has reached so far — it sharpens automatically as ' + name + ' moves deeper into the runtime.';
+      el('stage-cap').innerHTML = '<b>' + esc(name) + '</b> is at <b>stage ' + s + ' · ' + STAGES[s].label + '</b> in the runtime. This reading reflects the real confidence the engine has reached so far — it sharpens automatically as ' + esc(name) + ' moves deeper into the runtime.';
       el('advance').style.display = 'none';
     } else {
       el('stage-cap').innerHTML = STAGE_CAP[s];
@@ -422,8 +424,8 @@
     el('dims').innerHTML = dims.map(function (d) {
       var cc = confClass(d.conf, d.contested), tag = confTag(d.conf, d.contested);
       return '<div class="dim">' +
-        '<div class="dim-name">' + d.name + '</div>' +
-        '<div><div class="dim-level"><em>' + d.level + '</em></div>' +
+        '<div class="dim-name">' + esc(d.name) + '</div>' +
+        '<div><div class="dim-level"><em>' + esc(d.level) + '</em></div>' +
           '<div class="dim-read">' + esc(d.read) + '</div></div>' +
         '<div class="dim-conf">' +
           '<span class="conf-tag ' + cc + '">' + tag + '</span>' +
@@ -446,7 +448,7 @@
     el('needs').innerHTML = needs.length ? needs.map(function (d) {
       return '<div class="vrow">' +
         '<span class="v-sev ' + (d.contested ? 'moderate' : 'minor') + '">' + (d.contested ? 'contested' : 'unvalidated') + '</span>' +
-        '<span class="v-text"><b>' + d.name + '</b> — ' +
+        '<span class="v-text"><b>' + esc(d.name) + '</b> — ' +
           (d.contested ? 'public sources point in different directions; needs stakeholder validation.'
                        : 'drawn from limited public material; not yet corroborated from inside.') +
         '</span></div>';
@@ -491,12 +493,24 @@
     return '<select id="co-switch" style="background:var(--gr-3);color:var(--freq);border:1px solid var(--freq-3);border-radius:2px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 6px;cursor:pointer">' +
       live.map(function (l) {
         var sel = (selected && l.name === selected.name) ? ' selected' : '';
-        return '<option value="' + (l.slug || l.name) + '"' + sel + '>' + esc(l.name) + '</option>';
+        return '<option value="' + esc(l.slug || l.name) + '"' + sel + '>' + esc(l.name) + '</option>';
       }).join('') + '</select>';
   }
 
   function li(t) { return '<li>' + t + '</li>'; }
-  function esc(s) { return String(s == null ? '' : s).replace(/&(?!#?\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&(?!#?\w+;)/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function safeHost(d) {
+    var h = String(d || '').trim();
+    if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(h)) return '';
+    return h;
+  }
   function hasLevel(dims, name, rx) { var d = dims.filter(function (x) { return x.name === name; })[0]; return d && rx.test(String(d.level).toLowerCase()); }
 
   function thrive(dims, s) {

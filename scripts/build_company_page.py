@@ -27,7 +27,7 @@ def host(u):
 
 def ai(system, user):
     body = json.dumps({"system":system,"messages":[{"role":"user","content":user}]}).encode()
-    req = urllib.request.Request(AI, body, {"Content-Type":"application/json","x-admin-token":ADMIN})
+    req = urllib.request.Request(AI, body, {"Content-Type":"application/json","x-admin-token":ADMIN,"Origin":"http://localhost:8080"})
     txt = json.loads(urllib.request.urlopen(req, timeout=120).read())["completion"]
     t = txt.strip()
     if t.startswith("```"): t = re.sub(r'^```(?:json)?\s*','',t).replace("```","").strip()
