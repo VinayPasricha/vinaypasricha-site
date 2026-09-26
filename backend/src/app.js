@@ -274,9 +274,28 @@ export function createApp() {
   // reviewers can inspect branch deployments without being sent to production.
   // Cloud Run exposes the service name through K_SERVICE.
   const IS_STAGING_SERVICE = /(^|-)staging($|-)/i.test(process.env.K_SERVICE || '');
+  function effectiveHost(req) {
+    return String(req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
+  }
+  // Firebase Hosting, in front of this Cloud Run service, refuses to forward a
+  // Googlebot request until it has read /robots.txt from the Cloud Run host
+  // itself. A 301 from that host points back at vinaypasricha.com, Fastly
+  // restarts once (fastly-restarts: 1) and answers "Internal Error" without
+  // ever serving the page. Disallow rules in that probe response are treated
+  // the same way: the CDN returns 500 instead of forwarding. Answer the probe
+  // with 200 and an allow-all file. The public hostname still serves the real
+  // robots.txt below, so Google itself still skips /studio and the other
+  // private paths.
+  const ORIGIN_ROBOTS = 'User-agent: *\nAllow: /\n\nSitemap: https://vinaypasricha.com/sitemap.xml\n';
+  app.get('/robots.txt', (req, res, next) => {
+    if (IS_STAGING_SERVICE || !ALT_HOST.test(effectiveHost(req))) return next();
+    res.set('Content-Type', 'text/plain; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=0');
+    res.send(ORIGIN_ROBOTS);
+  });
   app.use((req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-    const eff = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
+    const eff = effectiveHost(req);
     if (!IS_STAGING_SERVICE && eff && eff !== CANONICAL_HOST && (ALT_HOST.test(eff) || eff === 'www.' + CANONICAL_HOST)) {
       return res.redirect(301, 'https://' + CANONICAL_HOST + req.originalUrl);
     }
