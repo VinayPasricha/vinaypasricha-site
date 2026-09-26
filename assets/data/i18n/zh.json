@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "著作",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "一套经过深思熟虑的认知工具——关于AI、决策、执行、招聘，以及在噪音世界中幸存的信号。每一部都简短、密集，写就是为了反复阅读。",
     "— Before you buy": "— 购买前",
     "— About the author": "— 关于作者",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "这些书是一个更宏大项目的组成部分——一套用于驾驭快速变化世界的AI原生智识操作系统。",
@@ -474,7 +473,6 @@
     "Where is the actual <em>leverage</em> in your business?": "你业务中真正的<em>杠杆点</em>在哪里？",
     "What will you <em>not</em> use AI for?": "你将<em>不</em>把AI用于何处？",
     "What changes <em>inside</em> your teams when AI joins them?": "当AI加入你的团队时，你的团队<em>内部</em>会发生什么变化？",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "撰写 <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "构建 <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>",
     "Which of these is <em>closest to where you are?</em>": "以下哪项<em>最接近您当前的状态？</em>",
     "Send to Vinay <span class=\"arr\">→</span>": "发送给 Vinay <span class=\"arr\">→</span>",
@@ -819,10 +817,6 @@
     "The Signal · Vinay Pasricha": "The Signal · Vinay Pasricha",
     "The Signal is a cognitive instrument — a practice for clearer reception of what is actually being signalled beneath the noise. A book by Vinay Pasricha.": "The Signal 是一种认知工具 — 一种实践，用于更清晰地接收噪音下实际发出的信号。Vinay Pasricha 的一本书。",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay 投入了二十年时间在招聘、AI 和人力资本领域建立公司和团队。他用 English 写作，在 India 建设，并跨越本网站正被翻译成的多种语言进行工作。这项工作的起点是一个坚定的信念：<em>在施加力量之前，必须对现实进行足够深入的审视，以使其值得采取行动。</em>",
-    "The Books — Vinay Pasricha": "著作 — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Vinay Pasricha 的六部著作，内容涵盖思考、决策、建设、招聘以及智能文明的方向。提供多种语言版本。",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "六部著作，内容涵盖思考、决策、建设、招聘、The Signal 以及文明的方向。提供多种语言版本。",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "六部著作，内容涵盖思考、决策、建设、招聘、The Signal 以及文明的方向。",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "大多数面向领导者的 AI 建议要么是推销，要么是恐慌发作。本书两者皆非 — 它为必须立即清晰行动的高管提供了一种结构化的思维方式。",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — 一本清醒的 AI 领导指南",
@@ -918,6 +912,10 @@
     "All books on Amazon": "Amazon 上的所有书籍",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "出版 <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">跨语言</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "六本精悍著作，涵盖人工智能领导力、更明智的决策、执行力、招聘、专注，以及文明的走向。旨在供人反复研读。",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "Vinay Pasricha 的著作 — 人工智能、决策、招聘与文明",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "Vinay Pasricha 的六本著作：AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, 和 Civilization。于 Amazon 平台以多语种发售。"
   }
 }

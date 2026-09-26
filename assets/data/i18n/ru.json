@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "Книги",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "Тщательно подобранный набор когнитивных инструментов — об ИИ, решениях, исполнении, найме и сигнале, который выживает в мире шума. Каждый краток, плотен, написан для повторного чтения.",
     "— Before you buy": "— Прежде чем купить",
     "— About the author": "— Об авторе",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "Книги — часть более длительного проекта: интеллектуальной операционной системы на основе ИИ для навигации в быстро меняющемся мире.",
@@ -473,7 +472,6 @@
     "Most execution failures are not failures of will.<br>\n    They are failures of <em class=\"accent-word\">design.</em>": "Большинство неудач в исполнении — это не провалы воли.<br>\n    Это провалы <em class=\"accent-word\">дизайна.</em>",
     "<strong>The Execution Doctrine</strong> is a field manual for operators who want to be <em>apt</em> rather than merely fast. SIV produces understanding; the Doctrine applies it. The chances of being helpful — rather than randomly applied or counterproductively harsh — are much higher.": "<strong>The Execution Doctrine</strong> — это полевое руководство для операторов, которые хотят быть <em>умелыми,</em> а не просто быстрыми. SIV порождает понимание; Доктрина применяет его. Шансы быть полезным — а не случайным или контрпродуктивно жестким — значительно выше.",
     "How might you think — <em>if you weren't already thinking like everyone around you?</em>": "Как бы вы мыслили — <em>если бы вы уже не мыслили, как все вокруг?</em>",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "Написание <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "Создание <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>",
     "Which of these is <em>closest to where you are?</em>": "Что из этого <em class=\"accent-word\">наиболее близко к вашей ситуации?</em>",
     "For whom the question is not <em>\"should we use AI\"</em> but <em>\"how do we build an organisation that uses it well\"</em> from day one.": "Для кого вопрос не <em>\"стоит ли нам использовать AI\"</em>, а <em>\"как нам построить организацию, которая хорошо использует его\"</em> с первого дня.",
@@ -800,10 +798,6 @@
     "Frequently asked questions about the books, the method, the course, and the site itself.": "Часто задаваемые вопросы о книгах, методе, курсе и самом сайте.",
     "Fiction · A speculative cycle · Vinay Pasricha": "Художественная литература · Спекулятивный цикл · Vinay Pasricha",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay посвятил два десятилетия созданию компаний и команд в сферах найма, AI и человеческого капитала. Он пишет на английском, строит в Индии и работает на многих языках, на которые переводится этот сайт. Работа начинается с одного убеждения: <em>прежде чем применять силу, реальность должна быть исследована достаточно тщательно, чтобы заслужить действие.</em>",
-    "The Books — Vinay Pasricha": "Книги — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Шесть книг от Vinay Pasricha о мышлении, принятии решений, создании, найме и направлении развития разумных цивилизаций. Доступно на нескольких языках.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "Шесть книг о мышлении, принятии решений, создании, найме, The Signal и направлении развития цивилизаций. Доступно на нескольких языках.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "Шесть книг о мышлении, принятии решений, создании, найме, The Signal и направлении развития цивилизаций.",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "Большинство советов по AI для лидеров — это рекламная презентация или паническая атака. Это ни то, ни другое — структурированный способ мышления для руководителей, которым необходимо действовать сейчас, ясно.",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — Ясное руководство по управлению с помощью AI",
@@ -918,6 +912,10 @@
     "All books on Amazon": "Все книги на Amazon",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "Издательство <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">на разных языках</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "Шесть коротких, насыщенных книг по лидерству в ИИ, принятию более четких решений, реализации, найму персонала, вниманию и направлению развития цивилизаций. Предназначены для многократного прочтения.",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "Книги Виная Пасричи — ИИ, Решения, Найм & Цивилизация",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "Шесть книг Виная Пасричи: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal и Civilization. Доступны на Amazon на нескольких языках."
   }
 }

@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "पुस्तकें",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "संज्ञानात्मक उपकरणों का एक सुविचारित संग्रह — AI, निर्णयों, क्रियान्वयन, भर्ती और शोर की दुनिया में जीवित रहने वाले संकेत पर। हर एक संक्षिप्त, सघन, बार-बार पढ़े जाने के लिए लिखा।",
     "— Before you buy": "— खरीदने से पहले",
     "— About the author": "— लेखक के बारे में",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "पुस्तकें एक दीर्घकालिक परियोजना का हिस्सा हैं — एक तेज़ी से बदलती दुनिया को समझने के लिए एक AI-native बौद्धिक ऑपरेटिंग सिस्टम।",
@@ -684,7 +683,6 @@
     "The cost is visible everywhere. A talented person hired into the wrong environment looks mediocre within six months. A mediocre hire in the right environment outperforms expectations. The conventional explanation — <em>\"they fit the culture\"</em> — is true but not useful. Culture is a downstream effect. Frequency is the upstream cause.": "लागत हर जगह दिखाई देती है। गलत वातावरण में भर्ती किया गया एक प्रतिभाशाली व्यक्ति छह महीने के भीतर सामान्य दिखने लगता है। सही वातावरण में एक सामान्य भर्ती अपेक्षाओं से बेहतर प्रदर्शन करती है। पारंपरिक स्पष्टीकरण — *\"वे संस्कृति के अनुरूप हैं\"* — सच है लेकिन उपयोगी नहीं। संस्कृति एक परिणामी प्रभाव है। आवृत्ति मूल कारण है।",
     "<em>Organizational Frequency</em> is the first volume of a longer doctrine on the future of work. It does not solve hiring. It re-names it. It treats hiring not as a transaction or a funnel, but as <em>an act of discovery</em> — the closest thing a company does to scientific inquiry. And it sets the foundation for the books that follow.": "*Organizational Frequency* कार्य के भविष्य पर एक लंबे सिद्धांत का पहला खंड है। यह भर्ती की समस्या को हल नहीं करता है। यह इसे फिर से नाम देता है। यह भर्ती को लेन-देन या फ़नल के रूप में नहीं, बल्कि *खोज के एक कार्य* के रूप में मानता है — जो वैज्ञानिक जांच के सबसे करीब है जो एक कंपनी करती है। और यह आगे आने वाली पुस्तकों के लिए नींव रखता है।",
     "Organizational <em>Frequency.</em>": "Organizational *Frequency.*",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "<em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em> लिखना",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "<em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em> का निर्माण",
     "Which of these is <em>closest to where you are?</em>": "इनमें से कौन सा <em>आपकी वर्तमान स्थिति के सबसे करीब</em> है?",
     "Every system has <em>one real constraint</em> — and it is rarely the loudest one. Detecting it correctly is most of the work; acting on it is the easy part.": "प्रत्येक प्रणाली में <em>एक वास्तविक बाधा</em> होती है — और यह शायद ही कभी सबसे मुखर होती है। इसे सही ढंग से पहचानना ही अधिकांश कार्य है; इस पर कार्य करना आसान हिस्सा है।",
@@ -760,10 +758,6 @@
     "The Signal · Vinay Pasricha": "The Signal · Vinay Pasricha",
     "The Signal is a cognitive instrument — a practice for clearer reception of what is actually being signalled beneath the noise. A book by Vinay Pasricha.": "The Signal एक संज्ञानात्मक उपकरण है — शोर के नीचे वास्तव में क्या संकेत दिया जा रहा है, उसकी स्पष्ट प्राप्ति के लिए एक अभ्यास। Vinay Pasricha द्वारा एक पुस्तक।",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay ने दो दशकों तक भर्ती, AI और मानव पूंजी के क्षेत्र में कंपनियाँ और टीमें बनाने में बिताए हैं। वह English में लिखते हैं, India में निर्माण करते हैं, और उन कई भाषाओं में काम करते हैं जिनमें यह साइट अनुवादित की जा रही है। यह कार्य एक ही विश्वास से शुरू होता है: <em>शक्ति का प्रयोग करने से पहले, वास्तविकता को इतनी कठोरता से जाँचा जाना चाहिए कि वह कार्रवाई के योग्य हो।</em>",
-    "The Books — Vinay Pasricha": "पुस्तकें — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Vinay Pasricha द्वारा सोचने, निर्णय लेने, निर्माण करने, भर्ती करने और बुद्धिमान सभ्यताओं की दिशा पर छह पुस्तकें। कई भाषाओं में उपलब्ध।",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "सोचने, निर्णय लेने, निर्माण करने, भर्ती करने, The Signal, और सभ्यताओं की दिशा पर छह पुस्तकें। कई भाषाओं में उपलब्ध।",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "सोचने, निर्णय लेने, निर्माण करने, भर्ती करने, The Signal, और सभ्यताओं की दिशा पर छह पुस्तकें।",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "नेताओं के लिए अधिकांश AI सलाह या तो बिक्री का प्रस्ताव होती है या घबराहट का दौरा। यह इनमें से कोई नहीं है — उन कार्यकारियों के लिए सोचने का एक संरचित तरीका है जिन्हें अब, स्पष्ट रूप से, आगे बढ़ना होगा।",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — AI के साथ नेतृत्व करने के लिए एक स्पष्ट-बुद्धि वाली मार्गदर्शिका",
@@ -918,6 +912,10 @@
     "All books on Amazon": "अमेज़न पर सभी पुस्तकें",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "प्रकाशन <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">विभिन्न भाषाओं में</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "AI नेतृत्व, स्पष्ट निर्णयों, निष्पादन, भर्ती, ध्यान और सभ्यताएँ किस दिशा में बढ़ रही हैं, इन विषयों पर छह संक्षिप्त, गहन पुस्तकें। इन्हें एक से अधिक बार पढ़ने के लिए लिखा गया है।",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "विनय पश्रीचा द्वारा पुस्तकें — AI, निर्णय, भर्ती और सभ्यता",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "विनय पश्रीचा की छह पुस्तकें: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, और Civilization। Amazon पर कई भाषाओं में उपलब्ध।"
   }
 }

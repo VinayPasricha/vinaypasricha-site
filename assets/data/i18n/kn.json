@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "ಪುಸ್ತಕಗಳು",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "ಉದ್ದೇಶಪೂರ್ವಕ ಜ್ಞಾನಸಾಧನಗಳ ಒಂದು ಸಂಚ — AI, ನಿರ್ಧಾರ, ಕಾರ್ಯಾಚರಣೆ, ನೇಮಕಾತಿ ಮತ್ತು ಗಲಾಟೆಯ ಜಗತ್ತಿನಲ್ಲಿ ಉಳಿಯುವ ಸಂಕೇತದ ಕುರಿತು. ಪ್ರತಿಯೊಂದೂ ಸಂಕ್ಷಿಪ್ತ, ಸಾಂದ್ರ, ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚು ಬಾರಿ ಓದಲು ಬರೆಯಲಾಗಿದೆ.",
     "— Before you buy": "— ಖರೀದಿಸುವ ಮೊದಲು",
     "— About the author": "— ಲೇಖಕರ ಬಗ್ಗೆ",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "ಪುಸ್ತಕಗಳು ಒಂದು ದೀರ್ಘ ಯೋಜನೆಯ ಭಾಗ — ವೇಗವಾಗಿ ಬದಲಾಗುತ್ತಿರುವ ಜಗತ್ತನ್ನು ನಿಭಾಯಿಸಲು AI-native ಬೌದ್ಧಿಕ ಕಾರ್ಯಾಚರಣ ವ್ಯವಸ್ಥೆ.",
@@ -456,7 +455,6 @@
     "vii": "vii",
     "A developmental interaction": "ಒಂದು ಅಭಿವೃದ್ಧಿ ಸಂವಹನ",
     "How might you think — <em>if you weren't already thinking like everyone around you?</em>": "ನೀವು ಹೇಗೆ ಯೋಚಿಸಬಹುದು — <em>ನಿಮ್ಮ ಸುತ್ತಲಿನ ಪ್ರತಿಯೊಬ್ಬರಂತೆ ಈಗಾಗಲೇ ಯೋಚಿಸದಿದ್ದರೆ?</em>",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "ಬರೆಯುವುದು <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "ನಿರ್ಮಿಸುವುದು <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>",
     "Which of these is <em>closest to where you are?</em>": "ಇವುಗಳಲ್ಲಿ ಯಾವುದು <em>ನೀವು ಇರುವ ಸ್ಥಳಕ್ಕೆ ಹತ್ತಿರವಾಗಿದೆ?</em>",
     "Send to Vinay <span class=\"arr\">→</span>": "ವಿನಯ್‌ಗೆ ಕಳುಹಿಸಿ <span class=\"arr\">→</span>",
@@ -761,10 +759,6 @@
     "AI Leadership Course · Vinay Pasricha": "AI ನಾಯಕತ್ವ ಕೋರ್ಸ್ · Vinay Pasricha",
     "A small, intense cohort for senior operators applying AI strategy to their own business — built on the framework from AI for Business Leaders.": "ತಮ್ಮ ವ್ಯವಹಾರಕ್ಕೆ AI ಕಾರ್ಯತಂತ್ರವನ್ನು ಅನ್ವಯಿಸುವ ಹಿರಿಯ ನಿರ್ವಾಹಕರಿಗಾಗಿ ಒಂದು ಸಣ್ಣ, ತೀವ್ರ ತಂಡ — ಇದನ್ನು AI for Business Leaders ನಿಂದ ಪಡೆದ ಚೌಕಟ್ಟಿನ ಮೇಲೆ ನಿರ್ಮಿಸಲಾಗಿದೆ.",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay ಅವರು ನೇಮಕಾತಿ, AI, ಮತ್ತು ಮಾನವ ಸಂಪನ್ಮೂಲಗಳಾದ್ಯಂತ ಕಂಪನಿಗಳು ಮತ್ತು ತಂಡಗಳನ್ನು ನಿರ್ಮಿಸುವಲ್ಲಿ ಎರಡು ದಶಕಗಳನ್ನು ಕಳೆದಿದ್ದಾರೆ. ಅವರು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಬರೆಯುತ್ತಾರೆ, ಭಾರತದಲ್ಲಿ ನಿರ್ಮಿಸುತ್ತಾರೆ, ಮತ್ತು ಈ ಸೈಟ್ ಅನ್ನು ಅನುವಾದಿಸಲಾಗುತ್ತಿರುವ ಅನೇಕ ಭಾಷೆಗಳಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತಾರೆ. ಕೆಲಸವು ಒಂದೇ ನಂಬಿಕೆಯಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ: <em>ಶಕ್ತಿಯನ್ನು ಅನ್ವಯಿಸುವ ಮೊದಲು, ಕ್ರಿಯೆಗೆ ಯೋಗ್ಯವಾಗುವಷ್ಟು ವಾಸ್ತವವನ್ನು ಕಠಿಣವಾಗಿ ಪರಿಶೀಲಿಸಬೇಕು.</em>",
-    "The Books — Vinay Pasricha": "ಪುಸ್ತಕಗಳು — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Vinay Pasricha ಅವರ ಆರು ಪುಸ್ತಕಗಳು: ಆಲೋಚನೆ, ನಿರ್ಧಾರ, ನಿರ್ಮಾಣ, ನೇಮಕಾತಿ, ಮತ್ತು ಬುದ್ಧಿವಂತ ನಾಗರಿಕತೆಗಳ ದಿಕ್ಕು ಕುರಿತು. ಅನೇಕ ಭಾಷೆಗಳಲ್ಲಿ ಲಭ್ಯವಿದೆ.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "ಆಲೋಚನೆ, ನಿರ್ಧಾರ, ನಿರ್ಮಾಣ, ನೇಮಕಾತಿ, The Signal, ಮತ್ತು ನಾಗರಿಕತೆಗಳ ದಿಕ್ಕು ಕುರಿತು ಆರು ಪುಸ್ತಕಗಳು. ಅನೇಕ ಭಾಷೆಗಳಲ್ಲಿ ಲಭ್ಯವಿದೆ.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "ಆಲೋಚನೆ, ನಿರ್ಧಾರ, ನಿರ್ಮಾಣ, ನೇಮಕಾತಿ, The Signal, ಮತ್ತು ನಾಗರಿಕತೆಗಳ ದಿಕ್ಕು ಕುರಿತು ಆರು ಪುಸ್ತಕಗಳು.",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "ನಾಯಕರಿಗೆ ಹೆಚ್ಚಿನ AI ಸಲಹೆಯು ಮಾರಾಟದ ಆಹ್ವಾನ ಅಥವಾ ಆತಂಕದ ದಾಳಿಯಾಗಿದೆ. ಇದು ಎರಡೂ ಅಲ್ಲ — ಈಗ ಸ್ಪಷ್ಟವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸಬೇಕಾದ ಕಾರ್ಯನಿರ್ವಾಹಕರಿಗೆ ಒಂದು ವ್ಯವಸ್ಥಿತ ಆಲೋಚನಾ ವಿಧಾನ.",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — AI ಯೊಂದಿಗೆ ಮುನ್ನಡೆಸಲು ಸ್ಪಷ್ಟ-ಮನಸ್ಸಿನ ಮಾರ್ಗದರ್ಶಿ",
@@ -918,6 +912,10 @@
     "All books on Amazon": "Amazon ನಲ್ಲಿರುವ ಎಲ್ಲಾ ಪುಸ್ತಕಗಳು",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "ಪ್ರಕಟಣೆ <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">ಭಾಷೆಗಳಾದ್ಯಂತ</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "AI ನಾಯಕತ್ವ, ಸ್ಪಷ್ಟ ನಿರ್ಧಾರಗಳು, ಕಾರ್ಯಗತಗೊಳಿಸುವಿಕೆ, ನೇಮಕಾತಿ, ಗಮನ, ಮತ್ತು ನಾಗರಿಕತೆಗಳು ಎತ್ತ ಸಾಗುತ್ತಿವೆ ಎಂಬುದರ ಕುರಿತು ಆರು ಚಿಕ್ಕ, ಗಹನವಾದ ಪುಸ್ತಕಗಳು. ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚು ಬಾರಿ ಓದಲು ಬರೆಯಲಾಗಿದೆ.",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "ವಿನಯ್ ಪಸ್ರೀಚಾ ಅವರ ಪುಸ್ತಕಗಳು — AI, ನಿರ್ಧಾರಗಳು, ನೇಮಕಾತಿ ಮತ್ತು ನಾಗರಿಕತೆ",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "ವಿನಯ್ ಪಸ್ರೀಚಾ ಅವರ ಆರು ಪುಸ್ತಕಗಳು: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, ಮತ್ತು Civilization. Amazon ನಲ್ಲಿ ವಿವಿಧ ಭಾಷೆಗಳಲ್ಲಿ."
   }
 }

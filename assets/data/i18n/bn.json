@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "বইসমূহ",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "সচেতনভাবে তৈরি একটি জ্ঞানীয় হাতিয়ারের সংকলন — AI, সিদ্ধান্ত, বাস্তবায়ন, নিয়োগ এবং শব্দের জগতে টিকে থাকা সংকেত নিয়ে। প্রতিটি সংক্ষিপ্ত, ঘন, একাধিকবার পড়ার জন্য লেখা।",
     "— Before you buy": "— কেনার আগে",
     "— About the author": "— লেখক সম্পর্কে",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "বইগুলো একটি দীর্ঘমেয়াদী প্রকল্পের অংশ — দ্রুত পরিবর্তনশীল বিশ্বে পথ চলার জন্য একটি AI-native বৌদ্ধিক অপারেটিং সিস্টেম।",
@@ -455,7 +454,6 @@
     "vii": "vii",
     "A developmental interaction": "একটি উন্নয়নমূলক মিথস্ক্রিয়া",
     "2010s": "2010s",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "লিখছি <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "তৈরি করছি <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>",
     "Which of these is <em>closest to where you are?</em>": "এগুলোর মধ্যে কোনটি <em>আপনি যেখানে আছেন তার সবচেয়ে কাছাকাছি?</em>",
     "How might you think — <em>if you weren't already thinking like everyone around you?</em>": "আপনি কীভাবে চিন্তা করতে পারেন — <em>যদি আপনি আপনার চারপাশের সবার মতো করে না ভাবতেন?</em>",
@@ -780,10 +778,6 @@
     "Session 0 · The Split — The Signal": "সেশন 0 · বিভাজন — The Signal",
     "The first session of The Signal — an AI-mediated developmental interaction that surfaces the split underneath your current friction.": "The Signal-এর প্রথম সেশন — একটি AI-মধ্যস্থতা সম্পন্ন উন্নয়নমূলক মিথস্ক্রিয়া যা আপনার বর্তমান ঘর্ষণের (friction) নিচে লুকিয়ে থাকা বিভাজনকে প্রকাশ করে।",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay নিয়োগ, AI, এবং মানব পুঁজি জুড়ে কোম্পানি ও দল গঠনে দুই দশক ব্যয় করেছেন। তিনি ইংরেজিতে লেখেন, ভারতে তৈরি করেন এবং এই ওয়েবসাইটটি যে বহু ভাষায় অনুবাদ করা হচ্ছে, সেগুলিতে কাজ করেন। কাজটি একটি একক বিশ্বাস থেকে শুরু হয়: <em>ক্ষমতা প্রয়োগের আগে, বাস্তবতা এতটাই কঠোরভাবে পরীক্ষা করা উচিত যাতে তা পদক্ষেপের যোগ্য হয়।</em>",
-    "The Books — Vinay Pasricha": "বইগুলো — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Vinay Pasricha-এর ছয়টি বই যা চিন্তা করা, সিদ্ধান্ত নেওয়া, তৈরি করা, নিয়োগ এবং বুদ্ধিমান সভ্যতার দিকনির্দেশনা নিয়ে। একাধিক ভাষায় উপলব্ধ।",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "চিন্তা করা, সিদ্ধান্ত নেওয়া, তৈরি করা, নিয়োগ, সংকেত এবং সভ্যতার দিকনির্দেশনা নিয়ে ছয়টি বই। একাধিক ভাষায় উপলব্ধ।",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "চিন্তা করা, সিদ্ধান্ত নেওয়া, তৈরি করা, নিয়োগ, সংকেত এবং সভ্যতার দিকনির্দেশনা নিয়ে ছয়টি বই।",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "নেতাদের জন্য বেশিরভাগ AI পরামর্শ হয় একটি বিক্রয় কৌশল বা একটি আতঙ্ক। এটি কোনটিই নয় — এমন কার্যনির্বাহীদের জন্য একটি সুসংগঠিত চিন্তাভাবনার পদ্ধতি যারা এখন স্পষ্টতার সাথে পদক্ষেপ নিতে বাধ্য।",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — AI-এর সাথে নেতৃত্ব দেওয়ার জন্য একটি সুস্পষ্ট চিন্তার নির্দেশিকা",
@@ -918,6 +912,10 @@
     "All books on Amazon": "Amazon-এ সমস্ত বই",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "প্রকাশনা <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">বিভিন্ন ভাষায়</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "এআই নেতৃত্ব, আরও স্পষ্ট সিদ্ধান্ত, কার্যসম্পাদন, নিয়োগ, মনোযোগ এবং সভ্যতাগুলির ভবিষ্যৎ গতিপথ সম্পর্কে ছয়টি সংক্ষিপ্ত, ঘন বই। এগুলি একাধিকবার পড়ার জন্য লেখা হয়েছে।",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "বিনয় পসরিচা-এর বই — এআই, সিদ্ধান্ত, নিয়োগ ও সভ্যতা",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "বিনয় পসরিচা-এর ছয়টি বই: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, এবং Civilization। Amazon-এ একাধিক ভাষায় উপলব্ধ।"
   }
 }

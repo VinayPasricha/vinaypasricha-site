@@ -32,7 +32,6 @@
     "VI": "VI",
     "Civilization": "Civilization",
     "The books": "Os livros",
-    "A deliberate set of cognitive instruments — on AI, decisions, execution, hiring, and the signal that survives in a world of noise. Each is short, dense, written to be read more than once.": "Um conjunto deliberado de instrumentos cognitivos — sobre IA, decisões, execução, contratação e o sinal que sobrevive num mundo de ruído. Cada um é curto, denso, escrito para ser lido mais de uma vez.",
     "— Before you buy": "— Antes de comprar",
     "— About the author": "— Sobre o autor",
     "The books are part of a longer project — an AI-native intellectual operating system for navigating a rapidly changing world.": "Os livros são parte de um projeto mais longo — um sistema operativo intelectual AI-native para navegar um mundo em rápida mudança.",
@@ -455,7 +454,6 @@
     "You — when you are ready": "Você — quando estiver pronto",
     "Continue": "Continuar",
     "The field is reading": "O campo está lendo",
-    "Writing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>": "Escrevendo <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">The Signal</em>",
     "Building <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>": "Construindo <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">GoodSpace AI</em>",
     "Which of these is <em>closest to where you are?</em>": "Qual destes está <em>mais próximo de onde você está?</em>",
     "How might you think — <em>if you weren't already thinking like everyone around you?</em>": "Como você pensaria — <em>se você já não estivesse pensando como todos ao seu redor?</em>",
@@ -741,10 +739,6 @@
     "<em>Organizational Frequency</em> is the first volume of a longer doctrine on the future of work. It does not solve hiring. It re-names it. It treats hiring not as a transaction or a funnel, but as <em>an act of discovery</em> — the closest thing a company does to scientific inquiry. And it sets the foundation for the books that follow.": "<em>Organizational Frequency</em> é o primeiro volume de uma doutrina mais longa sobre o futuro do trabalho. Não resolve a contratação. Renomeia-a. Trata a contratação não como uma transação ou um funil, mas como <em>um ato de descoberta</em> — a coisa mais próxima que uma empresa faz de uma investigação científica. E estabelece a base para os livros que se seguem.",
     "Organizational <em>Frequency.</em>": "Organizational <em>Frequency.</em>",
     "Vinay has spent two decades building companies and teams across hiring, AI, and human capital. He writes in English, builds in India, and works across the many languages this site is being translated into. The work begins from a single conviction: <em>before power is applied, reality must be examined hard enough to deserve action.</em>": "Vinay passou duas décadas construindo empresas e equipes em recrutamento, IA e capital humano. Ele escreve em Inglês, constrói na Índia, e trabalha nas muitas línguas para as quais este site está sendo traduzido. O trabalho começa de uma única convicção: <em>antes que o poder seja aplicado, a realidade deve ser examinada com suficiente rigor para merecer ação.</em>",
-    "The Books — Vinay Pasricha": "Os Livros — Vinay Pasricha",
-    "Six books by Vinay Pasricha on thinking, deciding, building, hiring, and the direction of intelligent civilizations. Available in multiple languages.": "Seis livros de Vinay Pasricha sobre pensar, decidir, construir, recrutar e a direção de civilizações inteligentes. Disponível em várias línguas.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations. Available in multiple languages.": "Seis livros sobre pensar, decidir, construir, recrutar, o sinal, e a direção das civilizações. Disponível em várias línguas.",
-    "Six books on thinking, deciding, building, hiring, the signal, and the direction of civilizations.": "Seis livros sobre pensar, decidir, construir, recrutar, o sinal, e a direção das civilizações.",
     "AI for Business Leaders · Vinay Pasricha": "AI for Business Leaders · Vinay Pasricha",
     "Most AI advice for leaders is a sales pitch or a panic attack. This is neither — a structured way of thinking for executives who must move now, clearly.": "A maioria dos conselhos sobre IA para líderes é um discurso de vendas ou um ataque de pânico. Isto não é nenhum dos dois — uma forma estruturada de pensar para executivos que precisam agir agora, com clareza.",
     "AI for Business Leaders — A Clear-Headed Guide to Leading with AI": "AI for Business Leaders — Um Guia lúcido para Liderar com IA",
@@ -918,6 +912,10 @@
     "All books on Amazon": "Todos os livros na Amazon",
     "YouTube": "YouTube",
     "Instagram": "Instagram",
-    "X": "X"
+    "X": "X",
+    "Publishing <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">across languages</em>": "Publicando <em style=\"font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:13px;margin-left:4px\">em vários idiomas</em>",
+    "Six short, dense books on AI leadership, clearer decisions, execution, hiring, attention, and where civilizations are headed. Written to be read more than once.": "Seis livros curtos e densos sobre liderança em IA, decisões mais claras, execução, contratação, atenção e para onde as civilizações se dirigem. Escritos para serem lidos mais de uma vez.",
+    "Books by Vinay Pasricha — AI, Decisions, Hiring & Civilization": "Livros de Vinay Pasricha — IA, Decisões, Contratação e Civilização",
+    "Six books by Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, and Civilization. On Amazon in multiple languages.": "Seis livros de Vinay Pasricha: AI for Business Leaders, The SIV Method, The Execution Doctrine, Organizational Frequency, The Signal, e Civilization. Na Amazon em vários idiomas."
   }
 }
