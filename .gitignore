@@ -25,6 +25,10 @@ build/
 .tmp/
 *.log
 
+# Generated Firebase Hosting copy (scripts/build-hosting-public.mjs).
+/public/*
+!/public/.gitkeep
+
 # Local environment + secrets
 .env
 .env.local

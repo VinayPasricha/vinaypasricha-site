@@ -137,15 +137,17 @@ gcloud run deploy vinay-site --image <that image> --region asia-south1 \
 
 ### Auto-deploy
 
-Merges to `main` deploy the live site via a Cloud Build trigger that runs `cloudbuild.yaml`. The build pushes `asia-south1-docker.pkg.dev/project-65b6724f-5ba8-4e67-bf3/cloud-run-source-deploy/vinay-site` tagged with `$COMMIT_SHA` and `latest`, then deploys only that image:
+Merges to `main` deploy the live site via Cloud Build trigger `vinay-site-main`, which runs `cloudbuild.yaml`. The build pushes `asia-south1-docker.pkg.dev/project-65b6724f-5ba8-4e67-bf3/cloud-run-source-deploy/vinay-site` tagged with `$COMMIT_SHA` and `latest`, then deploys only that image:
 
 `gcloud run deploy vinay-site --image <that image> --region asia-south1 --platform managed`
 
-It does not change environment variables, secrets, traffic, the service account, or scaling. Firebase Hosting already rewrites every path to service `vinay-site`, so hosting config is not redeployed.
+It does not change environment variables, secrets, traffic, the service account, or scaling. After that deploy succeeds, the same build runs `node scripts/build-hosting-public.mjs` and `firebase deploy --only hosting` as the trigger's service account (Application Default Credentials, no login token). A failed Hosting deploy fails the build. Crawlable pages are those static files, served before the `**` rewrite to `vinay-site`. Paths that are not in that copy (`/api`, `/studio`, `/go`, generated company and essay pages) still go to Cloud Run.
+
+The trigger service account needs, in addition to its Cloud Run deploy roles, Firebase Hosting Admin (`roles/firebasehosting.admin`) and API Keys Viewer (`roles/serviceusage.apiKeysViewer`). Cloud Run Viewer (`roles/run.viewer`) is required for the Hosting rewrite check and is already included in Cloud Run Admin. The Firebase Hosting API (`firebasehosting.googleapis.com`), Firebase Management API (`firebase.googleapis.com`), and API Keys API (`apikeys.googleapis.com`) must be enabled.
 
 The staging trigger (`vinay-site-staging`, branch `agent/ai-course-staging`) has no `cloudbuild.yaml`. It uses the same Artifact Registry repository and tags `$COMMIT_SHA` and `latest`, but its image is `.../cloud-run-source-deploy/vinaypasricha-vinaypasricha-site/vinay-site-staging`. Production keeps the `vinay-site` image from the manual command above so the two services stay separate.
 
-One-time setup: create a trigger on push to branch `^main$` for `VinayPasricha/vinaypasricha-site`, config `cloudbuild.yaml`, region `asia-south1` (same region as the staging trigger). The trigger's service account needs Cloud Run Admin, Service Account User, Artifact Registry Writer, and Logs Writer.
+One-time setup: create a trigger on push to branch `^main$` for `VinayPasricha/vinaypasricha-site`, config `cloudbuild.yaml`, region `asia-south1` (same region as the staging trigger). The trigger's service account needs Cloud Run Admin, Service Account User, Artifact Registry Writer, Logs Writer, Firebase Hosting Admin, and API Keys Viewer.
 
 ```
 gcloud builds triggers create github --name=vinay-site-main --region=asia-south1 --repo-owner=VinayPasricha --repo-name=vinaypasricha-site --branch-pattern='^main$' --build-config=cloudbuild.yaml --service-account=projects/project-65b6724f-5ba8-4e67-bf3/serviceAccounts/SERVICE_ACCOUNT_EMAIL --project=project-65b6724f-5ba8-4e67-bf3
