@@ -544,6 +544,7 @@ body.home-redesign {
 
 .book-cover {
   width: 100%;
+  height: auto;
   aspect-ratio: 2 / 3;
   border-radius: 2px;
   object-fit: cover;
