@@ -135,6 +135,24 @@ gcloud run deploy vinay-site --image <that image> --region asia-south1 \
   --set-env-vars GOOGLE_CLOUD_PROJECT=project-65b6724f-5ba8-4e67-bf3,VERTEX_LOCATION=us-central1,VERTEX_MODEL=gemini-2.5-flash
 ```
 
+### Auto-deploy
+
+Merges to `main` deploy the live site via a Cloud Build trigger that runs `cloudbuild.yaml`. The build pushes `asia-south1-docker.pkg.dev/project-65b6724f-5ba8-4e67-bf3/cloud-run-source-deploy/vinay-site` tagged with `$COMMIT_SHA` and `latest`, then deploys only that image:
+
+`gcloud run deploy vinay-site --image <that image> --region asia-south1 --platform managed`
+
+It does not change environment variables, secrets, traffic, the service account, or scaling. Firebase Hosting already rewrites every path to service `vinay-site`, so hosting config is not redeployed.
+
+The staging trigger (`vinay-site-staging`, branch `agent/ai-course-staging`) has no `cloudbuild.yaml`. It uses the same Artifact Registry repository and tags `$COMMIT_SHA` and `latest`, but its image is `.../cloud-run-source-deploy/vinaypasricha-vinaypasricha-site/vinay-site-staging`. Production keeps the `vinay-site` image from the manual command above so the two services stay separate.
+
+One-time setup: create a trigger on push to branch `^main$` for `VinayPasricha/vinaypasricha-site`, config `cloudbuild.yaml`, region `asia-south1` (same region as the staging trigger). The trigger's service account needs Cloud Run Admin, Service Account User, Artifact Registry Writer, and Logs Writer.
+
+```
+gcloud builds triggers create github --name=vinay-site-main --region=asia-south1 --repo-owner=VinayPasricha --repo-name=vinaypasricha-site --branch-pattern='^main$' --build-config=cloudbuild.yaml --service-account=projects/project-65b6724f-5ba8-4e67-bf3/serviceAccounts/SERVICE_ACCOUNT_EMAIL --project=project-65b6724f-5ba8-4e67-bf3
+```
+
+Replace `SERVICE_ACCOUNT_EMAIL` with that account. Staging builds are reported by Google Cloud Developer Connect; if this command says the GitHub repo is not connected, point `--repository` at the same Developer Connect connection the staging trigger already uses.
+
 CLIs installed locally: **gcloud** (Google Cloud SDK) and **AWS CLI v2** (unused for hosting).
 
 ---
