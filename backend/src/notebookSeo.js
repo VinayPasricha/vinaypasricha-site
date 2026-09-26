@@ -71,7 +71,7 @@ function essayArticleHtml(essay, published) {
 
   return [
     '<article class="essay-page" data-screen-label="Essay">',
-    '<div class="essay-crumbs"><a href="/">Index</a><span class="sep">/</span><a href="/paths/blog">Notebook</a><span class="sep">/</span><span class="num">' + escapeHtml(essay.monthLabel || essay.date || '') + '</span></div>',
+    '<div class="essay-crumbs"><a href="/">Index</a><span class="sep">/</span><a href="/notebook">Notebook</a><span class="sep">/</span><span class="num">' + escapeHtml(essay.monthLabel || essay.date || '') + '</span></div>',
     '<div class="essay-meta-top"><span>' + escapeHtml(essay.monthLabel || essay.date || '') + '</span><span class="dot">&middot;</span><span>' + escapeHtml(String(essay.readingMin || 1)) + ' min read</span></div>',
     '<h1 class="essay-title">' + escapeHtml(essay.title) + '</h1>',
     essay.dek ? '<p class="essay-dek">' + escapeHtml(essay.dek) + '</p>' : '',
@@ -154,7 +154,7 @@ export function registerNotebookSeoRoutes(app, options) {
 
   app.get(['/paths/essay', '/paths/essay.html'], function (req, res) {
     const requested = String(req.query && req.query.slug || '').trim();
-    if (!requested) return res.redirect(302, '/paths/blog');
+    if (!requested) return res.redirect(302, '/notebook');
     return res.redirect(301, '/paths/essay/' + encodeURIComponent(notebookSlug(requested)));
   });
 

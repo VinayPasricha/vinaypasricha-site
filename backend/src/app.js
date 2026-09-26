@@ -72,10 +72,11 @@ const SITE_ROOT = path.resolve(__dirname, '..', '..');
 // /books is books.html at the repo root. /books/ must stay that shelf: the
 // books/ directory holds the per-book pages, and a trailing slash would
 // otherwise look for books/index.html and miss the shelf. /watch is the
-// same shape: watch.html at the root, watch/<slug>.html beside it.
+// same shape: watch.html at the root, watch/<slug>.html beside it, and so is
+// /notebook (notebook.html plus notebook/<slug>.html).
 function siteHtmlPath(urlPath) {
   let rel = decodeURIComponent(urlPath);
-  if (rel === '/books/' || rel === '/watch/') return rel.slice(0, -1) + '.html';
+  if (rel === '/books/' || rel === '/watch/' || rel === '/notebook/') return rel.slice(0, -1) + '.html';
   if (rel.endsWith('/')) return rel + 'index.html';
   if (!path.extname(rel)) return rel + '.html';
   if (rel.endsWith('.html')) return rel;
@@ -703,6 +704,13 @@ export function createApp() {
     return res.redirect(301, '/watch' + qs);
   });
 
+  // The Notebook moved from the empty /paths/blog shell to the static
+  // /notebook hub (notebook.html, articles in notebook/).
+  app.get(/^\/paths\/blog(?:\.html)?\/?$/i, (req, res) => {
+    const qs = req.originalUrl.slice(req.path.length);
+    return res.redirect(301, '/notebook' + qs);
+  });
+
   // Legacy numbered conversation pages. The original architecture numbered
   // each visitor path (see the "Path NN" label still on the live pages, and
   // the locked list in _brief/context-for-gpt.md). Those URLs were published
@@ -719,7 +727,7 @@ export function createApp() {
     6: '/paths/find-work',
     7: '/paths/career',
     8: '/paths/connect',
-    9: '/paths/blog',
+    9: '/notebook',
     10: '/paths/course',
     11: '/paths/story',
     12: '/paths/fiction',

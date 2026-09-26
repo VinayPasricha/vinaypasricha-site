@@ -1,0 +1,114 @@
+/* notebook.css — /notebook hub and /notebook/<slug> articles.
+   Builds on site.css and watch-library.css (same page shell as /watch). */
+
+.nb-byline {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.nb-byline a { border-bottom: 1px solid var(--rule); }
+.nb-byline a:hover { border-color: var(--ink); color: var(--ink); }
+
+.nb-article { max-width: 720px; }
+.nb-article > * + * { margin-top: 16px; }
+.nb-article h2 { margin-top: 48px; }
+.nb-article h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 32px 0 8px;
+}
+.nb-article p + p { margin-top: 12px; }
+.nb-article strong { color: var(--ink); font-weight: 500; }
+.nb-article a { color: var(--ink); border-bottom: 1px solid var(--accent); }
+.nb-article a:hover { color: var(--accent); }
+.nb-article ul,
+.nb-article ol {
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nb-article li {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.nb-table { overflow-x: auto; margin: 24px 0; }
+.nb-table table { width: 100%; border-collapse: collapse; }
+.nb-table th,
+.nb-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.nb-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+.nb-page .wl-side section + section { margin-top: 44px; }
+.nb-side-copy {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin-bottom: 16px;
+}
+
+.nb-list {
+  display: grid;
+  gap: 22px;
+  max-width: 880px;
+  padding-top: 28px;
+}
+.nb-card {
+  display: block;
+  border: 1px solid var(--rule);
+  padding: 28px 30px;
+  background: var(--paper-3);
+}
+.nb-card:hover { border-color: var(--ink); }
+.nb-card-meta,
+.nb-card-more {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.nb-card-more { color: var(--accent); display: inline-block; margin-top: 18px; }
+.nb-card h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 12px 0 12px;
+}
+.nb-card p {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+@media (max-width: 980px) {
+  .nb-article li { font-size: 17px; }
+  .nb-card h2 { font-size: 26px; }
+}

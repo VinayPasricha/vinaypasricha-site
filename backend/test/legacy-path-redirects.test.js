@@ -13,7 +13,7 @@ const LEGACY = {
   6: '/paths/find-work',
   7: '/paths/career',
   8: '/paths/connect',
-  9: '/paths/blog',
+  9: '/notebook',
   10: '/paths/course',
   11: '/paths/story',
   12: '/paths/fiction',

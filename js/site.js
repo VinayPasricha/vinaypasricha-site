@@ -72,7 +72,7 @@ const ANALYTICS = {
     '/paths/hire': 'Organizational Frequency',
     '/paths/evolve': 'The Signal',
     '/paths/civilization': 'Civilization',
-    '/paths/blog': 'The Notebook',
+    '/notebook': 'The Notebook',
     '/paths/story': 'The story of Vinay',
     '/paths/connect': 'Your conversation with AION1',
     '/paths/course': 'The AI Leadership Course',
@@ -148,7 +148,7 @@ const ANALYTICS = {
       label: 'Continue exploring',
       title: 'The Notebook — essays written to be read more than once',
       action: 'Open →',
-      href: '/paths/blog'
+      href: '/notebook'
     } : {
       label: previous.seenAt < signalPublishedAt ? 'New since your last visit' : 'Latest from Vinay',
       title: 'The Signal — a field guide for thinking clearly',
@@ -393,7 +393,7 @@ const ANALYTICS = {
     const links = [
       { href: root + 'books', match: /^\/books/, label: 'Books' },
       { href: root + 'paths/course', match: /\/paths\/course/, label: 'Course' },
-      { href: root + 'paths/blog', match: /\/paths\/(blog|essay)/, label: 'Notebook' },
+      { href: root + 'notebook', match: /^\/notebook|\/paths\/(blog|essay)/, label: 'Notebook' },
       { href: root + 'paths/story', match: /\/paths\/story/, label: 'Story' },
       { href: root + 'paths/connect', match: /\/paths\/connect/, label: 'Connect' },
     ];
@@ -472,7 +472,7 @@ const ANALYTICS = {
             <ul>
               <li><a href="/watch"><em>Watch</em> &middot; videos &amp; talks</a></li>
               <li><a href="${root}paths/decisions#begin">Try <em>SIV</em> on a decision</a></li>
-              <li><a href="${root}paths/blog">Monthly <em>notebook</em></a></li>
+              <li><a href="${root}notebook">The <em>Notebook</em> &middot; articles</a></li>
               <li><a href="${root}paths/essay">The <em>essay</em></a></li>
               <li><a href="${root}paths/fiction"><em>Fiction</em></a></li>
               <li><a href="${root}paths/faq"><em>FAQ</em></a></li>
