@@ -739,6 +739,20 @@ export function createApp() {
     return res.redirect(301, dest + qs);
   });
 
+  // ---- Google Search Console verification file ----
+  // Must answer 200 text/html at the exact .html URL: registered ahead of the
+  // clean-URL redirect below, and sent verbatim (no tracker injection).
+  const SEARCH_CONSOLE_FILES = ['google2a52843db1b2236c.html'];
+  for (const name of SEARCH_CONSOLE_FILES) {
+    const abs = path.join(SITE_ROOT, name);
+    app.get('/' + name, (req, res, next) => {
+      if (!existsSync(abs)) return next();
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'public, max-age=300');
+      return res.send(readFileSync(abs, 'utf8'));
+    });
+  }
+
   // ---- Clean URLs: redirect *.html to extensionless paths ----
   // The address bar should never show "index.html" or a page's filename. The
   // static server already serves extensionless paths (extensions: ['html']);

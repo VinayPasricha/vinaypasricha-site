@@ -57,6 +57,7 @@
       { "source": "/pages/path12.html", "destination": "/paths/fiction", "type": 301 }
     ],
     "rewrites": [
+      { "source": "/google2a52843db1b2236c.html", "destination": "/google2a52843db1b2236c.htm" },
       {
         "source": "**",
         "run": {
