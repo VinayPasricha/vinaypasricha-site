@@ -12,9 +12,11 @@ export const config = {
   // Cloud Run sets PORT (usually 8080). Default 8080 for local parity.
   port: parseInt(optional('PORT', '8080'), 10),
 
-  // Comma-separated website origins allowed to call this API. Same-origin
-  // (the deployed site) needs no entry; this is for local/dev cross-origin.
-  allowedOrigins: optional('ALLOWED_ORIGINS', '')
+  // Comma-separated browser origins allowed to call this API cross-origin.
+  // When ALLOWED_ORIGINS is unset, only the public site is allowed — the
+  // API does not echo arbitrary Origin headers. Set the variable to override
+  // (localhost ports for development, for example).
+  allowedOrigins: optional('ALLOWED_ORIGINS', 'https://vinaypasricha.com')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),

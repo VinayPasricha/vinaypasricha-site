@@ -358,6 +358,8 @@ CRITICAL RULES:
   const userPrompt = `Translate this JSON dictionary to ${lang.english}. Return ONLY the JSON object — no other text.\n\n${JSON.stringify(dict, null, 2)}`;
 
   const headers = { 'Content-Type': 'application/json' };
+  // The public proxy only answers the site, localhost, and the staging host.
+  try { headers.Origin = new URL(AI_ENDPOINT).origin; } catch (e) { headers.Origin = 'http://localhost:8080'; }
   // Bypass the endpoint's per-IP rate limit during bulk pack generation.
   if (process.env.ADMIN_TOKEN) headers['x-admin-token'] = process.env.ADMIN_TOKEN;
 

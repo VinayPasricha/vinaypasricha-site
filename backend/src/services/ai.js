@@ -50,11 +50,15 @@ function toContents(messages) {
     }));
 }
 
-export async function complete({ system, messages } = {}) {
+export async function complete({ system, messages, maxOutputTokens = 2048 } = {}) {
   const contents = toContents(messages);
   if (!contents.length) throw new Error('messages are required');
 
   const request = { contents };
+  // Cap the billable reply. Thinking tokens on Gemini 2.5 come out of the same
+  // budget, so disable them — otherwise a short cap returns an empty answer.
+  const outputTokens = Math.max(1, Math.floor(Number(maxOutputTokens) || 2048));
+  request.generationConfig = { maxOutputTokens: outputTokens, thinkingConfig: { thinkingBudget: 0 } };
   if (system && String(system).trim()) {
     request.systemInstruction = { role: 'system', parts: [{ text: String(system) }] };
   }
@@ -116,7 +120,9 @@ export async function completeGrounded({ system, messages } = {}) {
     candidate = result?.response?.candidates?.[0];
   } catch (err) {
     // Project without the search tool enabled → degrade to ungrounded.
-    const text = await complete({ system, messages });
+    // The public proxy uses a short cap. This fallback still has to fit a full
+    // 12-dimension profile if live search is unavailable.
+    const text = await complete({ system, messages, maxOutputTokens: 8192 });
     return { text, queries: [], sources: [], grounded: false };
   }
 
