@@ -151,24 +151,16 @@
   </url>
 
   <url>
-    <loc>https://vinaypasricha.com/paths/blog</loc>
-    <lastmod>2026-09-25</lastmod>
+    <loc>https://vinaypasricha.com/notebook</loc>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vinaypasricha.com/paths/blog" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://vinaypasricha.com/paths/blog" />
-    <xhtml:link rel="alternate" hreflang="hi" href="https://vinaypasricha.com/paths/blog?lang=hi" />
-    <xhtml:link rel="alternate" hreflang="bn" href="https://vinaypasricha.com/paths/blog?lang=bn" />
-    <xhtml:link rel="alternate" hreflang="ta" href="https://vinaypasricha.com/paths/blog?lang=ta" />
-    <xhtml:link rel="alternate" hreflang="te" href="https://vinaypasricha.com/paths/blog?lang=te" />
-    <xhtml:link rel="alternate" hreflang="kn" href="https://vinaypasricha.com/paths/blog?lang=kn" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://vinaypasricha.com/paths/blog?lang=es" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://vinaypasricha.com/paths/blog?lang=fr" />
-    <xhtml:link rel="alternate" hreflang="pt" href="https://vinaypasricha.com/paths/blog?lang=pt" />
-    <xhtml:link rel="alternate" hreflang="ja" href="https://vinaypasricha.com/paths/blog?lang=ja" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://vinaypasricha.com/paths/blog?lang=zh" />
-    <xhtml:link rel="alternate" hreflang="ko" href="https://vinaypasricha.com/paths/blog?lang=ko" />
-    <xhtml:link rel="alternate" hreflang="ru" href="https://vinaypasricha.com/paths/blog?lang=ru" />
+  </url>
+  <url>
+    <loc>https://vinaypasricha.com/notebook/ai-for-msme-india</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <url>

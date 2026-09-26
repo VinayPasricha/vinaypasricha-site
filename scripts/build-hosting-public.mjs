@@ -26,6 +26,7 @@ export const COPY_ROOTS = [
   '404.html',
   'books.html',
   'watch.html',
+  'notebook.html',
   'civilization-lab.html',
   'memory-lab.html',
   'privacy.html',
@@ -44,6 +45,7 @@ export const COPY_ROOTS = [
   'runtime',
   'signal',
   'watch',
+  'notebook',
   'frequency',
 ];
 
