@@ -9,9 +9,8 @@
 // Googlebot does not take the Cloud Run miss path. Cloud Run still handles
 // /api, /studio, /go, and any path that is not copied here.
 //
-// Publish (Cloud Build does not do this):
-//   node scripts/build-hosting-public.mjs
-//   npx firebase-tools deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3
+// cloudbuild.yaml runs this, then `firebase deploy --only hosting`, after the
+// Cloud Run deploy. The same two commands work locally.
 
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';

@@ -80,6 +80,18 @@ function startStatic(outDir, redirects) {
   });
 }
 
+test('Cloud Build publishes Hosting only after Cloud Run deploy succeeds', () => {
+  const yaml = readFileSync(path.join(repoRoot, 'cloudbuild.yaml'), 'utf8');
+  const runAt = yaml.indexOf('id: deploy-cloud-run');
+  const hostAt = yaml.indexOf('id: deploy-hosting');
+  assert.ok(runAt > 0 && hostAt > runAt);
+  const hosting = yaml.slice(hostAt, yaml.indexOf('\nimages:'));
+  assert.match(hosting, /waitFor: \['deploy-cloud-run'\]/);
+  assert.match(hosting, /node scripts\/build-hosting-public\.mjs/);
+  assert.match(hosting, /npx --yes firebase-tools@latest deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3 --non-interactive/);
+  assert.doesNotMatch(hosting, /allowFailure/);
+});
+
 test('hosting config serves static pages ahead of the Cloud Run rewrite', () => {
   const hosting = firebase.hosting;
   assert.equal(hosting.public, 'public');

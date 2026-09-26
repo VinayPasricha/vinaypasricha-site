@@ -1,11 +1,17 @@
 # Build the root Dockerfile and roll the new image onto Cloud Run service vinay-site.
 # Deploy the image only. Do not set env vars, secrets, traffic, the service
 # account, or scaling — the live service keeps its existing configuration.
-# This pipeline does not deploy Firebase Hosting. Googlebot cache misses are
-# fixed by the static files from scripts/build-hosting-public.mjs, which have
-# to be published separately:
-#   node scripts/build-hosting-public.mjs
-#   npx firebase-tools deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3
+#
+# The last step publishes Firebase Hosting. Cloud Build runs steps in order and
+# stops at the first failure: Hosting starts only after the Cloud Run deploy
+# succeeds (waitFor: deploy-cloud-run), and a failed Hosting deploy fails the
+# build. firebase-tools authenticates as the trigger's service account through
+# Application Default Credentials on the Cloud Build metadata server. No login
+# token. That account needs roles/firebasehosting.admin and
+# roles/serviceusage.apiKeysViewer. roles/run.viewer is also required because
+# firebase.json rewrites to Cloud Run; Cloud Run Admin already includes it.
+# firebasehosting.googleapis.com, firebase.googleapis.com, and
+# apikeys.googleapis.com must be enabled.
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
@@ -23,7 +29,8 @@ steps:
     args:
       - push
       - asia-south1-docker.pkg.dev/project-65b6724f-5ba8-4e67-bf3/cloud-run-source-deploy/vinay-site:latest
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - id: deploy-cloud-run
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
       - run
@@ -35,6 +42,15 @@ steps:
       - asia-south1
       - --platform
       - managed
+  - id: deploy-hosting
+    name: node:22
+    waitFor: ['deploy-cloud-run']
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        node scripts/build-hosting-public.mjs
+        npx --yes firebase-tools@latest deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3 --non-interactive
 
 images:
   - asia-south1-docker.pkg.dev/project-65b6724f-5ba8-4e67-bf3/cloud-run-source-deploy/vinay-site:$COMMIT_SHA
