@@ -277,15 +277,12 @@ export function createApp() {
   function effectiveHost(req) {
     return String(req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
   }
-  // Firebase Hosting, in front of this Cloud Run service, refuses to forward a
-  // Googlebot request until it has read /robots.txt from the Cloud Run host
-  // itself. A 301 from that host points back at vinaypasricha.com, Fastly
-  // restarts once (fastly-restarts: 1) and answers "Internal Error" without
-  // ever serving the page. Disallow rules in that probe response are treated
-  // the same way: the CDN returns 500 instead of forwarding. Answer the probe
-  // with 200 and an allow-all file. The public hostname still serves the real
-  // robots.txt below, so Google itself still skips /studio and the other
-  // private paths.
+  // A direct hit on the Cloud Run hostname must answer /robots.txt with 200.
+  // That does not fix Googlebot on vinaypasricha.com: on a CDN cache miss,
+  // Hosting returns 500 before this process is contacted. The pages Google
+  // needs are published as Hosting static files (scripts/build-hosting-public.mjs)
+  // so that miss never happens. This allow-all body only covers a probe that
+  // does reach the run.app host. The apex still serves robots.txt from disk.
   const ORIGIN_ROBOTS = 'User-agent: *\nAllow: /\n\nSitemap: https://vinaypasricha.com/sitemap.xml\n';
   app.get('/robots.txt', (req, res, next) => {
     if (IS_STAGING_SERVICE || !ALT_HOST.test(effectiveHost(req))) return next();

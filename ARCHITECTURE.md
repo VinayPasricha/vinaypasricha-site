@@ -141,7 +141,14 @@ Merges to `main` deploy the live site via a Cloud Build trigger that runs `cloud
 
 `gcloud run deploy vinay-site --image <that image> --region asia-south1 --platform managed`
 
-It does not change environment variables, secrets, traffic, the service account, or scaling. Firebase Hosting already rewrites every path to service `vinay-site`, so hosting config is not redeployed.
+It does not change environment variables, secrets, traffic, the service account, or scaling, and it does not deploy Firebase Hosting. Crawlable pages are static files in Hosting (`scripts/build-hosting-public.mjs`), served before the `**` rewrite to `vinay-site`. Publish them separately, from an account with Firebase Hosting Admin on `project-65b6724f-5ba8-4e67-bf3`:
+
+```
+node scripts/build-hosting-public.mjs
+npx firebase-tools deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3
+```
+
+Paths that are not in that copy (`/api`, `/studio`, `/go`, generated company and essay pages) still go to Cloud Run.
 
 The staging trigger (`vinay-site-staging`, branch `agent/ai-course-staging`) has no `cloudbuild.yaml`. It uses the same Artifact Registry repository and tags `$COMMIT_SHA` and `latest`, but its image is `.../cloud-run-source-deploy/vinaypasricha-vinaypasricha-site/vinay-site-staging`. Production keeps the `vinay-site` image from the manual command above so the two services stay separate.
 

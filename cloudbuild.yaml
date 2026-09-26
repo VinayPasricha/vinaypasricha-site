@@ -1,6 +1,11 @@
 # Build the root Dockerfile and roll the new image onto Cloud Run service vinay-site.
 # Deploy the image only. Do not set env vars, secrets, traffic, the service
 # account, or scaling — the live service keeps its existing configuration.
+# This pipeline does not deploy Firebase Hosting. Googlebot cache misses are
+# fixed by the static files from scripts/build-hosting-public.mjs, which have
+# to be published separately:
+#   node scripts/build-hosting-public.mjs
+#   npx firebase-tools deploy --only hosting --project project-65b6724f-5ba8-4e67-bf3
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
